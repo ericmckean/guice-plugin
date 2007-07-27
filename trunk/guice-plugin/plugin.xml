@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            id="com.google.inject.tools.ideplugin.eclipse.bindings.objectContribution"
+            nameFilter="*"
+            objectClass="org.eclipse.jdt.core.IJavaElement">
+         <action
+               class="com.google.inject.tools.ideplugin.eclipse.BindingsObjectAction"
+               enablesFor="1"
+               id="com.google.inject.tools.ideplugin.eclipse.bindings.objectContributionAction"
+               label="Bindings"
+               menubarPath="additions"/>
+      </objectContribution>
+      <viewerContribution
+      		id="com.google.inject.tools.ideplugin.eclipse.bindings.viewerContribution"
+      		targetID="#CompilationUnitEditorContext">
+      	 <action
+      	 	 	class="com.google.inject.tools.ideplugin.eclipse.BindingsEditorAction"
+      	 	 	id="com.google.inject.tools.ideplugin.eclipse.bindings.viewerContributionAction"
+      	 	 	label="Bindings"
+      	 	 	menubarPath="additions"/>
+      </viewerContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="Guice_Plugin"
+            name="Guice"/>
+      <view
+            allowMultiple="false"
+            category="Guice_Plugin"
+            class="com.google.inject.tools.ideplugin.eclipse.EclipseResultsView"
+            icon="icons/sample.gif"
+            id="com.google.inject.tools.ideplugin.eclipse.EclipseResultsView"
+            name="Bindings"/>
+      <view
+            allowMultiple="false"
+            category="Guice_Plugin"
+            class="com.google.inject.tools.ideplugin.eclipse.EclipseModuleSelectionView"
+            icon="icons/sample.gif"
+            id="com.google.inject.tools.ideplugin.eclipse.EclipseModuleSelecionView"
+            name="Modules"/>
+   </extension>
+</plugin>
