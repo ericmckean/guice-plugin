@@ -17,23 +17,6 @@
 package com.google.inject.tools.ideplugin.eclipse;
 
 import com.google.inject.Singleton;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Collection;
-
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.ITypeHierarchy;
-import org.eclipse.jdt.core.ITypeHierarchyChangedListener;
-import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.core.Flags;
-
-import com.google.inject.tools.ideplugin.module.ModuleContextRepresentation;
-import com.google.inject.tools.ideplugin.module.ModuleContextRepresentationImpl;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
 
 //TODO: write this
@@ -45,88 +28,5 @@ import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
  */
 @Singleton
 public class EclipseModuleSelectionView implements ModuleSelectionView {	
-	private final Map<String,ModuleContextRepresentation> modules;
-	private ITypeHierarchy typeHierarchy = null;
-	private MyTypeHierarchyChangedListener typeHierarchyListener;
-	private IType type;
 	
-	/**
-	 * Create an EclipseModuleSelectionView.  This will be done by Eclipse internally.
-	 */
-	public EclipseModuleSelectionView() {
-		modules = new HashMap<String,ModuleContextRepresentation>();
-		initialize();
-	}
-	
-	/**
-	 * Initialize the ModuleSelectionView.
-	 */
-	public void initialize() {
-		//modules = new HashMap<String,ModuleContextRepresentation>();
-		IJavaProject javaProject = JavaCore.create(ResourcesPlugin.getWorkspace().getRoot().getProject());
-		try {
-			type = javaProject.findType("com.google.inject.AbstractModule");
-			typeHierarchy = type.newTypeHierarchy(null);
-		} catch (JavaModelException exception) {
-			type = null;
-			typeHierarchy = null;
-			//TODO: ....
-		} finally {
-			typeHierarchyListener = new MyTypeHierarchyChangedListener();
-			typeHierarchy.addTypeHierarchyChangedListener(typeHierarchyListener);
-			findModulesInCode();
-		}
-	}
-	
-	public Collection<ModuleContextRepresentation> getAllModules() {
-		try {
-			typeHierarchy.refresh(null);
-		} catch (JavaModelException exception) {
-			//TODO: ....
-		}
-		findModulesInCode();
-		return modules.values();
-	}
-	
-	private class MyTypeHierarchyChangedListener implements ITypeHierarchyChangedListener {
-		public void typeHierarchyChanged(ITypeHierarchy typeHierarchy) {
-			EclipseModuleSelectionView.this.setTypeHierarchy(typeHierarchy);
-			typeHierarchy.addTypeHierarchyChangedListener(this);
-		}
-	}
-	
-	private void setTypeHierarchy(ITypeHierarchy typeHierarchy) {
-		this.typeHierarchy = typeHierarchy;
-		findModulesInCode();
-	}
-	
-	private void findModulesInCode() {
-		final HashSet<String> moduleNames = new HashSet<String>();
-		IType[] subclasses = typeHierarchy.getSubclasses(type);
-		for (IType subclass : subclasses) {
-			try {
-				if (subclass.isClass()) {
-					if (!Flags.isAbstract(subclass.getFlags())) {
-						moduleNames.add(subclass.getFullyQualifiedName());
-					}
-				}
-			} catch (JavaModelException exception) {
-				//TODO: ....
-			}
-		}
-		keepModulesByName(moduleNames);
-	}
-	
-	private synchronized void keepModulesByName(Set<String> modulesNames) {
-		for (String name : modules.keySet()) {
-			if (!modulesNames.contains(name)) {
-				modules.remove(name);
-			}
-		}
-		for (String name : modulesNames) {
-			if (!modules.containsKey(name)) {
-				modules.put(name,new ModuleContextRepresentationImpl(name));
-			}
-		}
-	}
 }

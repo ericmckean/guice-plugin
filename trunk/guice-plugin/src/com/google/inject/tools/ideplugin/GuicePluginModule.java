@@ -43,6 +43,7 @@ public abstract class GuicePluginModule extends AbstractModule {
 		bindResultsHandler();
 		bindProblemsHandler();
 		bindResultsView();
+		bindModulesListener();
 		bindModuleSelectionView();
 		bindMessenger();
 	}
@@ -77,6 +78,11 @@ public abstract class GuicePluginModule extends AbstractModule {
 	 * Bind the {@link ResultsView} instance.
 	 */
 	protected abstract void bindResultsView();
+	
+	/**
+	 * Bind the {@link ModulesListener} instance.
+	 */
+	protected abstract void bindModulesListener();
 	
 	/**
 	 * Bind the {@link ModuleSelectionView} instance.

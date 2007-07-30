@@ -16,6 +16,8 @@
 
 package com.google.inject.tools.ideplugin.module;
 
+import java.util.Set;
+
 /**
  * Responsible for listening to changes in the user's code involving {@link com.google.inject.Module}s.
  * IDE specific implementations should notify the ModuleManager when changes occur by
@@ -24,5 +26,11 @@ package com.google.inject.tools.ideplugin.module;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public interface ModulesListener {
-
+	/**
+	 * Find the modules in the user's code by name.  The {@link ModuleManager} will call this method
+	 * when it is created and if it ever needs to refresh its list.
+	 * 
+	 * @return
+	 */
+	public Set<String> findModules();
 }

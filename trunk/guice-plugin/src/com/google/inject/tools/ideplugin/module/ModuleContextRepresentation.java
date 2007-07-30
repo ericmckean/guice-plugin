@@ -102,11 +102,9 @@ public interface ModuleContextRepresentation {
 	public void removeModule(ModuleRepresentation module);
 	
 	/**
-	 * Notify the context that the given module has changed.
-	 * 
-	 * @param module the module
+	 * Tell the context that its module have changed.
 	 */
-	public void moduleChanged(ModuleRepresentation module);
+	public void update();
 
 	/**
 	 * Return the name of this representation.
@@ -122,6 +120,14 @@ public interface ModuleContextRepresentation {
 	 * @return true if the module is in this context
 	 */
 	public boolean contains(ModuleRepresentation module);
+	
+	/**
+	 * Does this context contain the module with this name?
+	 * 
+	 * @param moduleName the name of the module
+	 * @return true if the module is in this context
+	 */
+	public boolean contains(String moduleName);
 	
 	/**
 	 * Is the module context valid for running?

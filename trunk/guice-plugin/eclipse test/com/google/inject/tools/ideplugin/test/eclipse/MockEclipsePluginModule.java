@@ -22,6 +22,7 @@ import com.google.inject.tools.ideplugin.Messenger;
 import com.google.inject.tools.ideplugin.eclipse.EclipsePluginModule;
 import com.google.inject.tools.ideplugin.module.ModuleManager;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
+import com.google.inject.tools.ideplugin.module.ModulesListener;
 import com.google.inject.tools.ideplugin.problem.ProblemsHandler;
 import com.google.inject.tools.ideplugin.results.ResultsHandler;
 import com.google.inject.tools.ideplugin.results.ResultsView;
@@ -38,6 +39,7 @@ public class MockEclipsePluginModule extends EclipsePluginModule {
 	private boolean useRealResultsView = false;
 	private boolean useRealModuleSelectionView = false;
 	private boolean useRealMessenger = false;
+	private boolean useRealModulesListener = false;
 	
 	/**
 	 * Create a purely mocked EclipsePluginModule.
@@ -93,6 +95,14 @@ public class MockEclipsePluginModule extends EclipsePluginModule {
 	}
 	
 	/**
+	 * Tell the module to use a real ModulesListener.
+	 */
+	public MockEclipsePluginModule useRealModulesListener() {
+		useRealModulesListener = true;
+		return this;
+	}
+	
+	/**
 	 * (non-Javadoc)
 	 * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindModuleManager()
 	 */
@@ -144,6 +154,15 @@ public class MockEclipsePluginModule extends EclipsePluginModule {
 	protected void bindMessenger() {
 		if (!useRealMessenger) bindToEasyMockInstance(Messenger.class);
 		else super.bindMessenger();
+	}
+	
+	/**
+	 * (non-Javadoc)
+	 * @see com.google.inject.tools.ideplugin.eclipse.EclipsePluginModule#bindModulesListener()
+	 */
+	protected void bindModulesListener() {
+		if (!useRealModulesListener) bindToEasyMockInstance(ModulesListener.class);
+		else super.bindModulesListener();
 	}
 	
 	@SuppressWarnings({"unchecked"})
