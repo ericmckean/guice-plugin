@@ -20,7 +20,6 @@ package com.google.inject.tools.ideplugin.problem;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.tools.ideplugin.code.CodeProblem;
 import com.google.inject.tools.ideplugin.Messenger;
 import java.util.Set;
 

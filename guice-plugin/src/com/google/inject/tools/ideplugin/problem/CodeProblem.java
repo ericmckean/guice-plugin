@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package com.google.inject.tools.ideplugin.code;
+package com.google.inject.tools.ideplugin.problem;
 
 import com.google.inject.tools.ideplugin.module.ModuleContextRepresentation;
+import com.google.inject.tools.ideplugin.results.CodeLocation;
 import com.google.inject.CreationException;
 
 /**
@@ -43,7 +44,7 @@ public class CodeProblem {
 		
 		/**
 		 * (non-Javadoc)
-		 * @see com.google.inject.tools.ideplugin.code.CodeProblem#toString()
+		 * @see com.google.inject.tools.ideplugin.problem.CodeProblem#toString()
 		 */
 		@Override
 		public String toString() {
@@ -80,7 +81,7 @@ public class CodeProblem {
 		
 		/**
 		 * (non-Javadoc)
-		 * @see com.google.inject.tools.ideplugin.code.CodeProblem#toString()
+		 * @see com.google.inject.tools.ideplugin.problem.CodeProblem#toString()
 		 */
 		@Override
 		public String toString() {
@@ -105,7 +106,7 @@ public class CodeProblem {
 		
 		/**
 		 * (non-Javadoc)
-		 * @see com.google.inject.tools.ideplugin.code.CodeProblem#toString()
+		 * @see com.google.inject.tools.ideplugin.problem.CodeProblem#toString()
 		 */
 		@Override
 		public String toString() {
@@ -129,7 +130,7 @@ public class CodeProblem {
 		
 		/**
 		 * (non-Javadoc)
-		 * @see com.google.inject.tools.ideplugin.code.CodeProblem#toString()
+		 * @see com.google.inject.tools.ideplugin.problem.CodeProblem#toString()
 		 */
 		@Override
 		public String toString() {
@@ -152,7 +153,7 @@ public class CodeProblem {
 		
 		/**
 		 * (non-Javadoc)
-		 * @see com.google.inject.tools.ideplugin.code.CodeProblem#toString()
+		 * @see com.google.inject.tools.ideplugin.problem.CodeProblem#toString()
 		 */
 		@Override
 		public String toString() {

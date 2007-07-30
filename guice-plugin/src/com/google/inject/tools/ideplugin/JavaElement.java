@@ -18,8 +18,7 @@ package com.google.inject.tools.ideplugin;
 
 /** 
  * Representation of a Java element.  Likely just a wrapper around IDE specific
- * representations, for instance {@link com.google.inject.tools.ideplugin.eclipse.EclipseJavaElement} is a wrapper around
- * {@link org.eclipse.jdt.core.IJavaElement}.
+ * representations, for instance EclipseJavaElement is a wrapper around Eclipse's IJavaElement.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */

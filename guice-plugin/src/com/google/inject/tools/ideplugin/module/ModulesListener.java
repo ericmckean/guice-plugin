@@ -30,7 +30,7 @@ public interface ModulesListener {
 	 * Find the modules in the user's code by name.  The {@link ModuleManager} will call this method
 	 * when it is created and if it ever needs to refresh its list.
 	 * 
-	 * @return
+	 * @return the module names
 	 */
 	public Set<String> findModules();
 }

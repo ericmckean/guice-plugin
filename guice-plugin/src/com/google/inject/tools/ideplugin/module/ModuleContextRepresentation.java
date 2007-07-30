@@ -16,7 +16,7 @@
 
 package com.google.inject.tools.ideplugin.module;
 
-import com.google.inject.tools.ideplugin.code.CodeProblem;
+import com.google.inject.tools.ideplugin.problem.CodeProblem;
 import com.google.inject.Injector;
 import java.util.Set;
 
@@ -76,7 +76,7 @@ public interface ModuleContextRepresentation {
 	public boolean hasProblem();
 	
 	/**
-	 * Return the {@link com.google.inject.tools.ideplugin.code.CodeProblem.CreationProblem} with this context.
+	 * Return the {@link com.google.inject.tools.ideplugin.problem.CodeProblem.CreationProblem} with this context.
 	 * 
 	 * @return the problem
 	 */

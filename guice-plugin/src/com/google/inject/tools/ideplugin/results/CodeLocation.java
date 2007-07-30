@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package com.google.inject.tools.ideplugin.code;
+package com.google.inject.tools.ideplugin.results;
 
 import java.util.Set;
+
+import com.google.inject.tools.ideplugin.problem.CodeProblem;
 
 /**
  * Represents a location in the user's code space.

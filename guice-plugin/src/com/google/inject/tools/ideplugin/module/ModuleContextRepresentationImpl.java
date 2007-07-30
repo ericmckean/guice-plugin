@@ -20,7 +20,8 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Guice;
 import com.google.inject.CreationException;
-import com.google.inject.tools.ideplugin.code.CodeProblem;
+import com.google.inject.tools.ideplugin.problem.CodeProblem;
+
 import java.util.HashSet;
 import java.util.Set;
 

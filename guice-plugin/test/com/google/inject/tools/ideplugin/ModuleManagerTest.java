@@ -26,8 +26,8 @@ import com.google.inject.tools.ideplugin.module.ModuleContextRepresentationImpl;
 import com.google.inject.tools.ideplugin.module.ModuleRepresentation;
 import com.google.inject.tools.ideplugin.module.ModuleRepresentationImpl;
 import com.google.inject.tools.ideplugin.module.ModulesListener;
+import com.google.inject.tools.ideplugin.problem.CodeProblem;
 import com.google.inject.tools.ideplugin.problem.ProblemsHandler;
-import com.google.inject.tools.ideplugin.code.CodeProblem;
 import com.google.inject.tools.ideplugin.test.WorkingModule;
 import com.google.inject.tools.ideplugin.test.BrokenModule;
 import com.google.inject.tools.ideplugin.test.ModuleWithArguments;
@@ -118,7 +118,7 @@ public class ModuleManagerTest extends TestCase {
 	}
 	
 	/**
-	 * Test that the ModuleManager correctly knows about {@link com.google.inject.tools.ideplugin.code.CodeProblem.CreationProblem}s.
+	 * Test that the ModuleManager correctly knows about {@link com.google.inject.tools.ideplugin.problem.CodeProblem.CreationProblem}s.
 	 */
 	public void testFindsCreationProblems() {
 		assertTrue(brokenModuleContext.hasProblem());
