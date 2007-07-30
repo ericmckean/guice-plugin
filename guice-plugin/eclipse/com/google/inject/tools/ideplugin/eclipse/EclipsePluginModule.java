@@ -23,6 +23,7 @@ import com.google.inject.tools.ideplugin.Messenger;
 import com.google.inject.tools.ideplugin.ActionsHandler;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
 import com.google.inject.tools.ideplugin.results.ResultsView;
+import com.google.inject.tools.ideplugin.module.ModulesListener;
 
 /** 
  * The module binding Eclipse implementations to interfaces.
@@ -78,5 +79,13 @@ public class EclipsePluginModule extends GuicePluginModule {
 	 */
 	protected void bindActionsHandler() {
 		bind(ActionsHandler.class).to(EclipseActionsHandler.class).in(Scopes.SINGLETON);
+	}
+	
+	/**
+	 * (non-Javadoc)
+	 * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindModulesListener()
+	 */
+	protected void bindModulesListener() {
+		bind(ModulesListener.class).to(EclipseModulesListener.class).in(Scopes.SINGLETON);
 	}
 }

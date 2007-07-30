@@ -22,6 +22,7 @@ import com.google.inject.tools.ideplugin.ActionsHandler;
 import com.google.inject.tools.ideplugin.GuicePluginModule;
 import com.google.inject.tools.ideplugin.module.ModuleManager;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
+import com.google.inject.tools.ideplugin.module.ModulesListener;
 import com.google.inject.tools.ideplugin.problem.ProblemsHandler;
 import com.google.inject.tools.ideplugin.results.ResultsHandler;
 import com.google.inject.tools.ideplugin.results.ResultsView;
@@ -130,6 +131,14 @@ public class MockGuicePluginModule extends GuicePluginModule {
 	 */
 	protected void bindActionsHandler() {
 		bindToEasyMockInstance(ActionsHandler.class);
+	}
+	
+	/**
+	 * (non-Javadoc)
+	 * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindModulesListener()
+	 */
+	protected void bindModulesListener() {
+		bindToEasyMockInstance(ModulesListener.class);
 	}
 	
 	@SuppressWarnings({"unchecked"})

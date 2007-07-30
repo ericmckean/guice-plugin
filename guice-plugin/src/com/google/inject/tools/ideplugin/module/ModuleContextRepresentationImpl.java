@@ -90,12 +90,10 @@ public class ModuleContextRepresentationImpl implements ModuleContextRepresentat
 
 	/**
 	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.module.ModuleContextRepresentation#moduleChanged(com.google.inject.tools.ideplugin.module.ModuleRepresentation)
+	 * @see com.google.inject.tools.ideplugin.module.ModuleContextRepresentation#update()
 	 */
-	public synchronized void moduleChanged(ModuleRepresentation module) {
-		if (modules.contains(module)) {
-			makeInjector();
-		}
+	public synchronized void update() {
+		makeInjector();
 	}
 
 	/**
@@ -145,9 +143,44 @@ public class ModuleContextRepresentationImpl implements ModuleContextRepresentat
 	
 	/**
 	 * (non-Javadoc)
+	 * @see com.google.inject.tools.ideplugin.module.ModuleContextRepresentation#contains(java.lang.String)
+	 */
+	public synchronized boolean contains(String moduleName) {
+		for (ModuleRepresentation module : modules) {
+			if (module.getName().equals(moduleName)) return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * (non-Javadoc)
 	 * @see com.google.inject.tools.ideplugin.module.ModuleContextRepresentation#isValid()
 	 */
 	public boolean isValid() {
 		return isValid;
+	}
+	
+	/**
+	 * (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object object) {
+		if (object instanceof ModuleContextRepresentation) {
+			ModuleContextRepresentation otherModuleContext = (ModuleContextRepresentation)object;
+			if (title.equals(otherModuleContext.getName())) {
+				return modules.equals(otherModuleContext.getModules());
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Module Context Representation [" + title + "]: " + modules;
 	}
 }

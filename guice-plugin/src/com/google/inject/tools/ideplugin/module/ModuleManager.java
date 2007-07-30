@@ -40,6 +40,20 @@ public interface ModuleManager {
 	public void removeModule(ModuleRepresentation module);
 	
 	/**
+	 * Notify the ModuleManager that a module has been added by the user.
+	 * 
+	 * @param module the name of the module added
+	 */
+	public void addModule(String moduleName);
+	
+	/**
+	 * Notify the ModuleManager that a module has been removed by the user.
+	 * 
+	 * @param module the name of the module removed
+	 */
+	public void removeModule(String moduleName);
+	
+	/**
 	 * Notify the ModuleManager that all modules should be cleared from memory.
 	 */
 	public void clearModules();
@@ -82,5 +96,5 @@ public interface ModuleManager {
 	 * 
 	 * @param module the module
 	 */
-	public void moduleChanged(ModuleRepresentation module);
+	public void moduleChanged(String module);
 }

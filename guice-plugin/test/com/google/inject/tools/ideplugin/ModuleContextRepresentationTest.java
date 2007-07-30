@@ -119,4 +119,14 @@ public class ModuleContextRepresentationTest extends TestCase {
 		assertNotNull(mockii2);
 		assertTrue(mockii2.getClass().equals(MockInjectedInterface2Impl.class));
 	}
+	
+	/**
+	 * Test that the contains method correctly works when passed a string.
+	 */
+	public void testContainsByName() {
+		ModuleContextRepresentation moduleContext = new ModuleContextRepresentationImpl("Working Module Context");
+		moduleContext.add(workingModule);
+		assertTrue(moduleContext.contains("com.google.inject.tools.ideplugin.test.WorkingModule"));
+		assertFalse(moduleContext.contains("com.google.inject.tools.ideplugin.test.WorkingModule2"));
+	}
 }

@@ -71,7 +71,7 @@ public class ModuleRepresentationImpl implements ModuleRepresentation {
 	}
 
 	private void initialize() {
-		this.name = moduleClass.getSimpleName();
+		this.name = moduleClass.getName();
 		try {
 			defaultConstructor = (Constructor<? extends Module>)moduleClass.getConstructor((Class[])null);
 		} catch (NoSuchMethodException exception) {
@@ -163,5 +163,35 @@ public class ModuleRepresentationImpl implements ModuleRepresentation {
 	 */
 	public boolean isValid() {
 		return isValid;
+	}
+	
+	/**
+	 * (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object object) {
+		if (object instanceof ModuleRepresentation) {
+			ModuleRepresentation module = (ModuleRepresentation)object;
+			if (name.equals(module.getName())) {
+				if (moduleClass.equals(module.getClass())) {
+					if (arguments != null) {
+						return arguments.equals(module.getArguments());
+					} else {
+						return module.getArguments() == null;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Module Representation [" + name + " (" + moduleClass + ")] " + arguments;
 	}
 }
