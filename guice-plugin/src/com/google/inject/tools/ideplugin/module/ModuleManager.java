@@ -20,7 +20,8 @@ import java.util.Set;
 
 /** 
  * Responsible for tracking the modules which should be run when resolving bindings and injections.
- * The {@link ModuleSelectionView} notifies the ModuleManager when these change.
+ * The {@link ModulesHandler} notifies the ModuleManager when these change.  The {@link ModuleSelectionView}
+ * notifies the ModuleManager when the user changes what modules they want run.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
