@@ -16,7 +16,6 @@
 
 package com.google.inject.tools.ideplugin.problem;
 
-import com.google.inject.tools.ideplugin.code.CodeProblem;
 import java.util.Set;
 
 /**

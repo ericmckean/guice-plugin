@@ -20,7 +20,7 @@ import java.util.Set;
 
 /** 
  * Responsible for tracking the modules which should be run when resolving bindings and injections.
- * The {@link ModulesHandler} notifies the ModuleManager when these change.  The {@link ModuleSelectionView}
+ * The {@link ModulesListener} notifies the ModuleManager when these change.  The {@link ModuleSelectionView}
  * notifies the ModuleManager when the user changes what modules they want run.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
@@ -43,14 +43,14 @@ public interface ModuleManager {
 	/**
 	 * Notify the ModuleManager that a module has been added by the user.
 	 * 
-	 * @param module the name of the module added
+	 * @param moduleName the name of the module added
 	 */
 	public void addModule(String moduleName);
 	
 	/**
 	 * Notify the ModuleManager that a module has been removed by the user.
 	 * 
-	 * @param module the name of the module removed
+	 * @param moduleName the name of the module removed
 	 */
 	public void removeModule(String moduleName);
 	

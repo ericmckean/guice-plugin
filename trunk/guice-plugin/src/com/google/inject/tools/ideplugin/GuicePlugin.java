@@ -26,9 +26,8 @@ import com.google.inject.tools.ideplugin.results.ResultsHandler;
 import com.google.inject.tools.ideplugin.results.ResultsView;
 
 /** 
- * The main object of the plugin.  Unfortunately, it must be created in IDE specific ways
- * for example {@link com.google.inject.tools.ideplugin.eclipse.Activator} for Eclipse.  Responsible for creating the Injector
- * and building the various objects the plugin needs.
+ * The main object of the plugin.  Unfortunately, it must be created in IDE specific ways.
+ * Responsible for creating the Injector and building the various objects the plugin needs.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */

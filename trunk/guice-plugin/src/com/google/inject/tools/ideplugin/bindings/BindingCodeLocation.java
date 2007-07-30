@@ -16,9 +16,10 @@
 
 package com.google.inject.tools.ideplugin.bindings;
 
-import com.google.inject.tools.ideplugin.code.CodeLocation;
-import com.google.inject.tools.ideplugin.code.CodeProblem;
 import com.google.inject.tools.ideplugin.module.ModuleContextRepresentation;
+import com.google.inject.tools.ideplugin.problem.CodeProblem;
+import com.google.inject.tools.ideplugin.results.CodeLocation;
+
 import java.util.Set;
 
 /**
@@ -50,7 +51,7 @@ public class BindingCodeLocation extends CodeLocation {
 	
 	/**
 	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.code.CodeLocation#getDisplayName()
+	 * @see com.google.inject.tools.ideplugin.results.CodeLocation#getDisplayName()
 	 */
 	public String getDisplayName() {
 		return bindTo;

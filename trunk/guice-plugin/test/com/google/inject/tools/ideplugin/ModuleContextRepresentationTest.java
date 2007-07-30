@@ -63,7 +63,7 @@ public class ModuleContextRepresentationTest extends TestCase {
 	}
 	
 	/**
-	 * Test that constructing a broken module context causes a {@link com.google.inject.tools.ideplugin.code.CodeProblem.CreationProblem}.
+	 * Test that constructing a broken module context causes a {@link com.google.inject.tools.ideplugin.problem.CodeProblem.CreationProblem}.
 	 */
 	public void testConstructBrokenModuleContext() {
 		ModuleContextRepresentation moduleContext = new ModuleContextRepresentationImpl("Broken Module Context");

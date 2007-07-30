@@ -19,9 +19,8 @@ package com.google.inject.tools.ideplugin.results;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
-import com.google.inject.tools.ideplugin.code.CodeLocation;
-import com.google.inject.tools.ideplugin.code.CodeProblem;
 import com.google.inject.tools.ideplugin.module.ModuleContextRepresentation;
+import com.google.inject.tools.ideplugin.problem.CodeProblem;
 import com.google.inject.tools.ideplugin.ActionsHandler;
 
 /**
