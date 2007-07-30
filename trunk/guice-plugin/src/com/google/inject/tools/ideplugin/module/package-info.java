@@ -17,12 +17,11 @@
 /**
  * Classes for representing and managing modules in the user's code.
  * 
- * 
- * Modules in the user's code are managed by the {@link com.google.inject.tools.ideplugin.module.ModuleManager} which is injected as a singleton.
+ * <p>Modules in the user's code are managed by the {@link com.google.inject.tools.ideplugin.module.ModuleManager} which is injected as a singleton.
  * The {@link com.google.inject.tools.ideplugin.module.ModuleSelectionView} and {@link com.google.inject.tools.ideplugin.module.ModulesListener} interfaces must be implemented by IDE specific
  * classes to notify the manager of changes in the user's code and configuration.
  * 
- * Modules are represented by the {@link com.google.inject.tools.ideplugin.module.ModuleRepresentation} class and module contexts, i.e. guice contexts
+ * <p>Modules are represented by the {@link com.google.inject.tools.ideplugin.module.ModuleRepresentation} class and module contexts, i.e. guice contexts
  * that injectors are created in are represented by {@link com.google.inject.tools.ideplugin.module.ModuleContextRepresentation}.  ModuleRepresentations 
  * are created for each module in the user's code.  ModuleContextRepresentations are created for each context
  * the user specifies to use the plugin for.

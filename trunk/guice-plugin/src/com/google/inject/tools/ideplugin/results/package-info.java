@@ -17,12 +17,11 @@
 /**
  * Classes for representing and displaying the results of user queries to the plugin.
  * 
- * 
- * The {@link com.google.inject.tools.ideplugin.results.ResultsHandler} is notified by for example the {@link com.google.inject.tools.ideplugin.bindings.BindingsEngine}
+ * <p>The {@link com.google.inject.tools.ideplugin.results.ResultsHandler} is notified by for example the {@link com.google.inject.tools.ideplugin.bindings.BindingsEngine}
  * when results to a query by the user are available.  It then passes them to the {@link com.google.inject.tools.ideplugin.results.ResultsView} 
  * (more accurately to the IDE specific implementation of the com.google.inject.tools.ideplugin.results.ResultsView) for display.
  * 
- * Results to user's queries are stored as {@link com.google.inject.tools.ideplugin.results.Results} objects which usually consist of 
+ * <p>Results to user's queries are stored as {@link com.google.inject.tools.ideplugin.results.Results} objects which usually consist of 
  * {@link com.google.inject.tools.ideplugin.results.CodeLocation} objects on a per module context basis.
  */
 

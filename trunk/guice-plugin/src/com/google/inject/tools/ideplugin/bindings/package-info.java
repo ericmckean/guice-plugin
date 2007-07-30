@@ -17,8 +17,7 @@
 /**
  * Classes for finding the bindings of a given Java element in the user's code.
  * 
- * 
- * When the user chooses the "Find Bindings" option from the Guice context menu (or any other way),
+ * <p>When the user chooses the "Find Bindings" option from the Guice context menu (or any other way),
  * a {@link com.google.inject.tools.ideplugin.bindings.BindingsEngine} object is created to handle it.  The real work is done by the {@link com.google.inject.tools.ideplugin.bindings.BindingLocater}
  * which actually uses guice to find the bindings and their locations in source code.  The results, which consist
  * of {@link com.google.inject.tools.ideplugin.bindings.BindingCodeLocation} objects are created as a {@link com.google.inject.tools.ideplugin.results.CodeLocationsResults}
