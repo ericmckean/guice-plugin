@@ -25,5 +25,6 @@ Bundle-Vendor: com.google.inject.tools.ideplugin
 Bundle-ClassPath: src/,
  .,
  eclipse/,
- lib/,
- bin/
+ bin/,
+ lib/EasyMock/easymock.jar,
+ lib/Guice/guice-1.0.jar

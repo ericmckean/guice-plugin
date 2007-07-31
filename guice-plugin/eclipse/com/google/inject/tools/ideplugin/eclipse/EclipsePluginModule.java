@@ -51,7 +51,7 @@ public class EclipsePluginModule extends GuicePluginModule {
 		public ResultsViewProvider() {}
 		
 		public ResultsView get() {
-			return Activator.getGuicePlugin().getResultsView();
+			return Activator.getGuicePlugin()!=null ? Activator.getGuicePlugin().getResultsView() : null;
 		}
 	}
 	
@@ -61,7 +61,7 @@ public class EclipsePluginModule extends GuicePluginModule {
 		public ModuleSelectionViewProvider() {}
 		
 		public ModuleSelectionView get() {
-			return Activator.getGuicePlugin().getModuleSelectionView();
+			return Activator.getGuicePlugin()!=null ? Activator.getGuicePlugin().getModuleSelectionView() : null;
 		}
 	}
 		

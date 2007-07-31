@@ -47,7 +47,6 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
 	private Action doubleClickAction;
 	private ViewContentProvider viewContentProvider;
 	private Results results;
-	private final ActionsHandler actionsHandler;
 	 
 	private class TreeObject implements IAdaptable {
 		private final String name;
@@ -183,7 +182,10 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
 	 * The constructor.  This will be called by Eclipse internally.
 	 */
 	public EclipseResultsView() {
-		actionsHandler = Activator.getGuicePlugin().getActionsHandler();
+	}
+	
+	private ActionsHandler getActionsHandler() {
+		return Activator.getGuicePlugin()!=null ? Activator.getGuicePlugin().getActionsHandler() : null;
 	}
 
 	/**
