@@ -36,6 +36,7 @@ public abstract class GuicePluginModule extends AbstractModule {
 	 * (non-Javadoc)
 	 * @see com.google.inject.AbstractModule#configure()
 	 */
+	@Override
 	protected void configure() {
 		bindGuicePlugin();
 		bindActionsHandler();

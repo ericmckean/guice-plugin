@@ -82,7 +82,7 @@ public class ModuleManagerImpl implements ModuleManager {
 		for (ModuleRepresentation module : modules) {
 			ModuleContextRepresentation moduleContext = new ModuleContextRepresentationImpl(module.getName());
 			moduleContext.add(module);
-			if (!moduleContext.hasProblem()) moduleContexts.add(moduleContext);
+			if (!moduleContext.hasProblems()) moduleContexts.add(moduleContext);
 			//else this module cannot be instantiated without user input
 		}
 	}
@@ -148,8 +148,8 @@ public class ModuleManagerImpl implements ModuleManager {
 	 */
 	public synchronized void addModuleContext(ModuleContextRepresentation moduleContext) {
 		moduleContexts.add(moduleContext);
-		if (moduleContext.hasProblem()) {
-			problemsHandler.foundProblem(moduleContext.getProblem());
+		if (moduleContext.hasProblems()) {
+			problemsHandler.foundProblems(moduleContext.getProblems());
 		}
 	}
 
@@ -177,8 +177,8 @@ public class ModuleManagerImpl implements ModuleManager {
 		for (ModuleContextRepresentation moduleContext : moduleContexts) {
 			if (moduleContext.contains(moduleName)) {
 				moduleContext.update();
-				if (moduleContext.hasProblem()) {
-					problemsHandler.foundProblem(moduleContext.getProblem());
+				if (moduleContext.hasProblems()) {
+					problemsHandler.foundProblems(moduleContext.getProblems());
 				}
 			}
 		}

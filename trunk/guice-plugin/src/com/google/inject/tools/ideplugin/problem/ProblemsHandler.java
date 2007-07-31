@@ -26,13 +26,6 @@ import java.util.Set;
  */
 public interface ProblemsHandler {
 	/**
-	 * Handle a problem found with user's code.
-	 * 
-	 * @param problem the problem found
-	 */
-	public void foundProblem(CodeProblem problem);
-	
-	/**
 	 * Handle a set of problems found with user's code.
 	 * 
 	 * @param problem

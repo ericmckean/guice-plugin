@@ -180,6 +180,7 @@ public class CodeProblem {
 	 * 
 	 * @return the problem string
 	 */
+	@Override
 	public String toString() {
 		return "Guice Code Problem: " + exception.toString();
 	}

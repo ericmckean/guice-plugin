@@ -29,7 +29,7 @@ import java.util.Set;
  */
 public class BindingCodeLocation extends CodeLocation {
 	private final ModuleContextRepresentation module;
-	private final Class bindWhat;
+	private final Class<?> bindWhat;
 	private final String bindTo;
 	
 	/**
@@ -42,7 +42,7 @@ public class BindingCodeLocation extends CodeLocation {
 	 * @param location the line number in that file where this happens
 	 * @param problems any {@link CodeProblem}s that occurred during getting this binding
 	 */
-	public BindingCodeLocation(Class bindWhat,String bindTo,ModuleContextRepresentation module,String file,int location,Set<CodeProblem> problems) {
+	public BindingCodeLocation(Class<?> bindWhat,String bindTo,ModuleContextRepresentation module,String file,int location,Set<CodeProblem> problems) {
 		super(file,location,problems);
 		this.bindWhat = bindWhat;
 		this.bindTo = bindTo;
@@ -53,6 +53,7 @@ public class BindingCodeLocation extends CodeLocation {
 	 * (non-Javadoc)
 	 * @see com.google.inject.tools.ideplugin.results.CodeLocation#getDisplayName()
 	 */
+	@Override
 	public String getDisplayName() {
 		return bindTo;
 	}
@@ -71,7 +72,7 @@ public class BindingCodeLocation extends CodeLocation {
 	 * 
 	 * @return the class
 	 */
-	public Class bindWhat() {
+	public Class<?> bindWhat() {
 		return bindWhat;
 	}
 }

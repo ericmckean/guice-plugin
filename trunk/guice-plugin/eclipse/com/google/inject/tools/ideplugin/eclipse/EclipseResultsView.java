@@ -65,9 +65,11 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
 		public TreeParent getParent() {
 			return parent;
 		}
+		@Override
 		public String toString() {
 			return getName();
 		}
+		@SuppressWarnings("unchecked")
 		public Object getAdapter(Class key) {
 			return null;
 		}
@@ -88,7 +90,7 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
 			child.setParent(null);
 		}
 		public TreeObject [] getChildren() {
-			return (TreeObject [])children.toArray(new TreeObject[children.size()]);
+			return children.toArray(new TreeObject[children.size()]);
 		}
 		public boolean hasChildren() {
 			return children.size()>0;
@@ -98,7 +100,6 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
 	private class ViewContentProvider implements IStructuredContentProvider, 
 										   ITreeContentProvider {
 		private TreeParent invisibleRoot;
-		private Results results;
 		
 		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
 		}
@@ -130,7 +131,7 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
 		}
 
 		public void useResults(Results results) {
-			this.results = results;
+			EclipseResultsView.this.results = results;
 			initialize();
 		}
 		
@@ -157,10 +158,11 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
 		}
 	}
 	private class ViewLabelProvider extends LabelProvider {
-
+		@Override
 		public String getText(Object obj) {
 			return obj.toString();
 		}
+		@Override
 		public Image getImage(Object obj) {
 			String imageKey = ISharedImages.IMG_OBJ_ELEMENT;
 			if (obj instanceof TreeParent)
@@ -182,6 +184,7 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
 	 * This is a callback that will allow us
 	 * to create the viewer and initialize it.
 	 */
+	@Override
 	public void createPartControl(Composite parent) {
 		Activator.getGuicePlugin().setResultsView(this);
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
@@ -240,6 +243,7 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
 
 	private void makeActions() {
 		action1 = new Action() {
+			@Override
 			public void run() {
 				showMessage("Action 1 executed");
 			}
@@ -250,6 +254,7 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
 			getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 		
 		action2 = new Action() {
+			@Override
 			public void run() {
 				showMessage("Action 2 executed");
 			}
@@ -259,6 +264,7 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
 		action2.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 				getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 		doubleClickAction = new Action() {
+			@Override
 			public void run() {
 				ISelection selection = viewer.getSelection();
 				Object obj = ((IStructuredSelection)selection).getFirstElement();
@@ -285,6 +291,7 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
 	 */
+	@Override
 	public void setFocus() {
 		viewer.getControl().setFocus();
 	}

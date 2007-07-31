@@ -31,7 +31,7 @@ import com.google.inject.tools.ideplugin.results.ResultsHandler;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public final class BindingsEngine {
-	private final Class theClass;
+	private final Class<?> theClass;
 	private final CodeLocationsResults results;
 	
 	/**
@@ -56,7 +56,8 @@ public final class BindingsEngine {
 	}
 	
 	private void bindingsEnginePerModuleContext(ModuleContextRepresentation moduleContext,ProblemsHandler problemsHandler) {
-		BindingLocater locater = new BindingLocater(theClass,moduleContext);
+		@SuppressWarnings("unchecked") //cannot parameterize new BindingLocater<theClass>
+		BindingLocater<?> locater = new BindingLocater(theClass,moduleContext);
 		BindingCodeLocation location = locater.getLocation();
 		problemsHandler.foundProblems(locater.getProblems());
 		results.put(moduleContext,location);

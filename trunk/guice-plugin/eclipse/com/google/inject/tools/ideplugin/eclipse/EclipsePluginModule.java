@@ -45,6 +45,7 @@ public class EclipsePluginModule extends GuicePluginModule {
 	 * (non-Javadoc)
 	 * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindGuicePlugin()
 	 */
+	@Override
 	protected void bindGuicePlugin() {
 		bind(GuicePlugin.class).toInstance(guicePlugin);
 	}
@@ -53,6 +54,7 @@ public class EclipsePluginModule extends GuicePluginModule {
 	 * (non-Javadoc)
 	 * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindResultsView()
 	 */
+	@Override
 	protected void bindResultsView() {
 		bind(ResultsView.class).toInstance(guicePlugin.getResultsView());
 	}
@@ -61,6 +63,7 @@ public class EclipsePluginModule extends GuicePluginModule {
 	 * (non-Javadoc)
 	 * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindModuleSelectionView()
 	 */
+	@Override
 	protected void bindModuleSelectionView() {
 		bind(ModuleSelectionView.class).toInstance(guicePlugin.getModuleSelectionView());
 	}
@@ -69,6 +72,7 @@ public class EclipsePluginModule extends GuicePluginModule {
 	 * (non-Javadoc)
 	 * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindMessenger()
 	 */
+	@Override
 	protected void bindMessenger() {
 		bind(Messenger.class).to(EclipseMessenger.class).in(Scopes.SINGLETON);
 	}
@@ -77,6 +81,7 @@ public class EclipsePluginModule extends GuicePluginModule {
 	 * (non-Javadoc)
 	 * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindActionsHandler()
 	 */
+	@Override
 	protected void bindActionsHandler() {
 		bind(ActionsHandler.class).to(EclipseActionsHandler.class).in(Scopes.SINGLETON);
 	}
@@ -85,6 +90,7 @@ public class EclipsePluginModule extends GuicePluginModule {
 	 * (non-Javadoc)
 	 * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindModulesListener()
 	 */
+	@Override
 	protected void bindModulesListener() {
 		bind(ModulesListener.class).to(EclipseModulesListener.class).in(Scopes.SINGLETON);
 	}

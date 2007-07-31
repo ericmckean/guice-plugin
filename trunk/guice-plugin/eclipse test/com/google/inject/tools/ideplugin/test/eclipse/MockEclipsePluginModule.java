@@ -106,6 +106,7 @@ public class MockEclipsePluginModule extends EclipsePluginModule {
 	 * (non-Javadoc)
 	 * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindModuleManager()
 	 */
+	@Override
 	protected void bindModuleManager() {
 		if (!useRealModuleManager) bindToEasyMockInstance(ModuleManager.class);
 		else super.bindModuleManager();
@@ -115,6 +116,7 @@ public class MockEclipsePluginModule extends EclipsePluginModule {
 	 * (non-Javadoc)
 	 * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindResultsHandler()
 	 */
+	@Override
 	protected void bindResultsHandler() {
 		if (!useRealResultsHandler) bindToEasyMockInstance(ResultsHandler.class);
 		else super.bindResultsHandler();
@@ -124,6 +126,7 @@ public class MockEclipsePluginModule extends EclipsePluginModule {
 	 * (non-Javadoc)
 	 * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindProblemsHandler()
 	 */
+	@Override
 	protected void bindProblemsHandler() {
 		if (!useRealProblemsHandler) bindToEasyMockInstance(ProblemsHandler.class);
 		else super.bindProblemsHandler();
@@ -133,6 +136,7 @@ public class MockEclipsePluginModule extends EclipsePluginModule {
 	 * (non-Javadoc)
 	 * @see com.google.inject.tools.ideplugin.eclipse.EclipsePluginModule#bindResultsView()
 	 */
+	@Override
 	protected void bindResultsView() {
 		if (!useRealResultsView) bindToEasyMockInstance(ResultsView.class);
 		else super.bindResultsView();
@@ -142,6 +146,7 @@ public class MockEclipsePluginModule extends EclipsePluginModule {
 	 * (non-Javadoc)
 	 * @see com.google.inject.tools.ideplugin.eclipse.EclipsePluginModule#bindModuleSelectionView()
 	 */
+	@Override
 	protected void bindModuleSelectionView() {
 		if (!useRealModuleSelectionView) bindToEasyMockInstance(ModuleSelectionView.class);
 		else super.bindModuleSelectionView();
@@ -151,6 +156,7 @@ public class MockEclipsePluginModule extends EclipsePluginModule {
 	 * (non-Javadoc)
 	 * @see com.google.inject.tools.ideplugin.eclipse.EclipsePluginModule#bindMessenger()
 	 */
+	@Override
 	protected void bindMessenger() {
 		if (!useRealMessenger) bindToEasyMockInstance(Messenger.class);
 		else super.bindMessenger();
@@ -160,6 +166,7 @@ public class MockEclipsePluginModule extends EclipsePluginModule {
 	 * (non-Javadoc)
 	 * @see com.google.inject.tools.ideplugin.eclipse.EclipsePluginModule#bindModulesListener()
 	 */
+	@Override
 	protected void bindModulesListener() {
 		if (!useRealModulesListener) bindToEasyMockInstance(ModulesListener.class);
 		else super.bindModulesListener();

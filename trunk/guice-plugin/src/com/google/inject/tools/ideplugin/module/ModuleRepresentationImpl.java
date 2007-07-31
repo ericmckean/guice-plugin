@@ -56,8 +56,9 @@ public class ModuleRepresentationImpl implements ModuleRepresentation {
 	 * @throws ClassNotFoundException if there is no such class
 	 * @throws ClassNotModuleException if the class does not implement {@link Module}
 	 */
+	@SuppressWarnings("unchecked")
 	public ModuleRepresentationImpl(String className) throws ClassNotFoundException,ClassNotModuleException {
-		Class aClass = Class.forName(className);
+		Class<?> aClass = Class.forName(className);
 		if (isModule(aClass)) {
 			this.moduleClass = (Class<? extends Module>)aClass;
 			initialize();
@@ -73,7 +74,7 @@ public class ModuleRepresentationImpl implements ModuleRepresentation {
 	private void initialize() {
 		this.name = moduleClass.getName();
 		try {
-			defaultConstructor = (Constructor<? extends Module>)moduleClass.getConstructor((Class[])null);
+			defaultConstructor = moduleClass.getConstructor((Class[])null);
 		} catch (NoSuchMethodException exception) {
 			defaultConstructor = null;
 		}
@@ -89,8 +90,9 @@ public class ModuleRepresentationImpl implements ModuleRepresentation {
 	 * (non-Javadoc)
 	 * @see com.google.inject.tools.ideplugin.module.ModuleRepresentation#getConstructors()
 	 */
+	@SuppressWarnings("unchecked")
 	public Constructor<? extends Module>[] getConstructors() {
-		return (Constructor<? extends Module>[])moduleClass.getConstructors();
+		return moduleClass.getConstructors();
 	}
 
 	/**

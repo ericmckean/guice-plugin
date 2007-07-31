@@ -34,6 +34,7 @@ import com.google.inject.tools.ideplugin.test.ModuleWithArguments;
 import com.google.inject.tools.ideplugin.test.MockGuicePluginModule;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.Collections;
 
 /**
  * Unit test the ModuleManager implementation.
@@ -63,6 +64,7 @@ public class ModuleManagerTest extends TestCase {
 	 * (non-Javadoc)
 	 * @see junit.framework.TestCase#setUp()
 	 */
+	@Override
 	protected void setUp() {
 		injector = Guice.createInjector((new MockGuicePluginModule()).useRealModuleManager());
 		modulesListener = injector.getInstance(ModulesListener.class);
@@ -121,8 +123,9 @@ public class ModuleManagerTest extends TestCase {
 	 * Test that the ModuleManager correctly knows about {@link com.google.inject.tools.ideplugin.problem.CodeProblem.CreationProblem}s.
 	 */
 	public void testFindsCreationProblems() {
-		assertTrue(brokenModuleContext.hasProblem());
-		assertTrue(brokenModuleContext.getProblem() instanceof CodeProblem.CreationProblem);
+		assertTrue(brokenModuleContext.hasProblems());
+		assertTrue(brokenModuleContext.getProblems().size() == 1);
+		assertTrue(brokenModuleContext.getProblems().iterator().next() instanceof CodeProblem.CreationProblem);
 	}
 	
 	/**
@@ -131,7 +134,7 @@ public class ModuleManagerTest extends TestCase {
 	 */
 	public void testNotifiesProblemsHandler() {
 		ModuleManager moduleManager = injector.getInstance(ModuleManager.class);
-		problemsHandler.foundProblem((CodeProblem)EasyMock.anyObject());
+		problemsHandler.foundProblems(Collections.singleton((CodeProblem)EasyMock.anyObject()));
 		EasyMock.replay(problemsHandler);
 		moduleManager.addModuleContext(brokenModuleContext);
 		EasyMock.verify(problemsHandler);

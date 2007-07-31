@@ -34,7 +34,7 @@ public class ModuleContextRepresentationImpl implements ModuleContextRepresentat
 	private final String title;
 	private final HashSet<ModuleRepresentation> modules;
 	private Injector injector;
-	private CodeProblem.CreationProblem problem;
+	private final HashSet<CodeProblem> problems;
 	private boolean isValid = false;
 	
 	/**
@@ -45,6 +45,7 @@ public class ModuleContextRepresentationImpl implements ModuleContextRepresentat
 	public ModuleContextRepresentationImpl(String title) {
 		this.title = title;
 		modules = new HashSet<ModuleRepresentation>();
+		problems = new HashSet<CodeProblem>();
 		makeInjector();
 	}
 	
@@ -58,9 +59,9 @@ public class ModuleContextRepresentationImpl implements ModuleContextRepresentat
 			try {
 				this.injector = Guice.createInjector(instances);
 				isValid = true;
-				problem = null;
+				problems.clear();
 			} catch (CreationException exception) {
-				problem = new CodeProblem.CreationProblem(this,exception);
+				problems.add(new CodeProblem.CreationProblem(this,exception));
 			}
 		}
 	}
@@ -122,16 +123,16 @@ public class ModuleContextRepresentationImpl implements ModuleContextRepresentat
 	 * (non-Javadoc)
 	 * @see com.google.inject.tools.ideplugin.module.ModuleContextRepresentation#hasProblem()
 	 */
-	public boolean hasProblem() {
-		return (problem!=null);
+	public synchronized boolean hasProblems() {
+		return !problems.isEmpty();
 	}
 	
 	/**
 	 * (non-Javadoc)
 	 * @see com.google.inject.tools.ideplugin.module.ModuleContextRepresentation#getProblem()
 	 */
-	public CodeProblem.CreationProblem getProblem() {
-		return problem;
+	public synchronized Set<CodeProblem> getProblems() {
+		return new HashSet<CodeProblem>(problems);
 	}
 	
 	/**

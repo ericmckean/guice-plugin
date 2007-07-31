@@ -34,6 +34,7 @@ public class EclipseJavaElementTest extends TestCase {
 	 * (non-Javadoc)
 	 * @see junit.framework.TestCase#setUp()
 	 */
+	@Override
 	protected void setUp() {
 		element = null;
 	}

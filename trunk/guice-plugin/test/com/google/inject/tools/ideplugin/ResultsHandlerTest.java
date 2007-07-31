@@ -39,6 +39,7 @@ public class ResultsHandlerTest extends TestCase {
 	 * (non-Javadoc)
 	 * @see junit.framework.TestCase#setUp()
 	 */
+	@Override
 	protected void setUp() {
 		Injector injector = Guice.createInjector((new MockGuicePluginModule()).useRealResultsHandler());
 		resultsHandler = injector.getInstance(ResultsHandler.class);
