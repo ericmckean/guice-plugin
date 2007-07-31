@@ -57,7 +57,7 @@ public class BindingLocaterTest extends TestCase {
 		assertTrue(location.bindWhat().equals(MockInjectedInterface.class));
 		assertTrue(location.getDisplayName().equals("com.google.inject.tools.ideplugin.test.MockInjectedInterfaceImpl"));
 		assertTrue(location.file().equals("WorkingModule.java"));
-		assertTrue(location.location() == 33);
+		assertTrue(location.location() == 34);
 	}
 	
 	/**

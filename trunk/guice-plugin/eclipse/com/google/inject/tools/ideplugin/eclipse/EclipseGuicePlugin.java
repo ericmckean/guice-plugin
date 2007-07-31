@@ -16,20 +16,36 @@
 
 package com.google.inject.tools.ideplugin.eclipse;
 
-import com.google.inject.ProvidedBy;
 import com.google.inject.tools.ideplugin.GuicePlugin;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
 import com.google.inject.tools.ideplugin.results.ResultsView;
+import com.google.inject.tools.ideplugin.results.Results;
 
 /**
  * Eclipse implementation of the GuicePlugin.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-@ProvidedBy (EclipsePluginModule.GuicePluginProvider.class)
 public class EclipseGuicePlugin extends GuicePlugin {
-	private ResultsView resultsView;
-	private ModuleSelectionView moduleSelectionView;
+    public static class ResultsViewImpl implements ResultsView {
+      public void displayResults(Results results) {
+        if (Activator.getGuicePlugin().resultsView == null) {
+          // need to force it to activate...
+        }
+        if (Activator.getGuicePlugin().resultsView != null) {
+          Activator.getGuicePlugin().resultsView.displayResults(results);
+        }
+      }
+    }
+    
+    public static class ModuleSelectionViewImpl implements ModuleSelectionView {
+    }
+  
+	private EclipseResultsView resultsView;
+	private EclipseModuleSelectionView moduleSelectionView;
+	
+	private final ResultsView resultsViewImpl;
+	private final ModuleSelectionView moduleSelectionViewImpl;
 	
 	/**
 	 * Create an EclipseGuicePlugin.
@@ -38,6 +54,8 @@ public class EclipseGuicePlugin extends GuicePlugin {
 	 */
 	public EclipseGuicePlugin(EclipsePluginModule module) {
 		super(module);
+		this.resultsViewImpl = module.getResultsView();
+		this.moduleSelectionViewImpl = module.getModuleSelectionView();
 		this.resultsView = null;
 		this.moduleSelectionView = null;
 	}
@@ -48,7 +66,7 @@ public class EclipseGuicePlugin extends GuicePlugin {
 	 */
 	@Override
 	public ResultsView getResultsView() {
-		return resultsView;
+		return resultsViewImpl;
 	}
 	
 	/**
@@ -57,7 +75,7 @@ public class EclipseGuicePlugin extends GuicePlugin {
 	 */
 	@Override
 	public ModuleSelectionView getModuleSelectionView() {
-		return moduleSelectionView;
+		return moduleSelectionViewImpl;
 	}
 	
 	/**
@@ -66,7 +84,7 @@ public class EclipseGuicePlugin extends GuicePlugin {
 	 * 
 	 * @param resultsView the ResultsView
 	 */
-	public void setResultsView(ResultsView resultsView) {
+	public void setResultsView(EclipseResultsView resultsView) {
 		this.resultsView = resultsView;
 	}
 	
@@ -76,7 +94,7 @@ public class EclipseGuicePlugin extends GuicePlugin {
 	 * 
 	 * @param moduleSelectionView the ModuleSelectionView
 	 */
-	public void setModuleSelectionView(ModuleSelectionView moduleSelectionView) {
+	public void setModuleSelectionView(EclipseModuleSelectionView moduleSelectionView) {
 		this.moduleSelectionView = moduleSelectionView;
 	}
 }

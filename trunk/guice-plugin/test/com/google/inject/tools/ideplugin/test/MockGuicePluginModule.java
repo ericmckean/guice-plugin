@@ -70,15 +70,6 @@ public class MockGuicePluginModule extends GuicePluginModule {
 	
 	/**
 	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindGuicePlugin()
-	 */
-	@Override
-	protected void bindGuicePlugin() {
-		
-	}
-	
-	/**
-	 * (non-Javadoc)
 	 * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindModuleManager()
 	 */
 	@Override

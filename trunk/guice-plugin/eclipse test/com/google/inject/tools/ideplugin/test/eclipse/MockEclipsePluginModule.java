@@ -46,7 +46,9 @@ public class MockEclipsePluginModule extends EclipsePluginModule {
 	/**
 	 * Create a purely mocked EclipsePluginModule.
 	 */
-	public MockEclipsePluginModule() {}
+	public MockEclipsePluginModule() {
+	  super();
+	}
 	
 	/**
 	 * Tell the module to use a real ModuleManager.

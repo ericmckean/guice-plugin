@@ -27,7 +27,6 @@ import org.eclipse.ui.*;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.SWT;
 import org.eclipse.core.runtime.IAdaptable;
-import com.google.inject.ProvidedBy;
 import com.google.inject.tools.ideplugin.results.Results;
 import com.google.inject.tools.ideplugin.results.ResultsView;
 import com.google.inject.tools.ideplugin.ActionsHandler;
@@ -38,8 +37,7 @@ import com.google.inject.tools.ideplugin.ActionsHandler;
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-@ProvidedBy (EclipsePluginModule.ResultsViewProvider.class)
-public class EclipseResultsView extends ViewPart implements ResultsView {
+public class EclipseResultsView extends ViewPart {
 	private TreeViewer viewer;
 	private DrillDownAdapter drillDownAdapter;
 	private Action action1;
@@ -141,7 +139,9 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
 		
 		private void initialize() {
 			invisibleRoot = new TreeParent("",new ActionsHandler.NullAction());
-			invisibleRoot.addChild(makeTree(results.getRoot()));
+			if (results != null) {
+			    invisibleRoot.addChild(makeTree(results.getRoot()));
+			}
 		}
 		
 		private TreeObject makeTree(Results.Node node) {

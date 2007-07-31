@@ -121,7 +121,7 @@ public class ModuleContextRepresentationImpl implements ModuleContextRepresentat
 	
 	/**
 	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.module.ModuleContextRepresentation#hasProblem()
+	 * @see com.google.inject.tools.ideplugin.module.ModuleContextRepresentation#hasProblems()
 	 */
 	public synchronized boolean hasProblems() {
 		return !problems.isEmpty();
@@ -129,7 +129,7 @@ public class ModuleContextRepresentationImpl implements ModuleContextRepresentat
 	
 	/**
 	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.module.ModuleContextRepresentation#getProblem()
+	 * @see com.google.inject.tools.ideplugin.module.ModuleContextRepresentation#getProblems()
 	 */
 	public synchronized Set<CodeProblem> getProblems() {
 		return new HashSet<CodeProblem>(problems);
