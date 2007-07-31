@@ -42,11 +42,7 @@ public class ProblemsHandlerImpl implements ProblemsHandler {
 		this.messenger = messenger;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.problem.ProblemsHandler#foundProblem(com.google.inject.tools.ideplugin.code.CodeProblem)
-	 */
-	public void foundProblem(CodeProblem problem) {
+	private void foundProblem(CodeProblem problem) {
 		//what to do?  somehow do codeassist with problems
 		messenger.display(problem.toString());
 	}

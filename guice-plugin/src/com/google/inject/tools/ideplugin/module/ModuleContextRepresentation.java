@@ -73,14 +73,14 @@ public interface ModuleContextRepresentation {
 	 * 
 	 * @return true if there is a problem
 	 */
-	public boolean hasProblem();
+	public boolean hasProblems();
 	
 	/**
 	 * Return the {@link com.google.inject.tools.ideplugin.problem.CodeProblem.CreationProblem} with this context.
 	 * 
 	 * @return the problem
 	 */
-	public CodeProblem.CreationProblem getProblem();
+	public Set<CodeProblem> getProblems();
 	
 	/**
 	 * Add the module with the given name to this context.

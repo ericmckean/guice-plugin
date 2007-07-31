@@ -33,8 +33,8 @@ import java.util.HashSet;
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public class BindingLocater {
-	private final Class<?> theClass;
+public class BindingLocater<T> {
+	private final Class<T> theClass;
 	private final ModuleContextRepresentation module;
 	private final BindingCodeLocation location;
 	private final HashSet<CodeProblem> problems;
@@ -45,14 +45,14 @@ public class BindingLocater {
 	 * @param theClass the class to find bindings of
 	 * @param module the module context to find bindings in
 	 */
-	public BindingLocater(Class<?> theClass,ModuleContextRepresentation module) {
+	public BindingLocater(Class<T> theClass,ModuleContextRepresentation module) {
 		this.theClass = theClass;
 		this.module = module;
 		problems = new HashSet<CodeProblem>();
 		if (module.isValid()) {
 			String bindTo = null;
 			StackTraceElement source = null;
-			Binding binding = null;
+			Binding<T> binding = null;
 			Injector injector = null;
 			try {
 				injector = module.getInjector();
@@ -61,7 +61,7 @@ public class BindingLocater {
 					problems.add(new CodeProblem.NoBindingProblem(module,theClass));
 				} else {
 					source = (StackTraceElement)binding.getSource();
-					Provider provider = binding.getProvider();
+					Provider<? extends T> provider = binding.getProvider();
 					bindTo = provider.get().getClass().getName();
 				}
 			//} catch (OutOfScopeException exception) {
@@ -82,7 +82,7 @@ public class BindingLocater {
 	 * 
 	 * @return the class
 	 */
-	public Class getTheClass() {
+	public Class<?> getTheClass() {
 		return theClass;
 	}
 	

@@ -88,6 +88,7 @@ public class CodeLocationsResultsTest extends TestCase {
 	 * (non-Javadoc)
 	 * @see junit.framework.TestCase#setUp()
 	 */
+	@Override
 	protected void setUp() {
 		results = new CodeLocationsResults("Test Results");
 		validLocationsRoot = makeValidLocationsRoot();

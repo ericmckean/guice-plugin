@@ -45,6 +45,7 @@ public class ModuleContextRepresentationTest extends TestCase {
 	 * (non-Javadoc)
 	 * @see junit.framework.TestCase#setUp()
 	 */
+	@Override
 	protected void setUp() {}
 	
 	/**
@@ -58,7 +59,7 @@ public class ModuleContextRepresentationTest extends TestCase {
 			//exception.printStackTrace();
 			assertTrue(false);
 		}
-		assertFalse(moduleContext.hasProblem());
+		assertFalse(moduleContext.hasProblems());
 		assertTrue(moduleContext.isValid());
 	}
 	
@@ -73,7 +74,7 @@ public class ModuleContextRepresentationTest extends TestCase {
 			//exception.printStackTrace();
 			assertTrue(false);
 		}
-		assertTrue(moduleContext.hasProblem());
+		assertTrue(moduleContext.hasProblems());
 		assertFalse(moduleContext.isValid());
 	}
 	

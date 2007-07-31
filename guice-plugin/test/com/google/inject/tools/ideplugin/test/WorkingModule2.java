@@ -29,6 +29,7 @@ public class WorkingModule2 extends AbstractModule {
 	 * (non-Javadoc)
 	 * @see com.google.inject.AbstractModule#configure()
 	 */
+	@Override
 	protected void configure() {
 		bind(MockInjectedInterface2.class).to(MockInjectedInterface2Impl.class);
 	}

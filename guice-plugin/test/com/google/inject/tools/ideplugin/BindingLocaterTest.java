@@ -44,13 +44,14 @@ public class BindingLocaterTest extends TestCase {
 	 * (non-Javadoc)
 	 * @see junit.framework.TestCase#setUp()
 	 */
+	@Override
 	protected void setUp() {}
 	
 	/**
 	 * Test that the locater finds the correct binding from a properly built module.
 	 */
 	public void testFindsCorrectBinding() {
-		BindingLocater locater = new BindingLocater(MockInjectedInterface.class,workingModule);
+		BindingLocater<MockInjectedInterface> locater = new BindingLocater<MockInjectedInterface>(MockInjectedInterface.class,workingModule);
 		assertTrue(locater.getProblems().isEmpty());
 		BindingCodeLocation location = locater.getLocation();
 		assertTrue(location.bindWhat().equals(MockInjectedInterface.class));
@@ -63,7 +64,7 @@ public class BindingLocaterTest extends TestCase {
 	 * Test that the locater correctly discovers when no binding is available.
 	 */
 	public void testNoBindingAvailable() {
-		BindingLocater locater = new BindingLocater(JavaElement.class,workingModule);
+		BindingLocater<JavaElement> locater = new BindingLocater<JavaElement>(JavaElement.class,workingModule);
 		assertFalse(locater.getProblems().isEmpty());
 		assertTrue(locater.getProblems().size() == 1);
 		for (CodeProblem problem : locater.getProblems()) {
@@ -75,7 +76,7 @@ public class BindingLocaterTest extends TestCase {
 	 * Test that the locater correctly reports CreationException errors.
 	 */
 	public void testInvalidModule() {
-		BindingLocater locater = new BindingLocater(JavaElement.class,brokenModule);
+		BindingLocater<JavaElement> locater = new BindingLocater<JavaElement>(JavaElement.class,brokenModule);
 		assertTrue(locater.getProblems().size() == 1);
 		for (CodeProblem problem : locater.getProblems()) {
 			assertTrue(problem instanceof CodeProblem.InvalidModuleContextProblem);

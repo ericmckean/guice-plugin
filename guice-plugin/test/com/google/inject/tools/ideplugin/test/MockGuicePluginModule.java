@@ -71,6 +71,7 @@ public class MockGuicePluginModule extends GuicePluginModule {
 	 * (non-Javadoc)
 	 * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindGuicePlugin()
 	 */
+	@Override
 	protected void bindGuicePlugin() {
 		
 	}
@@ -105,6 +106,7 @@ public class MockGuicePluginModule extends GuicePluginModule {
 	 * (non-Javadoc)
 	 * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindResultsView()
 	 */
+	@Override
 	protected void bindResultsView() {
 		bindToEasyMockInstance(ResultsView.class);
 	}
@@ -113,6 +115,7 @@ public class MockGuicePluginModule extends GuicePluginModule {
 	 * (non-Javadoc)
 	 * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindModuleSelectionView()
 	 */
+	@Override
 	protected void bindModuleSelectionView() {
 		bindToEasyMockInstance(ModuleSelectionView.class);
 	}
@@ -121,6 +124,7 @@ public class MockGuicePluginModule extends GuicePluginModule {
 	 * (non-Javadoc)
 	 * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindMessenger()
 	 */
+	@Override
 	protected void bindMessenger() {
 		bindToEasyMockInstance(Messenger.class);
 	}
@@ -129,6 +133,7 @@ public class MockGuicePluginModule extends GuicePluginModule {
 	 * (non-Javadoc)
 	 * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindActionsHandler()
 	 */
+	@Override
 	protected void bindActionsHandler() {
 		bindToEasyMockInstance(ActionsHandler.class);
 	}
@@ -137,6 +142,7 @@ public class MockGuicePluginModule extends GuicePluginModule {
 	 * (non-Javadoc)
 	 * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindModulesListener()
 	 */
+	@Override
 	protected void bindModulesListener() {
 		bindToEasyMockInstance(ModulesListener.class);
 	}

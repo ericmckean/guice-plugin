@@ -37,6 +37,7 @@ public class ModuleWithArguments extends AbstractModule {
 	 * (non-Javadoc)
 	 * @see com.google.inject.AbstractModule#configure()
 	 */
+	@Override
 	protected void configure() {
 		bind(MockInjectedInterface.class).to(MockInjectedInterfaceImpl.class);
 	}

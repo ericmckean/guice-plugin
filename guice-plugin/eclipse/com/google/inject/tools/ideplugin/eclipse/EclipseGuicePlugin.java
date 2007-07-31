@@ -44,6 +44,7 @@ public class EclipseGuicePlugin extends GuicePlugin {
 	 * (non-Javadoc)
 	 * @see com.google.inject.tools.ideplugin.GuicePlugin#getResultsView()
 	 */
+	@Override
 	public ResultsView getResultsView() {
 		return resultsView;
 	}
@@ -52,6 +53,7 @@ public class EclipseGuicePlugin extends GuicePlugin {
 	 * (non-Javadoc)
 	 * @see com.google.inject.tools.ideplugin.GuicePlugin#getModuleSelectionView()
 	 */
+	@Override
 	public ModuleSelectionView getModuleSelectionView() {
 		return moduleSelectionView;
 	}
