@@ -16,6 +16,7 @@
 
 package com.google.inject.tools.ideplugin.eclipse;
 
+import com.google.inject.ProvidedBy;
 import com.google.inject.tools.ideplugin.GuicePlugin;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
 import com.google.inject.tools.ideplugin.results.ResultsView;
@@ -25,6 +26,7 @@ import com.google.inject.tools.ideplugin.results.ResultsView;
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
+@ProvidedBy (EclipsePluginModule.GuicePluginProvider.class)
 public class EclipseGuicePlugin extends GuicePlugin {
 	private ResultsView resultsView;
 	private ModuleSelectionView moduleSelectionView;

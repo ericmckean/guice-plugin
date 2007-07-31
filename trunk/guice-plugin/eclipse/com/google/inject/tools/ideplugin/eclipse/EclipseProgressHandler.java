@@ -16,17 +16,27 @@
 
 package com.google.inject.tools.ideplugin.eclipse;
 
-import com.google.inject.ProvidedBy;
-import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
-
-//TODO: write this
+import com.google.inject.tools.ideplugin.ProgressHandler;
 
 /**
- * Eclipse implementation of the {@link ModuleSelectionView}.
+ * Eclipse implementation of the {@link ProgressHandler}.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-@ProvidedBy (EclipsePluginModule.ModuleSelectionViewProvider.class)
-public class EclipseModuleSelectionView implements ModuleSelectionView {	
+public class EclipseProgressHandler implements ProgressHandler {
+	/**
+	 * (non-Javadoc)
+	 * @see com.google.inject.tools.ideplugin.ProgressHandler#initialize(int)
+	 */
+	public void initialize(int totalsteps) {
+		
+	}
 	
+	/**
+	 * (non-Javadoc)
+	 * @see com.google.inject.tools.ideplugin.ProgressHandler#step(java.lang.String)
+	 */
+	public boolean step(String label) {
+		return true;
+	}
 }

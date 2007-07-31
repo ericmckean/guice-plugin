@@ -42,8 +42,6 @@ public class Activator extends AbstractUIPlugin {
 	 * Create an activator and a GuicePlugin using the {@link EclipsePluginModule}.
 	 */
 	public Activator() {
-		plugin = this;
-		guicePlugin = new EclipseGuicePlugin(new EclipsePluginModule());
 	}
 	
 	/** 
@@ -62,6 +60,8 @@ public class Activator extends AbstractUIPlugin {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
+		plugin = this;
+		guicePlugin = new EclipseGuicePlugin(new EclipsePluginModule());
 	}
 
 	/** 

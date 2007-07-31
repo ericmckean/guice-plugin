@@ -27,7 +27,7 @@ import org.eclipse.ui.*;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.SWT;
 import org.eclipse.core.runtime.IAdaptable;
-import com.google.inject.Singleton;
+import com.google.inject.ProvidedBy;
 import com.google.inject.tools.ideplugin.results.Results;
 import com.google.inject.tools.ideplugin.results.ResultsView;
 import com.google.inject.tools.ideplugin.ActionsHandler;
@@ -38,7 +38,7 @@ import com.google.inject.tools.ideplugin.ActionsHandler;
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-@Singleton
+@ProvidedBy (EclipsePluginModule.ResultsViewProvider.class)
 public class EclipseResultsView extends ViewPart implements ResultsView {
 	private TreeViewer viewer;
 	private DrillDownAdapter drillDownAdapter;
@@ -51,10 +51,12 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
 	 
 	private class TreeObject implements IAdaptable {
 		private final String name;
+		private final ActionsHandler.Action action;
 		private TreeParent parent;
 		
-		public TreeObject(String name) {
+		public TreeObject(String name,ActionsHandler.Action action) {
 			this.name = name;
+			this.action = action;
 		}
 		public String getName() {
 			return name;
@@ -64,6 +66,9 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
 		}
 		public TreeParent getParent() {
 			return parent;
+		}
+		public ActionsHandler.Action getAction() {
+			return action;
 		}
 		@Override
 		public String toString() {
@@ -77,8 +82,8 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
 	
 	private class TreeParent extends TreeObject {
 		private ArrayList<TreeObject> children;
-		public TreeParent(String name) {
-			super(name);
+		public TreeParent(String name,ActionsHandler.Action action) {
+			super(name,action);
 			children = new ArrayList<TreeObject>();
 		}
 		public void addChild(TreeObject child) {
@@ -136,20 +141,21 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
 		}
 		
 		private void initialize() {
-			invisibleRoot = new TreeParent("");
+			invisibleRoot = new TreeParent("",new ActionsHandler.NullAction());
 			invisibleRoot.addChild(makeTree(results.getRoot()));
 		}
 		
-		private TreeObject makeTree(Results.ClickableNode node) {
-			//TODO: do this
-			return null;
-		}
-		
 		private TreeObject makeTree(Results.Node node) {
-			if (node.children().isEmpty()) {
-				return new TreeObject(node.getTitle());
+			ActionsHandler.Action action;
+			if (node instanceof Results.ClickableNode) {
+				action = ((Results.ClickableNode)node).getAction();
 			} else {
-				TreeParent parent = new TreeParent(node.getTitle());
+				action = new ActionsHandler.NullAction();
+			}
+			if (node.children().isEmpty()) {
+				return new TreeObject(node.getTitle(),action);
+			} else {
+				TreeParent parent = new TreeParent(node.getTitle(),action);
 				for (Results.Node child : node.children()) {
 					parent.addChild(makeTree(child));
 				}

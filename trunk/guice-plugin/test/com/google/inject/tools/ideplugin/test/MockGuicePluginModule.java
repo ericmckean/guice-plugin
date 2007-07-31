@@ -20,6 +20,7 @@ import org.easymock.EasyMock;
 import com.google.inject.tools.ideplugin.Messenger;
 import com.google.inject.tools.ideplugin.ActionsHandler;
 import com.google.inject.tools.ideplugin.GuicePluginModule;
+import com.google.inject.tools.ideplugin.ProgressHandler;
 import com.google.inject.tools.ideplugin.module.ModuleManager;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
 import com.google.inject.tools.ideplugin.module.ModulesListener;
@@ -145,6 +146,15 @@ public class MockGuicePluginModule extends GuicePluginModule {
 	@Override
 	protected void bindModulesListener() {
 		bindToEasyMockInstance(ModulesListener.class);
+	}
+	
+	/**
+	 * (non-Javadoc)
+	 * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindProgressHandler()
+	 */
+	@Override
+	protected void bindProgressHandler() {
+		bindToEasyMockInstance(ProgressHandler.class);
 	}
 	
 	@SuppressWarnings({"unchecked"})
