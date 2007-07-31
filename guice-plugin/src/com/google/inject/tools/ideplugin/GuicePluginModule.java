@@ -47,6 +47,7 @@ public abstract class GuicePluginModule extends AbstractModule {
 		bindModulesListener();
 		bindModuleSelectionView();
 		bindMessenger();
+		bindProgressHandler();
 	}
 	
 	/** 
@@ -99,4 +100,9 @@ public abstract class GuicePluginModule extends AbstractModule {
 	 * Bind the {@link ActionsHandler} implementation.
 	 */
 	protected abstract void bindActionsHandler();
+	
+	/**
+	 * Bind the {@link ProgressHandler} implementation.
+	 */
+	protected abstract void bindProgressHandler();
 }

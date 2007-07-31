@@ -69,6 +69,10 @@ public interface ActionsHandler {
 		}
 	}
 	
+	public static class NullAction implements Action {
+		
+	}
+	
 	/**
 	 * Perform a GotoCodeLocation Action.
 	 * 

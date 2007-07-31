@@ -14,19 +14,26 @@
  * limitations under the License.
  */
 
-package com.google.inject.tools.ideplugin.eclipse;
-
-import com.google.inject.ProvidedBy;
-import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
-
-//TODO: write this
+package com.google.inject.tools.ideplugin;
 
 /**
- * Eclipse implementation of the {@link ModuleSelectionView}.
+ * Manages a progress bar display of operations.  IDE specific implementations are required.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-@ProvidedBy (EclipsePluginModule.ModuleSelectionViewProvider.class)
-public class EclipseModuleSelectionView implements ModuleSelectionView {	
+public interface ProgressHandler {
+	/**
+	 * Reset the progress handler to its starting state and prepare to do the given number of steps.
+	 * 
+	 * @param totalsteps the number of steps
+	 */
+	public void initialize(int totalsteps);
 	
+	/**
+	 * Notify the progress handler that the next step is beginning and give it a label to display for this step.
+	 * 
+	 * @param label the label to display for this step
+	 * @return false if the user cancelled the operation
+	 */
+	public boolean step(String label);
 }

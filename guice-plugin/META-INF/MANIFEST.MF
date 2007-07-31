@@ -14,6 +14,16 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.workbench.texteditor,
  org.eclipse.ui.editors
 Eclipse-LazyStart: true
-Export-Package: com.google.inject.tools.ideplugin.eclipse,
- com.google.inject.tools.ideplugin
+Export-Package: com.google.inject.tools.ideplugin,
+ com.google.inject.tools.ideplugin.bindings,
+ com.google.inject.tools.ideplugin.eclipse,
+ com.google.inject.tools.ideplugin.module,
+ com.google.inject.tools.ideplugin.problem,
+ com.google.inject.tools.ideplugin.results,
+ com.google.inject.tools.ideplugin.test
 Bundle-Vendor: com.google.inject.tools.ideplugin
+Bundle-ClassPath: src/,
+ .,
+ eclipse/,
+ lib/,
+ bin/

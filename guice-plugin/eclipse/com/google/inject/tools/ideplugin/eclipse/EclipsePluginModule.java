@@ -17,9 +17,13 @@
 package com.google.inject.tools.ideplugin.eclipse;
 
 import com.google.inject.Scopes;
+import com.google.inject.Provider;
+import com.google.inject.Singleton;
+import com.google.inject.Inject;
 import com.google.inject.tools.ideplugin.GuicePluginModule;
 import com.google.inject.tools.ideplugin.GuicePlugin;
 import com.google.inject.tools.ideplugin.Messenger;
+import com.google.inject.tools.ideplugin.ProgressHandler;
 import com.google.inject.tools.ideplugin.ActionsHandler;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
 import com.google.inject.tools.ideplugin.results.ResultsView;
@@ -31,14 +35,41 @@ import com.google.inject.tools.ideplugin.module.ModulesListener;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class EclipsePluginModule extends GuicePluginModule {
-	private final EclipseGuicePlugin guicePlugin;
+	@Singleton
+	public static class GuicePluginProvider implements Provider<GuicePlugin> {
+		@Inject
+		public GuicePluginProvider() {}
+		
+		public GuicePlugin get() {
+			return Activator.getGuicePlugin();
+		}
+	}
+	
+	@Singleton
+	public static class ResultsViewProvider implements Provider<ResultsView> {
+		@Inject
+		public ResultsViewProvider() {}
+		
+		public ResultsView get() {
+			return Activator.getGuicePlugin().getResultsView();
+		}
+	}
+	
+	@Singleton
+	public static class ModuleSelectionViewProvider implements Provider<ModuleSelectionView> {
+		@Inject
+		public ModuleSelectionViewProvider() {}
+		
+		public ModuleSelectionView get() {
+			return Activator.getGuicePlugin().getModuleSelectionView();
+		}
+	}
 		
 	/**
 	 * Create an Eclipse Plugin Module for injection.
 	 */
 	public EclipsePluginModule() {
 		super();
-		guicePlugin = Activator.getGuicePlugin();
 	}
 	
 	/**
@@ -47,7 +78,7 @@ public class EclipsePluginModule extends GuicePluginModule {
 	 */
 	@Override
 	protected void bindGuicePlugin() {
-		bind(GuicePlugin.class).toInstance(guicePlugin);
+		bind(GuicePlugin.class).toProvider(GuicePluginProvider.class).in(Scopes.SINGLETON);
 	}
 	
 	/**
@@ -56,7 +87,7 @@ public class EclipsePluginModule extends GuicePluginModule {
 	 */
 	@Override
 	protected void bindResultsView() {
-		bind(ResultsView.class).toInstance(guicePlugin.getResultsView());
+		bind(ResultsView.class).toProvider(ResultsViewProvider.class).in(Scopes.SINGLETON);
 	}
 	
 	/**
@@ -65,7 +96,7 @@ public class EclipsePluginModule extends GuicePluginModule {
 	 */
 	@Override
 	protected void bindModuleSelectionView() {
-		bind(ModuleSelectionView.class).toInstance(guicePlugin.getModuleSelectionView());
+		bind(ModuleSelectionView.class).toProvider(ModuleSelectionViewProvider.class).in(Scopes.SINGLETON);
 	}
 	
 	/**
@@ -93,5 +124,14 @@ public class EclipsePluginModule extends GuicePluginModule {
 	@Override
 	protected void bindModulesListener() {
 		bind(ModulesListener.class).to(EclipseModulesListener.class).in(Scopes.SINGLETON);
+	}
+	
+	/**
+	 * (non-Javadoc)
+	 * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindProgressHandler()
+	 */
+	@Override
+	protected void bindProgressHandler() {
+		bind(ProgressHandler.class).to(EclipseProgressHandler.class);
 	}
 }

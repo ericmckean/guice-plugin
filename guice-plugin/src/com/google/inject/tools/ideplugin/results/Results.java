@@ -137,4 +137,11 @@ public class Results {
 	public Node getRoot() {
 		return root;
 	}
+	
+	/**
+	 * Notify the results object that the user cancelled the operation.
+	 */
+	public void userCancelled() {
+		// do nothing
+	}
 }

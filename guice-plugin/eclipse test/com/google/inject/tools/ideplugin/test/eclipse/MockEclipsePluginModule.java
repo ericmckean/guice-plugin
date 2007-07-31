@@ -19,6 +19,7 @@ package com.google.inject.tools.ideplugin.test.eclipse;
 import org.easymock.EasyMock;
 
 import com.google.inject.tools.ideplugin.Messenger;
+import com.google.inject.tools.ideplugin.ProgressHandler;
 import com.google.inject.tools.ideplugin.eclipse.EclipsePluginModule;
 import com.google.inject.tools.ideplugin.module.ModuleManager;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
@@ -40,6 +41,7 @@ public class MockEclipsePluginModule extends EclipsePluginModule {
 	private boolean useRealModuleSelectionView = false;
 	private boolean useRealMessenger = false;
 	private boolean useRealModulesListener = false;
+	private boolean useRealProgressHandler = false;
 	
 	/**
 	 * Create a purely mocked EclipsePluginModule.
@@ -99,6 +101,14 @@ public class MockEclipsePluginModule extends EclipsePluginModule {
 	 */
 	public MockEclipsePluginModule useRealModulesListener() {
 		useRealModulesListener = true;
+		return this;
+	}
+	
+	/**
+	 * Tell the module to use a real ProgressHandler.
+	 */
+	public MockEclipsePluginModule useRealProgressHandler() {
+		useRealProgressHandler = true;
 		return this;
 	}
 	
@@ -170,6 +180,16 @@ public class MockEclipsePluginModule extends EclipsePluginModule {
 	protected void bindModulesListener() {
 		if (!useRealModulesListener) bindToEasyMockInstance(ModulesListener.class);
 		else super.bindModulesListener();
+	}
+	
+	/**
+	 * (non-Javadoc)
+	 * @see com.google.inject.tools.ideplugin.eclipse.EclipsePluginModule#bindProgressHandler()
+	 */
+	@Override
+	protected void bindProgressHandler() {
+		if (!useRealProgressHandler) bindToEasyMockInstance(ProgressHandler.class);
+		else super.bindProgressHandler();
 	}
 	
 	@SuppressWarnings({"unchecked"})

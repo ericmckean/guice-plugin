@@ -22,6 +22,7 @@ import com.google.inject.tools.ideplugin.module.ModuleContextRepresentation;
 import com.google.inject.tools.ideplugin.problem.ProblemsHandler;
 import com.google.inject.tools.ideplugin.results.CodeLocationsResults;
 import com.google.inject.tools.ideplugin.results.ResultsHandler;
+import com.google.inject.tools.ideplugin.ProgressHandler;
 
 /**
  * The BindingsEngine is the glue between the other objects; it is responsible
@@ -46,12 +47,18 @@ public final class BindingsEngine {
 	public BindingsEngine(ModuleManager moduleManager,
 							  ProblemsHandler problemsHandler,
 							  ResultsHandler resultsHandler,
+							  ProgressHandler progressHandler,
 							  JavaElement element) {
+		boolean userCancelled = false;
 		theClass = element.getTheClass();
 		results = new CodeLocationsResults("Bindings for " + element.toString());
+		progressHandler.initialize(moduleManager.getModuleContexts().size());
 		for (ModuleContextRepresentation moduleContext : moduleManager.getModuleContexts()) {
+			userCancelled = !progressHandler.step("Finding Bindings for " + element.toString() + " in context " + moduleContext.getName());
+			if (userCancelled) break;
 			bindingsEnginePerModuleContext(moduleContext,problemsHandler);
 		}
+		if (userCancelled) results.userCancelled();
 		resultsHandler.displayLocationsResults(results);
 	}
 	
