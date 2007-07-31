@@ -51,6 +51,9 @@ public class EclipseJavaElementTest extends TestCase {
 	 * Test that the element properly finds its type, name and class name.
 	 */
 	public void testElementFields() {
+	  try {
+	  System.out.println(Class.forName("com.google.inject.tools.ideplugin.test.eclipse.TestVariableClass"));
+	  } catch (Exception e) { System.out.println(e); }
 		setUpVariable();
 		assertTrue(element.getClassName().equals("TestVariableClass"));
 		assertTrue(element.getName().equals("TestVariable"));
