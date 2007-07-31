@@ -26,7 +26,7 @@ public interface JavaElement {
 	/** 
 	 * The types of Java elements that can be represented.
 	 */
-	public enum TYPE { METHOD, FIELD, VARIABLE, UNSUPPORTED };
+	public enum TYPE { METHOD, FIELD, VARIABLE, UNSUPPORTED }
 	
 	/** 
 	 * Return the type of this element.

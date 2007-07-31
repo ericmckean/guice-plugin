@@ -98,4 +98,9 @@ public interface ModuleManager {
 	 * @param module the module
 	 */
 	public void moduleChanged(String module);
+	
+	/**
+	 * Ask the Manager to update the module list.
+	 */
+	public void updateModules();
 }

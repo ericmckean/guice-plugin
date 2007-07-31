@@ -42,6 +42,11 @@ public class Activator extends AbstractUIPlugin {
 	 * Create an activator and a GuicePlugin using the {@link EclipsePluginModule}.
 	 */
 	public Activator() {
+	    plugin = this;
+	    EclipsePluginModule module = new EclipsePluginModule();
+	    module.setModuleSelectionView(new EclipseGuicePlugin.ModuleSelectionViewImpl());
+        module.setResultsView(new EclipseGuicePlugin.ResultsViewImpl());
+        guicePlugin = new EclipseGuicePlugin(module);
 	}
 	
 	/** 
@@ -49,8 +54,10 @@ public class Activator extends AbstractUIPlugin {
 	 * FOR TESTING PURPOSES ONLY -- necessary since Eclipse forces a static Activator object on us.
 	 */
 	public Activator(EclipsePluginModule module) {
-		plugin = this;
-		guicePlugin = new EclipseGuicePlugin(module);
+	  plugin = this;
+      module.setModuleSelectionView(new EclipseGuicePlugin.ModuleSelectionViewImpl());
+      module.setResultsView(new EclipseGuicePlugin.ResultsViewImpl());
+      guicePlugin = new EclipseGuicePlugin(module);
 	}
 
 	/** 
@@ -60,8 +67,6 @@ public class Activator extends AbstractUIPlugin {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		plugin = this;
-		guicePlugin = new EclipseGuicePlugin(new EclipsePluginModule());
 	}
 
 	/** 

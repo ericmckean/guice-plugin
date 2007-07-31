@@ -17,11 +17,7 @@
 package com.google.inject.tools.ideplugin.eclipse;
 
 import com.google.inject.Scopes;
-import com.google.inject.Provider;
-import com.google.inject.Singleton;
-import com.google.inject.Inject;
 import com.google.inject.tools.ideplugin.GuicePluginModule;
-import com.google.inject.tools.ideplugin.GuicePlugin;
 import com.google.inject.tools.ideplugin.Messenger;
 import com.google.inject.tools.ideplugin.ProgressHandler;
 import com.google.inject.tools.ideplugin.ActionsHandler;
@@ -35,36 +31,9 @@ import com.google.inject.tools.ideplugin.module.ModulesListener;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class EclipsePluginModule extends GuicePluginModule {
-	@Singleton
-	public static class GuicePluginProvider implements Provider<GuicePlugin> {
-		@Inject
-		public GuicePluginProvider() {}
-		
-		public GuicePlugin get() {
-			return Activator.getGuicePlugin();
-		}
-	}
-	
-	@Singleton
-	public static class ResultsViewProvider implements Provider<ResultsView> {
-		@Inject
-		public ResultsViewProvider() {}
-		
-		public ResultsView get() {
-			return Activator.getGuicePlugin()!=null ? Activator.getGuicePlugin().getResultsView() : null;
-		}
-	}
-	
-	@Singleton
-	public static class ModuleSelectionViewProvider implements Provider<ModuleSelectionView> {
-		@Inject
-		public ModuleSelectionViewProvider() {}
-		
-		public ModuleSelectionView get() {
-			return Activator.getGuicePlugin()!=null ? Activator.getGuicePlugin().getModuleSelectionView() : null;
-		}
-	}
-		
+    private ResultsView resultsView;
+    private ModuleSelectionView moduleSelectionView;
+    
 	/**
 	 * Create an Eclipse Plugin Module for injection.
 	 */
@@ -74,20 +43,11 @@ public class EclipsePluginModule extends GuicePluginModule {
 	
 	/**
 	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindGuicePlugin()
-	 */
-	@Override
-	protected void bindGuicePlugin() {
-		bind(GuicePlugin.class).toProvider(GuicePluginProvider.class).in(Scopes.SINGLETON);
-	}
-	
-	/**
-	 * (non-Javadoc)
 	 * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindResultsView()
 	 */
 	@Override
 	protected void bindResultsView() {
-		bind(ResultsView.class).toProvider(ResultsViewProvider.class).in(Scopes.SINGLETON);
+		bind(ResultsView.class).toInstance(resultsView);
 	}
 	
 	/**
@@ -96,7 +56,7 @@ public class EclipsePluginModule extends GuicePluginModule {
 	 */
 	@Override
 	protected void bindModuleSelectionView() {
-		bind(ModuleSelectionView.class).toProvider(ModuleSelectionViewProvider.class).in(Scopes.SINGLETON);
+		bind(ModuleSelectionView.class).toInstance(moduleSelectionView);
 	}
 	
 	/**
@@ -133,5 +93,21 @@ public class EclipsePluginModule extends GuicePluginModule {
 	@Override
 	protected void bindProgressHandler() {
 		bind(ProgressHandler.class).to(EclipseProgressHandler.class);
+	}
+	
+	public void setResultsView(ResultsView resultsView) {
+        this.resultsView = resultsView;
+	}
+	
+	public void setModuleSelectionView(ModuleSelectionView moduleSelectionView) {
+	    this.moduleSelectionView = moduleSelectionView;
+    }
+	
+	public ResultsView getResultsView() {
+	    return resultsView;
+	}
+	
+	public ModuleSelectionView getModuleSelectionView() {
+	    return moduleSelectionView;
 	}
 }

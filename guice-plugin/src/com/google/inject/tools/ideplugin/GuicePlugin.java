@@ -69,6 +69,7 @@ public abstract class GuicePlugin {
 	 * @return the {@link BindingsEngine}
 	 */
 	public BindingsEngine getBindingsEngine(JavaElement element) {
+	  messenger.display("Mkaing Bindings Engine");
 		return new BindingsEngine(moduleManager,problemsHandler,resultsHandler,injector.getInstance(ProgressHandler.class),element);
 	}
 	

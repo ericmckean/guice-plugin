@@ -45,13 +45,14 @@ public final class BindingsEngine {
 	 */
 	//@AssistedInject
 	public BindingsEngine(ModuleManager moduleManager,
-							  ProblemsHandler problemsHandler,
-							  ResultsHandler resultsHandler,
-							  ProgressHandler progressHandler,
-							  JavaElement element) {
+					      ProblemsHandler problemsHandler,
+					      ResultsHandler resultsHandler,
+					      ProgressHandler progressHandler,
+					      JavaElement element) {
 		boolean userCancelled = false;
 		theClass = element.getTheClass();
 		results = new CodeLocationsResults("Bindings for " + element.toString());
+		moduleManager.updateModules();
 		progressHandler.initialize(moduleManager.getModuleContexts().size());
 		for (ModuleContextRepresentation moduleContext : moduleManager.getModuleContexts()) {
 			userCancelled = !progressHandler.step("Finding Bindings for " + element.toString() + " in context " + moduleContext.getName());

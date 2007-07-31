@@ -16,7 +16,6 @@
 
 package com.google.inject.tools.ideplugin.eclipse;
 
-import com.google.inject.ProvidedBy;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
 
 //TODO: write this
@@ -26,7 +25,6 @@ import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-@ProvidedBy (EclipsePluginModule.ModuleSelectionViewProvider.class)
-public class EclipseModuleSelectionView implements ModuleSelectionView {	
+public class EclipseModuleSelectionView {	
 	
 }

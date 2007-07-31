@@ -191,4 +191,11 @@ public class ModuleManagerImpl implements ModuleManager {
 	public synchronized void removeModuleContext(ModuleContextRepresentation moduleContext) {
 		moduleContexts.remove(moduleContext);
 	}
+	
+	public synchronized void updateModules() {
+	  modules.clear();
+	  initModules();
+	  moduleContexts.clear();
+	  initContexts();
+	}
 }

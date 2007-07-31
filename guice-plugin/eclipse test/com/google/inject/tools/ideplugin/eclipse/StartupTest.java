@@ -17,6 +17,19 @@
 package com.google.inject.tools.ideplugin.eclipse;
 
 import junit.framework.TestCase;
+import com.google.inject.Injector;
+import com.google.inject.Guice;
+import com.google.inject.tools.ideplugin.module.ModuleManager;
+import com.google.inject.tools.ideplugin.results.ResultsView;
+import com.google.inject.tools.ideplugin.module.ModulesListener;
+import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
+import com.google.inject.tools.ideplugin.results.ResultsHandler;
+import com.google.inject.tools.ideplugin.Messenger;
+import com.google.inject.tools.ideplugin.problem.ProblemsHandler;
+import com.google.inject.tools.ideplugin.ActionsHandler;
+import com.google.inject.tools.ideplugin.test.MockJavaElement;
+import com.google.inject.tools.ideplugin.JavaElement;
+
 
 /** 
  * Test the activator and therefore the plugin object and the module for our plugin for guice 
@@ -40,5 +53,29 @@ public class StartupTest extends TestCase {
 	public void testActivatorConstructor() {
 		@SuppressWarnings({"unused"})
 		Activator activator = new Activator();
+		assertNotNull(Activator.getGuicePlugin());
+	}
+	
+	public void testCreatingInjections() {
+	    Activator activator = new Activator();
+	    EclipsePluginModule module = new EclipsePluginModule();
+	    module.setModuleSelectionView(new EclipseGuicePlugin.ModuleSelectionViewImpl());
+	    module.setResultsView(new EclipseGuicePlugin.ResultsViewImpl());
+	    Injector injector = Guice.createInjector(module);
+	    injector.getInstance(ModuleManager.class);
+	    injector.getInstance(ModulesListener.class);
+	    injector.getInstance(ResultsView.class);
+	    injector.getInstance(ModuleSelectionView.class);
+	    injector.getInstance(ResultsHandler.class);
+	    injector.getInstance(ProblemsHandler.class);
+	    injector.getInstance(ActionsHandler.class);
+	    injector.getInstance(Messenger.class);
+	}
+	
+	public void testCreateBindingsEngine() {
+	  EclipsePluginModule module = new EclipsePluginModule();
+	  module.setModuleSelectionView(new EclipseGuicePlugin.ModuleSelectionViewImpl());
+	  module.setResultsView(new EclipseGuicePlugin.ResultsViewImpl());
+	  new EclipseGuicePlugin(module).getBindingsEngine(new MockJavaElement(JavaElement.TYPE.VARIABLE));
 	}
 }

@@ -38,7 +38,6 @@ public abstract class GuicePluginModule extends AbstractModule {
 	 */
 	@Override
 	protected void configure() {
-		bindGuicePlugin();
 		bindActionsHandler();
 		bindModuleManager();
 		bindResultsHandler();
@@ -72,22 +71,17 @@ public abstract class GuicePluginModule extends AbstractModule {
 	}
 	
 	/**
-	 * Bind the {@link GuicePlugin} instance.
-	 */
-	protected abstract void bindGuicePlugin();
-	
-	/**
-	 * Bind the {@link ResultsView} instance.
+	 * Bind the {@link com.google.inject.tools.ideplugin.results.ResultsView} instance.
 	 */
 	protected abstract void bindResultsView();
 	
 	/**
-	 * Bind the {@link ModulesListener} instance.
+	 * Bind the {@link com.google.inject.tools.ideplugin.module.ModulesListener} instance.
 	 */
 	protected abstract void bindModulesListener();
 	
 	/**
-	 * Bind the {@link ModuleSelectionView} instance.
+	 * Bind the {@link com.google.inject.tools.ideplugin.module.ModuleSelectionView} instance.
 	 */
 	protected abstract void bindModuleSelectionView();
 	

@@ -23,7 +23,6 @@ import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.Injector;
 //import com.google.inject.OutOfScopeException;
-//NOTE: this is not in guice 1.0 but is in the svn head
 import java.util.Set;
 import java.util.HashSet;
 
