@@ -22,6 +22,9 @@ import com.google.inject.AbstractModule;
  * Testing {@link com.google.inject.Module} that works correctly, binding {@link MockInjectedInterface} to 
  * {@link MockInjectedInterfaceImpl}.
  * 
+ * NOTE: Modifying this file will break the {@link ModuleContextSnippet} test for line
+ * number.
+ * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class WorkingModule extends AbstractModule {

@@ -155,4 +155,9 @@ public class EclipseJavaElement implements JavaElement {
 				&& getType().equals(element.getType());
 		} else return false;
 	}
+  
+  @Override
+  public int hashCode() {
+    return element.hashCode();
+  }
 }

@@ -24,12 +24,29 @@ package com.google.inject.tools.ideplugin;
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public interface ActionsHandler {
+public abstract class ActionsHandler {
 	/**
 	 * An Action is anything the IDE can do in response to a trigger.
 	 * For example, going to a code location.
+   * 
+   * The ActionHandler/Action follows th visitor pattern.
 	 */
 	public static interface Action {}
+  
+  public static class NullAction implements Action {
+    @Override
+    public String toString() {
+      return "Null Action";
+    }
+    @Override
+    public boolean equals(Object object) {
+      return object instanceof NullAction;
+    }
+    @Override
+    public int hashCode() {
+      return 1;
+    }
+  }
 	
 	/**
 	 * Represents the IDE action of going to a location in the code, i.e. opening
@@ -69,6 +86,11 @@ public interface ActionsHandler {
       if (!(object instanceof GotoCodeLocation)) return false;
       return file.equals(((GotoCodeLocation)object).file()) && (location == ((GotoCodeLocation)object).location());
     }
+    
+    @Override
+    public int hashCode() {
+      return file.hashCode() + location;
+    }
 	}
   
   public static class GotoFile implements Action {
@@ -84,27 +106,49 @@ public interface ActionsHandler {
       if (!(object instanceof GotoFile)) return false;
       return classname.equals(((GotoFile)object).getClassname());
     }
+    @Override
+    public int hashCode() {
+      return classname.hashCode();
+    }
   }
-	
-  /**
-   * An Action that does nothing.
-   */
-	public static class NullAction implements Action {
-		
-	}
 	
 	/**
 	 * Perform a GotoCodeLocation Action.
-	 * 
-	 * @param action the GotoCodeLocation Action
 	 */
-	public void run(GotoCodeLocation action);
-	
-	/**
-	 * Perform a nonspecific Action (does not satisfy any of the above types).
-	 * Likely this causes an exception.
-	 * 
-	 * @param action the Action to perform
-	 */
-	public void run(Action action);
+	public abstract void run(GotoCodeLocation action);
+  
+  /**
+   * Perform a GotoFile Action.
+   */
+  public abstract void run(GotoFile action);
+  
+  /**
+   * Perform a NullAction action.
+   * Likely this does nothing.
+   */
+  public void run(NullAction action) {
+    //do nothing
+  }
+  
+  /**
+   * Runtime exception thrown if run is called on an undefined action.
+   */
+  public static class InvalidActionException extends RuntimeException {
+    private final Action action;
+    public InvalidActionException(Action action) {
+      this.action = action;
+    }
+    @Override
+    public String toString() {
+      return "Invalid action: " + action.toString();
+    }
+  }
+  
+  /**
+   * Perform a nonspecific Action (does not satisfy any of the above types).
+   * Likely this causes an exception.
+   */
+  public void run(Action action) {
+    throw new InvalidActionException(action);
+  }
 }

@@ -46,7 +46,7 @@ public class CodeRunnerImpl implements CodeRunner {
     runThreads = new HashMap<Runnable,CodeRunThread>();
 	}
 	
-  /*
+  /**
    * (non-Javadoc)
    * @see com.google.inject.tools.ideplugin.code.CodeRunner#addListener(com.google.inject.tools.ideplugin.code.CodeRunner.CodeRunListener)
    */
@@ -54,7 +54,7 @@ public class CodeRunnerImpl implements CodeRunner {
 		listeners.add(listener);
 	}
 	
-  /*
+  /**
    * (non-Javadoc)
    * @see com.google.inject.tools.ideplugin.code.CodeRunner#queue(com.google.inject.tools.ideplugin.code.CodeRunner.Runnable)
    */
@@ -74,7 +74,7 @@ public class CodeRunnerImpl implements CodeRunner {
 		}
 	}
 	
-  /*
+  /**
    * (non-Javadoc)
    * @see com.google.inject.tools.ideplugin.code.CodeRunner#notifyResult(com.google.inject.tools.ideplugin.code.CodeRunner.Runnable, com.google.inject.tools.ideplugin.snippets.CodeSnippetResult)
    */
@@ -87,7 +87,7 @@ public class CodeRunnerImpl implements CodeRunner {
 		if (runnablesLeft.isEmpty()) notifyDone();
 	}
 	
-  /*
+  /**
    * (non-Javadoc)
    * @see com.google.inject.tools.ideplugin.code.CodeRunner#run()
    */
@@ -148,7 +148,7 @@ public class CodeRunnerImpl implements CodeRunner {
 		}
 	}
   
-  /*
+  /**
    * (non-Javadoc)
    * @see com.google.inject.tools.ideplugin.code.CodeRunner#kill()
    */
@@ -158,11 +158,32 @@ public class CodeRunnerImpl implements CodeRunner {
     }
   }
   
-  /*
+  /**
    * (non-Javadoc)
    * @see com.google.inject.tools.ideplugin.code.CodeRunner#kill(com.google.inject.tools.ideplugin.code.CodeRunner.Runnable)
    */
   public void kill(Runnable runnable) {
     runThreads.get(runnable).destroyProcess();
+  }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.code.CodeRunner#waitFor()
+   */
+  public void waitFor() throws InterruptedException {
+    if (runThreads.keySet().size() == 0) return;
+    else {
+      waitFor(runThreads.keySet().iterator().next());
+      waitFor();
+    }
+  }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.code.CodeRunner#waitFor(com.google.inject.tools.ideplugin.code.CodeRunner.Runnable)
+   */
+  public void waitFor(Runnable runnable) throws InterruptedException {
+    if (runThreads.get(runnable) == null) return;
+    runThreads.get(runnable).join();
   }
 }

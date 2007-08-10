@@ -33,7 +33,7 @@ public class ModuleRepresentationImpl implements ModuleRepresentation, CodeRunne
 	private String name;
 	private ConstructorRepresentation constructor;
   private boolean dirty;
-  private Set<ConstructorRepresentation> constructors;
+  private Set<? extends ConstructorRepresentation> constructors;
   private boolean hasDefaultConstructor;
 
 	/**
@@ -53,7 +53,7 @@ public class ModuleRepresentationImpl implements ModuleRepresentation, CodeRunne
    * (non-Javadoc)
    * @see com.google.inject.tools.ideplugin.module.ModuleRepresentation#getConstructors()
    */
-  public Set<ConstructorRepresentation> getConstructors() {
+  public Set<? extends ConstructorRepresentation> getConstructors() {
     return constructors;
   }
   

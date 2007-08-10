@@ -17,9 +17,6 @@
 package com.google.inject.tools.ideplugin.snippets;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.inject.CreationException;
 import com.google.inject.tools.ideplugin.ActionsHandler;
 import com.google.inject.tools.ideplugin.results.Results.Node.ActionString;
@@ -93,12 +90,12 @@ public class CodeProblem implements Serializable {
 		}
     
     @Override
-    public List<ActionString> getDisplay() {
-      List<ActionString> text = new ArrayList<ActionString>();
-      text.add(new ActionString("Guice Code Problem:"));
-      text.add(new ActionString(theClass,new ActionsHandler.GotoFile(theClass)));
-      text.add(new ActionString("has a binding problem in Module"));
-      text.add(new ActionString(moduleContext));
+    public ActionString getDisplay() {
+      ActionString text = new ActionString();
+      text.addText("Guice Code Problem:");
+      text.addTextWithAction(theClass,new ActionsHandler.GotoFile(theClass));
+      text.addText("has a binding problem in Module");
+      text.addText(moduleContext);
       return text;
     }
 	}
@@ -143,12 +140,12 @@ public class CodeProblem implements Serializable {
 		}
     
     @Override
-    public List<ActionString> getDisplay() {
-      List<ActionString> text = new ArrayList<ActionString>();
-      text.add(new ActionString("Guice Code Problem:"));
-      text.add(new ActionString(theClass,new ActionsHandler.GotoFile(theClass)));
-      text.add(new ActionString("has no binding in Module"));
-      text.add(new ActionString(moduleContext));
+    public ActionString getDisplay() {
+      ActionString text = new ActionString();
+      text.addText("Guice Code Problem:");
+      text.addTextWithAction(theClass,new ActionsHandler.GotoFile(theClass));
+      text.addText("has no binding in Module");
+      text.addText(moduleContext);
       return text;
     }
 	}
@@ -164,10 +161,10 @@ public class CodeProblem implements Serializable {
 		}
     
     @Override
-    public List<ActionString> getDisplay() {
-      List<ActionString> text = new ArrayList<ActionString>();
-      text.add(new ActionString("Invalid Module:"));
-      text.add(new ActionString(moduleContext,new ActionsHandler.GotoFile(moduleContext)));
+    public ActionString getDisplay() {
+      ActionString text = new ActionString();
+      text.addText("Invalid Module:");
+      text.addTextWithAction(moduleContext,new ActionsHandler.GotoFile(moduleContext));
       return text;
     }
 	}
@@ -195,9 +192,9 @@ public class CodeProblem implements Serializable {
 		}
     
     @Override
-    public List<ActionString> getDisplay() {
-      List<ActionString> text = new ArrayList<ActionString>();
-      text.add(new ActionString("Guice Module Context is invalid: " + moduleContext));
+    public ActionString getDisplay() {
+      ActionString text = new ActionString();
+      text.addText("Guice Module Context is invalid: " + moduleContext);
       return text;
     }
 	}
@@ -259,10 +256,10 @@ public class CodeProblem implements Serializable {
   /**
    * Return text describing the problem in the form of {@link com.google.inject.tools.ideplugin.results.Results.Node.ActionString}s.
    */
-  public List<ActionString> getDisplay() {
-    List<ActionString> text = new ArrayList<ActionString>();
-    text.add(new ActionString("Guice Code Problem:"));
-    text.add(new ActionString(message));
+  public ActionString getDisplay() {
+    ActionString text = new ActionString();
+    text.addText("Guice Code Problem:");
+    text.addText(message);
     return text;
   }
 }

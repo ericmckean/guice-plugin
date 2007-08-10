@@ -195,4 +195,14 @@ public interface CodeRunner {
    * @param runnable the runnable to kill
    */
   public void kill(Runnable runnable);
+  
+  /**
+   * Wait for the CodeRunner to finish running all Runnables.
+   */
+  public void waitFor() throws InterruptedException;
+  
+  /**
+   * Wait for the CodeRunner to finish running the specified Runnable.
+   */
+  public void waitFor(Runnable runnable) throws InterruptedException;
 }

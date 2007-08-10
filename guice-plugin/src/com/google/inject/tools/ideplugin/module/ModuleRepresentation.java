@@ -42,7 +42,7 @@ public interface ModuleRepresentation {
   /**
    * Return all the constructors the module has.
    */
-  public Set<ConstructorRepresentation> getConstructors();
+  public Set<? extends ConstructorRepresentation> getConstructors();
   
   /**
    * Return true if the module is dirty, i.e. has changed since it was last run.

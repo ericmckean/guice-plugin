@@ -53,26 +53,20 @@ public class ModuleContextSnippetTest extends TestCase {
     }
   }
   
-  private Object runASnippet(String[] args) {
+  private Object runASnippet(String[] args) throws Exception {
     PipedInputStream is = new PipedInputStream();
     Object obj = null;
-    try {
-      PipedOutputStream os = new PipedOutputStream(is);
-      new ThreadWithStream(os,args).start();
-      ObjectInputStream ois = new ObjectInputStream(is);
-      return ois.readObject();
-    } catch (Throwable t) {
-      t.printStackTrace();
-      fail();
-      return null;
-    }
+    PipedOutputStream os = new PipedOutputStream(is);
+    new ThreadWithStream(os,args).start();
+    ObjectInputStream ois = new ObjectInputStream(is);
+    return ois.readObject();
   }
   
-	/**
-	 * Test that constructing a working module context happens without problems
+  /**
+   * Test that constructing a working module context happens without problems
    * and that the correct binding location is constructed.
-	 */
-	public void testConstructWorkingModuleContext() {
+   */
+  public void testConstructWorkingModuleContext() throws Exception {
     String[] args = new String[4];
     args[0] = "Working Module Context";
     args[1] = "1"; // number of modules
@@ -81,19 +75,21 @@ public class ModuleContextSnippetTest extends TestCase {
     Object obj = runASnippet(args);
     assertTrue(obj instanceof ModuleContextSnippet.ModuleContextResult);
     ModuleContextSnippet.ModuleContextResult result = (ModuleContextSnippet.ModuleContextResult)obj;
-		assertTrue(result.getProblems().isEmpty());
-		assertNotNull(result.getBindings());
+    assertTrue(result.getProblems().isEmpty());
+    assertNotNull(result.getBindings());
     BindingCodeLocation location = result.getBindings().get("com.google.inject.tools.ideplugin.test.MockInjectedInterface");
     assertNotNull(location);
     assertTrue(location.bindTo().equals("com.google.inject.tools.ideplugin.test.MockInjectedInterfaceImpl"));
     assertTrue(location.file().equals("WorkingModule.java"));
-    assertTrue(location.location() == 34);
-	}
-	
-	/**
-	 * Test that constructing a broken module context causes a {@link com.google.inject.tools.ideplugin.snippets.CodeProblem.CreationProblem}.
-	 */
-	public void testConstructBrokenModuleContext() {
+    assertTrue(location.location() == WorkingModuleBindLocation);
+  }
+  
+  private static final int WorkingModuleBindLocation = 37;
+  
+  /**
+   * Test that constructing a broken module context causes a {@link com.google.inject.tools.ideplugin.snippets.CodeProblem.CreationProblem}.
+   */
+  public void testConstructBrokenModuleContext() throws Exception {
     String[] args = new String[4];
     args[0] = "Broken Module Context";
     args[1] = "1";
@@ -101,15 +97,15 @@ public class ModuleContextSnippetTest extends TestCase {
     args[3] = "0";
     Object obj = runASnippet(args);
     ModuleContextSnippet.ModuleContextResult result = (ModuleContextSnippet.ModuleContextResult)obj;
-		assertFalse(result.getProblems().isEmpty());
-		assertTrue(result.getBindings().size() == 0);
-		assertTrue(result.getProblems().iterator().next() instanceof CodeProblem.CreationProblem);
-	}
-	
-	/**
-	 * Test that constructing an invalid module context fails.
-	 */
-	public void testConstructInvalidModule() {
+    assertFalse(result.getProblems().isEmpty());
+    assertTrue(result.getBindings().size() == 0);
+    assertTrue(result.getProblems().iterator().next() instanceof CodeProblem.CreationProblem);
+  }
+  
+  /**
+   * Test that constructing an invalid module context fails.
+   */
+  public void testConstructInvalidModule() throws Exception {
     String[] args = new String[4];
     args[0] = "Invalid Module Context";
     args[1] = "1";
@@ -118,13 +114,13 @@ public class ModuleContextSnippetTest extends TestCase {
     Object obj = runASnippet(args);
     ModuleContextSnippet.ModuleContextResult result = (ModuleContextSnippet.ModuleContextResult)obj;
     assertFalse(result.getProblems().isEmpty());
-		assertTrue(result.getProblems().iterator().next() instanceof CodeProblem.InvalidModuleProblem);
-	}
-	
-	/**
-	 * Test that using multiple modules in a single context works correctly.
-	 */
-	public void testMultipleModulesInjector() {
+    assertTrue(result.getProblems().iterator().next() instanceof CodeProblem.InvalidModuleProblem);
+  }
+  
+  /**
+   * Test that using multiple modules in a single context works correctly.
+   */
+  public void testMultipleModulesInjector() throws Exception {
     String[] args = new String[6];
     args[0] = "Working Module Context";
     args[1] = "2"; // number of modules
@@ -141,6 +137,6 @@ public class ModuleContextSnippetTest extends TestCase {
     assertNotNull(location);
     assertTrue(location.bindTo().equals("com.google.inject.tools.ideplugin.test.MockInjectedInterfaceImpl"));
     assertTrue(location.file().equals("WorkingModule.java"));
-    assertTrue(location.location() == 34);
-	}
+    assertTrue(location.location() == WorkingModuleBindLocation);
+  }
 }

@@ -29,6 +29,9 @@ public class AllNonIDESpecificTests {
 		TestSuite suite = new TestSuite();
 		
 		suite.addTestSuite(CodeLocationsResultsTest.class);
+    suite.addTestSuite(CodeRunnerTest.class);
+    suite.addTestSuite(ModuleContextRepresentationTest.class);
+    suite.addTestSuite(ModuleRepresentationTest.class);
 		suite.addTestSuite(ModuleManagerTest.class);
 		suite.addTestSuite(ModuleSnippetTest.class);
 		suite.addTestSuite(ModuleContextSnippetTest.class);

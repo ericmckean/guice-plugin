@@ -193,6 +193,11 @@ public class ModuleContextRepresentationImpl implements ModuleContextRepresentat
 		}
 		return false;
 	}
+  
+  @Override
+  public int hashCode() {
+    return title.hashCode();
+  }
 	
 	/**
 	 * (non-Javadoc)
