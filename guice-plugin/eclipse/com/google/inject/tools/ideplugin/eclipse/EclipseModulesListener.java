@@ -18,21 +18,20 @@ package com.google.inject.tools.ideplugin.eclipse;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jdt.core.Flags;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.ITypeHierarchy;
 import org.eclipse.jdt.core.ITypeHierarchyChangedListener;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import com.google.inject.Singleton;
 import com.google.inject.Inject;
 import com.google.inject.tools.ideplugin.module.ModulesListener;
 import com.google.inject.tools.ideplugin.module.ModuleManager;
 import com.google.inject.tools.ideplugin.Messenger;
+import com.google.inject.tools.ideplugin.JavaProject;
 
-//TODO: listen for changes to each module's code
+//TODO: listen to module classes for code changes
 
 /**
  * Eclipse implementation of the {@link ModulesListener}.
@@ -56,26 +55,31 @@ public class EclipseModulesListener implements ModulesListener {
 	public EclipseModulesListener(ModuleManager moduleManager,Messenger messenger) {
 		this.moduleManager = moduleManager;
 		this.messenger = messenger;
+		javaProject = null;
 		modules = new HashSet<String>();
 		initialize();
 	}
 	
+	/**
+	 * (non-Javadoc)
+	 * @see com.google.inject.tools.ideplugin.module.ModulesListener#projectChanged(com.google.inject.tools.ideplugin.JavaProject)
+	 */
+	public void projectChanged(JavaProject project) {
+		if (project instanceof EclipseJavaProject) {
+			javaProject = ((EclipseJavaProject)project).getIJavaProject();
+			initialize();
+		} else {
+			javaProject = null;
+		}
+	}
+	
 	private boolean initialize() {
-		//modules = new HashSet<String>();
-	  messenger.display("creating java project...");
-      try {
-        javaProject = JavaCore.create(ResourcesPlugin.getWorkspace().getRoot().getProject());
-      } catch (Exception exception) {
-        javaProject = null;
-      }
-	  
-	    if (javaProject != null) {
-	      messenger.display("Finding modules...");
+		if (javaProject != null) {
 	      try {
 			type = javaProject.findType("com.google.inject.Module");
 			typeHierarchy = type.newTypeHierarchy(null);
 	      } catch (JavaModelException exception) {
-			hadProblem(exception);
+	    	hadProblem(exception);
 	      } finally {
 			typeHierarchyListener = new MyTypeHierarchyChangedListener();
 			if (typeHierarchy!=null) {
@@ -93,7 +97,6 @@ public class EclipseModulesListener implements ModulesListener {
 	 * @see com.google.inject.tools.ideplugin.module.ModulesListener#findModules()
 	 */
 	public Set<String> findModules() {
-	  messenger.display("blah");
 	    if (typeHierarchy!=null) {
 	      try {
 	        typeHierarchy.refresh(null);
@@ -122,7 +125,7 @@ public class EclipseModulesListener implements ModulesListener {
 	
 	private void findModulesInCode() {
 		final HashSet<String> moduleNames = new HashSet<String>();
-		IType[] subclasses = typeHierarchy.getSubclasses(type);
+		IType[] subclasses = typeHierarchy.getAllSubtypes(type);
 		for (IType subclass : subclasses) {
 			try {
 				if (subclass.isClass()) {
@@ -159,5 +162,13 @@ public class EclipseModulesListener implements ModulesListener {
 	private void hadProblem(JavaModelException exception) {
 		//TODO: handle this for real
 		messenger.display(exception.toString());
+	}
+	
+	/**
+	 * (non-Javadoc)
+	 * @see com.google.inject.tools.ideplugin.module.ModulesListener#findChanges()
+	 */
+	public void findChanges() {
+		if (javaProject != null) findModulesInCode();
 	}
 }

@@ -22,7 +22,7 @@
  * (more accurately to the IDE specific implementation of the com.google.inject.tools.ideplugin.results.ResultsView) for display.
  * 
  * <p>Results to user's queries are stored as {@link com.google.inject.tools.ideplugin.results.Results} objects which usually consist of 
- * {@link com.google.inject.tools.ideplugin.results.CodeLocation} objects on a per module context basis.
+ * {@link com.google.inject.tools.ideplugin.snippets.CodeLocation} objects on a per module context basis.
  */
 
 package com.google.inject.tools.ideplugin.results;

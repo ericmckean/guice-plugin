@@ -22,7 +22,7 @@
  * handler when such problems are found.  The {@link com.google.inject.tools.ideplugin.problem.ProblemsListener} (more accurately its IDE specific implementations)
  * listen for changes in the user's code and check it for problems, then notifying the handler.
  * 
- * <p>Problems are represented by the {@link com.google.inject.tools.ideplugin.problem.CodeProblem} class.
+ * <p>Problems are represented by the {@link com.google.inject.tools.ideplugin.snippets.CodeProblem} class.
  */
 
 package com.google.inject.tools.ideplugin.problem;

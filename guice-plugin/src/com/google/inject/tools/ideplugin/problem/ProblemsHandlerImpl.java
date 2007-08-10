@@ -16,11 +16,13 @@
 
 package com.google.inject.tools.ideplugin.problem;
 
-//TODO: make concurrent!
+//TODO: Phase II: make concurrent!
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.tools.ideplugin.Messenger;
+import com.google.inject.tools.ideplugin.snippets.CodeProblem;
+
 import java.util.Set;
 
 /**
@@ -43,7 +45,7 @@ public class ProblemsHandlerImpl implements ProblemsHandler {
 	}
 	
 	private void foundProblem(CodeProblem problem) {
-		//what to do?  somehow do codeassist with problems
+		//TODO: Phase II: what to do?  somehow do codeassist with problems
 		messenger.display(problem.toString());
 	}
 	
@@ -51,7 +53,7 @@ public class ProblemsHandlerImpl implements ProblemsHandler {
 	 * (non-Javadoc)
 	 * @see com.google.inject.tools.ideplugin.problem.ProblemsHandler#foundProblems(java.util.Set)
 	 */
-	public void foundProblems(Set<CodeProblem> problems) {
+	public void foundProblems(Set<? extends CodeProblem> problems) {
 		for (CodeProblem problem : problems) {
 			foundProblem(problem);
 		}

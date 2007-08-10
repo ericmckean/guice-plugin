@@ -28,6 +28,7 @@
  *  <dt>{@link com.google.inject.tools.ideplugin.problem.ProblemsHandler} <dd>notifies the user of guice related problems in the code
  *  <dt>{@link com.google.inject.tools.ideplugin.results.ResultsHandler} <dd>manages results of user queries such as finding bindings
  *  <dt>{@link com.google.inject.tools.ideplugin.bindings.BindingsEngine} <dd>performs the actual lookup of bindings in the code
+ *  <dt>{@link com.google.inject.tools.ideplugin.code.CodeRunner} <dd>runs {@link com.google.inject.tools.ideplugin.snippets.CodeSnippet}s in user space to resolve bindings
  * </dl>
  *
  * <p>Key objects which must be created in IDE specific manner are:

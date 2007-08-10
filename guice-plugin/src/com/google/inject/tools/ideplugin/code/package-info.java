@@ -14,29 +14,12 @@
  * limitations under the License.
  */
 
-package com.google.inject.tools.ideplugin.eclipse;
-
-import com.google.inject.tools.ideplugin.ProgressHandler;
-
 /**
- * Eclipse implementation of the {@link ProgressHandler}.
+ * The code package is the objects for running code snippets in userspace.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * <p>The {@link com.google.inject.tools.ideplugin.code.CodeRunner} is the main object, these are injected where needed to
+ * run code snippets (see the {@link com.google.inject.tools.ideplugin.snippets}
+ * package).
  */
-public class EclipseProgressHandler implements ProgressHandler {
-	/**
-	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.ProgressHandler#initialize(int)
-	 */
-	public void initialize(int totalsteps) {
-		
-	}
-	
-	/**
-	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.ProgressHandler#step(java.lang.String)
-	 */
-	public boolean step(String label) {
-		return true;
-	}
-}
+
+package com.google.inject.tools.ideplugin.code;

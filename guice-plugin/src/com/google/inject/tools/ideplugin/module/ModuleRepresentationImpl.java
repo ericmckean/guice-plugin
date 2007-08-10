@@ -16,132 +16,54 @@
 
 package com.google.inject.tools.ideplugin.module;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import com.google.inject.Module;
+import java.util.Set;
+import com.google.inject.tools.ideplugin.code.CodeRunner;
+import com.google.inject.tools.ideplugin.code.RunModuleSnippet;
+import com.google.inject.tools.ideplugin.snippets.CodeSnippetResult;
+import com.google.inject.tools.ideplugin.snippets.ModuleSnippet;
+import com.google.inject.tools.ideplugin.snippets.ModuleSnippet.ConstructorRepresentation;
+import com.google.inject.tools.ideplugin.snippets.ModuleSnippet.DefaultConstructorRepresentation;
 
 /**
  * Represents a single module in the module context.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public class ModuleRepresentationImpl implements ModuleRepresentation {
+public class ModuleRepresentationImpl implements ModuleRepresentation, CodeRunner.CodeRunListener {
 	private String name;
-	private final Class<? extends Module> moduleClass;
-	private Constructor<? extends Module> constructor = null;
-	private Constructor<? extends Module> defaultConstructor = null;
-	private Object[] arguments = null;
-	private Module instance = null;
-	private boolean isValid = false;
-
-	/**
-	 * Create a ModuleRepresentationImpl from a Class type.
-	 * 
-	 * @param moduleClass the class of the module to represent
-	 * @throws ClassNotModuleException if the class does not implement {@link Module}
-	 */
-	public ModuleRepresentationImpl(Class<? extends Module> moduleClass) throws ClassNotModuleException {
-		if (isModule(moduleClass)) {
-			this.moduleClass = moduleClass;
-			initialize();
-		} else {
-			throw new ClassNotModuleException(moduleClass);
-		}
-	}
+	private ConstructorRepresentation constructor;
+  private boolean dirty;
+  private Set<ConstructorRepresentation> constructors;
+  private boolean hasDefaultConstructor;
 
 	/**
 	 * Create a ModuleRepresentationImpl from a class name string.
 	 * 
 	 * @param className the class name
-	 * @throws ClassNotFoundException if there is no such class
-	 * @throws ClassNotModuleException if the class does not implement {@link Module}
 	 */
-	@SuppressWarnings("unchecked")
-	public ModuleRepresentationImpl(String className) throws ClassNotFoundException,ClassNotModuleException {
-		Class<?> aClass = Class.forName(className);
-		if (isModule(aClass)) {
-			this.moduleClass = (Class<? extends Module>)aClass;
-			initialize();
-		} else {
-			throw new ClassNotModuleException(aClass);
-		}
+	public ModuleRepresentationImpl(String className) {
+		name = className;
+    dirty = true;
+		constructor = null;
+    constructors = null;
+    hasDefaultConstructor = false;
 	}
-
-	private boolean isModule(Class<?> aClass) {
-		return (Module.class).isAssignableFrom(aClass);
-	}
-
-	private void initialize() {
-		this.name = moduleClass.getName();
-		try {
-			defaultConstructor = moduleClass.getConstructor((Class[])null);
-		} catch (NoSuchMethodException exception) {
-			defaultConstructor = null;
-		}
-		try {
-			setDefaultConstructor();
-		} catch (Exception exception) {
-			defaultConstructor = null;
-			constructor = null;
-		}
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.module.ModuleRepresentation#getConstructors()
-	 */
-	@SuppressWarnings("unchecked")
-	public Constructor<? extends Module>[] getConstructors() {
-		return moduleClass.getConstructors();
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.module.ModuleRepresentation#setConstructor(java.lang.reflect.Constructor, java.lang.Object[])
-	 */
-	public void setConstructor(Constructor<? extends Module> constructor,Object[] arguments) throws IllegalAccessException,IllegalArgumentException,InstantiationException,InvocationTargetException {
-		this.constructor = constructor;
-		this.arguments = arguments;
-		this.instance = constructor.newInstance(arguments);
-		if (instance != null) isValid = true;
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.module.ModuleRepresentation#getConstructor()
-	 */
-	public Constructor<? extends Module> getConstructor() {
-		return constructor;
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.module.ModuleRepresentation#getArguments()
-	 */
-	public Object[] getArguments() {
-		return arguments;
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.module.ModuleRepresentation#getInstance()
-	 */
-	public Module getInstance() {
-		return instance;
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.module.ModuleRepresentation#hasDefaultConstructor()
-	 */
-	public boolean hasDefaultConstructor() {
-		return (defaultConstructor != null);
-	}
-
-	private void setDefaultConstructor() throws 
-		IllegalAccessException, IllegalArgumentException, InstantiationException, InvocationTargetException {
-		if (defaultConstructor != null) setConstructor(defaultConstructor,null);
-	}
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.module.ModuleRepresentation#getConstructors()
+   */
+  public Set<ConstructorRepresentation> getConstructors() {
+    return constructors;
+  }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.module.ModuleRepresentation#hasDefaultConstructor()
+   */
+  public boolean hasDefaultConstructor() {
+    return hasDefaultConstructor;
+  }
 	
 	/**
 	 * (non-Javadoc)
@@ -150,43 +72,72 @@ public class ModuleRepresentationImpl implements ModuleRepresentation {
 	public String getName() {
 		return name;
 	}
-	
-	/**
-	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.module.ModuleRepresentation#setName(java.lang.String)
-	 */
-	public void setName(String moduleName) {
-		this.name = moduleName;
-	}
-	
-	/**
-	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.module.ModuleRepresentation#isValid()
-	 */
-	public boolean isValid() {
-		return isValid;
-	}
-	
-	/**
-	 * (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object object) {
-		if (object instanceof ModuleRepresentation) {
-			ModuleRepresentation module = (ModuleRepresentation)object;
-			if (name.equals(module.getName())) {
-				if (moduleClass.equals(module.getClass())) {
-					if (arguments != null) {
-						return arguments.equals(module.getArguments());
-					} else {
-						return module.getArguments() == null;
-					}
-				}
-			}
-		}
-		return false;
-	}
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.module.ModuleRepresentation#isDirty()
+   */
+  public boolean isDirty() {
+    return dirty;
+  }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.module.ModuleRepresentation#makeDirty()
+   */
+  public void makeDirty() {
+    dirty = true;
+  }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.module.ModuleRepresentation#clean(com.google.inject.tools.ideplugin.code.CodeRunner)
+   */
+  public void clean(CodeRunner codeRunner) {
+    codeRunner.addListener(this);
+    codeRunner.queue(new RunModuleSnippet(codeRunner,this));
+    codeRunner.run();
+  }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.code.CodeRunner.CodeRunListener#acceptCodeRunResult(com.google.inject.tools.ideplugin.snippets.CodeSnippetResult)
+   */
+  public void acceptCodeRunResult(CodeSnippetResult result) {
+    if (result instanceof ModuleSnippet.ModuleResult) {
+      ModuleSnippet.ModuleResult moduleResult = (ModuleSnippet.ModuleResult)result;
+      if (moduleResult.getName() == this.getName()) {
+        this.constructors = moduleResult.getConstructors();
+        this.hasDefaultConstructor = moduleResult.hasDefaultConstructor();
+        if (!this.constructors.contains(constructor)) {
+          if (this.hasDefaultConstructor) {
+            this.constructor = new DefaultConstructorRepresentation();
+          }
+        }
+        dirty = false;
+      } else {
+        //TODO: what to do here?
+      }
+    } else {
+      //TODO: what to do here?
+    }
+  }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.code.CodeRunner.CodeRunListener#acceptUserCancelled()
+   */
+  public void acceptUserCancelled() {
+    //do nothing
+  }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.code.CodeRunner.CodeRunListener#acceptDone()
+   */
+  public void acceptDone() {
+    //do nothing
+  }
 	
 	/**
 	 * (non-Javadoc)
@@ -194,6 +145,6 @@ public class ModuleRepresentationImpl implements ModuleRepresentation {
 	 */
 	@Override
 	public String toString() {
-		return "Module Representation [" + name + " (" + moduleClass + ")] " + arguments;
+		return "Module Representation [" + constructor + "]";
 	}
 }

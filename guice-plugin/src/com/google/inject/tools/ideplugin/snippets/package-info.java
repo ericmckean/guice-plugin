@@ -14,28 +14,14 @@
  * limitations under the License.
  */
 
-package com.google.inject.tools.ideplugin.eclipse;
-
-import junit.framework.TestCase;
-import com.google.inject.tools.ideplugin.test.eclipse.MockActivatorBuilder;
-
-/** 
- * Test the Editor Action for "Find Bindings".
+/**
+ * The code snippets that must be run in the user's workspace to resolve guice bindings etc.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * <p>The snippets package will be compiled and shipped as a standalone .jar file in addition to
+ * being part of the main project. The snippets.jar will be used to run code in userspace by the
+ * {@link com.google.inject.tools.ideplugin.code.CodeRunner}. Essentially the user's code and the snippets.jar file will be placed in the
+ * classpath of a newly launched java vm which will then run a snippet to determine how the
+ * user's modules behave.
  */
-public class BindingsEditorActionTest extends TestCase {
-	/** 
-	 * (non-Javadoc)
-	 * @see junit.framework.TestCase#setUp()
-	 */
-	@Override
-	protected void setUp() {
-		MockActivatorBuilder.buildPurelyMockActivator();
-	}
-	
-	/** 
-	 * Test the run routine of the BindingsEditorAction
-	 */
-	public void testRunAction() {}
-}
+
+package com.google.inject.tools.ideplugin.snippets;

@@ -20,8 +20,10 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.ILocalVariable;
 import org.eclipse.jdt.core.IField;
-
+import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.core.Signature;
 import com.google.inject.tools.ideplugin.JavaElement;
+import com.google.inject.tools.ideplugin.JavaProject;
 
 /** 
  * Eclipse implementation of {@link JavaElement}.  Basically a wrapper around {@link
@@ -31,10 +33,11 @@ import com.google.inject.tools.ideplugin.JavaElement;
  */
 public class EclipseJavaElement implements JavaElement {
 	private final IJavaElement element;
-	private final TYPE type;
+	private final Type type;
 	private final String name;
-	private final Class<?> theClass;
+	private final String signature;
 	private final String className;
+	private final EclipseJavaProject javaProject;
 	
 	/** 
 	 * Create a JavaElement.
@@ -45,50 +48,44 @@ public class EclipseJavaElement implements JavaElement {
 		this.element = element;
 		this.type = findType();
 		this.name = findName();
-		this.className = findClassName();
-		this.theClass = findClass();
+		this.signature = findSignature();
+		this.className = getClassNameFromSignature(signature);
+		this.javaProject = new EclipseJavaProject(element.getJavaProject());
 	}
 	
-	private TYPE findType() {
+	private Type findType() {
 		if (element instanceof IMethod) {
-			return TYPE.METHOD;
+			return Type.PARAMETER;
 		} else
 		if (element instanceof IField) {
-			return TYPE.FIELD;
+			return Type.FIELD;
 		} else
 		if (element instanceof ILocalVariable) {
-			return TYPE.VARIABLE;
+			return Type.FIELD;
 		} else {
-			return TYPE.UNSUPPORTED;
+			return null;
 		}
 	}
 	
-	private String findClassName() {
-		switch (getType()) {
-		case METHOD:
-			//TODO: finish this
-			return null;
-		case FIELD:
-			//TODO: finish this
-			return null;
-		case VARIABLE:
-			return getClassNameFromSignature(((ILocalVariable)element).getTypeSignature());
-		default:
-			return null;
-		}
+	private String findSignature() {
+		try {
+			switch (getType()) {
+			case PARAMETER:
+				return ((IMethod)element).getSignature();
+			case FIELD:
+        if (element instanceof IField) {
+          return ((IField)element).getTypeSignature();
+        }
+        if (element instanceof ILocalVariable) {
+          return ((ILocalVariable)element).getTypeSignature();
+        }
+			}
+		} catch (JavaModelException e) {}
+		return null;
 	}
 	
 	private String findName() {
 		return element.getElementName();
-	}
-	
-	private Class<?> findClass() {
-		try {
-			return Class.forName(className);
-		} catch (ClassNotFoundException exception) {
-			//TODO: what happened?
-			return null;
-		}
 	}
 	
 	/** 
@@ -101,9 +98,7 @@ public class EclipseJavaElement implements JavaElement {
 	}
 	
 	private String getClassNameFromSignature(String signature) {
-		int i = signature.indexOf('L');
-		int j = signature.indexOf(";");
-		return signature.substring(i+1,j);
+		return signature!=null ? Signature.toString(signature) : null;
 	}
 	
 	/**
@@ -133,17 +128,17 @@ public class EclipseJavaElement implements JavaElement {
 	
 	/**
 	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.JavaElement#getTheClass()
+	 * @see com.google.inject.tools.ideplugin.JavaElement#getJavaProject()
 	 */
-	public Class<?> getTheClass() {
-		return theClass;
+	public JavaProject getJavaProject() {
+		return javaProject;
 	}
 	
 	/**
 	 * (non-Javadoc)
 	 * @see com.google.inject.tools.ideplugin.JavaElement#getType()
 	 */
-	public TYPE getType() {
+	public Type getType() {
 		return type;
 	}
 	
@@ -155,7 +150,9 @@ public class EclipseJavaElement implements JavaElement {
 	public boolean equals(Object object) {
 		if (object instanceof JavaElement) {
 			JavaElement element = (JavaElement)object;
-			return getClassName().equals(element.getClass()) && getName().equals(element.getName()) && getType().equals(element.getType());
+			return (getClassName()!=null ? getClassName().equals(element.getClassName()) : element.getClassName()==null)
+				&& (getName()!=null ? getName().equals(element.getName()) : element.getName()==null)
+				&& getType().equals(element.getType());
 		} else return false;
 	}
 }

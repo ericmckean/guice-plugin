@@ -26,14 +26,14 @@ public interface JavaElement {
 	/** 
 	 * The types of Java elements that can be represented.
 	 */
-	public enum TYPE { METHOD, FIELD, VARIABLE, UNSUPPORTED }
+	public enum Type { FIELD, PARAMETER }
 	
 	/** 
 	 * Return the type of this element.
 	 * 
 	 * @return the type
 	 */
-	public TYPE getType();
+	public Type getType();
 	
 	/** 
 	 * Return the name of the class of this element.  For fields and variables this is the
@@ -43,19 +43,19 @@ public interface JavaElement {
 	 */
 	public String getClassName();
 	
-	/**
-	 * Return the class type of this element.
-	 * 
-	 * @return the Class
-	 */
-	public Class<?> getTheClass();
-	
 	/** 
 	 * Return the name of this element.
 	 * 
 	 * @return the name
 	 */
 	public String getName();
+	
+	/**
+	 * Return the project that this element is part of.
+	 * 
+	 * @return the project
+	 */
+	public JavaProject getJavaProject();
 	
 	/** 
 	 * Return a string representation of the element.

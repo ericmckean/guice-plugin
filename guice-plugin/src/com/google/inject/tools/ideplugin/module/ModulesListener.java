@@ -17,6 +17,7 @@
 package com.google.inject.tools.ideplugin.module;
 
 import java.util.Set;
+import com.google.inject.tools.ideplugin.JavaProject;
 
 /**
  * Responsible for listening to changes in the user's code involving {@link com.google.inject.Module}s.
@@ -33,4 +34,16 @@ public interface ModulesListener {
 	 * @return the module names
 	 */
 	public Set<String> findModules();
+	
+	/**
+	 * Notify the listener that the project changed at the user's request.
+	 * 
+	 * @param project the new project
+	 */
+	public void projectChanged(JavaProject project);
+	
+	/**
+	 * Search the user's code for changes to the modules and notify the {@link ModuleManager} of any found.
+	 */
+	public void findChanges();
 }

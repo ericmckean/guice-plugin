@@ -25,19 +25,13 @@ import junit.framework.TestSuite;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class AllNonIDESpecificTests {
-	/**
-	 * Create the {@link TestSuite}.
-	 * 
-	 * @return the suite
-	 */
 	public static Test suite() {
 		TestSuite suite = new TestSuite();
 		
-		suite.addTestSuite(BindingLocaterTest.class);
 		suite.addTestSuite(CodeLocationsResultsTest.class);
 		suite.addTestSuite(ModuleManagerTest.class);
-		suite.addTestSuite(ModuleRepresentationTest.class);
-		suite.addTestSuite(ModuleContextRepresentationTest.class);
+		suite.addTestSuite(ModuleSnippetTest.class);
+		suite.addTestSuite(ModuleContextSnippetTest.class);
 		suite.addTestSuite(ResultsHandlerTest.class);
 
 		return suite;

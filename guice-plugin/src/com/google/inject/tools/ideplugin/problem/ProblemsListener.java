@@ -24,5 +24,5 @@ package com.google.inject.tools.ideplugin.problem;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public interface ProblemsListener {
-
+  //TODO: Phase II: do this
 }

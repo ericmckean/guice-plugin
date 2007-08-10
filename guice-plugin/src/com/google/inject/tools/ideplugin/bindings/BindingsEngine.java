@@ -22,7 +22,6 @@ import com.google.inject.tools.ideplugin.module.ModuleContextRepresentation;
 import com.google.inject.tools.ideplugin.problem.ProblemsHandler;
 import com.google.inject.tools.ideplugin.results.CodeLocationsResults;
 import com.google.inject.tools.ideplugin.results.ResultsHandler;
-import com.google.inject.tools.ideplugin.ProgressHandler;
 
 /**
  * The BindingsEngine is the glue between the other objects; it is responsible
@@ -32,9 +31,6 @@ import com.google.inject.tools.ideplugin.ProgressHandler;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public final class BindingsEngine {
-	private final Class<?> theClass;
-	private final CodeLocationsResults results;
-	
 	/**
 	 * Create a BindingsEngineImpl.  This should be created by the {@link com.google.inject.tools.ideplugin.GuicePlugin}.
 	 * 
@@ -43,31 +39,26 @@ public final class BindingsEngine {
 	 * @param moduleManager the ModuleManager to ask for what context to run in (injected)
 	 * @param element the JavaElement to find bindings for (not injected)
 	 */
-	//@AssistedInject
+	//@AssistedInject replaced by factory in GuicePlugin
 	public BindingsEngine(ModuleManager moduleManager,
-					      ProblemsHandler problemsHandler,
-					      ResultsHandler resultsHandler,
-					      ProgressHandler progressHandler,
-					      JavaElement element) {
-		boolean userCancelled = false;
-		theClass = element.getTheClass();
-		results = new CodeLocationsResults("Bindings for " + element.toString());
-		moduleManager.updateModules();
-		progressHandler.initialize(moduleManager.getModuleContexts().size());
-		for (ModuleContextRepresentation moduleContext : moduleManager.getModuleContexts()) {
-			userCancelled = !progressHandler.step("Finding Bindings for " + element.toString() + " in context " + moduleContext.getName());
-			if (userCancelled) break;
-			bindingsEnginePerModuleContext(moduleContext,problemsHandler);
+					              ProblemsHandler problemsHandler,
+					              ResultsHandler resultsHandler,
+					              JavaElement element) {
+		final String theClass = element.getClassName();
+		final CodeLocationsResults results = new CodeLocationsResults("Bindings for " + theClass);
+		if (!moduleManager.updateModules(element.getJavaProject())) {
+      results.userCancelled();
+		} else {
+		  if (moduleManager.getModuleContexts() != null) {
+		    for (ModuleContextRepresentation moduleContext : moduleManager.getModuleContexts()) {
+		      BindingLocater locater = new BindingLocater(theClass,moduleContext);
+		      problemsHandler.foundProblems(locater.getCodeLocation().getProblems());
+		      results.put(locater.getModuleContext().getName(), locater.getCodeLocation());
+		    }
+		    if (!results.keySet().isEmpty()) {
+		      resultsHandler.displayLocationsResults(results);
+		    }
+		  }
 		}
-		if (userCancelled) results.userCancelled();
-		resultsHandler.displayLocationsResults(results);
-	}
-	
-	private void bindingsEnginePerModuleContext(ModuleContextRepresentation moduleContext,ProblemsHandler problemsHandler) {
-		@SuppressWarnings("unchecked") //cannot parameterize new BindingLocater<theClass>
-		BindingLocater<?> locater = new BindingLocater(theClass,moduleContext);
-		BindingCodeLocation location = locater.getLocation();
-		problemsHandler.foundProblems(locater.getProblems());
-		results.put(moduleContext,location);
 	}
 }

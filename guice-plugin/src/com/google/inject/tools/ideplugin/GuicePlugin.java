@@ -27,17 +27,13 @@ import com.google.inject.tools.ideplugin.results.ResultsView;
 
 /** 
  * The main object of the plugin.  Unfortunately, it must be created in IDE specific ways.
- * Responsible for creating the Injector and building the various objects the plugin needs.
+ * Responsible for creating the {@link Injector} and building the various objects the plugin needs.
+ * This object can be thought of as a wrapper for the {@link Injector}.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public abstract class GuicePlugin {
 	private final Injector injector;
-	private final ResultsHandler resultsHandler;
-	private final ModuleManager moduleManager;
-	private final ProblemsHandler problemsHandler;
-	private final Messenger messenger;
-	private final ActionsHandler actionsHandler;
 	
 	/** 
 	 * Create a (the) GuicePlugin.
@@ -46,11 +42,6 @@ public abstract class GuicePlugin {
 	 */
 	public GuicePlugin(GuicePluginModule module) {
 		injector = Guice.createInjector(module);
-		moduleManager = injector.getInstance(ModuleManager.class);
-		resultsHandler = injector.getInstance(ResultsHandler.class);
-		problemsHandler = injector.getInstance(ProblemsHandler.class);
-		messenger = injector.getInstance(Messenger.class);
-		actionsHandler = injector.getInstance(ActionsHandler.class);
 	}
 	
 	/**
@@ -64,71 +55,56 @@ public abstract class GuicePlugin {
 	}
 	
 	/** 
-	 * Create a {@link BindingsEngine}.  The GuicePlugin acts as a BindingsEngine factory.
+	 * Create a {@link BindingsEngine}.
 	 * 
-	 * @return the {@link BindingsEngine}
+	 * @param element the java element to find bindings of
 	 */
 	public BindingsEngine getBindingsEngine(JavaElement element) {
-	  messenger.display("Mkaing Bindings Engine");
-		return new BindingsEngine(moduleManager,problemsHandler,resultsHandler,injector.getInstance(ProgressHandler.class),element);
+		return getInstance(GuicePluginModule.BindingsEngineFactory.class).create(element);
 	}
 	
 	/** 
 	 * Return the {@link ResultsHandler}.
-	 * 
-	 * @return the {@link ResultsHandler}
 	 */
 	public ResultsHandler getResultsHandler() {
-		return resultsHandler;
+		return getInstance(ResultsHandler.class);
 	}
 	
 	/**
 	 * Return the {@link ModuleManager}.
-	 * 
-	 * @return the {@link ModuleManager}
 	 */
 	public ModuleManager getModuleManager() {
-		return moduleManager;
+		return getInstance(ModuleManager.class);
 	}
 	
 	/**
 	 * Return the {@link ProblemsHandler}.
-	 * 
-	 * @return the {@link ProblemsHandler}
 	 */
 	public ProblemsHandler getProblemsHandler() {
-		return problemsHandler;
+		return getInstance(ProblemsHandler.class);
 	}
 	
 	/**
 	 * Return the {@link Messenger}.
-	 * 
-	 * @return the {@link Messenger}
 	 */
 	public Messenger getMessenger() {
-		return messenger;
+		return getInstance(Messenger.class);
 	}
 	
 	/**
 	 * Return the {@link ActionsHandler}.
-	 * 
-	 * @return the {@link ActionsHandler}
 	 */
 	public ActionsHandler getActionsHandler() {
-		return actionsHandler;
+		return getInstance(ActionsHandler.class);
 	}
 	
 	/**
 	 * Return the {@link ResultsView}.
-	 * 
-	 * @return the {@link ResultsView}
 	 */
 	public abstract ResultsView getResultsView();
 	
 	/**
 	 * Return the {@link ModuleSelectionView}.
-	 * 
-	 * @return the {@link ModuleSelectionView}
 	 */
 	public abstract ModuleSelectionView getModuleSelectionView();
 }

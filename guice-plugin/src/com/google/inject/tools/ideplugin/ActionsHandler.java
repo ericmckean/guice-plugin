@@ -52,8 +52,6 @@ public interface ActionsHandler {
 		
 		/**
 		 * Return the file name.
-		 * 
-		 * @return the file name
 		 */
 		public String file() {
 			return file;
@@ -61,14 +59,36 @@ public interface ActionsHandler {
 		
 		/**
 		 * Return the location (line number) to go to.
-		 * 
-		 * @return the line number
 		 */
 		public int location() {
 			return location;
 		}
+    
+    @Override
+    public boolean equals(Object object) {
+      if (!(object instanceof GotoCodeLocation)) return false;
+      return file.equals(((GotoCodeLocation)object).file()) && (location == ((GotoCodeLocation)object).location());
+    }
 	}
+  
+  public static class GotoFile implements Action {
+    private final String classname;
+    public GotoFile(String classname) {
+      this.classname = classname;
+    }
+    public String getClassname() {
+      return classname;
+    }
+    @Override
+    public boolean equals(Object object) {
+      if (!(object instanceof GotoFile)) return false;
+      return classname.equals(((GotoFile)object).getClassname());
+    }
+  }
 	
+  /**
+   * An Action that does nothing.
+   */
 	public static class NullAction implements Action {
 		
 	}
