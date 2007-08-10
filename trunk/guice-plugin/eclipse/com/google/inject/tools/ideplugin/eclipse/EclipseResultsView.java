@@ -145,16 +145,11 @@ public class EclipseResultsView extends ViewPart {
 		}
 		
 		private TreeObject makeTree(Results.Node node) {
-			ActionsHandler.Action action;
-			if (node instanceof Results.ClickableNode) {
-				action = ((Results.ClickableNode)node).getAction();
-			} else {
-				action = new ActionsHandler.NullAction();
-			}
+      //TODO: actions!
 			if (node.children().isEmpty()) {
-				return new TreeObject(node.getTitle(),action);
+				return new TreeObject(node.getTextString(),null);
 			} else {
-				TreeParent parent = new TreeParent(node.getTitle(),action);
+				TreeParent parent = new TreeParent(node.getTextString(),null);
 				for (Results.Node child : node.children()) {
 					parent.addChild(makeTree(child));
 				}

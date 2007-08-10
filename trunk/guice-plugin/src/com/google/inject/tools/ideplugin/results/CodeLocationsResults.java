@@ -19,9 +19,10 @@ package com.google.inject.tools.ideplugin.results;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
-import com.google.inject.tools.ideplugin.module.ModuleContextRepresentation;
-import com.google.inject.tools.ideplugin.problem.CodeProblem;
+import com.google.inject.tools.ideplugin.snippets.CodeLocation;
+import com.google.inject.tools.ideplugin.snippets.CodeProblem;
 import com.google.inject.tools.ideplugin.ActionsHandler;
+import com.google.inject.tools.ideplugin.results.Results;
 
 /**
  * Represents the results of a code location search, such as finding the bindings of something.
@@ -33,7 +34,7 @@ public class CodeLocationsResults extends Results {
 	/**
 	 * A node in the tree that holds a {@link CodeLocation}.
 	 */
-	public class CodeLocationNode extends Node {
+	public static class CodeLocationNode extends Node {
 		private final CodeLocation location;
 		
 		/**
@@ -44,13 +45,13 @@ public class CodeLocationsResults extends Results {
 		 * @param location the {@link CodeLocation}
 		 */
 		public CodeLocationNode(String name,CodeLocation location) {
-			super(name);
+			super(new Node.ActionString(name,new ActionsHandler.GotoCodeLocation(location.file(),location.location())));
 			this.location = location;
-			if (location.file() != null) {
-				addChild(new ClickableNode("Bound to " + location.getDisplayName() + " at " + location.file() + ":" + location.location(),new ActionsHandler.GotoCodeLocation(location.file(),location.location())));
-			}
-			if (!location.getProblems().isEmpty()) {
-				Node node = new Node("Problems");
+      if (location.file() != null) {
+        addChild(new Node(location.getDisplay()));
+      }
+      if (!location.getProblems().isEmpty()) {
+				Node node = new Node(new ActionString("Problems"));
 				for (CodeProblem problem : location.getProblems()) {
 					node.addChild(new ProblemNode(problem));
 				}
@@ -71,7 +72,7 @@ public class CodeLocationsResults extends Results {
 	/**
 	 * A Node representing a {@link CodeProblem}.
 	 */
-	public class ProblemNode extends Node {
+	public static class ProblemNode extends Node {
 		private final CodeProblem problem;
 		
 		/**
@@ -80,7 +81,7 @@ public class CodeLocationsResults extends Results {
 		 * @param problem the problem
 		 */
 		public ProblemNode(CodeProblem problem) {
-			super(problem.toString());
+			super(problem.getDisplay());
 			this.problem = problem;
 		}
 		
@@ -94,7 +95,7 @@ public class CodeLocationsResults extends Results {
 		}
 	}
 	
-	private final Map<ModuleContextRepresentation,CodeLocation> map;
+	private final Map<String,CodeLocation> map;
 	
 	/**
 	 * Create a new CodeLocationsResults object with the given title.
@@ -103,36 +104,36 @@ public class CodeLocationsResults extends Results {
 	 */
 	public CodeLocationsResults(String title) {
 		super(title);
-		map = new HashMap<ModuleContextRepresentation,CodeLocation>();
+		map = new HashMap<String,CodeLocation>();
 	}
 	
 	/**
-	 * Add a {@link ModuleContextRepresentation} to {@link CodeLocation} pairing to the results.
+	 * Add a {@link com.google.inject.tools.ideplugin.module.ModuleContextRepresentation} to {@link CodeLocation} pairing to the results.
 	 * 
 	 * @param module the module context
 	 * @param location the code location
 	 */
-	public synchronized void put(ModuleContextRepresentation module,CodeLocation location) {
+	public synchronized void put(String module,CodeLocation location) {
 		map.put(module,location);
-		getRoot().addChild(new CodeLocationNode(module.getName(),location));
+		getRoot().addChild(new CodeLocationNode(module,location));
 	}
 	
 	/**
-	 * Return all the {@link ModuleContextRepresentation}s in the results.
+	 * Return all the {@link com.google.inject.tools.ideplugin.module.ModuleContextRepresentation}s in the results.
 	 * 
 	 * @return the modules
 	 */
-	public synchronized Set<ModuleContextRepresentation> keySet() {
+	public synchronized Set<String> keySet() {
 		return map.keySet();
 	}
 	
 	/**
-	 * Return the {@link CodeLocation} in this results for the given {@link ModuleContextRepresentation}.
+	 * Return the {@link CodeLocation} in this results for the given {@link com.google.inject.tools.ideplugin.module.ModuleContextRepresentation}.
 	 * 
 	 * @param module the module context
 	 * @return the code location
 	 */
-	public synchronized CodeLocation get(ModuleContextRepresentation module) {
+	public synchronized CodeLocation get(String module) {
 		return map.get(module);
 	}
 }

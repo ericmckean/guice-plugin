@@ -17,6 +17,7 @@
 package com.google.inject.tools.ideplugin.test;
 
 import com.google.inject.tools.ideplugin.JavaElement;
+import com.google.inject.tools.ideplugin.JavaProject;
 
 /**
  * Mock the JavaElement object.
@@ -24,7 +25,7 @@ import com.google.inject.tools.ideplugin.JavaElement;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class MockJavaElement implements JavaElement {
-	private TYPE type;
+	private Type type;
 	private String name;
 	private String className;
 	
@@ -33,18 +34,14 @@ public class MockJavaElement implements JavaElement {
 	 *
 	 * @param type the type
 	 */
-	public MockJavaElement(TYPE type) {
+	public MockJavaElement(Type type) {
 		this.type = type;
 		switch (type) {
-		case METHOD:
+		case PARAMETER:
 			name = new String("TestMethod");
 			className = new String("TestClass");
 			break;
 		case FIELD:
-			name = new String("TestField");
-			className = new String("TestClass");
-			break;
-		case VARIABLE:
 			name = new String("TestField");
 			className = new String("TestClass");
 			break;
@@ -63,8 +60,8 @@ public class MockJavaElement implements JavaElement {
 		return className;
 	}
 	
-	public Class<?> getTheClass() {
-		return MockJavaElement.class;
+	public JavaProject getJavaProject() {
+		return null;
 	}
 	
 	/**
@@ -79,7 +76,7 @@ public class MockJavaElement implements JavaElement {
 	 * (non-Javadoc)
 	 * @see com.google.inject.tools.ideplugin.JavaElement#getType()
 	 */
-	public TYPE getType() {
+	public Type getType() {
 		return type;
 	}
 	

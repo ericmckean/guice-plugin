@@ -16,6 +16,8 @@
 
 package com.google.inject.tools.ideplugin.results;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
 import com.google.inject.tools.ideplugin.ActionsHandler;
@@ -32,29 +34,76 @@ public class Results {
 	 * 
 	 * Warning: the tree is not synchronized by the Results object, the client is responsible.
 	 */
-	public class Node {
-		private final String title;
+	public static class Node {
+    public static class ActionString {
+      private final String label;
+      private final ActionsHandler.Action action;
+      public ActionString(String label) {
+        this.label = label;
+        this.action = new ActionsHandler.NullAction();
+      }
+      public ActionString(String label,ActionsHandler.Action action) {
+        this.label = label;
+        this.action = action;
+      }
+      public String label() {
+        return label;
+      }
+      public ActionsHandler.Action action() {
+        return action;
+      }
+      @Override
+      public boolean equals(Object object) {
+        if (!(object instanceof ActionString)) return false;
+        return label.equals(((ActionString)object).label()) && action.equals(((ActionString)object).action());
+      }
+      @Override
+      public String toString() {
+        return label;
+      }
+    }
+    
+		private final List<ActionString> text;
 		private final Set<Node> children;
 		
 		/**
 		 * Create a new Node.
 		 * 
-		 * @param title the display title
+		 * @param text the text elements to display
 		 */
-		public Node(String title) {
-			this.title = title;
+		public Node(List<ActionString> text) {
+			this.text = text;
 			this.children = new HashSet<Node>();
 		}
+    
+    public Node(ActionString label) {
+      this.text = new ArrayList<ActionString>();
+      this.text.add(label);
+      this.children = new HashSet<Node>();
+    }
+    
+    public Node(String label) {
+      this.text = new ArrayList<ActionString>();
+      this.text.add(new ActionString(label));
+      this.children = new HashSet<Node>();
+    }
 		
 		/**
-		 * Return the title of this node.
-		 * 
-		 * @return the title
+		 * Return the text of this node.
 		 */
-		public String getTitle() {
-			return title;
+		public List<ActionString> getText() {
+			return text;
 		}
 		
+    public String getTextString() {
+      StringBuilder result = new StringBuilder();
+      for (ActionString part : text) {
+        result.append(part.label());
+        result.append(" ");
+      }
+      return result.toString();
+    }
+    
 		/**
 		 * Add a Node as a child of this node.
 		 * 
@@ -80,7 +129,7 @@ public class Results {
 		@Override
 		public String toString() {
 			StringBuilder builder = new StringBuilder();
-			builder.append("Results.Node(" + title + "){");
+			builder.append("Results.Node(" + getTextString() + "){");
 			for (Node child : children) {
 				builder.append(child.toString());
 				builder.append(",");
@@ -88,34 +137,14 @@ public class Results {
 			builder.append("}");
 			return builder.toString();
 		}
-	}
-	
-	/**
-	 * A Node in the tree that is (double) clickable and so has an {@link com.google.inject.tools.ideplugin.ActionsHandler.Action} 
-	 * associated to it.
-	 */
-	public class ClickableNode extends Node {
-		private final ActionsHandler.Action action;
-		
-		/**
-		 * Create a ClickableNote with the given name and action.
-		 * 
-		 * @param name the name
-		 * @param action the {@link com.google.inject.tools.ideplugin.ActionsHandler.Action}
-		 */
-		public ClickableNode(String name,ActionsHandler.Action action) {
-			super(name);
-			this.action = action;
-		}
-		
-		/**
-		 * Return the {@link com.google.inject.tools.ideplugin.ActionsHandler.Action} to perform when the node is clicked.
-		 * 
-		 * @return the action
-		 */
-		public ActionsHandler.Action getAction() {
-			return action;
-		}
+    
+    @Override
+    public boolean equals(Object object) {
+      if (!(object instanceof Node)) return false;
+      Node node = (Node)object;
+      if (!getTextString().equals(node.getTextString())) return false;
+      return children().equals(node.children());
+    }
 	}
 	
 	private final Node root;
@@ -126,7 +155,7 @@ public class Results {
 	 * @param title the title
 	 */
 	public Results(String title) {
-		root = new Node(title);
+		root = new Node(new Node.ActionString(title));
 	}
 	
 	/**

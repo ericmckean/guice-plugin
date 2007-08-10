@@ -14,29 +14,28 @@
  * limitations under the License.
  */
 
-package com.google.inject.tools.ideplugin.results;
+package com.google.inject.tools.ideplugin.snippets;
 
+import java.util.List;
 import java.util.Set;
-
-import com.google.inject.tools.ideplugin.problem.CodeProblem;
+import com.google.inject.tools.ideplugin.results.Results.Node.ActionString;
 
 /**
  * Represents a location in the user's code space.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public abstract class CodeLocation {
+public abstract class CodeLocation extends CodeSnippetResult {
 	private final String file;
 	private final int location;
-	private final Set<CodeProblem> problems;
 	
 	/**
 	 * Create a new CodeLocation.
 	 */
-	public CodeLocation(String file,int location,Set<CodeProblem> problems) {
+	public CodeLocation(String file,int location,Set<? extends CodeProblem> problems) {
+		super(problems);
 		this.file = file;
 		this.location = location;
-		this.problems = problems;
 	}
 	
 	/**
@@ -44,7 +43,7 @@ public abstract class CodeLocation {
 	 * 
 	 * @return the display name
 	 */
-	public abstract String getDisplayName();
+	public abstract List<ActionString> getDisplay();
 	
 	/**
 	 * Return the file where the code lives.
@@ -62,14 +61,5 @@ public abstract class CodeLocation {
 	 */
 	public int location() {
 		return location;
-	}
-	
-	/**
-	 * Return the {@link CodeProblem}s associated with this CodeLocation.
-	 * 
-	 * @return the problems
-	 */
-	public Set<CodeProblem> getProblems() {
-		return problems;
 	}
 }

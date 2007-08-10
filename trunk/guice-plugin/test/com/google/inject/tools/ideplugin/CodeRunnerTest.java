@@ -16,24 +16,14 @@
 
 package com.google.inject.tools.ideplugin;
 
+import junit.framework.TestCase;
+import com.google.inject.tools.ideplugin.code.CodeRunner;
+
 /**
- * Manages a progress bar display of operations.  IDE specific implementations are required.
+ * Unit test the {@link CodeRunner}.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public interface ProgressHandler {
-	/**
-	 * Reset the progress handler to its starting state and prepare to do the given number of steps.
-	 * 
-	 * @param totalsteps the number of steps
-	 */
-	public void initialize(int totalsteps);
-	
-	/**
-	 * Notify the progress handler that the next step is beginning and give it a label to display for this step.
-	 * 
-	 * @param label the label to display for this step
-	 * @return false if the user cancelled the operation
-	 */
-	public boolean step(String label);
+public class CodeRunnerTest extends TestCase {
+  
 }

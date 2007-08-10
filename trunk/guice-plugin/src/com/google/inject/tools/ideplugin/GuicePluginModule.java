@@ -17,7 +17,11 @@
 package com.google.inject.tools.ideplugin;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Scopes;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
+import com.google.inject.tools.ideplugin.bindings.BindingsEngine;
+import com.google.inject.tools.ideplugin.code.CodeRunner;
+import com.google.inject.tools.ideplugin.code.CodeRunnerImpl;
 import com.google.inject.tools.ideplugin.module.ModuleManager;
 import com.google.inject.tools.ideplugin.module.ModuleManagerImpl;
 import com.google.inject.tools.ideplugin.problem.ProblemsHandler;
@@ -32,12 +36,60 @@ import com.google.inject.tools.ideplugin.results.ResultsHandlerImpl;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public abstract class GuicePluginModule extends AbstractModule {
+	protected interface BindingsEngineFactory {
+		public BindingsEngine create(JavaElement element);
+	}
+  
+  /**
+   * Factory for creating {@link CodeRunner}s.
+   */
+  public interface CodeRunnerFactory {
+    /**
+     * Create a {@link CodeRunner}.
+     * @param project the {@link JavaProject} to run code in
+     */
+    public CodeRunner create(JavaProject project);
+  }
+	
+	protected static class BindingsEngineFactoryImpl implements BindingsEngineFactory {
+		private final Provider<ModuleManager> moduleManagerProvider;
+		private final Provider<ProblemsHandler> problemsHandlerProvider;
+		private final Provider<ResultsHandler> resultsHandlerProvider;
+		
+		@Inject
+		public BindingsEngineFactoryImpl(Provider<ModuleManager> moduleManagerProvider,
+				Provider<ProblemsHandler> problemsHandlerProvider,
+				Provider<ResultsHandler> resultsHandlerProvider) {
+			this.moduleManagerProvider = moduleManagerProvider;
+			this.problemsHandlerProvider = problemsHandlerProvider;
+			this.resultsHandlerProvider = resultsHandlerProvider;
+		}
+		
+		public BindingsEngine create(JavaElement element) {
+			return new BindingsEngine(moduleManagerProvider.get(),
+					problemsHandlerProvider.get(),
+					resultsHandlerProvider.get(),
+					element);
+		}
+	}
+  
+  protected static class CodeRunnerFactoryImpl implements CodeRunnerFactory {
+    @Inject
+    public CodeRunnerFactoryImpl() {}
+    public CodeRunner create(JavaProject project) {
+      return new CodeRunnerImpl(project);
+    }
+  }
+	
 	/** 
 	 * (non-Javadoc)
 	 * @see com.google.inject.AbstractModule#configure()
 	 */
 	@Override
 	protected void configure() {
+		bindBindingsEngine();
+		bindCodeRunner();
+    bindProgressHandler();
 		bindActionsHandler();
 		bindModuleManager();
 		bindResultsHandler();
@@ -46,28 +98,34 @@ public abstract class GuicePluginModule extends AbstractModule {
 		bindModulesListener();
 		bindModuleSelectionView();
 		bindMessenger();
-		bindProgressHandler();
+	}
+	
+	/**
+	 * Bind the {@link BindingsEngine} factory.
+	 */
+	protected void bindBindingsEngine() {
+		bind(BindingsEngineFactory.class).to(BindingsEngineFactoryImpl.class).asEagerSingleton();
 	}
 	
 	/** 
 	 * Bind the {@link ModuleManager} implementation.
 	 */
 	protected void bindModuleManager() {
-		bind(ModuleManager.class).to(ModuleManagerImpl.class).in(Scopes.SINGLETON);
+		bind(ModuleManager.class).to(ModuleManagerImpl.class).asEagerSingleton();
 	}
 	
 	/** 
 	 * Bind the {@link ResultsHandler} implementation.
 	 */
 	protected void bindResultsHandler() {
-		bind(ResultsHandler.class).to(ResultsHandlerImpl.class).in(Scopes.SINGLETON);
+		bind(ResultsHandler.class).to(ResultsHandlerImpl.class).asEagerSingleton();
 	}
 	
 	/**
 	 * Bind the {@link ProblemsHandler} implementation.
 	 */
 	protected void bindProblemsHandler() {
-		bind(ProblemsHandler.class).to(ProblemsHandlerImpl.class).in(Scopes.SINGLETON);
+		bind(ProblemsHandler.class).to(ProblemsHandlerImpl.class).asEagerSingleton();
 	}
 	
 	/**
@@ -96,7 +154,14 @@ public abstract class GuicePluginModule extends AbstractModule {
 	protected abstract void bindActionsHandler();
 	
 	/**
-	 * Bind the {@link ProgressHandler} implementation.
+	 * Bind the {@link CodeRunner} implementation.
 	 */
-	protected abstract void bindProgressHandler();
+	protected void bindCodeRunner() {
+	  bind(CodeRunnerFactory.class).to(CodeRunnerFactoryImpl.class);
+  }
+  
+  /**
+   * Bind the {@link ProgressHandler} implementation.
+   */
+  protected abstract void bindProgressHandler();
 }

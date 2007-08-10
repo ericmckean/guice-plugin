@@ -18,6 +18,8 @@ package com.google.inject.tools.ideplugin.problem;
 
 import java.util.Set;
 
+import com.google.inject.tools.ideplugin.snippets.CodeProblem;
+
 /**
  * Notify the user in realtime of problems with their guice code by code assist or other (nonblocking) means.
  * These should respond concurrently to the existing flow, i.e. be nonblocking methods.
@@ -30,5 +32,5 @@ public interface ProblemsHandler {
 	 * 
 	 * @param problem
 	 */
-	public void foundProblems(Set<CodeProblem> problem);
+	public void foundProblems(Set<? extends CodeProblem> problem);
 }

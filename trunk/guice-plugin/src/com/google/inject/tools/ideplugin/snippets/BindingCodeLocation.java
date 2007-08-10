@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package com.google.inject.tools.ideplugin.bindings;
+package com.google.inject.tools.ideplugin.snippets;
 
-import com.google.inject.tools.ideplugin.module.ModuleContextRepresentation;
-import com.google.inject.tools.ideplugin.problem.CodeProblem;
-import com.google.inject.tools.ideplugin.results.CodeLocation;
-
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
+
+import com.google.inject.tools.ideplugin.ActionsHandler;
+import com.google.inject.tools.ideplugin.results.Results.Node.ActionString;
 
 /**
  * Represents the location in code of where a binding occurs.
@@ -28,8 +29,8 @@ import java.util.Set;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class BindingCodeLocation extends CodeLocation {
-	private final ModuleContextRepresentation module;
-	private final Class<?> bindWhat;
+	private final String moduleContext;
+	private final String bindWhat;
 	private final String bindTo;
 	
 	/**
@@ -37,34 +38,40 @@ public class BindingCodeLocation extends CodeLocation {
 	 * 
 	 * @param bindWhat the class to bind
 	 * @param bindTo what it is bound to
-	 * @param module the module this binding happens in
+	 * @param moduleContext the module context this binding happens in
 	 * @param file the file this happens in
 	 * @param location the line number in that file where this happens
 	 * @param problems any {@link CodeProblem}s that occurred during getting this binding
 	 */
-	public BindingCodeLocation(Class<?> bindWhat,String bindTo,ModuleContextRepresentation module,String file,int location,Set<CodeProblem> problems) {
+	public BindingCodeLocation(String bindWhat,String bindTo,String moduleContext,String file,int location,Set<? extends CodeProblem> problems) {
 		super(file,location,problems);
 		this.bindWhat = bindWhat;
 		this.bindTo = bindTo;
-		this.module = module;
+		this.moduleContext = moduleContext;
 	}
 	
 	/**
 	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.results.CodeLocation#getDisplayName()
+	 * @see com.google.inject.tools.ideplugin.snippets.CodeLocation#getDisplay()
 	 */
 	@Override
-	public String getDisplayName() {
-		return bindTo;
-	}
+	public List<ActionString> getDisplay() {
+		List<ActionString> text = new ArrayList<ActionString>();
+    text.add(new ActionString(bindWhat,new ActionsHandler.GotoFile(bindWhat)));
+    text.add(new ActionString("is bound to"));
+    text.add(new ActionString(bindTo,new ActionsHandler.GotoFile(bindTo)));
+    text.add(new ActionString("at"));
+    text.add(new ActionString(file() + ":" + String.valueOf(location()),new ActionsHandler.GotoCodeLocation(file(),location())));
+    return text;
+  }
 	
 	/**
-	 * Return the module this binding occurred in.
+	 * Return the module context this binding occurred in.
 	 * 
-	 * @return the {@link ModuleContextRepresentation}
+	 * @return the module context
 	 */
-	public ModuleContextRepresentation getModule() {
-		return module;
+	public String getModuleContext() {
+		return moduleContext;
 	}
 	
 	/**
@@ -72,7 +79,11 @@ public class BindingCodeLocation extends CodeLocation {
 	 * 
 	 * @return the class
 	 */
-	public Class<?> bindWhat() {
+	public String bindWhat() {
 		return bindWhat;
 	}
+  
+  public String bindTo() {
+    return bindTo;
+  }
 }

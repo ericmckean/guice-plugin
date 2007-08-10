@@ -18,6 +18,7 @@ package com.google.inject.tools.ideplugin.eclipse;
 
 import com.google.inject.Singleton;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Shell;
 import com.google.inject.tools.ideplugin.Messenger;
 
 /**
@@ -29,7 +30,7 @@ import com.google.inject.tools.ideplugin.Messenger;
 public class EclipseMessenger implements Messenger {
 	private void showMessage(String message) {
 		MessageDialog.openInformation(
-			null,
+			new Shell(),
 			"Guice",
 			message);
 	}

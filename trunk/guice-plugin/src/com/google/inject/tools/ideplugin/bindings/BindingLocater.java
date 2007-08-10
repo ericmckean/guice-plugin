@@ -17,14 +17,7 @@
 package com.google.inject.tools.ideplugin.bindings;
 
 import com.google.inject.tools.ideplugin.module.ModuleContextRepresentation;
-import com.google.inject.tools.ideplugin.problem.CodeProblem;
-import com.google.inject.Binding;
-import com.google.inject.Key;
-import com.google.inject.Provider;
-import com.google.inject.Injector;
-//import com.google.inject.OutOfScopeException;
-import java.util.Set;
-import java.util.HashSet;
+import com.google.inject.tools.ideplugin.snippets.BindingCodeLocation;
 
 /**
  * The BindingLocater performs the actual determination of what an interface is bound to
@@ -32,83 +25,35 @@ import java.util.HashSet;
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public class BindingLocater<T> {
-	private final Class<T> theClass;
-	private final ModuleContextRepresentation module;
-	private final BindingCodeLocation location;
-	private final HashSet<CodeProblem> problems;
+public class BindingLocater {
+	private final String theClass;
+	private final ModuleContextRepresentation moduleContext;
+  private final BindingCodeLocation location;
 	
-	/**
-	 * Create a BindingLocater for locating the binding of the given class when using the given module.
-	 * 
-	 * @param theClass the class to find bindings of
-	 * @param module the module context to find bindings in
-	 */
-	public BindingLocater(Class<T> theClass,ModuleContextRepresentation module) {
+	public BindingLocater(String theClass,ModuleContextRepresentation moduleContext) {
 		this.theClass = theClass;
-		this.module = module;
-		problems = new HashSet<CodeProblem>();
-		if (module.isValid()) {
-			String bindTo = null;
-			StackTraceElement source = null;
-			Binding<T> binding = null;
-			Injector injector = null;
-			try {
-				injector = module.getInjector();
-				binding = injector.getBinding(Key.get(theClass));
-				if (binding == null) {
-					problems.add(new CodeProblem.NoBindingProblem(module,theClass));
-				} else {
-					source = (StackTraceElement)binding.getSource();
-					Provider<? extends T> provider = binding.getProvider();
-					bindTo = provider.get().getClass().getName();
-				}
-			//} catch (OutOfScopeException exception) {
-			//	problems.add(new CodeProblem.OutOfScopeProblem(module,theClass,exception));
-			} catch (Exception exception) {
-				problems.add(new CodeProblem.BindingProblem(module,theClass,exception));
-			}
-			location = (source==null || bindTo==null) ? null :
-				new BindingCodeLocation(theClass,bindTo,module,source.getFileName(),source.getLineNumber(),problems);
-		} else {
-			location = null;
-			problems.add(new CodeProblem.InvalidModuleContextProblem(module));
-		}
+		this.moduleContext = moduleContext;
+    this.location = moduleContext.findLocation(theClass);
 	}
 	
 	/**
 	 * Return the class we are finding bindings for.
-	 * 
-	 * @return the class
 	 */
-	public Class<?> getTheClass() {
+	public String getTheClass() {
 		return theClass;
 	}
 	
 	/**
 	 * Return the module context we are running in.
-	 * 
-	 * @return the module context
 	 */
-	public ModuleContextRepresentation getModule() {
-		return module;
+	public ModuleContextRepresentation getModuleContext() {
+		return moduleContext;
 	}
-	
-	/**
-	 * Return the {@link BindingCodeLocation} encapsulating the results.
-	 * 
-	 * @return the result
-	 */
-	public BindingCodeLocation getLocation() {
-		return location;
-	}
-	
-	/**
-	 * Return the set of {@link CodeProblem}s encountered while finding bindings.
-	 * 
-	 * @return the problems
-	 */
-	public Set<CodeProblem> getProblems() {
-		return new HashSet<CodeProblem>(problems);
-	}
+  
+  /**
+   * Return the code location where the binding happens (and/or problems finding it).
+   */
+  public BindingCodeLocation getCodeLocation() {
+    return location;
+  }
 }

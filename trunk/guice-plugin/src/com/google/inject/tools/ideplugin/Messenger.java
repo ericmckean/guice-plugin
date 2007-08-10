@@ -17,13 +17,15 @@
 package com.google.inject.tools.ideplugin;
 
 /**
- * Responsible for displaying messages to the user.
+ * Responsible for displaying messages to the user in dialog box format.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public interface Messenger {
 	/**
-	 * Display a message to the user.
+	 * Display a message to the user in a dialog box.
+   * This should be a blocking method.
+   * Only threads allowed to access UI elements may call this method.
 	 * 
 	 * @param message the message to display
 	 */

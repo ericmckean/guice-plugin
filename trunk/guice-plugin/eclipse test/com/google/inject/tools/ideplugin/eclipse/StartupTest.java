@@ -25,11 +25,12 @@ import com.google.inject.tools.ideplugin.module.ModulesListener;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
 import com.google.inject.tools.ideplugin.results.ResultsHandler;
 import com.google.inject.tools.ideplugin.Messenger;
+import com.google.inject.tools.ideplugin.GuicePluginModule;
+import com.google.inject.tools.ideplugin.ProgressHandler;
 import com.google.inject.tools.ideplugin.problem.ProblemsHandler;
 import com.google.inject.tools.ideplugin.ActionsHandler;
 import com.google.inject.tools.ideplugin.test.MockJavaElement;
 import com.google.inject.tools.ideplugin.JavaElement;
-
 
 /** 
  * Test the activator and therefore the plugin object and the module for our plugin for guice 
@@ -40,13 +41,6 @@ import com.google.inject.tools.ideplugin.JavaElement;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class StartupTest extends TestCase {
-	/**
-	 * (non-Javadoc)
-	 * @see junit.framework.TestCase#setUp()
-	 */
-	@Override
-	protected void setUp() {}
-	
 	/** 
 	 * Create a new activator and therefore a new GuicePlugin.
 	 */
@@ -62,20 +56,22 @@ public class StartupTest extends TestCase {
 	    module.setModuleSelectionView(new EclipseGuicePlugin.ModuleSelectionViewImpl());
 	    module.setResultsView(new EclipseGuicePlugin.ResultsViewImpl());
 	    Injector injector = Guice.createInjector(module);
-	    injector.getInstance(ModuleManager.class);
-	    injector.getInstance(ModulesListener.class);
-	    injector.getInstance(ResultsView.class);
-	    injector.getInstance(ModuleSelectionView.class);
-	    injector.getInstance(ResultsHandler.class);
-	    injector.getInstance(ProblemsHandler.class);
-	    injector.getInstance(ActionsHandler.class);
-	    injector.getInstance(Messenger.class);
+	    assertNotNull(injector.getInstance(ModuleManager.class));
+	    assertNotNull(injector.getInstance(ModulesListener.class));
+	    assertNotNull(injector.getInstance(ResultsView.class));
+	    assertNotNull(injector.getInstance(ModuleSelectionView.class));
+	    assertNotNull(injector.getInstance(ResultsHandler.class));
+	    assertNotNull(injector.getInstance(ProblemsHandler.class));
+	    assertNotNull(injector.getInstance(ActionsHandler.class));
+	    assertNotNull(injector.getInstance(Messenger.class));
+      assertNotNull(injector.getInstance(GuicePluginModule.CodeRunnerFactory.class));
+      assertNotNull(injector.getInstance(ProgressHandler.class));
 	}
 	
 	public void testCreateBindingsEngine() {
 	  EclipsePluginModule module = new EclipsePluginModule();
 	  module.setModuleSelectionView(new EclipseGuicePlugin.ModuleSelectionViewImpl());
 	  module.setResultsView(new EclipseGuicePlugin.ResultsViewImpl());
-	  new EclipseGuicePlugin(module).getBindingsEngine(new MockJavaElement(JavaElement.TYPE.VARIABLE));
+	  new EclipseGuicePlugin(module).getBindingsEngine(new MockJavaElement(JavaElement.Type.FIELD));
 	}
 }
