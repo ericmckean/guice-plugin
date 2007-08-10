@@ -16,7 +16,6 @@
 
 package com.google.inject.tools.ideplugin.snippets;
 
-import java.util.List;
 import java.util.Set;
 import com.google.inject.tools.ideplugin.results.Results.Node.ActionString;
 
@@ -43,7 +42,7 @@ public abstract class CodeLocation extends CodeSnippetResult {
 	 * 
 	 * @return the display name
 	 */
-	public abstract List<ActionString> getDisplay();
+	public abstract ActionString getDisplay();
 	
 	/**
 	 * Return the file where the code lives.

@@ -65,8 +65,17 @@ public class ModuleSnippet<T extends Module> extends CodeSnippet {
     public boolean equals(Object object) {
       if (!(object instanceof ConstructorRepresentation)) return false;
       ConstructorRepresentation constructor = (ConstructorRepresentation)object;
+      if (argumentTypes == null) return constructor.getArgumentTypes()==null;
       return argumentTypes.equals(constructor.getArgumentTypes()) &&
         exceptionTypes.equals(constructor.getExceptionTypes());
+    }
+    @Override
+    public int hashCode() {
+      if (argumentTypes!=null) {
+        if (argumentTypes.size() == 0) return 1;
+        return argumentTypes.hashCode();
+      }
+      return 1;
     }
 	}
   
@@ -84,9 +93,9 @@ public class ModuleSnippet<T extends Module> extends CodeSnippet {
    */
 	public static class ModuleResult extends CodeSnippetResult {
 		private final String name;
-		private final Set<ConstructorRepresentation> constructors;
+		private final Set<? extends ConstructorRepresentation> constructors;
 		private final boolean hasDefaultConstructor;
-		public ModuleResult(String name,Set<? extends CodeProblem> problems,boolean hasDefaultConstructor,Set<ConstructorRepresentation> constructors) {
+		public ModuleResult(String name,Set<? extends CodeProblem> problems,boolean hasDefaultConstructor,Set<? extends ConstructorRepresentation> constructors) {
 			super(problems);
 			this.name = name;
 			this.constructors = constructors;
@@ -95,7 +104,7 @@ public class ModuleSnippet<T extends Module> extends CodeSnippet {
 		public String getName() {
 			return name;
 		}
-		public Set<ConstructorRepresentation> getConstructors() {
+		public Set<? extends ConstructorRepresentation> getConstructors() {
 			return constructors;
 		}
 		public boolean hasDefaultConstructor() {

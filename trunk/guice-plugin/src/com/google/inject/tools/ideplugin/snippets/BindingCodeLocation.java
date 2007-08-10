@@ -16,10 +16,7 @@
 
 package com.google.inject.tools.ideplugin.snippets;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
-
 import com.google.inject.tools.ideplugin.ActionsHandler;
 import com.google.inject.tools.ideplugin.results.Results.Node.ActionString;
 
@@ -55,13 +52,13 @@ public class BindingCodeLocation extends CodeLocation {
 	 * @see com.google.inject.tools.ideplugin.snippets.CodeLocation#getDisplay()
 	 */
 	@Override
-	public List<ActionString> getDisplay() {
-		List<ActionString> text = new ArrayList<ActionString>();
-    text.add(new ActionString(bindWhat,new ActionsHandler.GotoFile(bindWhat)));
-    text.add(new ActionString("is bound to"));
-    text.add(new ActionString(bindTo,new ActionsHandler.GotoFile(bindTo)));
-    text.add(new ActionString("at"));
-    text.add(new ActionString(file() + ":" + String.valueOf(location()),new ActionsHandler.GotoCodeLocation(file(),location())));
+	public ActionString getDisplay() {
+		ActionString text = new ActionString();
+    text.addTextWithAction(bindWhat,new ActionsHandler.GotoFile(bindWhat));
+    text.addText("is bound to");
+    text.addTextWithAction(bindTo,new ActionsHandler.GotoFile(bindTo));
+    text.addText("at");
+    text.addTextWithAction(file() + ":" + String.valueOf(location()),new ActionsHandler.GotoCodeLocation(file(),location()));
     return text;
   }
 	

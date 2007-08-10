@@ -91,4 +91,9 @@ public class MockJavaElement implements JavaElement {
 			return className.equals(element.getClassName()) && name.equals(element.getName()) && type.equals(element.getType());
 		} else return false;
 	}
+  
+  @Override
+  public int hashCode() {
+    return 1;
+  }
 }

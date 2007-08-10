@@ -45,13 +45,13 @@ public class CodeLocationsResults extends Results {
 		 * @param location the {@link CodeLocation}
 		 */
 		public CodeLocationNode(String name,CodeLocation location) {
-			super(new Node.ActionString(name,new ActionsHandler.GotoCodeLocation(location.file(),location.location())));
+			super(name,new ActionsHandler.GotoCodeLocation(location.file(),location.location()));
 			this.location = location;
       if (location.file() != null) {
         addChild(new Node(location.getDisplay()));
       }
       if (!location.getProblems().isEmpty()) {
-				Node node = new Node(new ActionString("Problems"));
+				Node node = new Node("Problems");
 				for (CodeProblem problem : location.getProblems()) {
 					node.addChild(new ProblemNode(problem));
 				}

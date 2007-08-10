@@ -26,7 +26,7 @@ import com.google.inject.Inject;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 @Singleton
-public class EclipseActionsHandler implements ActionsHandler {
+public class EclipseActionsHandler extends ActionsHandler {
 	/**
 	 * Create the ActionsHandler.  This should be injected as a singleton.
 	 */
@@ -39,15 +39,13 @@ public class EclipseActionsHandler implements ActionsHandler {
 	 * (non-Javadoc)
 	 * @see com.google.inject.tools.ideplugin.ActionsHandler#run(com.google.inject.tools.ideplugin.ActionsHandler.GotoCodeLocation)
 	 */
+  @Override
 	public void run(GotoCodeLocation action) {
 		
 	}
-	
-	/**
-	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.ActionsHandler#run(com.google.inject.tools.ideplugin.ActionsHandler.Action)
-	 */
-	public void run(Action action) {
-		
-	}
+  
+  @Override
+  public void run(GotoFile action) {
+    
+  }
 }
