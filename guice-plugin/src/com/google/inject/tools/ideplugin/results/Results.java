@@ -71,6 +71,7 @@ public class Results {
 		 * 
 		 * @param text the text elements to display
 		 */
+    //TODO: encapsulate List in an object
 		public Node(List<ActionString> text) {
 			this.text = text;
 			this.children = new HashSet<Node>();
