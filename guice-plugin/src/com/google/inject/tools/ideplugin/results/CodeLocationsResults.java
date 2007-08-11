@@ -136,4 +136,15 @@ public class CodeLocationsResults extends Results {
 	public synchronized CodeLocation get(String module) {
 		return map.get(module);
 	}
+  
+  @Override
+  public String toString() {
+    StringBuilder result = new StringBuilder();
+    result.append("Code Locations: {");
+    for (String module : map.keySet()) {
+      result.append(module + " ==> " + map.get(module).toString());
+    }
+    result.append("}");
+    return result.toString();
+  }
 }

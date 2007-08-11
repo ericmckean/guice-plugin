@@ -96,4 +96,12 @@ public class MockJavaElement implements JavaElement {
   public int hashCode() {
     return 1;
   }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.JavaElement#isInjectionPoint()
+   */
+  public boolean isInjectionPoint() {
+    return false;
+  }
 }

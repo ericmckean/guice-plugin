@@ -19,6 +19,8 @@ package com.google.inject.tools.ideplugin.module;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import com.google.inject.Key;
 import com.google.inject.tools.ideplugin.snippets.BindingCodeLocation;
 import com.google.inject.tools.ideplugin.snippets.CodeProblem;
 import com.google.inject.tools.ideplugin.snippets.CodeSnippetResult;
@@ -54,7 +56,6 @@ public class ModuleContextRepresentationImpl implements ModuleContextRepresentat
    * @see com.google.inject.tools.ideplugin.module.ModuleContextRepresentation#findLocation(java.lang.String)
    */
   public BindingCodeLocation findLocation(String theClass) {
-    //TODO: check existence
     return bindings.get(theClass);
   }
   
@@ -80,8 +81,14 @@ public class ModuleContextRepresentationImpl implements ModuleContextRepresentat
    */
   public void clean(CodeRunner codeRunner) {
     codeRunner.addListener(this);
-    codeRunner.queue(new RunModuleContextSnippet(codeRunner,this));
+    RunModuleContextSnippet runnable = new RunModuleContextSnippet(codeRunner,this);
+    codeRunner.queue(runnable);
     codeRunner.run();
+    try {
+      codeRunner.waitFor(runnable);
+    } catch (InterruptedException exception) {
+      System.out.println("wtf mate");
+    }
   }
   
   /*
@@ -91,7 +98,7 @@ public class ModuleContextRepresentationImpl implements ModuleContextRepresentat
   public void acceptCodeRunResult(CodeSnippetResult result) {
     if (result instanceof ModuleContextSnippet.ModuleContextResult) {
       ModuleContextSnippet.ModuleContextResult contextResult = (ModuleContextSnippet.ModuleContextResult)result;
-      if (contextResult.getName() == this.getName()) {
+      if (contextResult.getName().equals(this.getName())) {
         this.bindings = contextResult.getBindings();
         this.problems = contextResult.getProblems();
         dirty = false;

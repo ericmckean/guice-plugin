@@ -140,6 +140,7 @@ public class EclipseModulesListener implements ModulesListener {
 		keepModulesByName(moduleNames);
 	}
 	
+  //TODO: move up and test
 	private synchronized void keepModulesByName(Set<String> modulesNames) {
 		for (String module : modules) {
 			boolean keep = false;

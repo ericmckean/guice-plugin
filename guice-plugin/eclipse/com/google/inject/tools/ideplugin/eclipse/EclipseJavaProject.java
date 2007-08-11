@@ -16,13 +16,17 @@
 
 package com.google.inject.tools.ideplugin.eclipse;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.inject.tools.ideplugin.JavaProject;
 
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
+import org.osgi.framework.Bundle;
 
 /**
  * Eclipse specific implementation of the {@link JavaProject}.
@@ -67,7 +71,9 @@ public class EclipseJavaProject implements JavaProject {
   }
   
   public String getSnippetsClasspath() throws Exception {
-    //TODO: do this
-    return "";
+    Bundle bundle = Platform.getBundle("GuicePlugin");
+    URL url = bundle.getResource("/");
+    url = FileLocator.toFileURL(url);
+    return url.getFile();
   }
 }

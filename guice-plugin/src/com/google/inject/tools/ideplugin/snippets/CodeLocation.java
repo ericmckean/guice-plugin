@@ -61,4 +61,9 @@ public abstract class CodeLocation extends CodeSnippetResult {
 	public int location() {
 		return location;
 	}
+  
+  @Override
+  public String toString() {
+    return file + ":" + String.valueOf(location);
+  }
 }

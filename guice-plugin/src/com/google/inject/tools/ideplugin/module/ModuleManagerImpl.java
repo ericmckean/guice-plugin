@@ -17,6 +17,7 @@
 package com.google.inject.tools.ideplugin.module;
 
 import com.google.inject.tools.ideplugin.code.CodeRunner;
+import com.google.inject.tools.ideplugin.eclipse.EclipseMessenger;
 import com.google.inject.tools.ideplugin.module.ModulesListener;
 import com.google.inject.tools.ideplugin.problem.ProblemsHandler;
 import com.google.inject.tools.ideplugin.JavaProject;
@@ -75,10 +76,11 @@ public class ModuleManagerImpl implements ModuleManager {
 				initModule(moduleName);
 			}
 		}
+    cleanModules();
 	}
 	
 	private void initModule(String moduleName) {
-		modules.add(new ModuleRepresentationImpl(moduleName));
+    modules.add(new ModuleRepresentationImpl(moduleName));
 	}
 	
 	/*
@@ -86,11 +88,11 @@ public class ModuleManagerImpl implements ModuleManager {
 	 */
 	private void initContexts() {
 		for (ModuleRepresentation module : modules) {
-		  if (module.hasDefaultConstructor()) {
-		    ModuleContextRepresentation moduleContext = new ModuleContextRepresentationImpl(module.getName());
-		    ModuleInstanceRepresentation moduleInstance = new ModuleInstanceRepresentation(module.getName());
-		    moduleContext.add(moduleInstance);
-		    moduleContexts.add(moduleContext);
+      if (module.hasDefaultConstructor()) {
+        ModuleContextRepresentation moduleContext = new ModuleContextRepresentationImpl(module.getName());
+        ModuleInstanceRepresentation moduleInstance = new ModuleInstanceRepresentation(module.getName());
+        moduleContext.add(moduleInstance);
+        moduleContexts.add(moduleContext);
       }
 		}
 	}
@@ -276,17 +278,16 @@ public class ModuleManagerImpl implements ModuleManager {
 				modules = projectModules.get(currentProject);
 				moduleContexts = projectModuleContexts.get(currentProject);
 				modulesListener.projectChanged(currentProject);
-				initModules();
+        initModules();
 				initContexts();
 			} else {
 				modulesListener.projectChanged(currentProject);
 				modulesListener.findChanges();
 			}
-      return cleanModuleContexts();
 		} else {
 			modulesListener.findChanges();
-      return true;
 		}
+    return cleanModuleContexts();
 	}
   
   /*
@@ -305,6 +306,27 @@ public class ModuleManagerImpl implements ModuleManager {
         progressHandler.step("Running module context '" + moduleContext.getName() + "'",codeRunner);
         moduleContext.clean(codeRunner);
         problemsHandler.foundProblems(moduleContext.getProblems());
+        if (progressHandler.isCancelled()) {
+          System.out.println("wtf");
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+  
+  protected synchronized boolean cleanModules() {
+    ProgressHandler progressHandler = progressHandlerProvider.get();
+    int numDirty = 0;
+    for (ModuleRepresentation module : modules) {
+      if (module.isDirty()) numDirty++;
+    }
+    progressHandler.initialize(numDirty);
+    for (ModuleRepresentation module : modules) {
+      if (module.isDirty()) {
+        CodeRunner codeRunner = codeRunnerFactory.create(currentProject);
+        progressHandler.step("Running module '" + module.getName() + "'",codeRunner);
+        module.clean(codeRunner);
         if (progressHandler.isCancelled()) return false;
       }
     }
