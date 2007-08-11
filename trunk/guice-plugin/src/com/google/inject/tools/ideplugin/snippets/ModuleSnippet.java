@@ -17,6 +17,7 @@
 package com.google.inject.tools.ideplugin.snippets;
 
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import com.google.inject.Module;
@@ -34,7 +35,7 @@ public class ModuleSnippet<T extends Module> extends CodeSnippet {
   /**
    * Representation of a constructor for a module.
    */
-	public static class ConstructorRepresentation {
+	public static class ConstructorRepresentation implements Serializable {
 		private final List<String> argumentTypes;
 		private final Set<String> exceptionTypes;
 		public ConstructorRepresentation(List<Class<?>> argumentTypes,Set<Class<?>> exceptionTypes) {
@@ -110,6 +111,10 @@ public class ModuleSnippet<T extends Module> extends CodeSnippet {
 		public boolean hasDefaultConstructor() {
 			return hasDefaultConstructor;
 		}
+    @Override
+    public String toString() {
+      return "Module Result: " + name + "  " + hasDefaultConstructor + "  " + constructors;
+    }
 	}
 	
 	private final Class<T> moduleClass;

@@ -54,8 +54,10 @@ public class ProblemsHandlerImpl implements ProblemsHandler {
 	 * @see com.google.inject.tools.ideplugin.problem.ProblemsHandler#foundProblems(java.util.Set)
 	 */
 	public void foundProblems(Set<? extends CodeProblem> problems) {
-		for (CodeProblem problem : problems) {
-			foundProblem(problem);
-		}
+    if (problems!=null) {
+      for (CodeProblem problem : problems) {
+        foundProblem(problem);
+      }
+    }
 	}
 }

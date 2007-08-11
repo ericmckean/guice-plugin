@@ -36,12 +36,5 @@
             icon="icons/sample.gif"
             id="com.google.inject.tools.ideplugin.eclipse.EclipseResultsView"
             name="Bindings"/>
-      <view
-            allowMultiple="false"
-            category="Guice_Plugin"
-            class="com.google.inject.tools.ideplugin.eclipse.EclipseModuleSelectionView"
-            icon="icons/sample.gif"
-            id="com.google.inject.tools.ideplugin.eclipse.EclipseModuleSelecionView"
-            name="Modules"/>
    </extension>
 </plugin>

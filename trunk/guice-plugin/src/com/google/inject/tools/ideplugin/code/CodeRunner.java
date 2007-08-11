@@ -16,7 +16,9 @@
 
 package com.google.inject.tools.ideplugin.code;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.util.List;
 import java.util.ArrayList;
@@ -130,6 +132,9 @@ public interface CodeRunner {
      * @param exception the exception that occurred during runtime
      */
     public void caughtException(Exception exception) {
+      System.out.println("caught exception");
+      exception.printStackTrace();
+      System.out.println(exception.toString());
       //TODO: what to do here?
     }
     
@@ -140,6 +145,14 @@ public interface CodeRunner {
      */
     public void gotErrorOutput(InputStream stream) {
       //TODO: what to do here?
+      InputStreamReader ir = new InputStreamReader(stream);
+      BufferedReader r = new BufferedReader(ir);
+      String line;
+      try {
+      while ((line = r.readLine()) != null)
+        System.out.println(line);
+      } catch (Exception e) {
+      }
     }
     
     /**

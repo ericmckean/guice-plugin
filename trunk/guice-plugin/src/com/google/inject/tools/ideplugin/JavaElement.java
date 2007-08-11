@@ -56,11 +56,9 @@ public interface JavaElement {
 	 * @return the project
 	 */
 	public JavaProject getJavaProject();
-	
-	/** 
-	 * Return a string representation of the element.
-	 * 
-	 * @return the string representation
-	 */
-	public String toString();
+  
+  /**
+   * Return true if the java element is injected at this location in code.
+   */
+  public boolean isInjectionPoint();
 }

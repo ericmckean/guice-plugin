@@ -21,8 +21,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.core.runtime.Platform;
-import org.osgi.framework.Bundle;
 import junit.framework.TestCase;
 import com.google.inject.tools.ideplugin.code.CodeRunner;
 import com.google.inject.tools.ideplugin.code.CodeRunnerImpl;
@@ -41,13 +39,37 @@ public class CodeRunnerTest extends TestCase implements CodeRunner.CodeRunListen
   private boolean hitDone = false;
   private boolean hitResult = true;
   
-  public void testCodeRunner() throws Exception {
+  public void testCodeRunnerSimple() throws Exception {
     CodeRunner runner = new CodeRunnerImpl(new MockJavaProject());
     runner.addListener(this);
     CodeRunner.Runnable runnable = new TestRunnable(runner);
     runner.queue(runnable);
     runner.run();
     runner.waitFor(runnable);
+    assertTrue(hitResult);
+    assertTrue(hitDone);
+  }
+  
+  public void testCodeRunnerLongProcess() throws Exception {
+    CodeRunner runner = new CodeRunnerImpl(new MockJavaProject());
+    runner.addListener(this);
+    CodeRunner.Runnable runnable = new TestRunnable(runner,5);
+    runner.queue(runnable);
+    runner.run();
+    runner.waitFor(runnable);
+    assertTrue(hitResult);
+    assertTrue(hitDone);
+  }
+  
+  public void testCodeRunnerMultiple() throws Exception {
+    CodeRunner runner = new CodeRunnerImpl(new MockJavaProject());
+    runner.addListener(this);
+    CodeRunner.Runnable runnable1 = new TestRunnable(runner,2);
+    CodeRunner.Runnable runnable2 = new TestRunnable(runner,4);
+    runner.queue(runnable1);
+    runner.queue(runnable2);
+    runner.run();
+    runner.waitFor();
     assertTrue(hitResult);
     assertTrue(hitDone);
   }
@@ -72,7 +94,6 @@ public class CodeRunnerTest extends TestCase implements CodeRunner.CodeRunListen
     }
 
     public String getProjectClasspath() throws Exception {
-      Bundle bundle = Platform.getBundle("guice plugin");
       return CLASSPATH;
     }
 
@@ -82,12 +103,20 @@ public class CodeRunnerTest extends TestCase implements CodeRunner.CodeRunListen
   }
   
   public static class TestRunnable extends CodeRunner.Runnable {
+    private final int secsToTake;
     @Override
     protected List<? extends Object> getSnippetArguments() {
-      return new ArrayList<Object>();
+      List<String> args = new ArrayList<String>();
+      if (secsToTake != -1) args.add(String.valueOf(secsToTake));
+      return args;
     }
     public TestRunnable(CodeRunner codeRunner) {
       super(codeRunner);
+      this.secsToTake = -1;
+    }
+    public TestRunnable(CodeRunner codeRunner,int secsToTake) {
+      super(codeRunner);
+      this.secsToTake = secsToTake;
     }
     @Override
     public String getFullyQualifiedSnippetClass() {

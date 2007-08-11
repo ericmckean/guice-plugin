@@ -17,6 +17,7 @@
 package com.google.inject.tools.ideplugin.bindings;
 
 import com.google.inject.tools.ideplugin.JavaElement;
+import com.google.inject.tools.ideplugin.Messenger;
 import com.google.inject.tools.ideplugin.module.ModuleManager;
 import com.google.inject.tools.ideplugin.module.ModuleContextRepresentation;
 import com.google.inject.tools.ideplugin.problem.ProblemsHandler;
@@ -37,28 +38,35 @@ public final class BindingsEngine {
 	 * @param resultsHandler the ResultsHandler to send results to (injected)
 	 * @param problemsHandler the ProblemsHandler to notify with problems (injected)
 	 * @param moduleManager the ModuleManager to ask for what context to run in (injected)
+   * @param messenger the Messenger to display notifications with (injected)
 	 * @param element the JavaElement to find bindings for (not injected)
 	 */
 	//@AssistedInject replaced by factory in GuicePlugin
 	public BindingsEngine(ModuleManager moduleManager,
 					              ProblemsHandler problemsHandler,
 					              ResultsHandler resultsHandler,
+                        Messenger messenger,
 					              JavaElement element) {
 		final String theClass = element.getClassName();
 		final CodeLocationsResults results = new CodeLocationsResults("Bindings for " + theClass);
-		if (!moduleManager.updateModules(element.getJavaProject())) {
+    if (!moduleManager.updateModules(element.getJavaProject())) {
       results.userCancelled();
 		} else {
-		  if (moduleManager.getModuleContexts() != null) {
-		    for (ModuleContextRepresentation moduleContext : moduleManager.getModuleContexts()) {
-		      BindingLocater locater = new BindingLocater(theClass,moduleContext);
-		      problemsHandler.foundProblems(locater.getCodeLocation().getProblems());
-		      results.put(locater.getModuleContext().getName(), locater.getCodeLocation());
+      //TODO: if element.isInjectionPoint() ...
+		  if ((moduleManager.getModuleContexts() != null) && (moduleManager.getModuleContexts().size() > 0)) {
+        for (ModuleContextRepresentation moduleContext : moduleManager.getModuleContexts()) {
+          BindingLocater locater = new BindingLocater(theClass,moduleContext);
+          if (locater.getCodeLocation()!=null) {
+            problemsHandler.foundProblems(locater.getCodeLocation().getProblems());
+            results.put(locater.getModuleContext().getName(), locater.getCodeLocation());
+          }
 		    }
 		    if (!results.keySet().isEmpty()) {
 		      resultsHandler.displayLocationsResults(results);
 		    }
-		  }
+		  } else {
+		    messenger.display("No module contexts configured.");
+      }
 		}
 	}
 }

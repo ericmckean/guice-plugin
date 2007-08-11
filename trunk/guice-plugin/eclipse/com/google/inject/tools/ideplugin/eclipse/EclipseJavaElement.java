@@ -16,14 +16,18 @@
 
 package com.google.inject.tools.ideplugin.eclipse;
 
+import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IMember;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.ILocalVariable;
 import org.eclipse.jdt.core.IField;
+import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.Signature;
 import com.google.inject.tools.ideplugin.JavaElement;
 import com.google.inject.tools.ideplugin.JavaProject;
+import org.eclipse.jdt.internal.corext.refactoring.reorg.ReorgUtils;
 
 /** 
  * Eclipse implementation of {@link JavaElement}.  Basically a wrapper around {@link
@@ -35,7 +39,6 @@ public class EclipseJavaElement implements JavaElement {
 	private final IJavaElement element;
 	private final Type type;
 	private final String name;
-	private final String signature;
 	private final String className;
 	private final EclipseJavaProject javaProject;
 	
@@ -48,8 +51,7 @@ public class EclipseJavaElement implements JavaElement {
 		this.element = element;
 		this.type = findType();
 		this.name = findName();
-		this.signature = findSignature();
-		this.className = getClassNameFromSignature(signature);
+		this.className = findClassName();
 		this.javaProject = new EclipseJavaProject(element.getJavaProject());
 	}
 	
@@ -65,6 +67,22 @@ public class EclipseJavaElement implements JavaElement {
 		} else {
 			return null;
 		}
+	}
+  
+  private String findClassName() {
+    String type = getType(element);
+    if (type != null) {
+      return type;
+    } else {
+      return getClassNameFromSignature(findSignature());
+    }
+  }
+  
+	private String getType(IJavaElement element) {
+    //TODO: remove use of internal classes if possible
+    ICompilationUnit cu = ReorgUtils.getCompilationUnit(element);
+    IType type = cu.getType(getClassNameFromSignature(findSignature()));
+    return type.getFullyQualifiedName();
 	}
 	
 	private String findSignature() {
@@ -155,6 +173,15 @@ public class EclipseJavaElement implements JavaElement {
 				&& getType().equals(element.getType());
 		} else return false;
 	}
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.JavaElement#isInjectionPoint()
+   */
+  public boolean isInjectionPoint() {
+    //TODO: this
+    return false;
+  }
   
   @Override
   public int hashCode() {

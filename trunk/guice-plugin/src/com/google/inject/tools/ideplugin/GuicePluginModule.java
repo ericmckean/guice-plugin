@@ -55,20 +55,24 @@ public abstract class GuicePluginModule extends AbstractModule {
 		private final Provider<ModuleManager> moduleManagerProvider;
 		private final Provider<ProblemsHandler> problemsHandlerProvider;
 		private final Provider<ResultsHandler> resultsHandlerProvider;
+    private final Provider<Messenger> messengerProvider;
 		
 		@Inject
 		public BindingsEngineFactoryImpl(Provider<ModuleManager> moduleManagerProvider,
 				Provider<ProblemsHandler> problemsHandlerProvider,
-				Provider<ResultsHandler> resultsHandlerProvider) {
+				Provider<ResultsHandler> resultsHandlerProvider,
+        Provider<Messenger> messengerProvider) {
 			this.moduleManagerProvider = moduleManagerProvider;
 			this.problemsHandlerProvider = problemsHandlerProvider;
 			this.resultsHandlerProvider = resultsHandlerProvider;
+      this.messengerProvider = messengerProvider;
 		}
 		
 		public BindingsEngine create(JavaElement element) {
 			return new BindingsEngine(moduleManagerProvider.get(),
 					problemsHandlerProvider.get(),
 					resultsHandlerProvider.get(),
+          messengerProvider.get(),
 					element);
 		}
 	}

@@ -37,7 +37,7 @@ import com.google.inject.tools.ideplugin.ActionsHandler;
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public class EclipseResultsView extends ViewPart {
+public class EclipseResultsView extends ViewPart implements ResultsView {
 	private TreeViewer viewer;
 	private DrillDownAdapter drillDownAdapter;
 	private Action action1;
@@ -134,7 +134,10 @@ public class EclipseResultsView extends ViewPart {
 
 		public void useResults(Results results) {
 			EclipseResultsView.this.results = results;
-			initialize();
+      for (TreeObject child : invisibleRoot.getChildren()) {
+        invisibleRoot.removeChild(child);
+      }
+      invisibleRoot.addChild(makeTree(results.getRoot()));
 		}
 		
 		private void initialize() {
@@ -189,7 +192,7 @@ public class EclipseResultsView extends ViewPart {
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
-		Activator.getGuicePlugin().setResultsView(this);
+	  Activator.getGuicePlugin().setResultsView(this);
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		drillDownAdapter = new DrillDownAdapter(viewer);
 		viewContentProvider = new ViewContentProvider();
@@ -298,13 +301,19 @@ public class EclipseResultsView extends ViewPart {
 	public void setFocus() {
 		viewer.getControl().setFocus();
 	}
-	
-	/**
-	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.results.ResultsView#displayResults(com.google.inject.tools.ideplugin.results.Results)
-	 */
-	public void displayResults(Results results) {
-		this.results = results;
-		viewContentProvider.useResults(this.results);
-	}
+  
+  /**
+   * 
+   */
+  public void displayResults(Results results) {
+    this.results = results;
+    viewContentProvider.useResults(this.results);
+    viewer.refresh();
+    viewer.expandAll();
+    try {
+      this.getViewSite().getWorkbenchWindow().getActivePage().showView("com.google.inject.tools.ideplugin.eclipse.EclipseResultsView");
+    } catch (Exception e) {
+      showMessage(e.toString());
+    }
+  }
 }

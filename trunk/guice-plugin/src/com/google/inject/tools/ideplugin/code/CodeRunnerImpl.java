@@ -134,7 +134,7 @@ public class CodeRunnerImpl implements CodeRunner {
 	protected void run(Runnable runnable) {
 		try {
 			final String classpath = project.getSnippetsClasspath() + ":" + project.getProjectClasspath();
-			final List<String> cmd = new ArrayList<String>();
+      final List<String> cmd = new ArrayList<String>();
 			cmd.add(project.getJavaCommand());
 			cmd.add("-classpath");
 			cmd.add(classpath);

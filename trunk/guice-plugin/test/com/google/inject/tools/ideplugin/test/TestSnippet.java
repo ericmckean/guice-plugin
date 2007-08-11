@@ -27,6 +27,15 @@ import com.google.inject.tools.ideplugin.snippets.CodeSnippetResult;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class TestSnippet extends CodeSnippet {
+  public TestSnippet(int secsToTake) {
+    super();
+    try {
+      Thread.sleep(secsToTake * 1000);
+    } catch (Exception exception) {
+      //do nothing
+    }
+  }
+  
   public static class TestSnippetResult extends CodeSnippetResult {
     private final String blah = "blah";
     public TestSnippetResult() {
@@ -42,6 +51,9 @@ public class TestSnippet extends CodeSnippet {
     return new TestSnippetResult();
   }
   public static void main(String[] args) {
-    new TestSnippet().printResult(System.out);
+    int secsToTake;
+    if (args.length > 0) secsToTake = Integer.valueOf(args[0]);
+    else secsToTake = -1;
+    new TestSnippet(secsToTake).printResult(System.out);
   }
 }

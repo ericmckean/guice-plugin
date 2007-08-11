@@ -19,6 +19,7 @@ package com.google.inject.tools.ideplugin.module;
 import java.util.Set;
 import com.google.inject.tools.ideplugin.code.CodeRunner;
 import com.google.inject.tools.ideplugin.code.RunModuleSnippet;
+import com.google.inject.tools.ideplugin.eclipse.EclipseMessenger;
 import com.google.inject.tools.ideplugin.snippets.CodeSnippetResult;
 import com.google.inject.tools.ideplugin.snippets.ModuleSnippet;
 import com.google.inject.tools.ideplugin.snippets.ModuleSnippet.ConstructorRepresentation;
@@ -95,8 +96,14 @@ public class ModuleRepresentationImpl implements ModuleRepresentation, CodeRunne
    */
   public void clean(CodeRunner codeRunner) {
     codeRunner.addListener(this);
-    codeRunner.queue(new RunModuleSnippet(codeRunner,this));
+    RunModuleSnippet runnable = new RunModuleSnippet(codeRunner,this);
+    codeRunner.queue(runnable);
     codeRunner.run();
+    try {
+      codeRunner.waitFor(runnable);
+    } catch (InterruptedException exception) {
+      //TODO: what to do here?
+    }
   }
   
   /**
@@ -106,7 +113,7 @@ public class ModuleRepresentationImpl implements ModuleRepresentation, CodeRunne
   public void acceptCodeRunResult(CodeSnippetResult result) {
     if (result instanceof ModuleSnippet.ModuleResult) {
       ModuleSnippet.ModuleResult moduleResult = (ModuleSnippet.ModuleResult)result;
-      if (moduleResult.getName() == this.getName()) {
+      if (moduleResult.getName().equals(this.getName())) {
         this.constructors = moduleResult.getConstructors();
         this.hasDefaultConstructor = moduleResult.hasDefaultConstructor();
         if (!this.constructors.contains(constructor)) {
