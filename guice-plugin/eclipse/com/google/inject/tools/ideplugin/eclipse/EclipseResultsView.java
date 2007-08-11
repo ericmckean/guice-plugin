@@ -192,7 +192,6 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
-	  Activator.getGuicePlugin().setResultsView(this);
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		drillDownAdapter = new DrillDownAdapter(viewer);
 		viewContentProvider = new ViewContentProvider();
