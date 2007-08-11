@@ -16,6 +16,11 @@
 
 package com.google.inject.tools.ideplugin;
 
+/**
+ * Represents a project in the user's code.
+ * 
+ * @author Darren Creutz <dcreutz@gmail.com>
+ */
 public interface JavaProject {
   /**
    * Return the command line for running java.

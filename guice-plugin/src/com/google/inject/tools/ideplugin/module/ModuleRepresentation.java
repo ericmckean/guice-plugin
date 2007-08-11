@@ -27,12 +27,12 @@ import com.google.inject.tools.ideplugin.snippets.ModuleSnippet.ConstructorRepre
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public interface ModuleRepresentation {
-	/**
-	 * Return the name of this module.
-	 * 
-	 * @return the module name
-	 */
-	public String getName();
+  /**
+   * Return the name of this module.
+   * 
+   * @return the module name
+   */
+  public String getName();
   
   /**
    * Return true if the module has a default (no argument) constructor.

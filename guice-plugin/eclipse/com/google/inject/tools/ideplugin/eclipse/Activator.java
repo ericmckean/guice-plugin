@@ -29,71 +29,67 @@ import com.google.inject.tools.ideplugin.eclipse.EclipseGuicePlugin;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class Activator extends AbstractUIPlugin {
-	private static EclipseGuicePlugin guicePlugin;
-	
-	/** 
-	 * The ID of our plugin.
-	 */
-	public static final String PLUGIN_ID = "Guice_Plugin";
-
-	private static Activator plugin;
-	
-	/**
-	 * Create an activator and a GuicePlugin using the {@link EclipsePluginModule}.
-	 */
-	public Activator() {
-	    plugin = this;
-	    EclipsePluginModule module = new EclipsePluginModule();
-	    module.setModuleSelectionView(new EclipseGuicePlugin.ModuleSelectionViewImpl());
-        module.setResultsView(new EclipseGuicePlugin.ResultsViewImpl());
-        guicePlugin = new EclipseGuicePlugin(module);
-	}
-	
-	/** 
-	 * Create an activator using the given module.
-	 * FOR TESTING PURPOSES ONLY -- necessary since Eclipse forces a static Activator object on us.
-	 */
-	public Activator(EclipsePluginModule module) {
-	  plugin = this;
-      module.setModuleSelectionView(new EclipseGuicePlugin.ModuleSelectionViewImpl());
-      module.setResultsView(new EclipseGuicePlugin.ResultsViewImpl());
-      guicePlugin = new EclipseGuicePlugin(module);
-	}
-
-	/** 
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
-	 */
-	@Override
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
-	}
-
-	/** 
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
-	 */
-	@Override
-	public void stop(BundleContext context) throws Exception {
-		plugin = null;
-		super.stop(context);
-	}
-
-	/**
-	 * Returns the shared instance
-	 *
-	 * @return the shared instance
-	 */
-	public static Activator getDefault() {
-		return plugin;
-	}
-	
-	/** 
-	 * Returns the GuicePlugin.
-	 * 
-	 * @return the GuicePlugin
-	 */
-	public static EclipseGuicePlugin getGuicePlugin() {
-		return guicePlugin;
-	}
+  private static EclipseGuicePlugin guicePlugin;
+  
+  /** 
+   * The ID of our plugin.
+   */
+  public static final String PLUGIN_ID = "Guice_Plugin";
+  
+  private static Activator plugin;
+  
+  /**
+   * Create an activator and a GuicePlugin using the {@link EclipsePluginModule}.
+   */
+  public Activator() {
+    plugin = this;
+    EclipsePluginModule module = new EclipsePluginModule();
+    module.setModuleSelectionView(new EclipseGuicePlugin.ModuleSelectionViewImpl());
+    module.setResultsView(new EclipseGuicePlugin.ResultsViewImpl());
+    guicePlugin = new EclipseGuicePlugin(module);
+  }
+  
+  /** 
+   * Create an activator using the given module.
+   * FOR TESTING PURPOSES ONLY -- necessary since Eclipse forces a static Activator object on us.
+   */
+  public Activator(EclipsePluginModule module) {
+    plugin = this;
+    module.setModuleSelectionView(new EclipseGuicePlugin.ModuleSelectionViewImpl());
+    module.setResultsView(new EclipseGuicePlugin.ResultsViewImpl());
+    guicePlugin = new EclipseGuicePlugin(module);
+  }
+  
+  /** 
+   * (non-Javadoc)
+   * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
+   */
+  @Override
+  public void start(BundleContext context) throws Exception {
+    super.start(context);
+  }
+  
+  /** 
+   * (non-Javadoc)
+   * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
+   */
+  @Override
+  public void stop(BundleContext context) throws Exception {
+    plugin = null;
+    super.stop(context);
+  }
+  
+  /**
+   * Returns the shared instance
+   */
+  public static Activator getDefault() {
+    return plugin;
+  }
+  
+  /** 
+   * Returns the GuicePlugin.
+   */
+  public static EclipseGuicePlugin getGuicePlugin() {
+    return guicePlugin;
+  }
 }

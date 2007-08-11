@@ -20,6 +20,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
@@ -32,36 +33,37 @@ import com.google.inject.tools.ideplugin.GuicePlugin;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class BindingsObjectAction implements IObjectActionDelegate {
-	private IWorkbenchPart part;
-	private GuicePlugin guicePlugin;
-
-	/**
-	 * Create the action.
-	 */
-	public BindingsObjectAction() {
-		super();
-		guicePlugin = Activator.getGuicePlugin();
-	}
-
-	/**
-	 * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
-	 */
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		this.part = targetPart;
-	}
-
-	/**
-	 * Eclipse callback to have us run the bindings engine.
-	 */
-	public void run(IAction action) {
-		IJavaElement element = (IJavaElement)((IStructuredSelection)part.getSite().getSelectionProvider().getSelection()).getFirstElement();
-		guicePlugin.getBindingsEngine(new EclipseJavaElement(element));
-	}
-
-	/**
-	 * Eclipse callback that the selected text changed.
-	 */
-	public void selectionChanged(IAction action, ISelection selection) {
-	}
-
+  private IWorkbenchPart part;
+  private GuicePlugin guicePlugin;
+  
+  /**
+   * Create the action.
+   */
+  public BindingsObjectAction() {
+    super();
+    guicePlugin = Activator.getGuicePlugin();
+  }
+  
+  /**
+   * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
+   */
+  public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+    this.part = targetPart;
+  }
+  
+  /**
+   * Eclipse callback to have us run the bindings engine.
+   */
+  public void run(IAction action) {
+    IJavaElement element = (IJavaElement)((IStructuredSelection)part.getSite().getSelectionProvider().getSelection()).getFirstElement();
+    ICompilationUnit cu = (ICompilationUnit)element.getAncestor(IJavaElement.COMPILATION_UNIT);
+    guicePlugin.getBindingsEngine(new EclipseJavaElement(element,cu));
+  }
+  
+  /**
+   * Eclipse callback that the selected text changed.
+   */
+  public void selectionChanged(IAction action, ISelection selection) {
+  }
+  
 }

@@ -20,10 +20,8 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.tools.ideplugin.bindings.BindingsEngine;
 import com.google.inject.tools.ideplugin.module.ModuleManager;
-import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
 import com.google.inject.tools.ideplugin.problem.ProblemsHandler;
 import com.google.inject.tools.ideplugin.results.ResultsHandler;
-import com.google.inject.tools.ideplugin.results.ResultsView;
 
 /** 
  * The main object of the plugin.  Unfortunately, it must be created in IDE specific ways.
@@ -33,78 +31,68 @@ import com.google.inject.tools.ideplugin.results.ResultsView;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public abstract class GuicePlugin {
-	private final Injector injector;
-	
-	/** 
-	 * Create a (the) GuicePlugin.
-	 * 
-	 * @param module the (IDE specific) module to inject based on
-	 */
-	public GuicePlugin(GuicePluginModule module) {
-		injector = Guice.createInjector(module);
-	}
-	
-	/**
-	 * Allow subclasses to request instances from the injector.
-	 * 
-	 * @param type the type to get an instance of
-	 * @return the instance
-	 */
-	protected <T> T getInstance(Class<T> type) {
-		return injector.getInstance(type);
-	}
-	
-	/** 
-	 * Create a {@link BindingsEngine}.
-	 * 
-	 * @param element the java element to find bindings of
-	 */
-	public BindingsEngine getBindingsEngine(JavaElement element) {
-		return getInstance(GuicePluginModule.BindingsEngineFactory.class).create(element);
-	}
-	
-	/** 
-	 * Return the {@link ResultsHandler}.
-	 */
-	public ResultsHandler getResultsHandler() {
-		return getInstance(ResultsHandler.class);
-	}
-	
-	/**
-	 * Return the {@link ModuleManager}.
-	 */
-	public ModuleManager getModuleManager() {
-		return getInstance(ModuleManager.class);
-	}
-	
-	/**
-	 * Return the {@link ProblemsHandler}.
-	 */
-	public ProblemsHandler getProblemsHandler() {
-		return getInstance(ProblemsHandler.class);
-	}
-	
-	/**
-	 * Return the {@link Messenger}.
-	 */
-	public Messenger getMessenger() {
-		return getInstance(Messenger.class);
-	}
-	
-	/**
-	 * Return the {@link ActionsHandler}.
-	 */
-	public ActionsHandler getActionsHandler() {
-		return getInstance(ActionsHandler.class);
-	}
-	
-	/**
-	 * Return the {@link ResultsView}.
-	 */
-	public abstract ResultsView getResultsView();
-	
-	/**
-	 * Return the {@link ModuleSelectionView}.
-	 */
-	public abstract ModuleSelectionView getModuleSelectionView();
+  private final Injector injector;
+  
+  /** 
+   * Create a (the) GuicePlugin.
+   * 
+   * @param module the (IDE specific) module to inject based on
+   */
+  public GuicePlugin(GuicePluginModule module) {
+    injector = Guice.createInjector(module);
+  }
+  
+  /**
+   * Allow subclasses to request instances from the injector.
+   * 
+   * @param type the type to get an instance of
+   * @return the instance
+   */
+  protected <T> T getInstance(Class<T> type) {
+    return injector.getInstance(type);
+  }
+  
+  /** 
+   * Create a {@link BindingsEngine}.
+   * 
+   * @param element the java element to find bindings of
+   */
+  public BindingsEngine getBindingsEngine(JavaElement element) {
+    return getInstance(GuicePluginModule.BindingsEngineFactory.class).create(element);
+  }
+  
+  /** 
+   * Return the {@link ResultsHandler}.
+   */
+  public ResultsHandler getResultsHandler() {
+    return getInstance(ResultsHandler.class);
+  }
+  
+  /**
+   * Return the {@link ModuleManager}.
+   */
+  public ModuleManager getModuleManager() {
+    return getInstance(ModuleManager.class);
+  }
+  
+  /**
+   * Return the {@link ProblemsHandler}.
+   */
+  public ProblemsHandler getProblemsHandler() {
+    return getInstance(ProblemsHandler.class);
+  }
+  
+  /**
+   * Return the {@link Messenger}.
+   */
+  public Messenger getMessenger() {
+    return getInstance(Messenger.class);
+  }
+  
+  /**
+   * Return the {@link ActionsHandler}.
+   */
+  public ActionsHandler getActionsHandler() {
+    return getInstance(ActionsHandler.class);
+  }
 }

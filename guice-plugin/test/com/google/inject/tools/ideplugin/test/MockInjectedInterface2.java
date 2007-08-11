@@ -22,5 +22,5 @@ package com.google.inject.tools.ideplugin.test;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public interface MockInjectedInterface2 {
-	
+  
 }

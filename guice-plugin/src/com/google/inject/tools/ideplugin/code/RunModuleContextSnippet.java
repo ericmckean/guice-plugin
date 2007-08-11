@@ -28,26 +28,26 @@ import java.util.ArrayList;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class RunModuleContextSnippet extends CodeRunner.Runnable {
-	private final ModuleContextRepresentation moduleContext;
-	
-	public RunModuleContextSnippet(CodeRunner codeRunner, ModuleContextRepresentation moduleContext) {
-		super(codeRunner);
-		this.moduleContext = moduleContext;
-	}
-
-	@Override
-	protected String getFullyQualifiedSnippetClass() {
-		return "com.google.inject.tools.ideplugin.snippets.ModuleContextSnippet";
-	}
-
-	@Override
-	protected List<? extends Object> getSnippetArguments() {
-		final List<Object> args = new ArrayList<Object>();
-		args.add(moduleContext.getName());
+  private final ModuleContextRepresentation moduleContext;
+  
+  public RunModuleContextSnippet(CodeRunner codeRunner, ModuleContextRepresentation moduleContext) {
+    super(codeRunner);
+    this.moduleContext = moduleContext;
+  }
+  
+  @Override
+  protected String getFullyQualifiedSnippetClass() {
+    return "com.google.inject.tools.ideplugin.snippets.ModuleContextSnippet";
+  }
+  
+  @Override
+  protected List<? extends Object> getSnippetArguments() {
+    final List<Object> args = new ArrayList<Object>();
+    args.add(moduleContext.getName());
     args.add(moduleContext.getModules().size());
-		for (ModuleInstanceRepresentation module : moduleContext.getModules()) {
+    for (ModuleInstanceRepresentation module : moduleContext.getModules()) {
       args.addAll(module.toStringList());
-		}
-		return args;
-	}
+    }
+    return args;
+  }
 }

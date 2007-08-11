@@ -26,7 +26,6 @@ import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
-
 import com.google.inject.tools.ideplugin.GuicePlugin;
 import com.google.inject.tools.ideplugin.eclipse.EclipseJavaElement;
 
@@ -39,45 +38,45 @@ import com.google.inject.tools.ideplugin.eclipse.EclipseJavaElement;
 @SuppressWarnings("restriction")
 //TODO: remove internal class use if possible
 public class BindingsEditorAction implements IEditorActionDelegate {
-	private IEditorPart editor;
-	private GuicePlugin guicePlugin;
-	
-	/** 
-	 * Create the action.
-	 */
-	public BindingsEditorAction() {
-		super();
-		guicePlugin = Activator.getGuicePlugin();
-	}
-	
-	/**  (non-Javadoc)
-	 * @see org.eclipse.ui.IEditorActionDelegate#setActiveEditor(org.eclipse.jface.action.IAction, org.eclipse.ui.IEditorPart)
-	 */
-	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
-		this.editor = targetEditor;
-	}
-
-	/**  (non-Javadoc)
-	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
-	 */
-	public void run(IAction action) {
-		ICompilationUnit cu = JavaPlugin.getDefault().getWorkingCopyManager().getWorkingCopy(((CompilationUnitEditor)editor).getEditorInput());
-		ITextSelection selection = (ITextSelection)editor.getSite().getSelectionProvider().getSelection();
-		IJavaElement element = null;
-		try {
-			IJavaElement[] elements = cu.codeSelect(selection.getOffset(),selection.getLength());
-			if (elements.length > 0) {
-				element = elements[0];
-			}
-			guicePlugin.getBindingsEngine(new EclipseJavaElement(element));
-		} catch (JavaModelException exception) {
-			guicePlugin.getMessenger().display("Not a Java element: " + selection.toString());
-		}
-	}
-
-	/**  (non-Javadoc)
-	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
-	 */
-	public void selectionChanged(IAction action, ISelection selection) {
-	}
+  private IEditorPart editor;
+  private GuicePlugin guicePlugin;
+  
+  /** 
+   * Create the action.
+   */
+  public BindingsEditorAction() {
+    super();
+    guicePlugin = Activator.getGuicePlugin();
+  }
+  
+  /**  (non-Javadoc)
+   * @see org.eclipse.ui.IEditorActionDelegate#setActiveEditor(org.eclipse.jface.action.IAction, org.eclipse.ui.IEditorPart)
+   */
+  public void setActiveEditor(IAction action, IEditorPart targetEditor) {
+    this.editor = targetEditor;
+  }
+  
+  /**  (non-Javadoc)
+   * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
+   */
+  public void run(IAction action) {
+    ICompilationUnit cu = JavaPlugin.getDefault().getWorkingCopyManager().getWorkingCopy(((CompilationUnitEditor)editor).getEditorInput());
+    ITextSelection selection = (ITextSelection)editor.getSite().getSelectionProvider().getSelection();
+    IJavaElement element = null;
+    try {
+      IJavaElement[] elements = cu.codeSelect(selection.getOffset(),selection.getLength());
+      if (elements.length > 0) {
+        element = elements[0];
+      }
+      guicePlugin.getBindingsEngine(new EclipseJavaElement(element,cu));
+    } catch (JavaModelException exception) {
+      guicePlugin.getMessenger().display("Not a Java element: " + selection.toString());
+    }
+  }
+  
+  /**  (non-Javadoc)
+   * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
+   */
+  public void selectionChanged(IAction action, ISelection selection) {
+  }
 }

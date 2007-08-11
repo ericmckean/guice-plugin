@@ -42,12 +42,12 @@ public class ModuleContextSnippet extends CodeSnippet {
   /**
    * The result of a module context snippet, containing all the information about the context.
    */
-	public static class ModuleContextResult extends CodeSnippetResult {
-		private final String name;
+  public static class ModuleContextResult extends CodeSnippetResult {
+    private final String name;
     private final Map<String,BindingCodeLocation> bindings;
-		public ModuleContextResult(String name,Map<Key<?>,Binding<?>> moduleBindings,Set<? extends CodeProblem> problems) {
-			super(problems);
-			this.name = name;
+    public ModuleContextResult(String name,Map<Key<?>,Binding<?>> moduleBindings,Set<? extends CodeProblem> problems) {
+      super(problems);
+      this.name = name;
       this.bindings = new HashMap<String,BindingCodeLocation>();
       if (moduleBindings!=null) {
         for (Key<?> key : moduleBindings.keySet()) {
@@ -75,15 +75,18 @@ public class ModuleContextSnippet extends CodeSnippet {
               new BindingCodeLocation(bindWhat,bindTo,name,file,location,locationProblems));
         }
       }
-		}
-		public String getName() {
-			return name;
-		}
+    }
+    public String getName() {
+      return name;
+    }
     public Map<String,BindingCodeLocation> getBindings() {
       return bindings;
     }
-	}
+  }
   
+  /**
+   * Represents a module in this context internally.
+   */
   public static class ModuleRepresentation {
     private final Class<? extends Module> moduleClass;
     private final List<Class<?>> argTypes;
@@ -108,62 +111,62 @@ public class ModuleContextSnippet extends CodeSnippet {
       return moduleClass.getName();
     }
   }
-	
-	private Injector injector;
-	private final String name;
+  
+  private Injector injector;
+  private final String name;
   private final Map<Key<?>,Binding<?>> bindings;
-	private boolean isValid;
-	
+  private boolean isValid;
+  
   /**
    * Create a ModuleContextSnippet with the given modules.
    */
-	public ModuleContextSnippet(Set<ModuleRepresentation> modules,String name) {
-		super();
-		isValid = false;
-		this.name = name;
-		if (!modules.isEmpty()) {
-		  Set<Module> instances = new HashSet<Module>();
-		  for (ModuleRepresentation module : modules) {
-		    try {
-		      instances.add(module.getInstance());
-		    } catch (Throwable exception) {
-		      problems.add(new CodeProblem.InvalidModuleProblem(module.getName()));
-		    }
-		  }
-		  try {
-		    injector = Guice.createInjector(instances);
-		    isValid = true;
-		  } catch (CreationException exception) {
-		    problems.add(new CodeProblem.CreationProblem(getName(),exception));
-		  }
-		  if (isValid) {
-		    bindings = injector.getBindings();
-		  } else {
-		    bindings = null;
-		  }
-		} else {
-		  bindings = null;
-		}
-	}
-	
+  public ModuleContextSnippet(Set<ModuleRepresentation> modules,String name) {
+    super();
+    isValid = false;
+    this.name = name;
+    if (!modules.isEmpty()) {
+      Set<Module> instances = new HashSet<Module>();
+      for (ModuleRepresentation module : modules) {
+        try {
+          instances.add(module.getInstance());
+        } catch (Throwable exception) {
+          problems.add(new CodeProblem.InvalidModuleProblem(module.getName()));
+        }
+      }
+      try {
+        injector = Guice.createInjector(instances);
+        isValid = true;
+      } catch (CreationException exception) {
+        problems.add(new CodeProblem.CreationProblem(getName(),exception));
+      }
+      if (isValid) {
+        bindings = injector.getBindings();
+      } else {
+        bindings = null;
+      }
+    } else {
+      bindings = null;
+    }
+  }
+  
   /**
    * Return true if the context is valid, i.e. if an injector can be created.
    */
-	public boolean isValid() {
-		return isValid;
-	}
-	
+  public boolean isValid() {
+    return isValid;
+  }
+  
   /**
    * Return the name of the context.
    */
-	public String getName() {
-		return name;
-	}
-	
-	@Override
-	public ModuleContextResult getResult() {
-		return new ModuleContextResult(name,bindings,problems);
-	}
+  public String getName() {
+    return name;
+  }
+  
+  @Override
+  public ModuleContextResult getResult() {
+    return new ModuleContextResult(name,bindings,problems);
+  }
   
   public Injector getInjector() {
     return injector;
@@ -177,43 +180,43 @@ public class ModuleContextSnippet extends CodeSnippet {
    * modules, args[2] is the class of the first module, args[3] thru args[n] are the arguments
    * for the first module, etc.
    */
-	//Expects 1+n args, args[0] is context name, args[1] is number of modules
+  //Expects 1+n args, args[0] is context name, args[1] is number of modules
   //   each past is { module class, # args, arg types ..., args ...
-	public static void main(String[] args) {
+  public static void main(String[] args) {
     runSnippet(System.out, args);
   }
   
   @SuppressWarnings("unchecked")
   public static void runSnippet(OutputStream stream, String[] args) {
     try {
-    Set<ModuleRepresentation> modules = new HashSet<ModuleRepresentation>();
-    List<String> argsSet = new ArrayList<String>();
-    for (String arg : args) argsSet.add(arg);
-    Iterator<String> arguments = argsSet.iterator();
-    String contextName = arguments.next();
-    int numModules = Integer.valueOf(arguments.next());
-    for (int i=0;i<numModules;i++) {
-      try {
-        Class<?> aClass = Class.forName(arguments.next());
-        aClass.asSubclass(Module.class);
-        Class<? extends Module> moduleClass = (Class<? extends Module>)aClass;
-        int numArgs = Integer.valueOf(arguments.next());
-        List<Class<?>> argTypes = new ArrayList<Class<?>>();
-        List<String> argValues = new ArrayList<String>();
-        if (numArgs > 0) {
-          for (int j=0;j<numArgs;j++) {
-            argTypes.add(Class.forName(arguments.next()));
-            argValues.add(arguments.next());
+      Set<ModuleRepresentation> modules = new HashSet<ModuleRepresentation>();
+      List<String> argsSet = new ArrayList<String>();
+      for (String arg : args) argsSet.add(arg);
+      Iterator<String> arguments = argsSet.iterator();
+      String contextName = arguments.next();
+      int numModules = Integer.valueOf(arguments.next());
+      for (int i=0;i<numModules;i++) {
+        try {
+          Class<?> aClass = Class.forName(arguments.next());
+          aClass.asSubclass(Module.class);
+          Class<? extends Module> moduleClass = (Class<? extends Module>)aClass;
+          int numArgs = Integer.valueOf(arguments.next());
+          List<Class<?>> argTypes = new ArrayList<Class<?>>();
+          List<String> argValues = new ArrayList<String>();
+          if (numArgs > 0) {
+            for (int j=0;j<numArgs;j++) {
+              argTypes.add(Class.forName(arguments.next()));
+              argValues.add(arguments.next());
+            }
           }
+          modules.add(new ModuleRepresentation(moduleClass,argTypes,argValues));
+        } catch (Exception e) {
+          //TODO: what to do here? anything?
+          i=numModules;
         }
-        modules.add(new ModuleRepresentation(moduleClass,argTypes,argValues));
-      } catch (Exception e) {
-        //TODO: what to do here? anything?
-        i=numModules;
       }
-    }
-		ModuleContextSnippet snippet = new ModuleContextSnippet(modules,contextName);
-		snippet.printResult(stream);
-  }catch(Throwable t){ t.printStackTrace(); }
+      ModuleContextSnippet snippet = new ModuleContextSnippet(modules,contextName);
+      snippet.printResult(stream);
+    }catch(Throwable t){ t.printStackTrace(); }
   }
 }

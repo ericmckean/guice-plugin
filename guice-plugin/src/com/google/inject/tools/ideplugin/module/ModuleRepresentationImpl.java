@@ -19,7 +19,6 @@ package com.google.inject.tools.ideplugin.module;
 import java.util.Set;
 import com.google.inject.tools.ideplugin.code.CodeRunner;
 import com.google.inject.tools.ideplugin.code.RunModuleSnippet;
-import com.google.inject.tools.ideplugin.eclipse.EclipseMessenger;
 import com.google.inject.tools.ideplugin.snippets.CodeSnippetResult;
 import com.google.inject.tools.ideplugin.snippets.ModuleSnippet;
 import com.google.inject.tools.ideplugin.snippets.ModuleSnippet.ConstructorRepresentation;
@@ -31,24 +30,24 @@ import com.google.inject.tools.ideplugin.snippets.ModuleSnippet.DefaultConstruct
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class ModuleRepresentationImpl implements ModuleRepresentation, CodeRunner.CodeRunListener {
-	private String name;
-	private ConstructorRepresentation constructor;
+  private String name;
+  private ConstructorRepresentation constructor;
   private boolean dirty;
   private Set<? extends ConstructorRepresentation> constructors;
   private boolean hasDefaultConstructor;
-
-	/**
-	 * Create a ModuleRepresentationImpl from a class name string.
-	 * 
-	 * @param className the class name
-	 */
-	public ModuleRepresentationImpl(String className) {
-		name = className;
+  
+  /**
+   * Create a ModuleRepresentationImpl from a class name string.
+   * 
+   * @param className the class name
+   */
+  public ModuleRepresentationImpl(String className) {
+    name = className;
     dirty = true;
-		constructor = null;
+    constructor = null;
     constructors = null;
     hasDefaultConstructor = false;
-	}
+  }
   
   /**
    * (non-Javadoc)
@@ -65,14 +64,14 @@ public class ModuleRepresentationImpl implements ModuleRepresentation, CodeRunne
   public boolean hasDefaultConstructor() {
     return hasDefaultConstructor;
   }
-	
-	/**
-	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.module.ModuleRepresentation#getName()
-	 */
-	public String getName() {
-		return name;
-	}
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.module.ModuleRepresentation#getName()
+   */
+  public String getName() {
+    return name;
+  }
   
   /**
    * (non-Javadoc)
@@ -145,13 +144,13 @@ public class ModuleRepresentationImpl implements ModuleRepresentation, CodeRunne
   public void acceptDone() {
     //do nothing
   }
-	
-	/**
-	 * (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "Module Representation [" + constructor + "]";
-	}
+  
+  /**
+   * (non-Javadoc)
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    return "Module Representation [" + constructor + "]";
+  }
 }

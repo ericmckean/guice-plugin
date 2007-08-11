@@ -33,70 +33,70 @@ import com.google.inject.tools.ideplugin.snippets.CodeSnippetResult;
  */
 public class CodeRunnerImpl implements CodeRunner {
   private final Set<CodeRunListener> listeners;
-	private final Set<Runnable> runnables;
-	private final Set<Runnable> runnablesLeft;
+  private final Set<Runnable> runnables;
+  private final Set<Runnable> runnablesLeft;
   private final JavaProject project;
   private final Map<Runnable,CodeRunThread> runThreads;
-	
-	public CodeRunnerImpl(JavaProject project) {
+  
+  public CodeRunnerImpl(JavaProject project) {
     this.project = project;
-		listeners = new HashSet<CodeRunListener>();
-		runnables = new HashSet<Runnable>();
-		runnablesLeft = new HashSet<Runnable>();
+    listeners = new HashSet<CodeRunListener>();
+    runnables = new HashSet<Runnable>();
+    runnablesLeft = new HashSet<Runnable>();
     runThreads = new HashMap<Runnable,CodeRunThread>();
-	}
-	
+  }
+  
   /**
    * (non-Javadoc)
    * @see com.google.inject.tools.ideplugin.code.CodeRunner#addListener(com.google.inject.tools.ideplugin.code.CodeRunner.CodeRunListener)
    */
-	public void addListener(CodeRunListener listener) {
-		listeners.add(listener);
-	}
-	
+  public void addListener(CodeRunListener listener) {
+    listeners.add(listener);
+  }
+  
   /**
    * (non-Javadoc)
    * @see com.google.inject.tools.ideplugin.code.CodeRunner#queue(com.google.inject.tools.ideplugin.code.CodeRunner.Runnable)
    */
-	public void queue(Runnable runnable) {
-		runnables.add(runnable);
-	}
-	
-	private void notifyDone() {
-		for (CodeRunListener listener : listeners) {
-			listener.acceptDone();
-		}
-	}
-	
-	protected void notifyCancelled() {
-		for (CodeRunListener listener : listeners) {
-			listener.acceptUserCancelled();
-		}
-	}
-	
+  public void queue(Runnable runnable) {
+    runnables.add(runnable);
+  }
+  
+  private void notifyDone() {
+    for (CodeRunListener listener : listeners) {
+      listener.acceptDone();
+    }
+  }
+  
+  protected void notifyCancelled() {
+    for (CodeRunListener listener : listeners) {
+      listener.acceptUserCancelled();
+    }
+  }
+  
   /**
    * (non-Javadoc)
    * @see com.google.inject.tools.ideplugin.code.CodeRunner#notifyResult(com.google.inject.tools.ideplugin.code.CodeRunner.Runnable, com.google.inject.tools.ideplugin.snippets.CodeSnippetResult)
    */
-	public void notifyResult(Runnable runnable,CodeSnippetResult result) {
-		runnablesLeft.remove(runnable);
+  public void notifyResult(Runnable runnable,CodeSnippetResult result) {
+    runnablesLeft.remove(runnable);
     runThreads.remove(runnable);
-		for (CodeRunListener listener : listeners) {
-			listener.acceptCodeRunResult(result);
-		}
-		if (runnablesLeft.isEmpty()) notifyDone();
-	}
-	
+    for (CodeRunListener listener : listeners) {
+      listener.acceptCodeRunResult(result);
+    }
+    if (runnablesLeft.isEmpty()) notifyDone();
+  }
+  
   /**
    * (non-Javadoc)
    * @see com.google.inject.tools.ideplugin.code.CodeRunner#run()
    */
-	public void run() {
-		for (Runnable runnable : runnables) {
-			runnablesLeft.add(runnable);
-			run(runnable);
-		}
-	}
+  public void run() {
+    for (Runnable runnable : runnables) {
+      runnablesLeft.add(runnable);
+      run(runnable);
+    }
+  }
   
   protected class CodeRunThread extends Thread {
     private final List<String> cmd;
@@ -130,23 +130,23 @@ public class CodeRunnerImpl implements CodeRunner {
       }
     }
   }
-	
-	protected void run(Runnable runnable) {
-		try {
-			final String classpath = project.getSnippetsClasspath() + ":" + project.getProjectClasspath();
+  
+  protected void run(Runnable runnable) {
+    try {
+      final String classpath = project.getSnippetsClasspath() + ":" + project.getProjectClasspath();
       final List<String> cmd = new ArrayList<String>();
-			cmd.add(project.getJavaCommand());
-			cmd.add("-classpath");
-			cmd.add(classpath);
-			cmd.add(runnable.getClassToRun());
-			cmd.addAll(runnable.getArgsToRun());
-			CodeRunThread runThread = new CodeRunThread(runnable,cmd);
+      cmd.add(project.getJavaCommand());
+      cmd.add("-classpath");
+      cmd.add(classpath);
+      cmd.add(runnable.getClassToRun());
+      cmd.addAll(runnable.getArgsToRun());
+      CodeRunThread runThread = new CodeRunThread(runnable,cmd);
       runThreads.put(runnable,runThread);
       runThread.run();
-		} catch (Exception e) {
-			runnable.caughtException(e);
-		}
-	}
+    } catch (Exception e) {
+      runnable.caughtException(e);
+    }
+  }
   
   /**
    * (non-Javadoc)

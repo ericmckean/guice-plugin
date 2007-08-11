@@ -28,18 +28,27 @@ import com.google.inject.tools.ideplugin.Messenger;
  */
 @Singleton
 public class EclipseMessenger implements Messenger {
-	private void showMessage(String message) {
-		MessageDialog.openInformation(
-			new Shell(),
-			"Guice",
-			message);
-	}
-	
-	/**
-	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.Messenger#display(java.lang.String)
-	 */
-	public void display(String message) {
-		showMessage(message);
-	}
+  private Shell shell;
+  
+  private void showMessage(String message) {
+    if (shell == null || shell.isDisposed()) shell = new Shell();
+    MessageDialog.openInformation(shell, "Guice", message);
+  }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.Messenger#display(java.lang.String)
+   */
+  public void display(String message) {
+    showMessage(message);
+  }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.Messenger#log(java.lang.String)
+   */
+  public void log(String message) {
+    //TODO: is this best choice?
+    System.out.println(message);
+  }
 }

@@ -32,7 +32,6 @@ import com.google.inject.tools.ideplugin.snippets.ModuleContextSnippet;
 /**
  * Unit test the {@link ModuleContextRepresentationImpl}.
  * 
- * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class ModuleContextRepresentationTest extends TestCase {
@@ -53,10 +52,10 @@ public class ModuleContextRepresentationTest extends TestCase {
     public void addListener(CodeRunListener listener) {
       this.listener = listener;
     }
-
+    
     public void kill() {
     }
-
+    
     public void kill(Runnable runnable) {
     }
     
@@ -65,14 +64,14 @@ public class ModuleContextRepresentationTest extends TestCase {
     
     public void waitFor(Runnable runnable) {
     }
-
+    
     public void notifyResult(Runnable runnable, CodeSnippetResult result) {
       listener.acceptCodeRunResult(result);
     }
-
+    
     public void queue(Runnable runnable) {
     }
-
+    
     public void run() {
       notifyResult(null,simulatedSnippetResult());
     }

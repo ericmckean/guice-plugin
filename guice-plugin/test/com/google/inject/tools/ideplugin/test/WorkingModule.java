@@ -28,12 +28,12 @@ import com.google.inject.AbstractModule;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class WorkingModule extends AbstractModule {
-	/*
-	 * (non-Javadoc)
-	 * @see com.google.inject.AbstractModule#configure()
-	 */
-	@Override
-	protected void configure() {
-		bind(MockInjectedInterface.class).to(MockInjectedInterfaceImpl.class);
-	}
+  /*
+   * (non-Javadoc)
+   * @see com.google.inject.AbstractModule#configure()
+   */
+  @Override
+  protected void configure() {
+    bind(MockInjectedInterface.class).to(MockInjectedInterfaceImpl.class);
+  }
 }

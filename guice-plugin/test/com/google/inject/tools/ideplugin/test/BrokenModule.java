@@ -24,14 +24,14 @@ import com.google.inject.AbstractModule;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class BrokenModule extends AbstractModule {
-	/*
-	 * (non-Javadoc)
-	 * @see com.google.inject.AbstractModule#configure()
-	 */
-	@Override
-	protected void configure() {
-		bind(MockInjectedInterface.class).to(MockInjectedInterfaceImpl.class);
-		bind(MockInjectedInterface.class).to(MockInjectedInterfaceImpl.class);
-		//this will throw a CreationException as its already bound
-	}
+  /*
+   * (non-Javadoc)
+   * @see com.google.inject.AbstractModule#configure()
+   */
+  @Override
+  protected void configure() {
+    bind(MockInjectedInterface.class).to(MockInjectedInterfaceImpl.class);
+    bind(MockInjectedInterface.class).to(MockInjectedInterfaceImpl.class);
+    //this will throw a CreationException as its already bound
+  }
 }

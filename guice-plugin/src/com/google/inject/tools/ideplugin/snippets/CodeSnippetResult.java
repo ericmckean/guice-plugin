@@ -26,21 +26,21 @@ import java.io.Serializable;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public abstract class CodeSnippetResult implements Serializable {
-	protected final Set<? extends CodeProblem> problems;
-
+  protected final Set<? extends CodeProblem> problems;
+  
   /**
    * Create a new CodeSnippetResult object.
    * 
    * @param problems the problems associated with the snippet
    */
-	public CodeSnippetResult(Set<? extends CodeProblem> problems) {
-		this.problems = problems;
-	}
-	
+  public CodeSnippetResult(Set<? extends CodeProblem> problems) {
+    this.problems = problems;
+  }
+  
   /**
    * Return the problems for the snippet.
    */
-	public Set<? extends CodeProblem> getProblems() {
-		return problems;
-	}
+  public Set<? extends CodeProblem> getProblems() {
+    return problems;
+  }
 }

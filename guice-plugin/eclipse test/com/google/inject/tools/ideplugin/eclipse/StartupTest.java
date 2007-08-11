@@ -41,37 +41,44 @@ import com.google.inject.tools.ideplugin.JavaElement;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class StartupTest extends TestCase {
-	/** 
-	 * Create a new activator and therefore a new GuicePlugin.
-	 */
-	public void testActivatorConstructor() {
-		@SuppressWarnings({"unused"})
-		Activator activator = new Activator();
-		assertNotNull(Activator.getGuicePlugin());
-	}
-	
-	public void testCreatingInjections() {
-	    Activator activator = new Activator();
-	    EclipsePluginModule module = new EclipsePluginModule();
-	    module.setModuleSelectionView(new EclipseGuicePlugin.ModuleSelectionViewImpl());
-	    module.setResultsView(new EclipseGuicePlugin.ResultsViewImpl());
-	    Injector injector = Guice.createInjector(module);
-	    assertNotNull(injector.getInstance(ModuleManager.class));
-	    assertNotNull(injector.getInstance(ModulesListener.class));
-	    assertNotNull(injector.getInstance(ResultsView.class));
-	    assertNotNull(injector.getInstance(ModuleSelectionView.class));
-	    assertNotNull(injector.getInstance(ResultsHandler.class));
-	    assertNotNull(injector.getInstance(ProblemsHandler.class));
-	    assertNotNull(injector.getInstance(ActionsHandler.class));
-	    assertNotNull(injector.getInstance(Messenger.class));
-      assertNotNull(injector.getInstance(GuicePluginModule.CodeRunnerFactory.class));
-      assertNotNull(injector.getInstance(ProgressHandler.class));
-	}
-	
-	public void testCreateBindingsEngine() {
-	  EclipsePluginModule module = new EclipsePluginModule();
-	  module.setModuleSelectionView(new EclipseGuicePlugin.ModuleSelectionViewImpl());
-	  module.setResultsView(new EclipseGuicePlugin.ResultsViewImpl());
-	  new EclipseGuicePlugin(module).getBindingsEngine(new MockJavaElement(JavaElement.Type.FIELD));
-	}
+  /** 
+   * Create a new activator and therefore a new GuicePlugin.
+   */
+  public void testActivatorConstructor() {
+    @SuppressWarnings({"unused"})
+    Activator activator = new Activator();
+    assertNotNull(Activator.getGuicePlugin());
+  }
+  
+  public void testCreatingInjections() {
+    Activator activator = new Activator();
+    EclipsePluginModule module = new EclipsePluginModule();
+    module.setModuleSelectionView(new EclipseGuicePlugin.ModuleSelectionViewImpl());
+    module.setResultsView(new EclipseGuicePlugin.ResultsViewImpl());
+    Injector injector = Guice.createInjector(module);
+    assertNotNull(injector.getInstance(ModuleManager.class));
+    assertNotNull(injector.getInstance(ModulesListener.class));
+    assertNotNull(injector.getInstance(ResultsView.class));
+    assertNotNull(injector.getInstance(ModuleSelectionView.class));
+    assertNotNull(injector.getInstance(ResultsHandler.class));
+    assertNotNull(injector.getInstance(ProblemsHandler.class));
+    assertNotNull(injector.getInstance(ActionsHandler.class));
+    assertNotNull(injector.getInstance(Messenger.class));
+    assertNotNull(injector.getInstance(GuicePluginModule.CodeRunnerFactory.class));
+    assertNotNull(injector.getInstance(ProgressHandler.class));
+  }
+  
+  public void testCreateBindingsEngine() {
+    boolean calledMessenger = false;
+    EclipsePluginModule module = new EclipsePluginModule();
+    module.setModuleSelectionView(new EclipseGuicePlugin.ModuleSelectionViewImpl());
+    module.setResultsView(new EclipseGuicePlugin.ResultsViewImpl());
+    try {
+      new EclipseGuicePlugin(module).getBindingsEngine(new MockJavaElement(JavaElement.Type.FIELD));
+    } catch (java.lang.UnsatisfiedLinkError linkError) {
+      //from the bindings engine trying to use the messenger
+      calledMessenger = true;
+    }
+    assertTrue(calledMessenger);
+  }
 }

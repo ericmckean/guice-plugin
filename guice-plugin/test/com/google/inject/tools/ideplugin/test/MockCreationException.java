@@ -26,30 +26,30 @@ import java.util.HashSet;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class MockCreationException extends CreationException {
-	/**
-	 * Automatically generated serial version UID.
-	 */
-	private static final long serialVersionUID = -6889671178292449161L;
-	private static HashSet<Message> messages = makeMessages();
-	private static HashSet<Message> makeMessages() {
-		HashSet<Message> collection = new HashSet<Message>();
-		collection.add(new Message("Mock Guice Message."));
-		return collection;
-	}
-	
-	/**
-	 * Create the Mock object.
-	 */
-	public MockCreationException() {
-		super(messages);
-	}
-	
-	/**
-	 * (non-Javadoc)
-	 * @see java.lang.Throwable#toString()
-	 */
-	@Override
-	public String toString() {
-		return "Mock Creation Exception.";
-	}
+  /**
+   * Automatically generated serial version UID.
+   */
+  private static final long serialVersionUID = -6889671178292449161L;
+  private static HashSet<Message> messages = makeMessages();
+  private static HashSet<Message> makeMessages() {
+    HashSet<Message> collection = new HashSet<Message>();
+    collection.add(new Message("Mock Guice Message."));
+    return collection;
+  }
+  
+  /**
+   * Create the Mock object.
+   */
+  public MockCreationException() {
+    super(messages);
+  }
+  
+  /**
+   * (non-Javadoc)
+   * @see java.lang.Throwable#toString()
+   */
+  @Override
+  public String toString() {
+    return "Mock Creation Exception.";
+  }
 }

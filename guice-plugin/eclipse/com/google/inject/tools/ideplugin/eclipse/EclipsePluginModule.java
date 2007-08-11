@@ -90,18 +90,30 @@ public class EclipsePluginModule extends GuicePluginModule {
     bind(ProgressHandler.class).to(EclipseProgressHandler.class);
   }
   
+  /**
+   * Sets the results view; eclipse creates the instance.
+   */
   public void setResultsView(ResultsView resultsView) {
     this.resultsView = resultsView;
   }
   
+  /**
+   * Sets the module selection view; eclipse creates the instance.
+   */
   public void setModuleSelectionView(ModuleSelectionView moduleSelectionView) {
     this.moduleSelectionView = moduleSelectionView;
   }
   
+  /**
+   * Return the results view.
+   */
   public ResultsView getResultsView() {
     return resultsView;
   }
   
+  /**
+   * Return the module selection view.
+   */
   public ModuleSelectionView getModuleSelectionView() {
     return moduleSelectionView;
   }

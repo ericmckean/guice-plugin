@@ -79,11 +79,11 @@ public class CodeRunnerTest extends TestCase implements CodeRunner.CodeRunListen
     assertTrue(result instanceof TestSnippet.TestSnippetResult);
     assertTrue(((TestSnippet.TestSnippetResult)result).getBlah().equals("blah"));
   }
-
+  
   public void acceptDone() {
     hitDone = true;
   }
-
+  
   public void acceptUserCancelled() {
     //do nothing
   }
@@ -92,11 +92,11 @@ public class CodeRunnerTest extends TestCase implements CodeRunner.CodeRunListen
     public String getJavaCommand() throws Exception {
       return "java";
     }
-
+    
     public String getProjectClasspath() throws Exception {
       return CLASSPATH;
     }
-
+    
     public String getSnippetsClasspath() throws Exception {
       return "";
     }
@@ -133,8 +133,8 @@ public class CodeRunnerTest extends TestCase implements CodeRunner.CodeRunListen
       BufferedReader r = new BufferedReader(ir);
       String line;
       try {
-      while ((line = r.readLine()) != null)
-        fail();
+        while ((line = r.readLine()) != null)
+          fail();
       } catch (Exception e) {
       }
     }

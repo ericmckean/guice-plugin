@@ -32,32 +32,32 @@ import java.util.Set;
  */
 @Singleton
 public class ProblemsHandlerImpl implements ProblemsHandler {
-	private final Messenger messenger;
-	
-	/**
-	 * Create an ProblemsHandlerImpl.  This should be injected.
-	 * 
-	 * @param messenger the Messenger
-	 */
-	@Inject
-	public ProblemsHandlerImpl(Messenger messenger) {
-		this.messenger = messenger;
-	}
-	
-	private void foundProblem(CodeProblem problem) {
-		//TODO: Phase II: what to do?  somehow do codeassist with problems
-		messenger.display(problem.toString());
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.problem.ProblemsHandler#foundProblems(java.util.Set)
-	 */
-	public void foundProblems(Set<? extends CodeProblem> problems) {
+  private final Messenger messenger;
+  
+  /**
+   * Create an ProblemsHandlerImpl.  This should be injected.
+   * 
+   * @param messenger the Messenger
+   */
+  @Inject
+  public ProblemsHandlerImpl(Messenger messenger) {
+    this.messenger = messenger;
+  }
+  
+  private void foundProblem(CodeProblem problem) {
+    //TODO: Phase II: what to do?  somehow do codeassist with problems
+    messenger.log("Problem found: " + problem.toString());
+  }
+  
+  /*
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.problem.ProblemsHandler#foundProblems(java.util.Set)
+   */
+  public void foundProblems(Set<? extends CodeProblem> problems) {
     if (problems!=null) {
       for (CodeProblem problem : problems) {
         foundProblem(problem);
       }
     }
-	}
+  }
 }

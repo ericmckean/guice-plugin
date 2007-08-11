@@ -22,12 +22,15 @@ package com.google.inject.tools.ideplugin;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public interface Messenger {
-	/**
-	 * Display a message to the user in a dialog box.
+  /**
+   * Display a message to the user in a dialog box.
    * This should be a blocking method.
    * Only threads allowed to access UI elements may call this method.
-	 * 
-	 * @param message the message to display
-	 */
-	public void display(String message);
+   */
+  public void display(String message);
+  
+  /**
+   * Log a message to the console or other error output.
+   */
+  public void log(String message);
 }

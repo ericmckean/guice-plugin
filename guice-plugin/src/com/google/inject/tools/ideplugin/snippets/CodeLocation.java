@@ -25,42 +25,40 @@ import com.google.inject.tools.ideplugin.results.Results.Node.ActionString;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public abstract class CodeLocation extends CodeSnippetResult {
-	private final String file;
-	private final int location;
-	
-	/**
-	 * Create a new CodeLocation.
-	 */
-	public CodeLocation(String file,int location,Set<? extends CodeProblem> problems) {
-		super(problems);
-		this.file = file;
-		this.location = location;
-	}
-	
-	/**
-	 * Return the test to display when naming the code location for the user.
-	 * 
-	 * @return the display name
-	 */
-	public abstract ActionString getDisplay();
-	
-	/**
-	 * Return the file where the code lives.
-	 * 
-	 * @return the file name
-	 */
-	public String file() {
-		return file;
-	}
-	
-	/**
-	 * Return the location in the file of the code snippet.
-	 * 
-	 * @return the location in the file
-	 */
-	public int location() {
-		return location;
-	}
+  private final String file;
+  private final int location;
+  
+  /**
+   * Create a new CodeLocation.
+   */
+  public CodeLocation(String file,int location,Set<? extends CodeProblem> problems) {
+    super(problems);
+    this.file = file;
+    this.location = location;
+  }
+  
+  /**
+   * Return the text to display when naming the code location for the user.
+   */
+  public abstract ActionString getDisplay();
+  
+  /**
+   * Return the file where the code lives.
+   * 
+   * @return the file name
+   */
+  public String file() {
+    return file;
+  }
+  
+  /**
+   * Return the location in the file of the code snippet.
+   * 
+   * @return the line number
+   */
+  public int location() {
+    return location;
+  }
   
   @Override
   public String toString() {

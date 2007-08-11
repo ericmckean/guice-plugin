@@ -24,6 +24,6 @@ import com.google.inject.Inject;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class MockInjectedInterfaceImpl implements MockInjectedInterface {
-	@Inject
-	public MockInjectedInterfaceImpl() {}
+  @Inject
+  public MockInjectedInterfaceImpl() {}
 }

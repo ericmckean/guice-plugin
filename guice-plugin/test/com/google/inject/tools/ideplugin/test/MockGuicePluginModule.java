@@ -18,7 +18,7 @@ package com.google.inject.tools.ideplugin.test;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
+//import java.lang.reflect.Proxy;
 
 import org.easymock.EasyMock;
 
@@ -43,10 +43,10 @@ import com.google.inject.tools.ideplugin.code.CodeRunner;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class MockGuicePluginModule extends GuicePluginModule {
-	private boolean useRealModuleManager = false;
-	private boolean useRealResultsHandler = false;
-	private boolean useRealProblemsHandler = false;
-	private boolean useRealBindingsEngine = false;
+  private boolean useRealModuleManager = false;
+  private boolean useRealResultsHandler = false;
+  private boolean useRealProblemsHandler = false;
+  private boolean useRealBindingsEngine = false;
   
   private ModuleManager moduleManager = null;
   private ResultsHandler resultsHandler = null;
@@ -58,41 +58,41 @@ public class MockGuicePluginModule extends GuicePluginModule {
   private Messenger messenger = null;
   private CodeRunner codeRunner = null;
   private ProgressHandler progressHandler = null;
-	
-	/**
-	 * Create a purely mocked module.
-	 */
-	public MockGuicePluginModule() {
-	}
-	
-	/**
-	 * Tell the module to use a real ModuleManager.
-	 */
-	public MockGuicePluginModule useRealModuleManager() {
-		useRealModuleManager = true;
-		return this;
-	}
-	
-	/**
-	 * Tell the module to use a real ResultsHandler.
-	 */
-	public MockGuicePluginModule useRealResultsHandler() {
-		useRealResultsHandler = true;
-		return this;
-	}
-	
-	/**
-	 * Tell the module to use a real ProblemsHandler.
-	 */
-	public MockGuicePluginModule useRealProblemsHandler() {
-		useRealProblemsHandler = true;
-		return this;
-	}
-	
-	public MockGuicePluginModule useRealBindingsEngine() {
-		useRealBindingsEngine = true;
-		return this;
-	}
+  
+  /**
+   * Create a purely mocked module.
+   */
+  public MockGuicePluginModule() {
+  }
+  
+  /**
+   * Tell the module to use a real ModuleManager.
+   */
+  public MockGuicePluginModule useRealModuleManager() {
+    useRealModuleManager = true;
+    return this;
+  }
+  
+  /**
+   * Tell the module to use a real ResultsHandler.
+   */
+  public MockGuicePluginModule useRealResultsHandler() {
+    useRealResultsHandler = true;
+    return this;
+  }
+  
+  /**
+   * Tell the module to use a real ProblemsHandler.
+   */
+  public MockGuicePluginModule useRealProblemsHandler() {
+    useRealProblemsHandler = true;
+    return this;
+  }
+  
+  public MockGuicePluginModule useRealBindingsEngine() {
+    useRealBindingsEngine = true;
+    return this;
+  }
   
   public MockGuicePluginModule useModuleManager(ModuleManager moduleManager) {
     this.moduleManager = moduleManager;
@@ -143,97 +143,97 @@ public class MockGuicePluginModule extends GuicePluginModule {
     this.progressHandler = progressHandler;
     return this;
   }
-	
-	@Override
-	protected void bindBindingsEngine() {
-		if (useRealBindingsEngine) super.bindBindingsEngine();
+  
+  @Override
+  protected void bindBindingsEngine() {
+    if (useRealBindingsEngine) super.bindBindingsEngine();
     else bindToMockInstance(BindingsEngineFactory.class);
-	}
-	
-	/**
-	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindModuleManager()
-	 */
-	@Override
-	protected void bindModuleManager() {
+  }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindModuleManager()
+   */
+  @Override
+  protected void bindModuleManager() {
     if (moduleManager!=null) bindToInstance(ModuleManager.class,moduleManager);
     else if (useRealModuleManager) super.bindModuleManager();
     else bindToMockInstance(ModuleManager.class);
-	}
-	
-	/**
-	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindResultsHandler()
-	 */
-	@Override
-	protected void bindResultsHandler() {
+  }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindResultsHandler()
+   */
+  @Override
+  protected void bindResultsHandler() {
     if (resultsHandler!=null) bindToInstance(ResultsHandler.class,resultsHandler);
     else if (useRealResultsHandler) super.bindResultsHandler();
     else bindToMockInstance(ResultsHandler.class);
-	}
-	
-	@Override
-	protected void bindProblemsHandler() {
+  }
+  
+  @Override
+  protected void bindProblemsHandler() {
     if (problemsHandler!=null) bindToInstance(ProblemsHandler.class,problemsHandler);
     else if (useRealProblemsHandler) super.bindProblemsHandler();
     else bindToMockInstance(ProblemsHandler.class);
-	}
-	
-	/**
-	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindResultsView()
-	 */
-	@Override
-	protected void bindResultsView() {
+  }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindResultsView()
+   */
+  @Override
+  protected void bindResultsView() {
     if (resultsView != null) bindToInstance(ResultsView.class,resultsView);
     else bindToMockInstance(ResultsView.class);
-	}
-	
-	/**
-	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindModuleSelectionView()
-	 */
-	@Override
-	protected void bindModuleSelectionView() {
+  }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindModuleSelectionView()
+   */
+  @Override
+  protected void bindModuleSelectionView() {
     if (moduleSelectionView != null) bindToInstance(ModuleSelectionView.class,moduleSelectionView);
     else bindToMockInstance(ModuleSelectionView.class);
-	}
-	
-	/**
-	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindMessenger()
-	 */
-	@Override
-	protected void bindMessenger() {
+  }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindMessenger()
+   */
+  @Override
+  protected void bindMessenger() {
     if (messenger != null) bindToInstance(Messenger.class,messenger);
     else bindToMockInstance(Messenger.class);
-	}
-	
-	/**
-	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindActionsHandler()
-	 */
-	@Override
-	protected void bindActionsHandler() {
+  }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindActionsHandler()
+   */
+  @Override
+  protected void bindActionsHandler() {
     if (actionsHandler != null) bindToInstance(ActionsHandler.class,actionsHandler);
     else bindToMockInstance(ActionsHandler.class);
-	}
-	
-	/**
-	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindModulesListener()
-	 */
-	@Override
-	protected void bindModulesListener() {
+  }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindModulesListener()
+   */
+  @Override
+  protected void bindModulesListener() {
     if (modulesListener != null) bindToInstance(ModulesListener.class,modulesListener);
     else bindToMockInstance(ModulesListener.class);
-	}
-	
-	@Override
-	protected void bindCodeRunner() {
+  }
+  
+  @Override
+  protected void bindCodeRunner() {
     if (codeRunner != null) bind(CodeRunnerFactory.class).toInstance(new CodeRunnerInstanceFactory(codeRunner));
     else bind(CodeRunnerFactory.class).to(CodeRunnerMockFactory.class);
-	}
+  }
   
   @Override
   protected void bindProgressHandler() {
@@ -253,12 +253,12 @@ public class MockGuicePluginModule extends GuicePluginModule {
       return "Proxy exception: method " + method.toString() + " called on proxy " + proxy.toString();
     }
   }
-	
+  
   @SuppressWarnings({"unchecked"})
-	private <T> void bindToMockInstance(Class<T> theClass) {
-		bind(theClass).toProvider(new MockFactory<T>(theClass));
+  private <T> void bindToMockInstance(Class<T> theClass) {
+    bind(theClass).toProvider(new MockFactory<T>(theClass));
   }
-    
+  
   @SuppressWarnings({"unchecked"})
   private void bindToInstance(Class theClass,Object object) {
     bind(theClass).toInstance(object);
@@ -299,7 +299,8 @@ public class MockGuicePluginModule extends GuicePluginModule {
     @Inject
     public CodeRunnerMockFactory() {}
     public CodeRunner create(JavaProject project) {
-      return (CodeRunner)Proxy.newProxyInstance(CodeRunner.class.getClassLoader(), CodeRunner.class.getInterfaces(), new ProxyHandler<CodeRunner>());
+      return EasyMock.createMock(CodeRunner.class);
+      //return (CodeRunner)Proxy.newProxyInstance(CodeRunner.class.getClassLoader(), CodeRunner.class.getInterfaces(), new ProxyHandler<CodeRunner>());
     }
   }
 }
