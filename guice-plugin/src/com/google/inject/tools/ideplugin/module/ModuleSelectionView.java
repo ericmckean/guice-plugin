@@ -24,6 +24,5 @@ package com.google.inject.tools.ideplugin.module;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public interface ModuleSelectionView {
-  //TODO: run the modulesnippets to determine constructors etc
   //TODO: create modulecontextrepresentations based on user input
 }
