@@ -16,8 +16,8 @@
 
 package com.google.inject.tools.ideplugin;
 
-import junit.framework.Test;
 import junit.framework.TestSuite;
+import junit.framework.Test;
 
 /**
  * Test suite of all the tests for the guice plugin that are not IDE specific.
@@ -25,18 +25,18 @@ import junit.framework.TestSuite;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class AllNonIDESpecificTests {
-	public static Test suite() {
-		TestSuite suite = new TestSuite();
-		
-		suite.addTestSuite(CodeLocationsResultsTest.class);
+  public static Test suite() {
+    TestSuite suite = new TestSuite();
+    
+    suite.addTestSuite(CodeLocationsResultsTest.class);
     suite.addTestSuite(CodeRunnerTest.class);
     suite.addTestSuite(ModuleContextRepresentationTest.class);
     suite.addTestSuite(ModuleRepresentationTest.class);
-		suite.addTestSuite(ModuleManagerTest.class);
-		suite.addTestSuite(ModuleSnippetTest.class);
-		suite.addTestSuite(ModuleContextSnippetTest.class);
-		suite.addTestSuite(ResultsHandlerTest.class);
-
-		return suite;
-	}
+    suite.addTestSuite(ModuleManagerTest.class);
+    suite.addTestSuite(ModuleSnippetTest.class);
+    suite.addTestSuite(ModuleContextSnippetTest.class);
+    suite.addTestSuite(ResultsHandlerTest.class);
+    
+    return suite;
+  }
 }

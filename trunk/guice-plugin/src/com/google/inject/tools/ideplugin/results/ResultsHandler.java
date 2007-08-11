@@ -25,10 +25,10 @@ import com.google.inject.tools.ideplugin.bindings.BindingsEngine;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public interface ResultsHandler {
-	/** 
-	 * Display a {@link CodeLocationsResults} result set.
-	 * 
-	 * @param results the results to display
-	 */
-	public void displayLocationsResults(CodeLocationsResults results);
+  /** 
+   * Display a {@link CodeLocationsResults} result set.
+   * 
+   * @param results the results to display
+   */
+  public void displayLocationsResults(CodeLocationsResults results);
 }

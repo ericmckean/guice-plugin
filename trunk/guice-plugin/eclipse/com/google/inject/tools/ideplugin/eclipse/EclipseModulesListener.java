@@ -40,136 +40,136 @@ import com.google.inject.tools.ideplugin.JavaProject;
  */
 @Singleton
 public class EclipseModulesListener implements ModulesListener {
-	private final Messenger messenger;
-	private final HashSet<String> modules;
-	private final ModuleManager moduleManager;
-	private ITypeHierarchy typeHierarchy = null;
-	private MyTypeHierarchyChangedListener typeHierarchyListener;
-	private IType type;
-	private IJavaProject javaProject;
-	
-	/**
-	 * Create an EclipseModulesListener.  This should be injected.
-	 */
-	@Inject
-	public EclipseModulesListener(ModuleManager moduleManager,Messenger messenger) {
-		this.moduleManager = moduleManager;
-		this.messenger = messenger;
-		javaProject = null;
-		modules = new HashSet<String>();
-		initialize();
-	}
-	
-	/**
-	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.module.ModulesListener#projectChanged(com.google.inject.tools.ideplugin.JavaProject)
-	 */
-	public void projectChanged(JavaProject project) {
-		if (project instanceof EclipseJavaProject) {
-			javaProject = ((EclipseJavaProject)project).getIJavaProject();
-			initialize();
-		} else {
-			javaProject = null;
-		}
-	}
-	
-	private boolean initialize() {
-		if (javaProject != null) {
-	      try {
-			type = javaProject.findType("com.google.inject.Module");
-			typeHierarchy = type.newTypeHierarchy(null);
-	      } catch (JavaModelException exception) {
-	    	hadProblem(exception);
-	      } finally {
-			typeHierarchyListener = new MyTypeHierarchyChangedListener();
-			if (typeHierarchy!=null) {
-			  typeHierarchy.addTypeHierarchyChangedListener(typeHierarchyListener);
-			  findModulesInCode();
-			  return true;
-			}
-	      }
-	    }
-	    return false;
-	}
-	
-	/**
-	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.module.ModulesListener#findModules()
-	 */
-	public Set<String> findModules() {
-	    if (typeHierarchy!=null) {
-	      try {
-	        typeHierarchy.refresh(null);
-	      } catch (JavaModelException exception) {
-			hadProblem(exception);
-	      }
-	      findModulesInCode();
-	      return new HashSet<String>(modules);
-	    } else {
-	      if (initialize()) return findModules();
-	      else return new HashSet<String>();
-	    }
-	}
-	
-	private class MyTypeHierarchyChangedListener implements ITypeHierarchyChangedListener {
-		public void typeHierarchyChanged(ITypeHierarchy typeHierarchy) {
-			EclipseModulesListener.this.setTypeHierarchy(typeHierarchy);
-			typeHierarchy.addTypeHierarchyChangedListener(this);
-		}
-	}
-	
-	private void setTypeHierarchy(ITypeHierarchy typeHierarchy) {
-		this.typeHierarchy = typeHierarchy;
-		findModulesInCode();
-	}
-	
-	private void findModulesInCode() {
-		final HashSet<String> moduleNames = new HashSet<String>();
-		IType[] subclasses = typeHierarchy.getAllSubtypes(type);
-		for (IType subclass : subclasses) {
-			try {
-				if (subclass.isClass()) {
-					if (!Flags.isAbstract(subclass.getFlags())) {
-						moduleNames.add(subclass.getFullyQualifiedName());
-					}
-				}
-			} catch (JavaModelException exception) {
-				hadProblem(exception);
-			}
-		}
-		keepModulesByName(moduleNames);
-	}
-	
-  //TODO: move up and test
-	private synchronized void keepModulesByName(Set<String> modulesNames) {
-		for (String module : modules) {
-			boolean keep = false;
-			for (String name : modulesNames) {
-				if (name.equals(module)) {
-					keep = true;
-					modulesNames.remove(name);
-				}
-			}
-			if (!keep) {
-				modules.remove(module);
-				moduleManager.removeModule(module);
-			}
-		}
-		for (String moduleName : modulesNames) {
-			moduleManager.addModule(moduleName);
-		}
-	}
-	
-	private void hadProblem(JavaModelException exception) {
-		//TODO: handle this for real
-		messenger.display(exception.toString());
-	}
-	
-	/**
-	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.module.ModulesListener#findChanges()
-	 */
-	public void findChanges() {
-		if (javaProject != null) findModulesInCode();
-	}
+  private final Messenger messenger;
+  private final HashSet<String> modules;
+  private final ModuleManager moduleManager;
+  private ITypeHierarchy typeHierarchy = null;
+  private MyTypeHierarchyChangedListener typeHierarchyListener;
+  private IType type;
+  private IJavaProject javaProject;
+  
+  /**
+   * Create an EclipseModulesListener.  This should be injected.
+   */
+  @Inject
+  public EclipseModulesListener(ModuleManager moduleManager,Messenger messenger) {
+    this.moduleManager = moduleManager;
+    this.messenger = messenger;
+    javaProject = null;
+    modules = new HashSet<String>();
+    initialize();
+  }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.module.ModulesListener#projectChanged(com.google.inject.tools.ideplugin.JavaProject)
+   */
+  public void projectChanged(JavaProject project) {
+    if (project instanceof EclipseJavaProject) {
+      javaProject = ((EclipseJavaProject)project).getIJavaProject();
+      initialize();
+    } else {
+      javaProject = null;
+    }
+  }
+  
+  private boolean initialize() {
+    if (javaProject != null) {
+      try {
+        type = javaProject.findType("com.google.inject.Module");
+        typeHierarchy = type.newTypeHierarchy(null);
+      } catch (JavaModelException exception) {
+        hadProblem(exception);
+      } finally {
+        typeHierarchyListener = new MyTypeHierarchyChangedListener();
+        if (typeHierarchy!=null) {
+          typeHierarchy.addTypeHierarchyChangedListener(typeHierarchyListener);
+          findModulesInCode();
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.module.ModulesListener#findModules()
+   */
+  public Set<String> findModules() {
+    if (typeHierarchy!=null) {
+      try {
+        typeHierarchy.refresh(null);
+      } catch (JavaModelException exception) {
+        hadProblem(exception);
+      }
+      findModulesInCode();
+      return new HashSet<String>(modules);
+    } else {
+      if (initialize()) return findModules();
+      else return new HashSet<String>();
+    }
+  }
+  
+  private class MyTypeHierarchyChangedListener implements ITypeHierarchyChangedListener {
+    public void typeHierarchyChanged(ITypeHierarchy typeHierarchy) {
+      EclipseModulesListener.this.setTypeHierarchy(typeHierarchy);
+      typeHierarchy.addTypeHierarchyChangedListener(this);
+    }
+  }
+  
+  private void setTypeHierarchy(ITypeHierarchy typeHierarchy) {
+    this.typeHierarchy = typeHierarchy;
+    findModulesInCode();
+  }
+  
+  private void findModulesInCode() {
+    final HashSet<String> moduleNames = new HashSet<String>();
+    IType[] subclasses = typeHierarchy.getAllSubtypes(type);
+    for (IType subclass : subclasses) {
+      try {
+        if (subclass.isClass()) {
+          if (!Flags.isAbstract(subclass.getFlags())) {
+            moduleNames.add(subclass.getFullyQualifiedName());
+          }
+        }
+      } catch (JavaModelException exception) {
+        hadProblem(exception);
+      }
+    }
+    keepModulesByName(moduleNames);
+  }
+  
+  //TODO: move up and test?
+  private synchronized void keepModulesByName(Set<String> modulesNames) {
+    for (String module : modules) {
+      boolean keep = false;
+      for (String name : modulesNames) {
+        if (name.equals(module)) {
+          keep = true;
+          modulesNames.remove(name);
+        }
+      }
+      if (!keep) {
+        modules.remove(module);
+        moduleManager.removeModule(module);
+      }
+    }
+    for (String moduleName : modulesNames) {
+      moduleManager.addModule(moduleName);
+    }
+  }
+  
+  private void hadProblem(JavaModelException exception) {
+    //TODO: handle this for real
+    messenger.log("Modules Listener error: " + exception.toString());
+  }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.module.ModulesListener#findChanges()
+   */
+  public void findChanges() {
+    if (javaProject != null) findModulesInCode();
+  }
 }

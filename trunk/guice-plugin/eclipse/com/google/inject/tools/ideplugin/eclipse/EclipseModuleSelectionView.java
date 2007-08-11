@@ -26,5 +26,5 @@ import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class EclipseModuleSelectionView {	
-	
+  
 }

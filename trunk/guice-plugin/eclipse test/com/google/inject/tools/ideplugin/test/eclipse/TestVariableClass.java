@@ -22,5 +22,5 @@ package com.google.inject.tools.ideplugin.test.eclipse;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class TestVariableClass {
-
+  
 }

@@ -16,7 +16,6 @@
 
 package com.google.inject.tools.ideplugin.results;
 
-
 /** 
  * Interface to be implemented by IDE specific objects that display results from CodeSnippets
  * and display error messages to the user.
@@ -24,10 +23,10 @@ package com.google.inject.tools.ideplugin.results;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public interface ResultsView {
-	/**
-	 * Display the {@link Results}.
-	 * 
-	 * @param results the results
-	 */
-	public void displayResults(Results results);
+  /**
+   * Display the {@link Results}.
+   * 
+   * @param results the results
+   */
+  public void displayResults(Results results);
 }

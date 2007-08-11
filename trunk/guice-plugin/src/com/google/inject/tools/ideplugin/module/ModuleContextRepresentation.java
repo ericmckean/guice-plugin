@@ -37,47 +37,47 @@ public interface ModuleContextRepresentation {
    */
   public BindingCodeLocation findLocation(String theClass);
   
-	/**
-	 * Add the module with the given name to this context.
-	 * 
-	 * @param module the module
-	 */
-	public ModuleContextRepresentation add(ModuleInstanceRepresentation module);
-	
-	/**
-	 * Return the modules in this context.
-	 */
-	public Set<ModuleInstanceRepresentation> getModules();
-	
-	/**
-	 * Remove the given module from this context.
-	 * 
-	 * @param module the module
-	 */
-	public void removeModule(ModuleInstanceRepresentation module);
-
-	/**
-	 * Return the name of this representation.
-	 * 
-	 * @return the name
-	 */
-	public String getName();
-	
-	/**
-	 * Does this context have the given module in it?
-	 * 
-	 * @param module the module
-	 * @return true if the module is in this context
-	 */
-	public boolean contains(ModuleInstanceRepresentation module);
-	
-	/**
-	 * Does this context contain the module with this name?
-	 * 
-	 * @param moduleName the name of the module
-	 * @return true if the module is in this context
-	 */
-	public boolean contains(String moduleName);
+  /**
+   * Add the module with the given name to this context.
+   * 
+   * @param module the module
+   */
+  public ModuleContextRepresentation add(ModuleInstanceRepresentation module);
+  
+  /**
+   * Return the modules in this context.
+   */
+  public Set<ModuleInstanceRepresentation> getModules();
+  
+  /**
+   * Remove the given module from this context.
+   * 
+   * @param module the module
+   */
+  public void removeModule(ModuleInstanceRepresentation module);
+  
+  /**
+   * Return the name of this representation.
+   * 
+   * @return the name
+   */
+  public String getName();
+  
+  /**
+   * Does this context have the given module in it?
+   * 
+   * @param module the module
+   * @return true if the module is in this context
+   */
+  public boolean contains(ModuleInstanceRepresentation module);
+  
+  /**
+   * Does this context contain the module with this name?
+   * 
+   * @param moduleName the name of the module
+   * @return true if the module is in this context
+   */
+  public boolean contains(String moduleName);
   
   /**
    * Mark the module context as dirty, i.e. needing to be rerun in userspace.

@@ -19,8 +19,6 @@ package com.google.inject.tools.ideplugin.module;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import com.google.inject.Key;
 import com.google.inject.tools.ideplugin.snippets.BindingCodeLocation;
 import com.google.inject.tools.ideplugin.snippets.CodeProblem;
 import com.google.inject.tools.ideplugin.snippets.CodeSnippetResult;
@@ -34,22 +32,22 @@ import com.google.inject.tools.ideplugin.code.RunModuleContextSnippet;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class ModuleContextRepresentationImpl implements ModuleContextRepresentation, CodeRunner.CodeRunListener {
-	private final String title;
-	private final Set<ModuleInstanceRepresentation> modules;
+  private final String title;
+  private final Set<ModuleInstanceRepresentation> modules;
   private Map<String,BindingCodeLocation> bindings;
   private Set<? extends CodeProblem> problems;
   private boolean dirty;
-	
-	/**
-	 * Create a ModuleContextRepresentation with the given title.
-	 * 
-	 * @param title the name of the context
-	 */
-	public ModuleContextRepresentationImpl(String title) {
-		this.title = title;
-		modules = new HashSet<ModuleInstanceRepresentation>();
+  
+  /**
+   * Create a ModuleContextRepresentation with the given title.
+   * 
+   * @param title the name of the context
+   */
+  public ModuleContextRepresentationImpl(String title) {
+    this.title = title;
+    modules = new HashSet<ModuleInstanceRepresentation>();
     dirty = true;
-	}
+  }
   
   /*
    * (non-Javadoc)
@@ -133,85 +131,77 @@ public class ModuleContextRepresentationImpl implements ModuleContextRepresentat
   public Set<? extends CodeProblem> getProblems() {
     return problems;
   }
-	
-	/**
-	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.module.ModuleContextRepresentation#getName()
-	 */
-	public String getName() {
-		return title;
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.module.ModuleContextRepresentation#getModules()
-	 */
-	public synchronized Set<ModuleInstanceRepresentation> getModules() {
-		return new HashSet<ModuleInstanceRepresentation>(modules);
-	}
-
-	/**
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.module.ModuleContextRepresentation#getName()
+   */
+  public String getName() {
+    return title;
+  }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.module.ModuleContextRepresentation#getModules()
+   */
+  public synchronized Set<ModuleInstanceRepresentation> getModules() {
+    return new HashSet<ModuleInstanceRepresentation>(modules);
+  }
+  
+  /**
    * (non-Javadoc)
    * @see com.google.inject.tools.ideplugin.module.ModuleContextRepresentation#add(com.google.inject.tools.ideplugin.module.ModuleInstanceRepresentation)
-	 */
-	public synchronized ModuleContextRepresentation add(ModuleInstanceRepresentation module) {
-		modules.add(module);
-		return this;
-	}
-
+   */
+  public synchronized ModuleContextRepresentation add(ModuleInstanceRepresentation module) {
+    modules.add(module);
+    return this;
+  }
+  
   /**
    * (non-Javadoc)
    * @see com.google.inject.tools.ideplugin.module.ModuleContextRepresentation#removeModule(com.google.inject.tools.ideplugin.module.ModuleInstanceRepresentation)
    */
-	public synchronized void removeModule(ModuleInstanceRepresentation module) {
-		modules.remove(module);
-	}
-	
-	/**
+  public synchronized void removeModule(ModuleInstanceRepresentation module) {
+    modules.remove(module);
+  }
+  
+  /**
    * (non-Javadoc)
    * @see com.google.inject.tools.ideplugin.module.ModuleContextRepresentation#contains(com.google.inject.tools.ideplugin.module.ModuleInstanceRepresentation)
-	 */
-	public synchronized boolean contains(ModuleInstanceRepresentation module) {
-		return modules.contains(module);
-	}
-	
-	/**
-	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.module.ModuleContextRepresentation#contains(java.lang.String)
-	 */
-	public synchronized boolean contains(String moduleName) {
-		for (ModuleInstanceRepresentation module : modules) {
-			if (module.getClassName().equals(moduleName)) return true;
-		}
-		return false;
-	}
-	
-	/**
-	 * (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object object) {
-		if (object instanceof ModuleContextRepresentation) {
-			ModuleContextRepresentation otherModuleContext = (ModuleContextRepresentation)object;
-			if (title.equals(otherModuleContext.getName())) {
-				return modules.equals(otherModuleContext.getModules());
-			}
-		}
-		return false;
-	}
+   */
+  public synchronized boolean contains(ModuleInstanceRepresentation module) {
+    return modules.contains(module);
+  }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.module.ModuleContextRepresentation#contains(java.lang.String)
+   */
+  public synchronized boolean contains(String moduleName) {
+    for (ModuleInstanceRepresentation module : modules) {
+      if (module.getClassName().equals(moduleName)) return true;
+    }
+    return false;
+  }
+  
+  @Override
+  public boolean equals(Object object) {
+    if (object instanceof ModuleContextRepresentation) {
+      ModuleContextRepresentation otherModuleContext = (ModuleContextRepresentation)object;
+      if (title.equals(otherModuleContext.getName())) {
+        return modules.equals(otherModuleContext.getModules());
+      }
+    }
+    return false;
+  }
   
   @Override
   public int hashCode() {
     return title.hashCode();
   }
-	
-	/**
-	 * (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "Module Context Representation [" + title + "]: " + modules;
-	}
+  
+  @Override
+  public String toString() {
+    return "Module Context Representation [" + title + "]: " + modules;
+  }
 }

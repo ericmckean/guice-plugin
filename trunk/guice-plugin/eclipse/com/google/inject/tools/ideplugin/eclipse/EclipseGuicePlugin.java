@@ -44,9 +44,6 @@ public class EclipseGuicePlugin extends GuicePlugin {
   public static class ModuleSelectionViewImpl implements ModuleSelectionView {
   }
   
-  private final ResultsView resultsViewImpl;
-  private final ModuleSelectionView moduleSelectionViewImpl;
-  
   /**
    * Create an EclipseGuicePlugin.
    * 
@@ -54,25 +51,7 @@ public class EclipseGuicePlugin extends GuicePlugin {
    */
   public EclipseGuicePlugin(EclipsePluginModule module) {
     super(module);
-    this.resultsViewImpl = module.getResultsView();
-    this.moduleSelectionViewImpl = module.getModuleSelectionView();
-  }
-  
-  /**
-   * (non-Javadoc)
-   * @see com.google.inject.tools.ideplugin.GuicePlugin#getResultsView()
-   */
-  @Override
-  public ResultsView getResultsView() {
-    return resultsViewImpl;
-  }
-  
-  /**
-   * (non-Javadoc)
-   * @see com.google.inject.tools.ideplugin.GuicePlugin#getModuleSelectionView()
-   */
-  @Override
-  public ModuleSelectionView getModuleSelectionView() {
-    return moduleSelectionViewImpl;
+    module.getResultsView();
+    module.getModuleSelectionView();
   }
 }

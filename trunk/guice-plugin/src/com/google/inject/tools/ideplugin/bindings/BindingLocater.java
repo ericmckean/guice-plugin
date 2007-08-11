@@ -26,29 +26,29 @@ import com.google.inject.tools.ideplugin.snippets.BindingCodeLocation;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class BindingLocater {
-	private final String theClass;
-	private final ModuleContextRepresentation moduleContext;
+  private final String theClass;
+  private final ModuleContextRepresentation moduleContext;
   private final BindingCodeLocation location;
-	
-	public BindingLocater(String theClass,ModuleContextRepresentation moduleContext) {
-		this.theClass = theClass;
-		this.moduleContext = moduleContext;
+  
+  public BindingLocater(String theClass,ModuleContextRepresentation moduleContext) {
+    this.theClass = theClass;
+    this.moduleContext = moduleContext;
     this.location = moduleContext.findLocation(theClass);
-	}
-	
-	/**
-	 * Return the class we are finding bindings for.
-	 */
-	public String getTheClass() {
-		return theClass;
-	}
-	
-	/**
-	 * Return the module context we are running in.
-	 */
-	public ModuleContextRepresentation getModuleContext() {
-		return moduleContext;
-	}
+  }
+  
+  /**
+   * Return the class we are finding bindings for.
+   */
+  public String getTheClass() {
+    return theClass;
+  }
+  
+  /**
+   * Return the module context we are running in.
+   */
+  public ModuleContextRepresentation getModuleContext() {
+    return moduleContext;
+  }
   
   /**
    * Return the code location where the binding happens (and/or problems finding it).

@@ -25,14 +25,17 @@ package com.google.inject.tools.ideplugin;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public abstract class ActionsHandler {
-	/**
-	 * An Action is anything the IDE can do in response to a trigger.
-	 * For example, going to a code location.
+  /**
+   * An Action is anything the IDE can do in response to a trigger.
+   * For example, going to a code location.
    * 
    * The ActionHandler/Action follows th visitor pattern.
-	 */
-	public static interface Action {}
+   */
+  public static interface Action {}
   
+  /**
+   * An action that does nothing.
+   */
   public static class NullAction implements Action {
     @Override
     public String toString() {
@@ -47,39 +50,39 @@ public abstract class ActionsHandler {
       return 1;
     }
   }
-	
-	/**
-	 * Represents the IDE action of going to a location in the code, i.e. opening
-	 * the file and moving to the line number.
-	 */
-	public static class GotoCodeLocation implements Action {
-		private final String file;
-		private final int location;
-		
-		/**
-		 * Create a GotoCodeLocation Action.
-		 * 
-		 * @param file the file to go to
-		 * @param location the line number
-		 */
-		public GotoCodeLocation(String file,int location) {
-			this.file = file;
-			this.location = location;
-		}
-		
-		/**
-		 * Return the file name.
-		 */
-		public String file() {
-			return file;
-		}
-		
-		/**
-		 * Return the location (line number) to go to.
-		 */
-		public int location() {
-			return location;
-		}
+  
+  /**
+   * Represents the IDE action of going to a location in the code, i.e. opening
+   * the file and moving to the line number.
+   */
+  public static class GotoCodeLocation implements Action {
+    private final String file;
+    private final int location;
+    
+    /**
+     * Create a GotoCodeLocation Action.
+     * 
+     * @param file the file to go to
+     * @param location the line number
+     */
+    public GotoCodeLocation(String file,int location) {
+      this.file = file;
+      this.location = location;
+    }
+    
+    /**
+     * Return the file name.
+     */
+    public String file() {
+      return file;
+    }
+    
+    /**
+     * Return the location (line number) to go to.
+     */
+    public int location() {
+      return location;
+    }
     
     @Override
     public boolean equals(Object object) {
@@ -91,8 +94,11 @@ public abstract class ActionsHandler {
     public int hashCode() {
       return file.hashCode() + location;
     }
-	}
+  }
   
+  /**
+   * An Action that opens a file to a declaration.
+   */
   public static class GotoFile implements Action {
     private final String classname;
     public GotoFile(String classname) {
@@ -111,11 +117,11 @@ public abstract class ActionsHandler {
       return classname.hashCode();
     }
   }
-	
-	/**
-	 * Perform a GotoCodeLocation Action.
-	 */
-	public abstract void run(GotoCodeLocation action);
+  
+  /**
+   * Perform a GotoCodeLocation Action.
+   */
+  public abstract void run(GotoCodeLocation action);
   
   /**
    * Perform a GotoFile Action.

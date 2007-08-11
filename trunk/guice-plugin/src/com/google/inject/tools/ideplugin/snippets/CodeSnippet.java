@@ -31,45 +31,45 @@ import java.io.IOException;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public abstract class CodeSnippet {
-	protected Set<CodeProblem> problems;
-	
-	public CodeSnippet() {
-		problems = new HashSet<CodeProblem>();
-	}
-	
+  protected Set<CodeProblem> problems;
+  
+  public CodeSnippet() {
+    problems = new HashSet<CodeProblem>();
+  }
+  
   /**
    * Return all the {@link CodeProblem}s associated with this snippet.
    */
-	public Set<? extends CodeProblem> getProblems() {
-		return problems;
-	}
-	
+  public Set<? extends CodeProblem> getProblems() {
+    return problems;
+  }
+  
   /**
    * Add the given problems to this code snippet.
    */
-	public void addProblems(Set<? extends CodeProblem> newProblems) {
-		problems.addAll(newProblems);
-	}
-	
+  public void addProblems(Set<? extends CodeProblem> newProblems) {
+    problems.addAll(newProblems);
+  }
+  
   /**
    * Return a {@link CodeSnippetResult} for this snippet.
    */
-	public abstract CodeSnippetResult getResult();
-	
+  public abstract CodeSnippetResult getResult();
+  
   /**
    * Prints out the result of this snippet to the given stream as an object.
    * @param out the output stream to print to (usually System.out)
    */
-	public void printResult(OutputStream out) {
-		try {
+  public void printResult(OutputStream out) {
+    try {
       ObjectOutputStream os = 
-			new ObjectOutputStream(out);
+        new ObjectOutputStream(out);
       CodeSnippetResult result = getResult();
       os.writeObject(result);
-		} catch (IOException exception) {
-			//TODO: what happens here?
-		}
-	}
-	
-	//public static abstract void main(String[] args);
+    } catch (IOException exception) {
+      //TODO: what happens here?
+    }
+  }
+  
+  //public static abstract void main(String[] args);
 }

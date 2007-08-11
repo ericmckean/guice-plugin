@@ -36,9 +36,9 @@ import com.google.inject.tools.ideplugin.results.ResultsHandlerImpl;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public abstract class GuicePluginModule extends AbstractModule {
-	protected interface BindingsEngineFactory {
-		public BindingsEngine create(JavaElement element);
-	}
+  protected interface BindingsEngineFactory {
+    public BindingsEngine create(JavaElement element);
+  }
   
   /**
    * Factory for creating {@link CodeRunner}s.
@@ -50,32 +50,32 @@ public abstract class GuicePluginModule extends AbstractModule {
      */
     public CodeRunner create(JavaProject project);
   }
-	
-	protected static class BindingsEngineFactoryImpl implements BindingsEngineFactory {
-		private final Provider<ModuleManager> moduleManagerProvider;
-		private final Provider<ProblemsHandler> problemsHandlerProvider;
-		private final Provider<ResultsHandler> resultsHandlerProvider;
+  
+  protected static class BindingsEngineFactoryImpl implements BindingsEngineFactory {
+    private final Provider<ModuleManager> moduleManagerProvider;
+    private final Provider<ProblemsHandler> problemsHandlerProvider;
+    private final Provider<ResultsHandler> resultsHandlerProvider;
     private final Provider<Messenger> messengerProvider;
-		
-		@Inject
-		public BindingsEngineFactoryImpl(Provider<ModuleManager> moduleManagerProvider,
-				Provider<ProblemsHandler> problemsHandlerProvider,
-				Provider<ResultsHandler> resultsHandlerProvider,
+    
+    @Inject
+    public BindingsEngineFactoryImpl(Provider<ModuleManager> moduleManagerProvider,
+        Provider<ProblemsHandler> problemsHandlerProvider,
+        Provider<ResultsHandler> resultsHandlerProvider,
         Provider<Messenger> messengerProvider) {
-			this.moduleManagerProvider = moduleManagerProvider;
-			this.problemsHandlerProvider = problemsHandlerProvider;
-			this.resultsHandlerProvider = resultsHandlerProvider;
+      this.moduleManagerProvider = moduleManagerProvider;
+      this.problemsHandlerProvider = problemsHandlerProvider;
+      this.resultsHandlerProvider = resultsHandlerProvider;
       this.messengerProvider = messengerProvider;
-		}
-		
-		public BindingsEngine create(JavaElement element) {
-			return new BindingsEngine(moduleManagerProvider.get(),
-					problemsHandlerProvider.get(),
-					resultsHandlerProvider.get(),
+    }
+    
+    public BindingsEngine create(JavaElement element) {
+      return new BindingsEngine(moduleManagerProvider.get(),
+          problemsHandlerProvider.get(),
+          resultsHandlerProvider.get(),
           messengerProvider.get(),
-					element);
-		}
-	}
+          element);
+    }
+  }
   
   protected static class CodeRunnerFactoryImpl implements CodeRunnerFactory {
     @Inject
@@ -84,84 +84,84 @@ public abstract class GuicePluginModule extends AbstractModule {
       return new CodeRunnerImpl(project);
     }
   }
-	
-	/** 
-	 * (non-Javadoc)
-	 * @see com.google.inject.AbstractModule#configure()
-	 */
-	@Override
-	protected void configure() {
-		bindBindingsEngine();
-		bindCodeRunner();
+  
+  /** 
+   * (non-Javadoc)
+   * @see com.google.inject.AbstractModule#configure()
+   */
+  @Override
+  protected void configure() {
+    bindBindingsEngine();
+    bindCodeRunner();
     bindProgressHandler();
-		bindActionsHandler();
-		bindModuleManager();
-		bindResultsHandler();
-		bindProblemsHandler();
-		bindResultsView();
-		bindModulesListener();
-		bindModuleSelectionView();
-		bindMessenger();
-	}
-	
-	/**
-	 * Bind the {@link BindingsEngine} factory.
-	 */
-	protected void bindBindingsEngine() {
-		bind(BindingsEngineFactory.class).to(BindingsEngineFactoryImpl.class).asEagerSingleton();
-	}
-	
-	/** 
-	 * Bind the {@link ModuleManager} implementation.
-	 */
-	protected void bindModuleManager() {
-		bind(ModuleManager.class).to(ModuleManagerImpl.class).asEagerSingleton();
-	}
-	
-	/** 
-	 * Bind the {@link ResultsHandler} implementation.
-	 */
-	protected void bindResultsHandler() {
-		bind(ResultsHandler.class).to(ResultsHandlerImpl.class).asEagerSingleton();
-	}
-	
-	/**
-	 * Bind the {@link ProblemsHandler} implementation.
-	 */
-	protected void bindProblemsHandler() {
-		bind(ProblemsHandler.class).to(ProblemsHandlerImpl.class).asEagerSingleton();
-	}
-	
-	/**
-	 * Bind the {@link com.google.inject.tools.ideplugin.results.ResultsView} instance.
-	 */
-	protected abstract void bindResultsView();
-	
-	/**
-	 * Bind the {@link com.google.inject.tools.ideplugin.module.ModulesListener} instance.
-	 */
-	protected abstract void bindModulesListener();
-	
-	/**
-	 * Bind the {@link com.google.inject.tools.ideplugin.module.ModuleSelectionView} instance.
-	 */
-	protected abstract void bindModuleSelectionView();
-	
-	/**
-	 * Bind the {@link Messenger} implementation.
-	 */
-	protected abstract void bindMessenger();
-	
-	/**
-	 * Bind the {@link ActionsHandler} implementation.
-	 */
-	protected abstract void bindActionsHandler();
-	
-	/**
-	 * Bind the {@link CodeRunner} implementation.
-	 */
-	protected void bindCodeRunner() {
-	  bind(CodeRunnerFactory.class).to(CodeRunnerFactoryImpl.class);
+    bindActionsHandler();
+    bindModuleManager();
+    bindResultsHandler();
+    bindProblemsHandler();
+    bindResultsView();
+    bindModulesListener();
+    bindModuleSelectionView();
+    bindMessenger();
+  }
+  
+  /**
+   * Bind the {@link BindingsEngine} factory.
+   */
+  protected void bindBindingsEngine() {
+    bind(BindingsEngineFactory.class).to(BindingsEngineFactoryImpl.class).asEagerSingleton();
+  }
+  
+  /** 
+   * Bind the {@link ModuleManager} implementation.
+   */
+  protected void bindModuleManager() {
+    bind(ModuleManager.class).to(ModuleManagerImpl.class).asEagerSingleton();
+  }
+  
+  /** 
+   * Bind the {@link ResultsHandler} implementation.
+   */
+  protected void bindResultsHandler() {
+    bind(ResultsHandler.class).to(ResultsHandlerImpl.class).asEagerSingleton();
+  }
+  
+  /**
+   * Bind the {@link ProblemsHandler} implementation.
+   */
+  protected void bindProblemsHandler() {
+    bind(ProblemsHandler.class).to(ProblemsHandlerImpl.class).asEagerSingleton();
+  }
+  
+  /**
+   * Bind the {@link com.google.inject.tools.ideplugin.results.ResultsView} instance.
+   */
+  protected abstract void bindResultsView();
+  
+  /**
+   * Bind the {@link com.google.inject.tools.ideplugin.module.ModulesListener} instance.
+   */
+  protected abstract void bindModulesListener();
+  
+  /**
+   * Bind the {@link com.google.inject.tools.ideplugin.module.ModuleSelectionView} instance.
+   */
+  protected abstract void bindModuleSelectionView();
+  
+  /**
+   * Bind the {@link Messenger} implementation.
+   */
+  protected abstract void bindMessenger();
+  
+  /**
+   * Bind the {@link ActionsHandler} implementation.
+   */
+  protected abstract void bindActionsHandler();
+  
+  /**
+   * Bind the {@link CodeRunner} implementation.
+   */
+  protected void bindCodeRunner() {
+    bind(CodeRunnerFactory.class).to(CodeRunnerFactoryImpl.class);
   }
   
   /**

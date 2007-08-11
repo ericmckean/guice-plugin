@@ -26,21 +26,21 @@ import com.google.inject.Inject;
  */
 @Singleton
 public class ResultsHandlerImpl implements ResultsHandler {
-	private final ResultsView resultsView;
-	
-	/** 
-	 * Create a (the) ResultsHandler.
-	 */
-	@Inject
-	public ResultsHandlerImpl(ResultsView resultsView) {
-		this.resultsView = resultsView;
-	}
-	
-	/**
-	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.results.ResultsHandler#displayLocationsResults(com.google.inject.tools.ideplugin.results.CodeLocationsResults)
-	 */
-	public void displayLocationsResults(CodeLocationsResults results) {
-		resultsView.displayResults(results);
-	}
+  private final ResultsView resultsView;
+  
+  /** 
+   * Create a (the) ResultsHandler.
+   */
+  @Inject
+  public ResultsHandlerImpl(ResultsView resultsView) {
+    this.resultsView = resultsView;
+  }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.results.ResultsHandler#displayLocationsResults(com.google.inject.tools.ideplugin.results.CodeLocationsResults)
+   */
+  public void displayLocationsResults(CodeLocationsResults results) {
+    resultsView.displayResults(results);
+  }
 }

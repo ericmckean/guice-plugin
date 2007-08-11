@@ -32,41 +32,41 @@ import com.google.inject.tools.ideplugin.results.ResultsHandler;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public final class BindingsEngine {
-	/**
-	 * Create a BindingsEngineImpl.  This should be created by the {@link com.google.inject.tools.ideplugin.GuicePlugin}.
-	 * 
-	 * @param resultsHandler the ResultsHandler to send results to (injected)
-	 * @param problemsHandler the ProblemsHandler to notify with problems (injected)
-	 * @param moduleManager the ModuleManager to ask for what context to run in (injected)
+  /**
+   * Create a BindingsEngineImpl.  This should be created by the {@link com.google.inject.tools.ideplugin.GuicePlugin}.
+   * 
+   * @param resultsHandler the ResultsHandler to send results to (injected)
+   * @param problemsHandler the ProblemsHandler to notify with problems (injected)
+   * @param moduleManager the ModuleManager to ask for what context to run in (injected)
    * @param messenger the Messenger to display notifications with (injected)
-	 * @param element the JavaElement to find bindings for (not injected)
-	 */
-	//@AssistedInject replaced by factory in GuicePlugin
-	public BindingsEngine(ModuleManager moduleManager,
-					              ProblemsHandler problemsHandler,
-					              ResultsHandler resultsHandler,
-                        Messenger messenger,
-					              JavaElement element) {
-		final String theClass = element.getClassName();
-		final CodeLocationsResults results = new CodeLocationsResults("Bindings for " + theClass);
+   * @param element the JavaElement to find bindings for (not injected)
+   */
+  //@AssistedInject replaced by factory in GuicePlugin
+  public BindingsEngine(ModuleManager moduleManager,
+      ProblemsHandler problemsHandler,
+      ResultsHandler resultsHandler,
+      Messenger messenger,
+      JavaElement element) {
+    final String theClass = element.getClassName();
+    final CodeLocationsResults results = new CodeLocationsResults("Bindings for " + theClass);
     if (!moduleManager.updateModules(element.getJavaProject())) {
       results.userCancelled();
-		} else {
+    } else {
       //TODO: if element.isInjectionPoint() ...
-		  if ((moduleManager.getModuleContexts() != null) && (moduleManager.getModuleContexts().size() > 0)) {
+      if ((moduleManager.getModuleContexts() != null) && (moduleManager.getModuleContexts().size() > 0)) {
         for (ModuleContextRepresentation moduleContext : moduleManager.getModuleContexts()) {
           BindingLocater locater = new BindingLocater(theClass,moduleContext);
           if (locater.getCodeLocation()!=null) {
             problemsHandler.foundProblems(locater.getCodeLocation().getProblems());
             results.put(locater.getModuleContext().getName(), locater.getCodeLocation());
           }
-		    }
-		    if (!results.keySet().isEmpty()) {
-		      resultsHandler.displayLocationsResults(results);
-		    }
-		  } else {
-		    messenger.display("No module contexts configured.");
+        }
+        if (!results.keySet().isEmpty()) {
+          resultsHandler.displayLocationsResults(results);
+        }
+      } else {
+        messenger.display("No module contexts configured.");
       }
-		}
-	}
+    }
+  }
 }

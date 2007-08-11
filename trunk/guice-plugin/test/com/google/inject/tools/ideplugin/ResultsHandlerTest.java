@@ -32,19 +32,19 @@ import com.google.inject.tools.ideplugin.test.MockGuicePluginModule;
  * @author Darren Creutz <dcreut@gmail.com>
  */
 public class ResultsHandlerTest extends TestCase {
-	/**
-	 * Test that Locations esults get correctly passed to the ResultsView.
-	 */
-	public void testDisplayLocationsResults() {
+  /**
+   * Test that Locations esults get correctly passed to the ResultsView.
+   */
+  public void testDisplayLocationsResults() {
     Injector injector = Guice.createInjector(
         new MockGuicePluginModule().useRealResultsHandler()
-          .useResultsView(EasyMock.createMock(ResultsView.class)));
+        .useResultsView(EasyMock.createMock(ResultsView.class)));
     ResultsHandler resultsHandler = injector.getInstance(ResultsHandler.class);
     ResultsView resultsView = injector.getInstance(ResultsView.class);
-		CodeLocationsResults results = new MockCodeLocationsResults();
-		resultsView.displayResults(results);
-		EasyMock.replay(resultsView);
-		resultsHandler.displayLocationsResults(results);
-		EasyMock.verify(resultsView);
-	}
+    CodeLocationsResults results = new MockCodeLocationsResults();
+    resultsView.displayResults(results);
+    EasyMock.replay(resultsView);
+    resultsHandler.displayLocationsResults(results);
+    EasyMock.verify(resultsView);
+  }
 }

@@ -26,34 +26,34 @@ import junit.framework.TestCase;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class ModuleSnippetTest extends TestCase {
-	/**
-	 * Test that a correctly written module is represented correctly.
-	 */
-	public void testModule() {
-		ModuleSnippet<com.google.inject.tools.ideplugin.test.WorkingModule> module = new ModuleSnippet<com.google.inject.tools.ideplugin.test.WorkingModule>("com.google.inject.tools.ideplugin.test.WorkingModule");
-		assertNotNull(module);
-		assertTrue(module.getConstructors().size() > 0);
-		assertTrue(module.hasDefaultConstructor());
-		assertNotNull(module.getInstance());
-	}
-	
-	/**
-	 * Test that creating a representation of a class that is not a module fails correctly.
-	 */
-	public void testNotAModule() {
-		@SuppressWarnings("unchecked")
-		ModuleSnippet module = new ModuleSnippet("com.google.inject.tools.ideplugin.test.MockInjectedInterface");
-		assertFalse(module.isValid());
-		assertTrue(module.getProblems().size() == 1);
-		assertTrue(module.getProblems().iterator().next() instanceof CodeProblem.InvalidModuleProblem);
-	}
-	
-	/**
-	 * Test that creating a representation of a module with no default constructor behaves correctly.
-	 */
-	public void testModuleWithArguments() {
-		ModuleSnippet<com.google.inject.tools.ideplugin.test.ModuleWithArguments> module = new ModuleSnippet<com.google.inject.tools.ideplugin.test.ModuleWithArguments>("com.google.inject.tools.ideplugin.test.ModuleWithArguments");
-		assertFalse(module.hasDefaultConstructor());
-		assertTrue(module.getConstructors().size() == 1);
-	}
+  /**
+   * Test that a correctly written module is represented correctly.
+   */
+  public void testModule() {
+    ModuleSnippet<com.google.inject.tools.ideplugin.test.WorkingModule> module = new ModuleSnippet<com.google.inject.tools.ideplugin.test.WorkingModule>("com.google.inject.tools.ideplugin.test.WorkingModule");
+    assertNotNull(module);
+    assertTrue(module.getConstructors().size() > 0);
+    assertTrue(module.hasDefaultConstructor());
+    assertNotNull(module.getInstance());
+  }
+  
+  /**
+   * Test that creating a representation of a class that is not a module fails correctly.
+   */
+  public void testNotAModule() {
+    @SuppressWarnings("unchecked")
+    ModuleSnippet module = new ModuleSnippet("com.google.inject.tools.ideplugin.test.MockInjectedInterface");
+    assertFalse(module.isValid());
+    assertTrue(module.getProblems().size() == 1);
+    assertTrue(module.getProblems().iterator().next() instanceof CodeProblem.InvalidModuleProblem);
+  }
+  
+  /**
+   * Test that creating a representation of a module with no default constructor behaves correctly.
+   */
+  public void testModuleWithArguments() {
+    ModuleSnippet<com.google.inject.tools.ideplugin.test.ModuleWithArguments> module = new ModuleSnippet<com.google.inject.tools.ideplugin.test.ModuleWithArguments>("com.google.inject.tools.ideplugin.test.ModuleWithArguments");
+    assertFalse(module.hasDefaultConstructor());
+    assertTrue(module.getConstructors().size() == 1);
+  }
 }

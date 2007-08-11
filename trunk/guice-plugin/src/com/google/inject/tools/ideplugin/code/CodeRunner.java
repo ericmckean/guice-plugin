@@ -149,8 +149,8 @@ public interface CodeRunner {
       BufferedReader r = new BufferedReader(ir);
       String line;
       try {
-      while ((line = r.readLine()) != null)
-        System.out.println(line);
+        while ((line = r.readLine()) != null)
+          System.out.println(line);
       } catch (Exception e) {
       }
     }

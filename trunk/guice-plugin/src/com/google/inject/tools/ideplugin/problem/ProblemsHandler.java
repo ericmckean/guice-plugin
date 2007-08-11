@@ -27,10 +27,10 @@ import com.google.inject.tools.ideplugin.snippets.CodeProblem;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public interface ProblemsHandler {
-	/**
-	 * Handle a set of problems found with user's code.
-	 * 
-	 * @param problem
-	 */
-	public void foundProblems(Set<? extends CodeProblem> problem);
+  /**
+   * Handle a set of problems found with user's code.
+   * 
+   * @param problem
+   */
+  public void foundProblems(Set<? extends CodeProblem> problem);
 }

@@ -23,39 +23,39 @@ package com.google.inject.tools.ideplugin;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public interface JavaElement {
-	/** 
-	 * The types of Java elements that can be represented.
-	 */
-	public enum Type { FIELD, PARAMETER }
-	
-	/** 
-	 * Return the type of this element.
-	 * 
-	 * @return the type
-	 */
-	public Type getType();
-	
-	/** 
-	 * Return the name of the class of this element.  For fields and variables this is the
-	 * class of the field/variable.  For methods it is the class they are part of.
-	 * 
-	 * @return the class name
-	 */
-	public String getClassName();
-	
-	/** 
-	 * Return the name of this element.
-	 * 
-	 * @return the name
-	 */
-	public String getName();
-	
-	/**
-	 * Return the project that this element is part of.
-	 * 
-	 * @return the project
-	 */
-	public JavaProject getJavaProject();
+  /** 
+   * The types of Java elements that can be represented.
+   */
+  public enum Type { FIELD, PARAMETER }
+  
+  /** 
+   * Return the type of this element.
+   * 
+   * @return the type
+   */
+  public Type getType();
+  
+  /** 
+   * Return the name of the class of this element.  For fields and variables this is the
+   * class of the field/variable.  For methods it is the class they are part of.
+   * 
+   * @return the class name
+   */
+  public String getClassName();
+  
+  /** 
+   * Return the name of this element.
+   * 
+   * @return the name
+   */
+  public String getName();
+  
+  /**
+   * Return the project that this element is part of.
+   * 
+   * @return the project
+   */
+  public JavaProject getJavaProject();
   
   /**
    * Return true if the java element is injected at this location in code.

@@ -27,22 +27,22 @@ import java.util.ArrayList;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class RunModuleSnippet extends CodeRunner.Runnable {
-	private final ModuleRepresentation module;
-	
-	public RunModuleSnippet(CodeRunner codeRunner, ModuleRepresentation module) {
-		super(codeRunner);
-		this.module = module;
-	}
-	
-	@Override
-	protected String getFullyQualifiedSnippetClass() {
-		return "com.google.inject.tools.ideplugin.snippets.ModuleSnippet";
-	}
-
-	@Override
-	protected List<? extends Object> getSnippetArguments() {
-		final List<Object> args = new ArrayList<Object>();
-		args.add(module.getName());
-		return args;
-	}
+  private final ModuleRepresentation module;
+  
+  public RunModuleSnippet(CodeRunner codeRunner, ModuleRepresentation module) {
+    super(codeRunner);
+    this.module = module;
+  }
+  
+  @Override
+  protected String getFullyQualifiedSnippetClass() {
+    return "com.google.inject.tools.ideplugin.snippets.ModuleSnippet";
+  }
+  
+  @Override
+  protected List<? extends Object> getSnippetArguments() {
+    final List<Object> args = new ArrayList<Object>();
+    args.add(module.getName());
+    return args;
+  }
 }

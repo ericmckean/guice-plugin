@@ -29,12 +29,15 @@ import com.google.inject.tools.ideplugin.ActionsHandler;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class Results {
-	/**
-	 * A Node in the tree structure of these results.
-	 * 
-	 * Warning: the tree is not synchronized by the Results object, the client is responsible.
-	 */
-	public static class Node {
+  /**
+   * A Node in the tree structure of these results.
+   * 
+   * Warning: the tree is not synchronized by the Results object, the client is responsible.
+   */
+  public static class Node {
+    /**
+     * An ActionStringElement is a piece of text with an {@link Action} associated to it.
+     */
     public static class ActionStringElement {
       private final String label;
       private final ActionsHandler.Action action;
@@ -67,6 +70,9 @@ public class Results {
       }
     }
     
+    /**
+     * An ActionString is a list of {@link ActionStringElement}s.
+     */
     public static class ActionString {
       private final List<ActionStringElement> elements;
       public ActionString() {
@@ -101,19 +107,18 @@ public class Results {
       }
     }
     
-		private final ActionString text;
-		private final Set<Node> children;
-		
-		/**
-		 * Create a new Node.
-		 * 
-		 * @param text the text elements to display
-		 */
-    //TODO: encapsulate List in an object
-		public Node(ActionString text) {
-			this.text = text;
-			this.children = new HashSet<Node>();
-		}
+    private final ActionString text;
+    private final Set<Node> children;
+    
+    /**
+     * Create a new Node.
+     * 
+     * @param text the text elements to display
+     */
+    public Node(ActionString text) {
+      this.text = text;
+      this.children = new HashSet<Node>();
+    }
     
     public Node(String label) {
       this.text = new ActionString();
@@ -126,51 +131,46 @@ public class Results {
       this.text.addTextWithAction(label, action);
       this.children = new HashSet<Node>();
     }
-		
-		/**
-		 * Return the text of this node.
-		 */
-		public ActionString getText() {
-			return text;
-		}
-		
+    
+    /**
+     * Return the text of this node with its actions.
+     */
+    public ActionString getText() {
+      return text;
+    }
+    
+    /**
+     * Return the text as a string.
+     */
     public String getTextString() {
       return text.toString();
     }
     
-		/**
-		 * Add a Node as a child of this node.
-		 * 
-		 * @param child the node to add
-		 */
-		public void addChild(Node child) {
-			children.add(child);
-		}
-		
-		/**
-		 * Return the children of this node.
-		 * 
-		 * @return the children
-		 */
-		public Set<Node> children() {
-			return children;
-		}
-
-		/**
-		 * (non-Javadoc)
-		 * @see java.lang.Object#toString()
-		 */
-		@Override
-		public String toString() {
-			StringBuilder builder = new StringBuilder();
-			builder.append("Results.Node(" + getTextString() + "){");
-			for (Node child : children) {
-				builder.append(child.toString());
-				builder.append(",");
-			}
-			builder.append("}");
-			return builder.toString();
-		}
+    /**
+     * Add a Node as a child of this node.
+     */
+    public void addChild(Node child) {
+      children.add(child);
+    }
+    
+    /**
+     * Return the children of this node.
+     */
+    public Set<Node> children() {
+      return children;
+    }
+    
+    @Override
+    public String toString() {
+      StringBuilder builder = new StringBuilder();
+      builder.append("Results.Node(" + getTextString() + "){");
+      for (Node child : children) {
+        builder.append(child.toString());
+        builder.append(",");
+      }
+      builder.append("}");
+      return builder.toString();
+    }
     
     @Override
     public boolean equals(Object object) {
@@ -184,34 +184,28 @@ public class Results {
     public int hashCode() {
       return 1;
     }
-	}
+  }
   
+  private final Node root;
   
-	
-	private final Node root;
-	
-	/**
-	 * Create a new Results object with the given title.
-	 * 
-	 * @param title the title
-	 */
-	public Results(String title) {
-		root = new Node(title);
-	}
-	
-	/**
-	 * Return the root {@link Node} of the tree of results.
-	 * 
-	 * @return the root node
-	 */
-	public Node getRoot() {
-		return root;
-	}
-	
-	/**
-	 * Notify the results object that the user cancelled the operation.
-	 */
-	public void userCancelled() {
-		// do nothing
-	}
+  /**
+   * Create a new Results object with the given title.
+   */
+  public Results(String title) {
+    root = new Node(title);
+  }
+  
+  /**
+   * Return the root {@link Node} of the tree of results.
+   */
+  public Node getRoot() {
+    return root;
+  }
+  
+  /**
+   * Notify the results object that the user cancelled the operation.
+   */
+  public void userCancelled() {
+    // do nothing
+  }
 }

@@ -14,31 +14,24 @@
  * limitations under the License.
  */
 
-package com.google.inject.tools.ideplugin.test;
+package com.google.inject.tools.ideplugin.eclipse;
 
-import com.google.inject.AbstractModule;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /**
- * Testing {@link com.google.inject.Module} that can be only constructed by passing arguments.
+ * Run all the tests for the Eclipse version of the plugin.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public class ModuleWithArguments extends AbstractModule {
-  /**
-   * The constructor.
-   * 
-   * @param requiredArgument an argument
-   */
-  public ModuleWithArguments(String requiredArgument) {
+public class EclipseAllTests extends TestCase {  
+  public static Test suite() {
+    TestSuite suite = new TestSuite();
     
-  }
-  
-  /*
-   * (non-Javadoc)
-   * @see com.google.inject.AbstractModule#configure()
-   */
-  @Override
-  protected void configure() {
-    bind(MockInjectedInterface.class).to(MockInjectedInterfaceImpl.class);
+    suite.addTestSuite(EclipseJavaElementTest.class);
+    suite.addTestSuite(StartupTest.class);
+    
+    return suite;
   }
 }

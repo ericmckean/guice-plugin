@@ -34,21 +34,32 @@ import org.osgi.framework.Bundle;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class EclipseJavaProject implements JavaProject {
-	private final IJavaProject project;
-	
-	public EclipseJavaProject(IJavaProject project) {
-		this.project = project;
-	}
-	
-	public IJavaProject getIJavaProject() {
-		return project;
-	}
+  private final IJavaProject project;
   
+  public EclipseJavaProject(IJavaProject project) {
+    this.project = project;
+  }
+  
+  /**
+   * Return the underlying eclipse project.
+   */
+  public IJavaProject getIJavaProject() {
+    return project;
+  }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.JavaProject#getJavaCommand()
+   */
   public String getJavaCommand() throws Exception {
     //TODO: fix this
     return "java";
   }
   
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.JavaProject#getProjectClasspath()
+   */
   public String getProjectClasspath() throws Exception {
     final List<String> args = new ArrayList<String>();
     final IClasspathEntry[] cp = project.getResolvedClasspath(true);
@@ -70,6 +81,10 @@ public class EclipseJavaProject implements JavaProject {
     return args2.toString();
   }
   
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.JavaProject#getSnippetsClasspath()
+   */
   public String getSnippetsClasspath() throws Exception {
     Bundle bundle = Platform.getBundle("GuicePlugin");
     URL url = bundle.getResource("/");

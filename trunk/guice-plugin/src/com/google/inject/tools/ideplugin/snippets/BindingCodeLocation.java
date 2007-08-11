@@ -26,34 +26,34 @@ import com.google.inject.tools.ideplugin.results.Results.Node.ActionString;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class BindingCodeLocation extends CodeLocation {
-	private final String moduleContext;
-	private final String bindWhat;
-	private final String bindTo;
-	
-	/**
-	 * Create a new BindingCodeLocation.
-	 * 
-	 * @param bindWhat the class to bind
-	 * @param bindTo what it is bound to
-	 * @param moduleContext the module context this binding happens in
-	 * @param file the file this happens in
-	 * @param location the line number in that file where this happens
-	 * @param problems any {@link CodeProblem}s that occurred during getting this binding
-	 */
-	public BindingCodeLocation(String bindWhat,String bindTo,String moduleContext,String file,int location,Set<? extends CodeProblem> problems) {
-		super(file,location,problems);
-		this.bindWhat = bindWhat;
-		this.bindTo = bindTo;
-		this.moduleContext = moduleContext;
-	}
-	
-	/**
-	 * (non-Javadoc)
-	 * @see com.google.inject.tools.ideplugin.snippets.CodeLocation#getDisplay()
-	 */
-	@Override
-	public ActionString getDisplay() {
-		ActionString text = new ActionString();
+  private final String moduleContext;
+  private final String bindWhat;
+  private final String bindTo;
+  
+  /**
+   * Create a new BindingCodeLocation.
+   * 
+   * @param bindWhat the class to bind
+   * @param bindTo what it is bound to
+   * @param moduleContext the module context this binding happens in
+   * @param file the file this happens in
+   * @param location the line number in that file where this happens
+   * @param problems any {@link CodeProblem}s that occurred during getting this binding
+   */
+  public BindingCodeLocation(String bindWhat,String bindTo,String moduleContext,String file,int location,Set<? extends CodeProblem> problems) {
+    super(file,location,problems);
+    this.bindWhat = bindWhat;
+    this.bindTo = bindTo;
+    this.moduleContext = moduleContext;
+  }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.snippets.CodeLocation#getDisplay()
+   */
+  @Override
+  public ActionString getDisplay() {
+    ActionString text = new ActionString();
     text.addTextWithAction(bindWhat,new ActionsHandler.GotoFile(bindWhat));
     text.addText("is bound to");
     text.addTextWithAction(bindTo,new ActionsHandler.GotoFile(bindTo));
@@ -61,24 +61,20 @@ public class BindingCodeLocation extends CodeLocation {
     text.addTextWithAction(file() + ":" + String.valueOf(location()),new ActionsHandler.GotoCodeLocation(file(),location()));
     return text;
   }
-	
-	/**
-	 * Return the module context this binding occurred in.
-	 * 
-	 * @return the module context
-	 */
-	public String getModuleContext() {
-		return moduleContext;
-	}
-	
-	/**
-	 * Return the Class being bound.
-	 * 
-	 * @return the class
-	 */
-	public String bindWhat() {
-		return bindWhat;
-	}
+  
+  /**
+   * Return the module context this binding occurred in.
+   */
+  public String getModuleContext() {
+    return moduleContext;
+  }
+  
+  /**
+   * Return the Class being bound.
+   */
+  public String bindWhat() {
+    return bindWhat;
+  }
   
   public String bindTo() {
     return bindTo;
