@@ -306,8 +306,9 @@ public class ModuleManagerImpl implements ModuleManager {
     for (ModuleContextRepresentation moduleContext : moduleContexts) {
       if (moduleContext.isDirty()) {
         CodeRunner codeRunner = codeRunnerFactory.create(currentProject);
-        progressHandler.step("Running module context '" + moduleContext.getName() + "'",codeRunner);
-        moduleContext.clean(codeRunner);
+        progressHandler.step(
+            "Running module context '" + moduleContext.getName() + "'",
+            moduleContext.clean(codeRunner));
         problemsHandler.foundProblems(moduleContext.getProblems());
         if (progressHandler.isCancelled()) {
           System.out.println("wtf");
@@ -328,8 +329,8 @@ public class ModuleManagerImpl implements ModuleManager {
     for (ModuleRepresentation module : modules) {
       if (module.isDirty()) {
         CodeRunner codeRunner = codeRunnerFactory.create(currentProject);
-        progressHandler.step("Running module '" + module.getName() + "'",codeRunner);
-        module.clean(codeRunner);
+        progressHandler.step("Running module '" + module.getName() + "'",
+            module.clean(codeRunner));
         if (progressHandler.isCancelled()) return false;
       }
     }

@@ -96,6 +96,13 @@ public interface CodeRunner {
     }
     
     /**
+     * Wait for this runnable to finish.
+     */
+    public void waitFor() throws InterruptedException {
+      codeRunner.waitFor(this);
+    }
+    
+    /**
      * Return the class name of the {@link CodeSnippet} to run.  This class must be in the
      * snippets.jar file.
      * NOTE: This is called by the constructor so must not access any fields.

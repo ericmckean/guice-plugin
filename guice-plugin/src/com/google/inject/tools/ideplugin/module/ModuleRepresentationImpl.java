@@ -93,16 +93,12 @@ public class ModuleRepresentationImpl implements ModuleRepresentation, CodeRunne
    * (non-Javadoc)
    * @see com.google.inject.tools.ideplugin.module.ModuleRepresentation#clean(com.google.inject.tools.ideplugin.code.CodeRunner)
    */
-  public void clean(CodeRunner codeRunner) {
+  public RunModuleSnippet clean(CodeRunner codeRunner) {
     codeRunner.addListener(this);
     RunModuleSnippet runnable = new RunModuleSnippet(codeRunner,this);
     codeRunner.queue(runnable);
     codeRunner.run();
-    try {
-      codeRunner.waitFor(runnable);
-    } catch (InterruptedException exception) {
-      //TODO: what to do here?
-    }
+    return runnable;
   }
   
   /**

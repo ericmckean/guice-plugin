@@ -17,6 +17,8 @@
 package com.google.inject.tools.ideplugin.eclipse;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.*;
 import org.eclipse.jface.viewers.*;
@@ -29,6 +31,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.core.runtime.IAdaptable;
 import com.google.inject.tools.ideplugin.results.Results;
 import com.google.inject.tools.ideplugin.results.ResultsView;
+import com.google.inject.tools.ideplugin.results.Results.Node.ActionString;
+import com.google.inject.tools.ideplugin.results.Results.Node.ActionStringElement;
 import com.google.inject.tools.ideplugin.ActionsHandler;
 
 /**
@@ -46,17 +50,42 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
   private ViewContentProvider viewContentProvider;
   private Results results;
   
-  private class TreeObject implements IAdaptable {
-    private final String name;
-    private final ActionsHandler.Action action;
-    private TreeParent parent;
-    
-    public TreeObject(String name,ActionsHandler.Action action) {
-      this.name = name;
-      this.action = action;
+  private class TreeNodePart implements IAdaptable {
+    private final ActionStringElement element;
+    public TreeNodePart(ActionStringElement element) {
+      this.element = element;
     }
     public String getName() {
-      return name;
+      return element.label();
+    }
+    public ActionsHandler.Action getAction() {
+      return element.action();
+    }
+    @Override
+    public String toString() {
+      return getName();
+    }
+    @SuppressWarnings("unchecked")
+    public Object getAdapter(Class key) {
+      return null;
+    }
+  }
+  private class TreeObject implements IAdaptable {
+    private final ActionString text;
+    private TreeParent parent;
+    private final List<TreeNodePart> parts;
+    
+    public TreeObject(ActionString text) {
+      this.text = text;
+      this.parts = new ArrayList<TreeNodePart>();
+      if (text != null) {
+        for (ActionStringElement element : text.elements()) {
+          this.parts.add(new TreeNodePart(element));
+        }
+      }
+    }
+    public String getName() {
+      return "TreeObject " + text.toString();
     }
     public void setParent(TreeParent parent) {
       this.parent = parent;
@@ -64,8 +93,8 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
     public TreeParent getParent() {
       return parent;
     }
-    public ActionsHandler.Action getAction() {
-      return action;
+    public TreeNodePart[] getTextElements() {
+      return (TreeNodePart[])parts.toArray();
     }
     @Override
     public String toString() {
@@ -79,8 +108,8 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
   
   private class TreeParent extends TreeObject {
     private ArrayList<TreeObject> children;
-    public TreeParent(String name,ActionsHandler.Action action) {
-      super(name,action);
+    public TreeParent(ActionString text) {
+      super(text);
       children = new ArrayList<TreeObject>();
     }
     public void addChild(TreeObject child) {
@@ -108,11 +137,13 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
     public void dispose() {
     }
     public Object[] getElements(Object parent) {
+      System.out.println("getelems " + parent.toString());
       if (parent.equals(getViewSite())) {
         if (invisibleRoot==null) initialize();
         return getChildren(invisibleRoot);
       }
-      return getChildren(parent);
+      if (hasChildren(parent)) return getChildren(parent);
+      return getTextElements(parent);
     }
     public Object getParent(Object child) {
       if (child instanceof TreeObject) {
@@ -132,6 +163,16 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
       return false;
     }
     
+    public Object[] getTextElements(Object node) {
+      System.out.println(node.toString());
+      if (node instanceof TreeObject) {
+        System.out.println("getting elements");
+        return ((TreeObject)node).getTextElements();
+      } else {
+        return null;
+      }
+    }
+    
     public void useResults(Results results) {
       EclipseResultsView.this.results = results;
       for (TreeObject child : invisibleRoot.getChildren()) {
@@ -141,7 +182,7 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
     }
     
     private void initialize() {
-      invisibleRoot = new TreeParent("",new ActionsHandler.NullAction());
+      invisibleRoot = new TreeParent(null);
       if (results != null) {
         invisibleRoot.addChild(makeTree(results.getRoot()));
       }
@@ -150,9 +191,9 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
     private TreeObject makeTree(Results.Node node) {
       //TODO: actions!
       if (node.children().isEmpty()) {
-        return new TreeObject(node.getTextString(),null);
+        return new TreeObject(node.getText());
       } else {
-        TreeParent parent = new TreeParent(node.getTextString(),null);
+        TreeParent parent = new TreeParent(node.getText());
         for (Results.Node child : node.children()) {
           parent.addChild(makeTree(child));
         }

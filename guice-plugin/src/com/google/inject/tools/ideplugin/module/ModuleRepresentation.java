@@ -19,6 +19,7 @@ package com.google.inject.tools.ideplugin.module;
 import java.util.Set;
 
 import com.google.inject.tools.ideplugin.code.CodeRunner;
+import com.google.inject.tools.ideplugin.code.RunModuleSnippet;
 import com.google.inject.tools.ideplugin.snippets.ModuleSnippet.ConstructorRepresentation;
 
 /** 
@@ -60,5 +61,5 @@ public interface ModuleRepresentation {
    * 
    * @param codeRunner the {@link CodeRunner} to run the {@link com.google.inject.tools.ideplugin.snippets.ModuleSnippet} with.
    */
-  public void clean(CodeRunner codeRunner);
+  public RunModuleSnippet clean(CodeRunner codeRunner);
 }
