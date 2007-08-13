@@ -39,7 +39,7 @@ public interface ProgressHandler {
    * @param label the label to display for this step
    * @param codeRunner the CodeRunner to kill on cancel
    */
-  public void step(String label,CodeRunner codeRunner);
+  public void step(String label,CodeRunner.Runnable runnable);
   
   /**
    * Return true if the user cancelled the operation.

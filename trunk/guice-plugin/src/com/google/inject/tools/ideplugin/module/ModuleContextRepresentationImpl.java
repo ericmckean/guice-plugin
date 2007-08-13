@@ -77,16 +77,12 @@ public class ModuleContextRepresentationImpl implements ModuleContextRepresentat
    * (non-Javadoc)
    * @see com.google.inject.tools.ideplugin.module.ModuleContextRepresentation#clean(com.google.inject.tools.ideplugin.code.CodeRunner)
    */
-  public void clean(CodeRunner codeRunner) {
+  public RunModuleContextSnippet clean(CodeRunner codeRunner) {
     codeRunner.addListener(this);
     RunModuleContextSnippet runnable = new RunModuleContextSnippet(codeRunner,this);
     codeRunner.queue(runnable);
     codeRunner.run();
-    try {
-      codeRunner.waitFor(runnable);
-    } catch (InterruptedException exception) {
-      System.out.println("wtf mate");
-    }
+    return runnable;
   }
   
   /*

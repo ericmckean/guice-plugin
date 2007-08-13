@@ -21,6 +21,7 @@ import java.util.Set;
 import com.google.inject.tools.ideplugin.snippets.BindingCodeLocation;
 import com.google.inject.tools.ideplugin.snippets.CodeProblem;
 import com.google.inject.tools.ideplugin.code.CodeRunner;
+import com.google.inject.tools.ideplugin.code.RunModuleContextSnippet;
 
 /** 
  * Representation of a module context in the user's code.
@@ -94,7 +95,7 @@ public interface ModuleContextRepresentation {
    * 
    * @param codeRunner the {@link CodeRunner} to run the module context with
    */
-  public void clean(CodeRunner codeRunner);
+  public RunModuleContextSnippet clean(CodeRunner codeRunner);
   
   /**
    * Return the set of {@link CodeProblem}s occurring with this context.

@@ -16,6 +16,8 @@
 
 package com.google.inject.tools.ideplugin.eclipse;
 
+import com.google.inject.Inject;
+import com.google.inject.tools.ideplugin.Messenger;
 import com.google.inject.tools.ideplugin.ProgressHandler;
 import com.google.inject.tools.ideplugin.code.CodeRunner;
 
@@ -25,6 +27,13 @@ import com.google.inject.tools.ideplugin.code.CodeRunner;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class EclipseProgressHandler implements ProgressHandler {
+  private final Messenger messenger;
+  
+  @Inject
+  public EclipseProgressHandler(Messenger messenger) {
+    this.messenger = messenger;
+  }
+  
   /**
    * (non-Javadoc)
    * @see com.google.inject.tools.ideplugin.ProgressHandler#initialize(int)
@@ -45,7 +54,11 @@ public class EclipseProgressHandler implements ProgressHandler {
    * (non-Javadoc)
    * @see com.google.inject.tools.ideplugin.ProgressHandler#step(java.lang.String, com.google.inject.tools.ideplugin.code.CodeRunner)
    */
-  public void step(String label, CodeRunner codeRunner) {
-
+  public void step(String label, CodeRunner.Runnable runnable) {
+    try {
+      runnable.waitFor();
+    } catch (InterruptedException exception) {
+      messenger.log("Interrupted: " + exception.toString());
+    }
   }
 }
