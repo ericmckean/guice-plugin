@@ -16,19 +16,20 @@
 
 package com.google.inject.tools.ideplugin.eclipse;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.part.*;
-import org.eclipse.jface.viewers.*;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.jface.action.*;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.*;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.SWT;
-import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.ui.forms.events.HyperlinkEvent;
+import org.eclipse.ui.forms.events.IHyperlinkListener;
+import org.eclipse.ui.forms.widgets.Form;
+import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.Hyperlink;
+import org.eclipse.ui.forms.widgets.ScrolledForm;
+
 import com.google.inject.tools.ideplugin.results.Results;
 import com.google.inject.tools.ideplugin.results.ResultsView;
 import com.google.inject.tools.ideplugin.results.Results.Node.ActionString;
@@ -42,180 +43,9 @@ import com.google.inject.tools.ideplugin.ActionsHandler;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class EclipseResultsView extends ViewPart implements ResultsView {
-  private TreeViewer viewer;
-  private DrillDownAdapter drillDownAdapter;
-  private Action action1;
-  private Action action2;
-  private Action doubleClickAction;
-  private ViewContentProvider viewContentProvider;
-  private Results results;
-  
-  private class TreeNodePart implements IAdaptable {
-    private final ActionStringElement element;
-    public TreeNodePart(ActionStringElement element) {
-      this.element = element;
-    }
-    public String getName() {
-      return element.label();
-    }
-    public ActionsHandler.Action getAction() {
-      return element.action();
-    }
-    @Override
-    public String toString() {
-      return getName();
-    }
-    @SuppressWarnings("unchecked")
-    public Object getAdapter(Class key) {
-      return null;
-    }
-  }
-  private class TreeObject implements IAdaptable {
-    private final ActionString text;
-    private TreeParent parent;
-    private final List<TreeNodePart> parts;
-    
-    public TreeObject(ActionString text) {
-      this.text = text;
-      this.parts = new ArrayList<TreeNodePart>();
-      if (text != null) {
-        for (ActionStringElement element : text.elements()) {
-          this.parts.add(new TreeNodePart(element));
-        }
-      }
-    }
-    public String getName() {
-      return "TreeObject " + text.toString();
-    }
-    public void setParent(TreeParent parent) {
-      this.parent = parent;
-    }
-    public TreeParent getParent() {
-      return parent;
-    }
-    public TreeNodePart[] getTextElements() {
-      return (TreeNodePart[])parts.toArray();
-    }
-    @Override
-    public String toString() {
-      return getName();
-    }
-    @SuppressWarnings("unchecked")
-    public Object getAdapter(Class key) {
-      return null;
-    }
-  }
-  
-  private class TreeParent extends TreeObject {
-    private ArrayList<TreeObject> children;
-    public TreeParent(ActionString text) {
-      super(text);
-      children = new ArrayList<TreeObject>();
-    }
-    public void addChild(TreeObject child) {
-      children.add(child);
-      child.setParent(this);
-    }
-    public void removeChild(TreeObject child) {
-      children.remove(child);
-      child.setParent(null);
-    }
-    public TreeObject [] getChildren() {
-      return children.toArray(new TreeObject[children.size()]);
-    }
-    public boolean hasChildren() {
-      return children.size()>0;
-    }
-  }
-  
-  private class ViewContentProvider implements IStructuredContentProvider, 
-  ITreeContentProvider {
-    private TreeParent invisibleRoot;
-    
-    public void inputChanged(Viewer v, Object oldInput, Object newInput) {
-    }
-    public void dispose() {
-    }
-    public Object[] getElements(Object parent) {
-      System.out.println("getelems " + parent.toString());
-      if (parent.equals(getViewSite())) {
-        if (invisibleRoot==null) initialize();
-        return getChildren(invisibleRoot);
-      }
-      if (hasChildren(parent)) return getChildren(parent);
-      return getTextElements(parent);
-    }
-    public Object getParent(Object child) {
-      if (child instanceof TreeObject) {
-        return ((TreeObject)child).getParent();
-      }
-      return null;
-    }
-    public Object [] getChildren(Object parent) {
-      if (parent instanceof TreeParent) {
-        return ((TreeParent)parent).getChildren();
-      }
-      return new Object[0];
-    }
-    public boolean hasChildren(Object parent) {
-      if (parent instanceof TreeParent)
-        return ((TreeParent)parent).hasChildren();
-      return false;
-    }
-    
-    public Object[] getTextElements(Object node) {
-      System.out.println(node.toString());
-      if (node instanceof TreeObject) {
-        System.out.println("getting elements");
-        return ((TreeObject)node).getTextElements();
-      } else {
-        return null;
-      }
-    }
-    
-    public void useResults(Results results) {
-      EclipseResultsView.this.results = results;
-      for (TreeObject child : invisibleRoot.getChildren()) {
-        invisibleRoot.removeChild(child);
-      }
-      invisibleRoot.addChild(makeTree(results.getRoot()));
-    }
-    
-    private void initialize() {
-      invisibleRoot = new TreeParent(null);
-      if (results != null) {
-        invisibleRoot.addChild(makeTree(results.getRoot()));
-      }
-    }
-    
-    private TreeObject makeTree(Results.Node node) {
-      //TODO: actions!
-      if (node.children().isEmpty()) {
-        return new TreeObject(node.getText());
-      } else {
-        TreeParent parent = new TreeParent(node.getText());
-        for (Results.Node child : node.children()) {
-          parent.addChild(makeTree(child));
-        }
-        return parent;
-      }
-    }
-  }
-  private class ViewLabelProvider extends LabelProvider {
-    @Override
-    public String getText(Object obj) {
-      return obj.toString();
-    }
-    @Override
-    public Image getImage(Object obj) {
-      String imageKey = ISharedImages.IMG_OBJ_ELEMENT;
-      if (obj instanceof TreeParent)
-        imageKey = ISharedImages.IMG_OBJ_FOLDER;
-      return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
-    }
-  }
-  private class NameSorter extends ViewerSorter {
-  }
+  private FormToolkit toolkit;
+  private ScrolledForm form;
+  private Composite parent;
   
   /**
    * The constructor.  This will be called by Eclipse internally.
@@ -234,102 +64,88 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
    */
   @Override
   public void createPartControl(Composite parent) {
-    viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-    drillDownAdapter = new DrillDownAdapter(viewer);
-    viewContentProvider = new ViewContentProvider();
-    viewer.setContentProvider(viewContentProvider);
-    viewer.setLabelProvider(new ViewLabelProvider());
-    viewer.setSorter(new NameSorter());
-    viewer.setInput(getViewSite());
-    makeActions();
-    hookContextMenu();
-    hookDoubleClickAction();
-    contributeToActionBars();
+    this.parent = parent;
+    toolkit = new FormToolkit(parent.getDisplay());
   }
   
-  private void hookContextMenu() {
-    MenuManager menuMgr = new MenuManager("#PopupMenu");
-    menuMgr.setRemoveAllWhenShown(true);
-    menuMgr.addMenuListener(new IMenuListener() {
-      public void menuAboutToShow(IMenuManager manager) {
-        EclipseResultsView.this.fillContextMenu(manager);
+  private class HyperlinkListener implements IHyperlinkListener {
+    private final ActionsHandler.Action action;
+    public HyperlinkListener(ActionsHandler.Action action) {
+      this.action = action;
+    }
+    public void linkActivated(HyperlinkEvent e) {
+      getActionsHandler().run(action);
+    }
+    public void linkEntered(HyperlinkEvent e) {
+    }
+    public void linkExited(HyperlinkEvent e) {
+    }
+  }
+  
+  private void makeFormFromNode(int depth, Results.Node node) {
+    Form nodeForm = toolkit.createForm(form.getBody());
+    Composite nodeFormBody = nodeForm.getBody();
+    GridLayout layout = new GridLayout();
+    layout.marginHeight = 0;
+    layout.marginBottom = 0;
+    layout.marginLeft = 20 * depth;
+    layout.marginRight = 0;
+    layout.marginTop = 0;
+    layout.marginWidth = 0;
+    layout.numColumns = node.getText().elements().size();
+    layout.horizontalSpacing = 0;
+    layout.verticalSpacing = 0;
+    nodeFormBody.setLayout(layout);
+    ActionString text = node.getText();
+    for (ActionStringElement element : text.elements()) {
+      if (element.action() == null || element.action() instanceof ActionsHandler.NullAction) {
+        Label label = toolkit.createLabel(nodeFormBody, element.label());
+        label.setToolTipText(element.tooltip());
+        label.setEnabled(true);
+      } else {
+        Hyperlink link = toolkit.createHyperlink(nodeFormBody, element.label(), SWT.WRAP);
+        link.addHyperlinkListener(new HyperlinkListener(element.action()));
+        link.setToolTipText(element.tooltip());
+        link.setEnabled(true);
       }
-    });
-    Menu menu = menuMgr.createContextMenu(viewer.getControl());
-    viewer.getControl().setMenu(menu);
-    getSite().registerContextMenu(menuMgr, viewer);
+    }
+    for (Results.Node child : node.children()) {
+      makeFormFromNode(depth+1, child);
+    }
+    nodeForm.pack();
+    nodeForm.update();
   }
   
-  private void contributeToActionBars() {
-    IActionBars bars = getViewSite().getActionBars();
-    fillLocalPullDown(bars.getMenuManager());
-    fillLocalToolBar(bars.getToolBarManager());
+  public void useResults(Results results) {
+    if (form != null) {
+      form.dispose();
+      form = null;
+    }
+    form = toolkit.createScrolledForm(parent);
+    GridLayout layout = new GridLayout();
+    layout.marginHeight = 0;
+    layout.marginBottom = 0;
+    layout.marginLeft = 0;
+    layout.marginRight = 0;
+    layout.marginTop = 0;
+    layout.marginWidth = 0;
+    layout.horizontalSpacing = 0;
+    layout.verticalSpacing = 0;
+    form.getBody().setLayout(layout);
+    Results.Node root = results.getRoot();
+    form.setText(root.getTextString());
+    this.setTitleToolTip(root.getTextString());
+    for (Results.Node child : root.children()) {
+      makeFormFromNode(1,child);
+    }
+    form.pack();
+    form.reflow(true);
+    form.update();
   }
   
-  private void fillLocalPullDown(IMenuManager manager) {
-    manager.add(action1);
-    manager.add(new Separator());
-    manager.add(action2);
-  }
-  
-  private void fillContextMenu(IMenuManager manager) {
-    manager.add(action1);
-    manager.add(action2);
-    manager.add(new Separator());
-    drillDownAdapter.addNavigationActions(manager);
-    // Other plug-ins can contribute there actions here
-    manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-  }
-  
-  private void fillLocalToolBar(IToolBarManager manager) {
-    manager.add(action1);
-    manager.add(action2);
-    manager.add(new Separator());
-    drillDownAdapter.addNavigationActions(manager);
-  }
-  
-  private void makeActions() {
-    action1 = new Action() {
-      @Override
-      public void run() {
-        showMessage("Action 1 executed");
-      }
-    };
-    action1.setText("Action 1");
-    action1.setToolTipText("Action 1 tooltip");
-    action1.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
-        getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
-    
-    action2 = new Action() {
-      @Override
-      public void run() {
-        showMessage("Action 2 executed");
-      }
-    };
-    action2.setText("Action 2");
-    action2.setToolTipText("Action 2 tooltip");
-    action2.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
-        getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
-    doubleClickAction = new Action() {
-      @Override
-      public void run() {
-        ISelection selection = viewer.getSelection();
-        Object obj = ((IStructuredSelection)selection).getFirstElement();
-        showMessage("Double-click detected on "+obj.toString());
-      }
-    };
-  }
-  
-  private void hookDoubleClickAction() {
-    viewer.addDoubleClickListener(new IDoubleClickListener() {
-      public void doubleClick(DoubleClickEvent event) {
-        doubleClickAction.run();
-      }
-    });
-  }
   private void showMessage(String message) {
     MessageDialog.openInformation(
-        viewer.getControl().getShell(),
+        new Shell(),
         "Guice View",
         message);
   }
@@ -340,17 +156,17 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
    */
   @Override
   public void setFocus() {
-    viewer.getControl().setFocus();
+    if (form != null) {
+      form.setFocus();
+    }
+    //viewer.getControl().setFocus();
   }
   
   /**
    * 
    */
   public void displayResults(Results results) {
-    this.results = results;
-    viewContentProvider.useResults(this.results);
-    viewer.refresh();
-    viewer.expandAll();
+    useResults(results);
     try {
       this.getViewSite().getWorkbenchWindow().getActivePage().showView("com.google.inject.tools.ideplugin.eclipse.EclipseResultsView");
     } catch (Exception e) {

@@ -16,7 +16,13 @@
 
 package com.google.inject.tools.ideplugin.eclipse;
 
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.ui.JavaUI;
+import org.eclipse.ui.texteditor.ITextEditor;
 import com.google.inject.tools.ideplugin.ActionsHandler;
+import com.google.inject.tools.ideplugin.Messenger;
+import com.google.inject.tools.ideplugin.module.ModuleManager;
 import com.google.inject.Singleton;
 import com.google.inject.Inject;
 
@@ -27,12 +33,16 @@ import com.google.inject.Inject;
  */
 @Singleton
 public class EclipseActionsHandler extends ActionsHandler {
+  private final ModuleManager moduleManager;
+  private final Messenger messenger;
+  
   /**
    * Create the ActionsHandler.  This should be injected as a singleton.
    */
   @Inject
-  public EclipseActionsHandler() {
-    //TODO: do this
+  public EclipseActionsHandler(ModuleManager moduleManager, Messenger messenger) {
+    this.moduleManager = moduleManager;
+    this.messenger = messenger;
   }
   
   /**
@@ -41,11 +51,28 @@ public class EclipseActionsHandler extends ActionsHandler {
    */
   @Override
   public void run(GotoCodeLocation action) {
-    
+    try {
+      IType type = ((EclipseJavaProject)moduleManager.getCurrentProject()).getIJavaProject().findType(action.getStackTraceElement().getClassName());
+      ICompilationUnit cu = type.getCompilationUnit();
+      ITextEditor editor = ((ITextEditor)JavaUI.openInEditor(cu));
+      int offset = editor.getDocumentProvider().getDocument(editor.getEditorInput())
+        .getLineOffset(action.location()-1);
+      int length = editor.getDocumentProvider().getDocument(editor.getEditorInput())
+        .getLineLength(action.location()-1);
+      editor.selectAndReveal(offset, length);
+    } catch (Exception exception) {
+      messenger.log("GotoCodeLocation Action Exception: " + exception.toString());
+    }
   }
   
   @Override
   public void run(GotoFile action) {
-    
+    try {
+      IType type = ((EclipseJavaProject)moduleManager.getCurrentProject()).getIJavaProject().findType(action.getClassname());
+      ICompilationUnit cu = type.getCompilationUnit();
+      JavaUI.openInEditor(cu);
+    } catch (Exception exception) {
+      messenger.log("GotoFile Action Exception: " + exception.toString());
+    }
   }
 }

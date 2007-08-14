@@ -40,8 +40,8 @@ public class BindingCodeLocation extends CodeLocation {
    * @param location the line number in that file where this happens
    * @param problems any {@link CodeProblem}s that occurred during getting this binding
    */
-  public BindingCodeLocation(String bindWhat,String bindTo,String moduleContext,String file,int location,Set<? extends CodeProblem> problems) {
-    super(file,location,problems);
+  public BindingCodeLocation(StackTraceElement[] stackTrace, String bindWhat,String bindTo,String moduleContext,String file,int location,Set<? extends CodeProblem> problems) {
+    super(stackTrace,file,location,problems);
     this.bindWhat = bindWhat;
     this.bindTo = bindTo;
     this.moduleContext = moduleContext;
@@ -54,12 +54,16 @@ public class BindingCodeLocation extends CodeLocation {
   @Override
   public ActionString getDisplay() {
     ActionString text = new ActionString();
-    text.addTextWithAction(bindWhat,new ActionsHandler.GotoFile(bindWhat));
-    text.addText("is bound to");
-    text.addTextWithAction(bindTo,new ActionsHandler.GotoFile(bindTo));
-    text.addText("at");
-    text.addTextWithAction(file() + ":" + String.valueOf(location()),new ActionsHandler.GotoCodeLocation(file(),location()));
+    text.addTextWithAction(shorten(bindWhat),new ActionsHandler.GotoFile(bindWhat),"Goto source of " + bindWhat);
+    text.addText(" is bound to ",null);
+    text.addTextWithAction(shorten(bindTo),new ActionsHandler.GotoFile(bindTo),"Goto source of " + bindTo);
+    text.addText(" at ",null);
+    text.addTextWithAction(file() + ":" + String.valueOf(location()),new ActionsHandler.GotoCodeLocation(getStackTrace(), file(), location()),"Goto binding location of " + bindWhat + " as " + bindTo);
     return text;
+  }
+
+  private String shorten(String label) {
+    return label.substring(label.lastIndexOf(".")+1);
   }
   
   /**

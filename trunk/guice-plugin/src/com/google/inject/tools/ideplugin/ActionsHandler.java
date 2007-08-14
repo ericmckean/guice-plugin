@@ -58,16 +58,29 @@ public abstract class ActionsHandler {
   public static class GotoCodeLocation implements Action {
     private final String file;
     private final int location;
+    private final StackTraceElement[] stackTrace;
     
     /**
      * Create a GotoCodeLocation Action.
      * 
+     * @param stackTrace the stack trace for this location
      * @param file the file to go to
      * @param location the line number
      */
-    public GotoCodeLocation(String file,int location) {
+    public GotoCodeLocation(StackTraceElement[] stackTrace, String file, int location) {
+      this.stackTrace = stackTrace;
       this.file = file;
       this.location = location;
+    }
+    
+    public StackTraceElement[] getStackTrace() {
+      return stackTrace;
+    }
+    
+    public StackTraceElement getStackTraceElement() {
+      if (stackTrace == null) return null;
+      if (stackTrace.length == 0) return null;
+      return stackTrace[stackTrace.length-1];
     }
     
     /**
@@ -155,6 +168,15 @@ public abstract class ActionsHandler {
    * Likely this causes an exception.
    */
   public void run(Action action) {
-    throw new InvalidActionException(action);
+    if (action instanceof GotoCodeLocation) {
+      run((GotoCodeLocation)action);
+    } else 
+      if (action instanceof GotoFile) {
+        run((GotoFile)action);
+      } else
+        if (action instanceof NullAction) {
+          run((NullAction)action);
+        } else
+          throw new InvalidActionException(action);
   }
 }

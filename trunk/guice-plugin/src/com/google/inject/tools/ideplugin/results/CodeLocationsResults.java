@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Set;
 import com.google.inject.tools.ideplugin.snippets.CodeLocation;
 import com.google.inject.tools.ideplugin.snippets.CodeProblem;
-import com.google.inject.tools.ideplugin.ActionsHandler;
 import com.google.inject.tools.ideplugin.results.Results;
 
 /**
@@ -45,13 +44,13 @@ public class CodeLocationsResults extends Results {
      * @param location the {@link CodeLocation}
      */
     public CodeLocationNode(String name,CodeLocation location) {
-      super(name,new ActionsHandler.GotoCodeLocation(location.file(),location.location()));
+      super("in " + shorten(name),"Results for " + name);
       this.location = location;
       if (location.file() != null) {
         addChild(new Node(location.getDisplay()));
       }
       if (!location.getProblems().isEmpty()) {
-        Node node = new Node("Problems");
+        Node node = new Node("Problems",null);
         for (CodeProblem problem : location.getProblems()) {
           node.addChild(new ProblemNode(problem));
         }
@@ -102,8 +101,8 @@ public class CodeLocationsResults extends Results {
    * 
    * @param title the display title
    */
-  public CodeLocationsResults(String title) {
-    super(title);
+  public CodeLocationsResults(String title, String tooltip) {
+    super(title, tooltip);
     map = new HashMap<String,CodeLocation>();
   }
   
@@ -146,5 +145,12 @@ public class CodeLocationsResults extends Results {
     }
     result.append("}");
     return result.toString();
+  }
+  
+  /**
+   * Shorten a class name to its simple name.
+   */
+  public static String shorten(String label) {
+    return label.substring(label.lastIndexOf(".")+1);
   }
 }
