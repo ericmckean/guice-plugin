@@ -28,6 +28,6 @@ public class MockCodeLocationsResults extends CodeLocationsResults {
    * Create the Mock object.
    */
   public MockCodeLocationsResults() {
-    super("Mock Results");
+    super("Mock Results",null);
   }
 }

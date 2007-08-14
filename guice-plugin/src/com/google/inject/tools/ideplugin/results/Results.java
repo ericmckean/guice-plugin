@@ -41,19 +41,30 @@ public class Results {
     public static class ActionStringElement {
       private final String label;
       private final ActionsHandler.Action action;
+      private final String tooltip;
       public ActionStringElement(String label) {
         this.label = label;
         this.action = new ActionsHandler.NullAction();
+        this.tooltip = null;
       }
-      public ActionStringElement(String label,ActionsHandler.Action action) {
+      public ActionStringElement(String label, String tooltip) {
+        this.label = label;
+        this.tooltip = tooltip;
+        this.action = new ActionsHandler.NullAction();
+      }
+      public ActionStringElement(String label,ActionsHandler.Action action,String tooltip) {
         this.label = label;
         this.action = action;
+        this.tooltip = tooltip;
       }
       public String label() {
         return label;
       }
       public ActionsHandler.Action action() {
         return action;
+      }
+      public String tooltip() {
+        return tooltip;
       }
       @Override
       public boolean equals(Object object) {
@@ -78,11 +89,11 @@ public class Results {
       public ActionString() {
         elements = new ArrayList<ActionStringElement>();
       }
-      public void addText(String text) {
-        elements.add(new ActionStringElement(text));
+      public void addText(String text,String tooltip) {
+        elements.add(new ActionStringElement(text,tooltip));
       }
-      public void addTextWithAction(String text,ActionsHandler.Action action) {
-        elements.add(new ActionStringElement(text,action));
+      public void addTextWithAction(String text,ActionsHandler.Action action,String tooltip) {
+        elements.add(new ActionStringElement(text,action,tooltip));
       }
       public List<ActionStringElement> elements() {
         return elements;
@@ -107,8 +118,8 @@ public class Results {
       }
     }
     
-    private final ActionString text;
-    private final Set<Node> children;
+    protected final ActionString text;
+    protected final Set<Node> children;
     
     /**
      * Create a new Node.
@@ -120,15 +131,15 @@ public class Results {
       this.children = new HashSet<Node>();
     }
     
-    public Node(String label) {
+    public Node(String label,String tooltip) {
       this.text = new ActionString();
-      this.text.addText(label);
+      this.text.addText(label,tooltip);
       this.children = new HashSet<Node>();
     }
     
-    public Node(String label,ActionsHandler.Action action) {
+    public Node(String label,ActionsHandler.Action action,String tooltip) {
       this.text = new ActionString();
-      this.text.addTextWithAction(label, action);
+      this.text.addTextWithAction(label, action, tooltip);
       this.children = new HashSet<Node>();
     }
     
@@ -191,8 +202,8 @@ public class Results {
   /**
    * Create a new Results object with the given title.
    */
-  public Results(String title) {
-    root = new Node(title);
+  public Results(String title, String tooltip) {
+    root = new Node(title, tooltip);
   }
   
   /**

@@ -48,7 +48,7 @@ public final class BindingsEngine {
       Messenger messenger,
       JavaElement element) {
     final String theClass = element.getClassName();
-    final CodeLocationsResults results = new CodeLocationsResults("Bindings for " + theClass);
+    final CodeLocationsResults results = new CodeLocationsResults("Bindings for " + CodeLocationsResults.shorten(theClass),theClass);
     if (!moduleManager.updateModules(element.getJavaProject())) {
       results.userCancelled();
     } else {

@@ -57,32 +57,32 @@ public class CodeLocationsResultsTest extends TestCase {
   
   private CodeLocationsResults createValidCodeLocationsResults() {
     CodeLocation validLocation =
-      new BindingCodeLocation("com.google.inject.tools.ideplugin.JavaElement",
+      new BindingCodeLocation(null, "com.google.inject.tools.ideplugin.JavaElement",
           "com.google.inject.tools.ideplugin.test.MockJavaElement",
           "Valid Module Context",
           "MockGuicePlugin.java", 145,
           new HashSet<CodeProblem>());
-    CodeLocationsResults results = new CodeLocationsResults("Test Results");
+    CodeLocationsResults results = new CodeLocationsResults("Test Results",null);
     results.put("Valid Module Context", validLocation);
     return results;
   }
   
   private CodeLocationsResults createBrokenCodeLocationsResults() {
     CodeLocation validLocation =
-      new BindingCodeLocation("com.google.inject.tools.ideplugin.JavaElement",
+      new BindingCodeLocation(null, "com.google.inject.tools.ideplugin.JavaElement",
           "com.google.inject.tools.ideplugin.test.MockJavaElement",
           "Valid Module Context",
           "MockGuicePlugin.java", 145,
           new HashSet<CodeProblem>());
     
     CodeLocation problemsLocation =
-      new BindingCodeLocation("com.google.inject.tools.ideplugin.JavaElement",
+      new BindingCodeLocation(null, "com.google.inject.tools.ideplugin.JavaElement",
           (String)null,
           "Broken Module Context",
           (String)null, 0,
           makeProblemSet("BrokenModule"));
     
-    CodeLocationsResults results = new CodeLocationsResults("Test Results");
+    CodeLocationsResults results = new CodeLocationsResults("Test Results",null);
     results.put("Valid Module Context", validLocation);
     results.put("Broken Module Context", problemsLocation);
     return results;
@@ -93,18 +93,18 @@ public class CodeLocationsResultsTest extends TestCase {
   }
   
   private Results.Node expectedResultForValidLocation() {
-    Results.Node root = new Node("Test Results");
-    Results.Node module = new Node("Valid Module Context");
-    module.addChild(new Node("com.google.inject.tools.ideplugin.JavaElement is bound to com.google.inject.tools.ideplugin.test.MockJavaElement at MockGuicePlugin.java:145"));
+    Results.Node root = new Node("Test Results",null);
+    Results.Node module = new Node("Valid Module Context",null);
+    module.addChild(new Node("com.google.inject.tools.ideplugin.JavaElement is bound to com.google.inject.tools.ideplugin.test.MockJavaElement at MockGuicePlugin.java:145",null));
     root.addChild(module);
     return root;
   }
   private Results.Node expectedResultForBothLocations() {
-    Results.Node root = new Node("Test Results");
-    Results.Node module = new Node("Valid Module Context");
-    module.addChild(new Node("com.google.inject.tools.ideplugin.JavaElement is bound to com.google.inject.tools.ideplugin.test.MockJavaElement at MockGuicePlugin.java:145"));
-    Results.Node module2 = new Node("Broken Module Context");
-    Results.Node problems = new Node("Problems");
+    Results.Node root = new Node("Test Results",null);
+    Results.Node module = new Node("Valid Module Context",null);
+    module.addChild(new Node("com.google.inject.tools.ideplugin.JavaElement is bound to com.google.inject.tools.ideplugin.test.MockJavaElement at MockGuicePlugin.java:145",null));
+    Results.Node module2 = new Node("Broken Module Context",null);
+    Results.Node problems = new Node("Problems",null);
     module2.addChild(problems);
     problems.addChild(new ProblemNode(new CodeProblem.CreationProblem("BrokenModule", new MockCreationException())));
     root.addChild(module2);

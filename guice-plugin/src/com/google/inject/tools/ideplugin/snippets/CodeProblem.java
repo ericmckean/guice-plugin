@@ -90,12 +90,17 @@ public class CodeProblem implements Serializable {
     @Override
     public ActionString getDisplay() {
       ActionString text = new ActionString();
-      text.addText("Guice Code Problem:");
-      text.addTextWithAction(theClass,new ActionsHandler.GotoFile(theClass));
-      text.addText("has a binding problem in Module");
-      text.addText(moduleContext);
+      text.addText("Guice Code Problem: ",null);
+      text.addTextWithAction(shorten(theClass),new ActionsHandler.GotoFile(theClass),"Goto source of " + theClass);
+      text.addText(" has a binding problem in ",null);
+      text.addText("Module Context: ",null);
+      text.addText(moduleContext,null);
       return text;
     }
+  }
+  
+  private static String shorten(String label) {
+    return label.substring(label.lastIndexOf(".")+1);
   }
   
   /**
@@ -140,10 +145,10 @@ public class CodeProblem implements Serializable {
     @Override
     public ActionString getDisplay() {
       ActionString text = new ActionString();
-      text.addText("Guice Code Problem:");
-      text.addTextWithAction(theClass,new ActionsHandler.GotoFile(theClass));
-      text.addText("has no binding in Module");
-      text.addText(moduleContext);
+      text.addText("Guice Code Problem: ",null);
+      text.addTextWithAction(shorten(theClass),new ActionsHandler.GotoFile(theClass),"Goto source of " + theClass);
+      text.addText("has no binding in Module ",null);
+      text.addText(moduleContext,null);
       return text;
     }
   }
@@ -164,8 +169,8 @@ public class CodeProblem implements Serializable {
     @Override
     public ActionString getDisplay() {
       ActionString text = new ActionString();
-      text.addText("Invalid Module:");
-      text.addTextWithAction(moduleContext,new ActionsHandler.GotoFile(moduleContext));
+      text.addText("Invalid Module: ",null);
+      text.addText(moduleContext,null);
       return text;
     }
   }
@@ -195,7 +200,7 @@ public class CodeProblem implements Serializable {
     @Override
     public ActionString getDisplay() {
       ActionString text = new ActionString();
-      text.addText("Guice Module Context is invalid: " + moduleContext);
+      text.addText("Guice Module Context is invalid: " + moduleContext,null);
       return text;
     }
   }
@@ -255,8 +260,8 @@ public class CodeProblem implements Serializable {
    */
   public ActionString getDisplay() {
     ActionString text = new ActionString();
-    text.addText("Guice Code Problem:");
-    text.addText(message);
+    text.addText("Guice Code Problem: ", null);
+    text.addText(message, null);
     return text;
   }
 }

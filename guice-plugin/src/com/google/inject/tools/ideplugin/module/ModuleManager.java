@@ -147,4 +147,9 @@ public interface ModuleManager {
    * @return true if the update succeeded (false if the user cancelled the operation)
    */
   public boolean updateModules(JavaProject javaProject);
+  
+  /**
+   * Return the current {@link JavaProject}.
+   */
+  public JavaProject getCurrentProject();
 }

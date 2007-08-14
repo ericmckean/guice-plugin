@@ -336,4 +336,12 @@ public class ModuleManagerImpl implements ModuleManager {
     }
     return true;
   }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.module.ModuleManager#getCurrentProject()
+   */
+  public JavaProject getCurrentProject() {
+    return currentProject;
+  }
 }

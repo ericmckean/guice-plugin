@@ -59,20 +59,23 @@ public class ModuleContextSnippet extends CodeSnippet {
           Binding<?> binding = moduleBindings.get(key);
           Set<CodeProblem> locationProblems = new HashSet<CodeProblem>();
           BindingCodeLocation bindingCodeLocation;
+          StackTraceElement source = null;
           if (binding == null) {
             locationProblems.add(new CodeProblem.NoBindingProblem(name,key.getTypeLiteral().toString()));
           } else {
             try {
               bindTo = binding.getProvider().get().getClass().getName();
-              StackTraceElement source = (StackTraceElement)binding.getSource();
+              source = (StackTraceElement)binding.getSource();
               file = source.getFileName();
               location = source.getLineNumber();
             } catch (Throwable throwable) {
               locationProblems.add(new CodeProblem.BindingProblem(name,key.getTypeLiteral().toString(),throwable));
             }
           }
+          StackTraceElement[] stackTrace = new StackTraceElement[1];
+          stackTrace[0] = source;
           this.bindings.put(bindWhat,
-              new BindingCodeLocation(bindWhat,bindTo,name,file,location,locationProblems));
+              new BindingCodeLocation(stackTrace,bindWhat,bindTo,name,file,location,locationProblems));
         }
       }
     }

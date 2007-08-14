@@ -27,12 +27,14 @@ import com.google.inject.tools.ideplugin.results.Results.Node.ActionString;
 public abstract class CodeLocation extends CodeSnippetResult {
   private final String file;
   private final int location;
+  private final StackTraceElement[] stackTrace;
   
   /**
    * Create a new CodeLocation.
    */
-  public CodeLocation(String file,int location,Set<? extends CodeProblem> problems) {
+  public CodeLocation(StackTraceElement[] stackTrace, String file, int location, Set<? extends CodeProblem> problems) {
     super(problems);
+    this.stackTrace = stackTrace;
     this.file = file;
     this.location = location;
   }
@@ -58,6 +60,10 @@ public abstract class CodeLocation extends CodeSnippetResult {
    */
   public int location() {
     return location;
+  }
+  
+  public StackTraceElement[] getStackTrace() {
+    return stackTrace;
   }
   
   @Override
