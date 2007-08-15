@@ -19,6 +19,7 @@ package com.google.inject.tools.ideplugin.snippets;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -191,12 +192,14 @@ public class ModuleContextSnippet extends CodeSnippet {
   
   @SuppressWarnings("unchecked")
   public static void runSnippet(OutputStream stream, String[] args) {
+    ModuleContextSnippet snippet = null;
+    String contextName = "Bad context name";
     try {
       Set<ModuleRepresentation> modules = new HashSet<ModuleRepresentation>();
       List<String> argsSet = new ArrayList<String>();
       for (String arg : args) argsSet.add(arg);
       Iterator<String> arguments = argsSet.iterator();
-      String contextName = arguments.next();
+      contextName = arguments.next();
       int numModules = Integer.valueOf(arguments.next());
       for (int i=0;i<numModules;i++) {
         try {
@@ -218,8 +221,13 @@ public class ModuleContextSnippet extends CodeSnippet {
           i=numModules;
         }
       }
-      ModuleContextSnippet snippet = new ModuleContextSnippet(modules,contextName);
-      snippet.printResult(stream);
-    }catch(Throwable t){ t.printStackTrace(); }
+      snippet = new ModuleContextSnippet(modules,contextName);
+    } catch(Throwable t) {
+      if (snippet == null) {
+        snippet = new ModuleContextSnippet(new HashSet<ModuleRepresentation>(), contextName);
+        snippet.addProblems(Collections.singleton(new CodeProblem(contextName, t)));
+      }
+    }
+    snippet.printResult(stream);
   }
 }

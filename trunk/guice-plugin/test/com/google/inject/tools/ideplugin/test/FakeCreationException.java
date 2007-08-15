@@ -25,7 +25,7 @@ import java.util.HashSet;
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public class MockCreationException extends CreationException {
+public class FakeCreationException extends CreationException {
   /**
    * Automatically generated serial version UID.
    */
@@ -40,7 +40,7 @@ public class MockCreationException extends CreationException {
   /**
    * Create the Mock object.
    */
-  public MockCreationException() {
+  public FakeCreationException() {
     super(messages);
   }
   

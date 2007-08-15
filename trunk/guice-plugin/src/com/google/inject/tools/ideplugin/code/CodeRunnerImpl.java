@@ -39,12 +39,46 @@ public class CodeRunnerImpl implements CodeRunner {
   private final Map<Runnable,RunnableProgressStep> progressSteps;
   private boolean cancelled;
   
-  public CodeRunnerImpl(JavaProject project, ProgressHandler progressHandler) {
-    this.progressHandler = progressHandler;
+  public CodeRunnerImpl(JavaProject project) {
+    this.progressHandler = new NullProgressHandler();
     this.project = project;
     listeners = new HashSet<CodeRunListener>();
     progressSteps = new HashMap<Runnable,RunnableProgressStep>();
     cancelled = false;
+  }
+  
+  public CodeRunnerImpl(JavaProject project, ProgressHandler progressHandler) {
+    if (progressHandler != null) {
+      this.progressHandler = progressHandler;
+    } else {
+      this.progressHandler = new NullProgressHandler();
+    }
+    this.project = project;
+    listeners = new HashSet<CodeRunListener>();
+    progressSteps = new HashMap<Runnable,RunnableProgressStep>();
+    cancelled = false;
+  }
+  
+  /**
+   * An implementation of {@link ProgressHandler} that does nothing to
+   * display the progress.
+   */
+  protected class NullProgressHandler implements ProgressHandler {
+    private final List<ProgressStep> steps = new ArrayList<ProgressStep>();
+    
+    public void go(String label, boolean backgroundAutomatically) {
+      for (ProgressStep step : steps) {
+        step.run();
+      }
+    }
+
+    public boolean isCancelled() {
+      return false;
+    }
+
+    public void step(ProgressStep step) {
+      steps.add(step);
+    }
   }
   
   /**
@@ -152,6 +186,14 @@ public class CodeRunnerImpl implements CodeRunner {
   public void run(String label, boolean backgroundAutomatically) {
     cancelled = false;
     progressHandler.go(label, backgroundAutomatically);
+  }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.code.CodeRunner#run(java.lang.String)
+   */
+  public void run(String label) {
+    run(label, true);
   }
   
   protected class CodeRunThread extends Thread {

@@ -14,23 +14,31 @@
  * limitations under the License.
  */
 
-package com.google.inject.tools.ideplugin.test;
+package com.google.inject.tools.ideplugin.sample;
 
 import com.google.inject.AbstractModule;
 
 /**
- * Testing {@link com.google.inject.Module} that works correctly, binding {@link MockInjectedInterface2} to 
- * {@link MockInjectedInterface2Impl}.
+ * Testing {@link com.google.inject.Module} that can be only constructed by passing arguments.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public class WorkingModule2 extends AbstractModule {
+public class ModuleWithArguments extends AbstractModule {
+  /**
+   * The constructor.
+   * 
+   * @param requiredArgument an argument
+   */
+  public ModuleWithArguments(String requiredArgument) {
+    
+  }
+  
   /*
    * (non-Javadoc)
    * @see com.google.inject.AbstractModule#configure()
    */
   @Override
   protected void configure() {
-    bind(MockInjectedInterface2.class).to(MockInjectedInterface2Impl.class);
+    bind(MockInjectedInterface.class).to(MockInjectedInterfaceImpl.class);
   }
 }

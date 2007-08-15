@@ -24,9 +24,8 @@ import java.util.List;
 import junit.framework.TestCase;
 import com.google.inject.tools.ideplugin.code.CodeRunner;
 import com.google.inject.tools.ideplugin.code.CodeRunnerImpl;
+import com.google.inject.tools.ideplugin.sample.TestSnippet;
 import com.google.inject.tools.ideplugin.snippets.CodeSnippetResult;
-import com.google.inject.tools.ideplugin.test.MockProgressHandler;
-import com.google.inject.tools.ideplugin.test.TestSnippet;
 
 /**
  * Unit test the {@link CodeRunner}.
@@ -41,8 +40,7 @@ public class CodeRunnerTest extends TestCase implements CodeRunner.CodeRunListen
   private boolean hitResult = true;
   
   public void testCodeRunnerSimple() throws Exception {
-    ProgressHandler progressHandler = new MockProgressHandler();
-    CodeRunner runner = new CodeRunnerImpl(new MockJavaProject(), progressHandler);
+    CodeRunner runner = new CodeRunnerImpl(new MockJavaProject());
     runner.addListener(this);
     CodeRunner.Runnable runnable = new TestRunnable(runner);
     runner.queue(runnable);
@@ -53,7 +51,7 @@ public class CodeRunnerTest extends TestCase implements CodeRunner.CodeRunListen
   }
   
   public void testCodeRunnerLongProcess() throws Exception {
-    CodeRunner runner = new CodeRunnerImpl(new MockJavaProject(), new MockProgressHandler());
+    CodeRunner runner = new CodeRunnerImpl(new MockJavaProject());
     runner.addListener(this);
     CodeRunner.Runnable runnable = new TestRunnable(runner,5);
     runner.queue(runnable);
@@ -64,7 +62,7 @@ public class CodeRunnerTest extends TestCase implements CodeRunner.CodeRunListen
   }
   
   public void testCodeRunnerMultiple() throws Exception {
-    CodeRunner runner = new CodeRunnerImpl(new MockJavaProject(), new MockProgressHandler());
+    CodeRunner runner = new CodeRunnerImpl(new MockJavaProject());
     runner.addListener(this);
     CodeRunner.Runnable runnable1 = new TestRunnable(runner,2);
     CodeRunner.Runnable runnable2 = new TestRunnable(runner,4);
@@ -126,7 +124,7 @@ public class CodeRunnerTest extends TestCase implements CodeRunner.CodeRunListen
     }
     @Override
     public String getFullyQualifiedSnippetClass() {
-      return "com.google.inject.tools.ideplugin.test.TestSnippet";
+      return "com.google.inject.tools.ideplugin.sample.TestSnippet";
     }
     
     @Override

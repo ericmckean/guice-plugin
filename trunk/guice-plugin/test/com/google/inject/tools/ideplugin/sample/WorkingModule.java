@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package com.google.inject.tools.ideplugin.test;
+package com.google.inject.tools.ideplugin.sample;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.TypeLiteral;
+import com.google.inject.name.Names;
 
 /**
  * Testing {@link com.google.inject.Module} that works correctly, binding {@link MockInjectedInterface} to 
@@ -28,12 +30,14 @@ import com.google.inject.AbstractModule;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class WorkingModule extends AbstractModule {
-  /*
-   * (non-Javadoc)
-   * @see com.google.inject.AbstractModule#configure()
-   */
   @Override
   protected void configure() {
     bind(MockInjectedInterface.class).to(MockInjectedInterfaceImpl.class);
+    bind(Service.class)
+      .annotatedWith(Names.named("blue"))
+      .to(BlueService.class);
+    bindConstant().annotatedWith(ServerHost.class).to(1);
+    bind(new TypeLiteral<PaymentService<CreditCard>>() {})
+      .to(CreditCardPaymentService.class);
   }
 }

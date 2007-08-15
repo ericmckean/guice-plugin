@@ -14,20 +14,24 @@
  * limitations under the License.
  */
 
-package com.google.inject.tools.ideplugin.test;
+package com.google.inject.tools.ideplugin.sample;
 
-import com.google.inject.tools.ideplugin.results.CodeLocationsResults;
+import com.google.inject.AbstractModule;
 
 /**
- * Mock of the {@link CodeLocationsResults} object.
+ * Guice {@link com.google.inject.Module} that is broken and will throw a {@link com.google.inject.CreationException}.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public class MockCodeLocationsResults extends CodeLocationsResults {
-  /**
-   * Create the Mock object.
+public class BrokenModule extends AbstractModule {
+  /*
+   * (non-Javadoc)
+   * @see com.google.inject.AbstractModule#configure()
    */
-  public MockCodeLocationsResults() {
-    super("Mock Results",null);
+  @Override
+  protected void configure() {
+    bind(MockInjectedInterface.class).to(MockInjectedInterfaceImpl.class);
+    bind(MockInjectedInterface.class).to(MockInjectedInterfaceImpl.class);
+    //this will throw a CreationException as its already bound
   }
 }

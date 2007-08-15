@@ -14,24 +14,13 @@
  * limitations under the License.
  */
 
-package com.google.inject.tools.ideplugin.test;
-
-import com.google.inject.AbstractModule;
+package com.google.inject.tools.idepugin.sample.eclipse;
 
 /**
- * Guice {@link com.google.inject.Module} that is broken and will throw a {@link com.google.inject.CreationException}.
+ * Testing only class for verifying that {@link com.google.inject.tools.ideplugin.eclipse.EclipseJavaElement} functions correctly.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public class BrokenModule extends AbstractModule {
-  /*
-   * (non-Javadoc)
-   * @see com.google.inject.AbstractModule#configure()
-   */
-  @Override
-  protected void configure() {
-    bind(MockInjectedInterface.class).to(MockInjectedInterfaceImpl.class);
-    bind(MockInjectedInterface.class).to(MockInjectedInterfaceImpl.class);
-    //this will throw a CreationException as its already bound
-  }
+public class TestVariableClass {
+  
 }

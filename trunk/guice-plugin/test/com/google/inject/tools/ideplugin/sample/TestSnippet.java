@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.inject.tools.ideplugin.test;
+package com.google.inject.tools.ideplugin.sample;
 
 import java.util.HashSet;
 import com.google.inject.tools.ideplugin.snippets.CodeProblem;

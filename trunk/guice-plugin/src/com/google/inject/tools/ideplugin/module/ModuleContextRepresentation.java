@@ -16,8 +16,9 @@
 
 package com.google.inject.tools.ideplugin.module;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
-
 import com.google.inject.tools.ideplugin.snippets.BindingCodeLocation;
 import com.google.inject.tools.ideplugin.snippets.CodeProblem;
 import com.google.inject.tools.ideplugin.code.CodeRunner;
@@ -29,6 +30,91 @@ import com.google.inject.tools.ideplugin.code.RunModuleContextSnippet;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public interface ModuleContextRepresentation {
+  /**
+   * Representation of an instance of a {@link com.google.inject.Module} in the user's code, including which
+   * constructor to use and how to use it.
+   * 
+   * @author Darren Creutz <dcreutz@gmail.com>
+   */
+  public class ModuleInstanceRepresentation {
+    private static class Argument {
+      private final String type;
+      private final String value;
+      public Argument(String type,String value) {
+        this.type = type;
+        this.value = value;
+      }
+      public String type() {
+        return type;
+      }
+      public String value() {
+        return value;
+      }
+    }
+    
+    private final String className;
+    private final List<Argument> arguments;
+    
+    /**
+     * Create a representation of a module instance using its default constructor.
+     * 
+     * @param className the class of the module
+     */
+    public ModuleInstanceRepresentation(String className) {
+      this.className = className;
+      this.arguments = new ArrayList<Argument>();
+    }
+    
+    /**
+     * Create a representation of a module instance using the constructor with the given argument set.
+     * 
+     * @param className the class of the module
+     * @param argumentTypes the classes/types of the arguments
+     */
+    public ModuleInstanceRepresentation(String className,List<String> argumentTypes) {
+      this.className = className;
+      this.arguments = new ArrayList<Argument>();
+      for (String argumentType : argumentTypes) {
+        this.arguments.add(new Argument(argumentType,"null"));
+      }
+    }
+    
+    /**
+     * Create a representation of a module instance using the given constructor arguments.
+     * 
+     * @param className the class of the module
+     * @param argumentTypes the classes/types of the arguments
+     * @param argumentValues the values of the arguments
+     */
+    public ModuleInstanceRepresentation(String className,List<String> argumentTypes,List<String> argumentValues) {
+      this.className = className;
+      this.arguments = new ArrayList<Argument>();
+      for (int i=0;i<argumentTypes.size();i++) {
+        this.arguments.add(new Argument(argumentTypes.get(i),argumentValues.get(i)));
+      }
+    }
+    
+    /**
+     * Return the class of the module.
+     */
+    public String getClassName() {
+      return className;
+    }
+    
+    /**
+     * Return the module instance as a string list in preparation for passing it to a {@link com.google.inject.tools.ideplugin.snippets.CodeSnippet}.
+     */
+    public List<String> toStringList() {
+      List<String> result = new ArrayList<String>();
+      result.add(className);
+      result.add(String.valueOf(arguments.size()));
+      for (int i=0;i<arguments.size();i++) {
+        result.add(arguments.get(i).type());
+        result.add(arguments.get(i).value());
+      }
+      return result;
+    }
+  }
   
   /**
    * Find the location in code where a binding occurs in this module context.

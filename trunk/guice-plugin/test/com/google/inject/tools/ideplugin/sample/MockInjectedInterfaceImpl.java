@@ -14,28 +14,16 @@
  * limitations under the License.
  */
 
-package com.google.inject.tools.ideplugin.test;
+package com.google.inject.tools.ideplugin.sample;
 
-import com.google.inject.tools.ideplugin.GuicePlugin;
-import com.google.inject.tools.ideplugin.results.ResultsView;
-import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
-import org.easymock.EasyMock;
+import com.google.inject.Inject;
 
 /**
- * Mock the {@link GuicePlugin} object.
+ * Implementation of our testing interface.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public class MockGuicePlugin extends GuicePlugin {
-  public MockGuicePlugin() {
-    super(new MockGuicePluginModule());
-  }
-  
-  public ResultsView getResultsView() {
-    return EasyMock.createMock(ResultsView.class);
-  }
-  
-  public ModuleSelectionView getModuleSelectionView() {
-    return EasyMock.createMock(ModuleSelectionView.class);
-  }
+public class MockInjectedInterfaceImpl implements MockInjectedInterface {
+  @Inject
+  public MockInjectedInterfaceImpl() {}
 }

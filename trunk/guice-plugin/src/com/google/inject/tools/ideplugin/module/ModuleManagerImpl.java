@@ -18,6 +18,7 @@ package com.google.inject.tools.ideplugin.module;
 
 import com.google.inject.tools.ideplugin.code.CodeRunner;
 import com.google.inject.tools.ideplugin.module.ModulesListener;
+import com.google.inject.tools.ideplugin.module.ModuleContextRepresentation.ModuleInstanceRepresentation;
 import com.google.inject.tools.ideplugin.problem.ProblemsHandler;
 import com.google.inject.tools.ideplugin.snippets.CodeSnippetResult;
 import com.google.inject.tools.ideplugin.JavaProject;

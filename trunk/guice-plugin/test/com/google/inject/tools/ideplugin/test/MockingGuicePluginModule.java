@@ -42,7 +42,7 @@ import com.google.inject.tools.ideplugin.code.CodeRunner;
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public class MockGuicePluginModule extends GuicePluginModule {
+public class MockingGuicePluginModule extends GuicePluginModule {
   private boolean useRealModuleManager = false;
   private boolean useRealResultsHandler = false;
   private boolean useRealProblemsHandler = false;
@@ -62,13 +62,13 @@ public class MockGuicePluginModule extends GuicePluginModule {
   /**
    * Create a purely mocked module.
    */
-  public MockGuicePluginModule() {
+  public MockingGuicePluginModule() {
   }
   
   /**
    * Tell the module to use a real ModuleManager.
    */
-  public MockGuicePluginModule useRealModuleManager() {
+  public MockingGuicePluginModule useRealModuleManager() {
     useRealModuleManager = true;
     return this;
   }
@@ -76,7 +76,7 @@ public class MockGuicePluginModule extends GuicePluginModule {
   /**
    * Tell the module to use a real ResultsHandler.
    */
-  public MockGuicePluginModule useRealResultsHandler() {
+  public MockingGuicePluginModule useRealResultsHandler() {
     useRealResultsHandler = true;
     return this;
   }
@@ -84,62 +84,62 @@ public class MockGuicePluginModule extends GuicePluginModule {
   /**
    * Tell the module to use a real ProblemsHandler.
    */
-  public MockGuicePluginModule useRealProblemsHandler() {
+  public MockingGuicePluginModule useRealProblemsHandler() {
     useRealProblemsHandler = true;
     return this;
   }
   
-  public MockGuicePluginModule useRealBindingsEngine() {
+  public MockingGuicePluginModule useRealBindingsEngine() {
     useRealBindingsEngine = true;
     return this;
   }
   
-  public MockGuicePluginModule useModuleManager(ModuleManager moduleManager) {
+  public MockingGuicePluginModule useModuleManager(ModuleManager moduleManager) {
     this.moduleManager = moduleManager;
     return this;
   }
   
-  public MockGuicePluginModule useResultsHandler(ResultsHandler resultsHandler) {
+  public MockingGuicePluginModule useResultsHandler(ResultsHandler resultsHandler) {
     this.resultsHandler = resultsHandler;
     return this;
   }
   
-  public MockGuicePluginModule useProblemsHandler(ProblemsHandler problemsHandler) {
+  public MockingGuicePluginModule useProblemsHandler(ProblemsHandler problemsHandler) {
     this.problemsHandler = problemsHandler;
     return this;
   }
   
-  public MockGuicePluginModule useResultsView(ResultsView resultsView) {
+  public MockingGuicePluginModule useResultsView(ResultsView resultsView) {
     this.resultsView = resultsView;
     return this;
   }
   
-  public MockGuicePluginModule useModuleSelectionView(ModuleSelectionView moduleSelectionView) {
+  public MockingGuicePluginModule useModuleSelectionView(ModuleSelectionView moduleSelectionView) {
     this.moduleSelectionView = moduleSelectionView;
     return this;
   }
   
-  public MockGuicePluginModule useActionsHandler(ActionsHandler actionsHandler) {
+  public MockingGuicePluginModule useActionsHandler(ActionsHandler actionsHandler) {
     this.actionsHandler = actionsHandler;
     return this;
   }
   
-  public MockGuicePluginModule useMessenger(Messenger messenger) {
+  public MockingGuicePluginModule useMessenger(Messenger messenger) {
     this.messenger = messenger;
     return this;
   }
   
-  public MockGuicePluginModule useCodeRunner(CodeRunner codeRunner) {
+  public MockingGuicePluginModule useCodeRunner(CodeRunner codeRunner) {
     this.codeRunner = codeRunner;
     return this;
   }
   
-  public MockGuicePluginModule useModulesListener(ModulesListener modulesListener) {
+  public MockingGuicePluginModule useModulesListener(ModulesListener modulesListener) {
     this.modulesListener = modulesListener;
     return this;
   }
   
-  public MockGuicePluginModule useProgressHandler(ProgressHandler progressHandler) {
+  public MockingGuicePluginModule useProgressHandler(ProgressHandler progressHandler) {
     this.progressHandler = progressHandler;
     return this;
   }

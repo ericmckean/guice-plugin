@@ -21,7 +21,7 @@ import junit.framework.TestCase;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import com.google.inject.tools.ideplugin.test.MockCreationException;
+import com.google.inject.tools.ideplugin.test.FakeCreationException;
 import com.google.inject.tools.ideplugin.snippets.BindingCodeLocation;
 import com.google.inject.tools.ideplugin.snippets.CodeProblem;
 import com.google.inject.tools.ideplugin.snippets.CodeLocation;
@@ -89,7 +89,7 @@ public class CodeLocationsResultsTest extends TestCase {
   }
   
   private Set<? extends CodeProblem> makeProblemSet(String module) {
-    return Collections.singleton(new CodeProblem.CreationProblem(module,new MockCreationException()));
+    return Collections.singleton(new CodeProblem.CreationProblem(module,new FakeCreationException()));
   }
   
   private Results.Node expectedResultForValidLocation() {
@@ -106,7 +106,7 @@ public class CodeLocationsResultsTest extends TestCase {
     Results.Node module2 = new Node("in Broken Module Context",null);
     Results.Node problems = new Node("Problems",null);
     module2.addChild(problems);
-    problems.addChild(new ProblemNode(new CodeProblem.CreationProblem("BrokenModule", new MockCreationException())));
+    problems.addChild(new ProblemNode(new CodeProblem.CreationProblem("BrokenModule", new FakeCreationException())));
     root.addChild(module2);
     root.addChild(module);
     return root;
