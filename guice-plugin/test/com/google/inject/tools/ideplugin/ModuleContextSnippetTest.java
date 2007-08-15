@@ -81,8 +81,6 @@ public class ModuleContextSnippetTest extends TestCase {
     Object obj = runASnippet(args);
     assertTrue(obj instanceof ModuleContextSnippet.ModuleContextResult);
     ModuleContextSnippet.ModuleContextResult result = (ModuleContextSnippet.ModuleContextResult)obj;
-    System.out.println(result.getBindings());
-    System.out.println(result.getProblems().iterator().next());
     assertTrue(result.getProblems().isEmpty());
     assertNotNull(result.getBindings());
     BindingCodeLocation location = result.getBindings().get(MockInjectedInterface.class.getCanonicalName());
@@ -92,7 +90,7 @@ public class ModuleContextSnippetTest extends TestCase {
     assertTrue(location.location() == WorkingModuleBindLocation);
   }
   
-  private static final int WorkingModuleBindLocation = 36;
+  private static final int WorkingModuleBindLocation = 35;
   
   /**
    * Test that constructing a broken module context causes a {@link com.google.inject.tools.ideplugin.snippets.CodeProblem.CreationProblem}.
