@@ -23,8 +23,8 @@ import com.google.inject.Injector;
 import com.google.inject.tools.ideplugin.results.CodeLocationsResults;
 import com.google.inject.tools.ideplugin.results.ResultsHandler;
 import com.google.inject.tools.ideplugin.results.ResultsView;
-import com.google.inject.tools.ideplugin.test.MockCodeLocationsResults;
-import com.google.inject.tools.ideplugin.test.MockGuicePluginModule;
+import com.google.inject.tools.ideplugin.test.FakeCodeLocationsResults;
+import com.google.inject.tools.ideplugin.test.MockingGuicePluginModule;
 
 /**
  * Unit test the ResultsHander implementation.
@@ -37,11 +37,11 @@ public class ResultsHandlerTest extends TestCase {
    */
   public void testDisplayLocationsResults() {
     Injector injector = Guice.createInjector(
-        new MockGuicePluginModule().useRealResultsHandler()
+        new MockingGuicePluginModule().useRealResultsHandler()
         .useResultsView(EasyMock.createMock(ResultsView.class)));
     ResultsHandler resultsHandler = injector.getInstance(ResultsHandler.class);
     ResultsView resultsView = injector.getInstance(ResultsView.class);
-    CodeLocationsResults results = new MockCodeLocationsResults();
+    CodeLocationsResults results = new FakeCodeLocationsResults();
     resultsView.displayResults(results);
     EasyMock.replay(resultsView);
     resultsHandler.displayLocationsResults(results);

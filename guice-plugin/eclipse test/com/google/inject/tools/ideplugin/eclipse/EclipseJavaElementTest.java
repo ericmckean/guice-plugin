@@ -35,12 +35,12 @@ public class EclipseJavaElementTest extends TestCase {
   
   private void setUpVariable() {
     ILocalVariable variable = EasyMock.createMock(ILocalVariable.class);
-    EasyMock.expect(variable.getTypeSignature()).andReturn("Lcom.google.inject.tools.ideplugin.test.eclipse.TestVariableClass;").anyTimes();
+    EasyMock.expect(variable.getTypeSignature()).andReturn("Lcom.google.inject.tools.ideplugin.sample.eclipse.TestVariableClass;").anyTimes();
     EasyMock.expect(variable.getElementName()).andReturn("TestVariable").anyTimes();
     EasyMock.expect(variable.getJavaProject()).andReturn((IJavaProject)null).anyTimes();
     EasyMock.replay(variable);
     IType type = EasyMock.createMock(IType.class);
-    EasyMock.expect(type.getFullyQualifiedName()).andReturn("com.google.inject.tools.ideplugin.test.eclipse.TestVariableClass");
+    EasyMock.expect(type.getFullyQualifiedName()).andReturn("com.google.inject.tools.ideplugin.sample.eclipse.TestVariableClass");
     EasyMock.replay(type);
     ICompilationUnit cu = EasyMock.createMock(ICompilationUnit.class);
     EasyMock.expect(cu.getType((String)EasyMock.anyObject())).andReturn(type);
@@ -54,7 +54,7 @@ public class EclipseJavaElementTest extends TestCase {
   public void testElementFields() {
     setUpVariable();
     System.out.println(element.getClassName());
-    assertTrue(element.getClassName().equals("com.google.inject.tools.ideplugin.test.eclipse.TestVariableClass"));
+    assertTrue(element.getClassName().equals("com.google.inject.tools.ideplugin.sample.eclipse.TestVariableClass"));
     assertTrue(element.getName().equals("TestVariable"));
     assertTrue(element.getType().equals(JavaElement.Type.FIELD));
   }

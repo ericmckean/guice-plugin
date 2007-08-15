@@ -78,7 +78,7 @@ public final class BindingsEngine {
         //TODO: if element.isInjectionPoint() ...
         if ((moduleManager.getModuleContexts() != null) && (moduleManager.getModuleContexts().size() > 0)) {
           for (ModuleContextRepresentation moduleContext : moduleManager.getModuleContexts()) {
-            BindingLocater locater = new BindingLocater(theClass,moduleContext);
+            BindingLocator locater = new BindingLocator(theClass,moduleContext);
             if (locater.getCodeLocation()!=null) {
               problemsHandler.foundProblems(locater.getCodeLocation().getProblems());
               results.put(locater.getModuleContext().getName(), locater.getCodeLocation());

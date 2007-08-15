@@ -14,13 +14,20 @@
  * limitations under the License.
  */
 
-package com.google.inject.tools.ideplugin.test.eclipse;
+package com.google.inject.tools.ideplugin.test;
+
+import com.google.inject.tools.ideplugin.results.CodeLocationsResults;
 
 /**
- * Testing only class for verifying that {@link com.google.inject.tools.ideplugin.eclipse.EclipseJavaElement} functions correctly.
+ * Mock of the {@link CodeLocationsResults} object.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public class TestVariableClass {
-  
+public class FakeCodeLocationsResults extends CodeLocationsResults {
+  /**
+   * Create the Mock object.
+   */
+  public FakeCodeLocationsResults() {
+    super("Mock Results",null);
+  }
 }

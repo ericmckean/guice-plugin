@@ -100,6 +100,7 @@ public class CodeLocationsResults extends Results {
    * Create a new CodeLocationsResults object with the given title.
    * 
    * @param title the display title
+   * @param tooltip the text (if any) to display when the mouse is over the title during display
    */
   public CodeLocationsResults(String title, String tooltip) {
     super(title, tooltip);

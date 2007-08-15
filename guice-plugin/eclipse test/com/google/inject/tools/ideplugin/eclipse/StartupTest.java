@@ -29,7 +29,7 @@ import com.google.inject.tools.ideplugin.GuicePluginModule;
 import com.google.inject.tools.ideplugin.ProgressHandler;
 import com.google.inject.tools.ideplugin.problem.ProblemsHandler;
 import com.google.inject.tools.ideplugin.ActionsHandler;
-import com.google.inject.tools.ideplugin.test.MockJavaElement;
+import com.google.inject.tools.ideplugin.test.FakeJavaElement;
 import com.google.inject.tools.ideplugin.JavaElement;
 
 /** 
@@ -73,6 +73,6 @@ public class StartupTest extends TestCase {
     EclipsePluginModule module = new EclipsePluginModule();
     module.setModuleSelectionView(new EclipseGuicePlugin.ModuleSelectionViewImpl());
     module.setResultsView(new EclipseGuicePlugin.ResultsViewImpl());
-    new EclipseGuicePlugin(module).getBindingsEngine(new MockJavaElement(JavaElement.Type.FIELD));
+    new EclipseGuicePlugin(module).getBindingsEngine(new FakeJavaElement(JavaElement.Type.FIELD));
   }
 }

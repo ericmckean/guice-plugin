@@ -16,7 +16,7 @@
 
 package com.google.inject.tools.ideplugin.code;
 
-import com.google.inject.tools.ideplugin.module.ModuleInstanceRepresentation;
+import com.google.inject.tools.ideplugin.module.ModuleContextRepresentation.ModuleInstanceRepresentation;
 import com.google.inject.tools.ideplugin.module.ModuleContextRepresentation;
 import java.util.List;
 import java.util.ArrayList;

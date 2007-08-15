@@ -24,7 +24,7 @@ import com.google.inject.tools.ideplugin.JavaProject;
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public class MockJavaElement implements JavaElement {
+public class FakeJavaElement implements JavaElement {
   private Type type;
   private String name;
   private String className;
@@ -34,7 +34,7 @@ public class MockJavaElement implements JavaElement {
    *
    * @param type the type
    */
-  public MockJavaElement(Type type) {
+  public FakeJavaElement(Type type) {
     this.type = type;
     switch (type) {
       case PARAMETER:

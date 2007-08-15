@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package com.google.inject.tools.ideplugin.test;
+package com.google.inject.tools.ideplugin.sample;
 
-import com.google.inject.Inject;
 
 /**
- * Implementation of our testing interface.
- * 
+ * Mock interface for use with our testing modules such as {@link BrokenModule} and {@link WorkingModule}.
+ *  
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public class MockInjectedInterfaceImpl implements MockInjectedInterface {
-  @Inject
-  public MockInjectedInterfaceImpl() {}
+public interface MockInjectedInterface2 {
+  
 }

@@ -16,14 +16,26 @@
 
 package com.google.inject.tools.ideplugin.test;
 
-import com.google.inject.Inject;
+import com.google.inject.tools.ideplugin.GuicePlugin;
+import com.google.inject.tools.ideplugin.results.ResultsView;
+import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
+import org.easymock.EasyMock;
 
 /**
- * Implementation of our testing interface.
+ * Mock the {@link GuicePlugin} object.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public class MockInjectedInterface2Impl implements MockInjectedInterface2 {
-  @Inject
-  public MockInjectedInterface2Impl() {}
+public class FakeGuicePlugin extends GuicePlugin {
+  public FakeGuicePlugin() {
+    super(new MockingGuicePluginModule());
+  }
+  
+  public ResultsView getResultsView() {
+    return EasyMock.createMock(ResultsView.class);
+  }
+  
+  public ModuleSelectionView getModuleSelectionView() {
+    return EasyMock.createMock(ModuleSelectionView.class);
+  }
 }

@@ -25,12 +25,12 @@ import com.google.inject.tools.ideplugin.snippets.BindingCodeLocation;
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public class BindingLocater {
+public class BindingLocator {
   private final String theClass;
   private final ModuleContextRepresentation moduleContext;
   private final BindingCodeLocation location;
   
-  public BindingLocater(String theClass,ModuleContextRepresentation moduleContext) {
+  public BindingLocator(String theClass,ModuleContextRepresentation moduleContext) {
     this.theClass = theClass;
     this.moduleContext = moduleContext;
     this.location = moduleContext.findLocation(theClass);

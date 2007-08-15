@@ -24,6 +24,7 @@ import junit.framework.TestCase;
 import com.google.inject.tools.ideplugin.code.CodeRunner;
 import com.google.inject.tools.ideplugin.module.ModuleRepresentation;
 import com.google.inject.tools.ideplugin.module.ModuleRepresentationImpl;
+import com.google.inject.tools.ideplugin.sample.WorkingModule;
 import com.google.inject.tools.ideplugin.snippets.CodeProblem;
 import com.google.inject.tools.ideplugin.snippets.CodeSnippetResult;
 import com.google.inject.tools.ideplugin.snippets.ModuleSnippet;
@@ -36,14 +37,14 @@ import com.google.inject.tools.ideplugin.snippets.ModuleSnippet.DefaultConstruct
  */
 public class ModuleRepresentationTest extends TestCase {
   public void testModuleRepresentation() throws Exception {
-    ModuleRepresentation module = new ModuleRepresentationImpl("com.google.inject.tools.ideplugin.test.WorkingModule");
+    ModuleRepresentation module = new ModuleRepresentationImpl(WorkingModule.class.getCanonicalName());
     CodeRunner codeRunner = new SimulatedCodeRunner();
     module.clean(codeRunner);
     codeRunner.run("",true);
     codeRunner.waitFor();
     assertFalse(module.isDirty());
     assertTrue(module.hasDefaultConstructor());
-    assertTrue(module.getName().equals("com.google.inject.tools.ideplugin.test.WorkingModule"));
+    assertTrue(module.getName().equals(WorkingModule.class.getCanonicalName()));
     assertTrue(module.getConstructors().equals(Collections.singleton(new DefaultConstructorRepresentation())));
   }
   
@@ -88,8 +89,12 @@ public class ModuleRepresentationTest extends TestCase {
       notifyResult(null,simulatedSnippetResult());
     }
     
+    public void run(String label) {
+      run(label, true);
+    }
+    
     private ModuleSnippet.ModuleResult simulatedSnippetResult() {
-      return new ModuleSnippet.ModuleResult("com.google.inject.tools.ideplugin.test.WorkingModule",
+      return new ModuleSnippet.ModuleResult(WorkingModule.class.getCanonicalName(),
           new HashSet<CodeProblem>(), true, Collections.singleton(new DefaultConstructorRepresentation()));
     }
   }

@@ -203,6 +203,13 @@ public interface CodeRunner {
   public void run(String label, boolean backgroundAutomatically);
   
   /**
+   * Run the queued Runnables.
+   * 
+   * @param label the display label for this code run
+   */
+  public void run(String label);
+  
+  /**
    * Notify the runner that a result from a run is ready.
    * 
    * @param runnable the runnable that gave the result

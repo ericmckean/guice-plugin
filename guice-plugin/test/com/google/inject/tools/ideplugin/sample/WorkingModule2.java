@@ -14,33 +14,23 @@
  * limitations under the License.
  */
 
-package com.google.inject.tools.ideplugin.test;
+package com.google.inject.tools.ideplugin.sample;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.google.inject.tools.ideplugin.ProgressHandler;
+import com.google.inject.AbstractModule;
 
 /**
- * Mock the {@link ProgressHandler} object.
+ * Testing {@link com.google.inject.Module} that works correctly, binding {@link MockInjectedInterface2} to 
+ * {@link MockInjectedInterface2Impl}.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public class MockProgressHandler implements ProgressHandler {
-  private final List<ProgressStep> steps = new ArrayList<ProgressStep>();
-  
-  public void go(String label, boolean backgroundAutomatically) {
-    for (ProgressStep step : steps) {
-      step.run();
-    }
-  }
-
-  public boolean isCancelled() {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-  public void step(ProgressStep step) {
-    steps.add(step);
+public class WorkingModule2 extends AbstractModule {
+  /*
+   * (non-Javadoc)
+   * @see com.google.inject.AbstractModule#configure()
+   */
+  @Override
+  protected void configure() {
+    bind(MockInjectedInterface2.class).to(MockInjectedInterface2Impl.class);
   }
 }
