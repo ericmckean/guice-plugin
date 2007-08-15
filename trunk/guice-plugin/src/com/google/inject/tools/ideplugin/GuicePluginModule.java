@@ -78,10 +78,13 @@ public abstract class GuicePluginModule extends AbstractModule {
   }
   
   protected static class CodeRunnerFactoryImpl implements CodeRunnerFactory {
+    private final Provider<ProgressHandler> progressHandlerProvider;
     @Inject
-    public CodeRunnerFactoryImpl() {}
+    public CodeRunnerFactoryImpl(Provider<ProgressHandler> progressHandlerProvider) {
+      this.progressHandlerProvider = progressHandlerProvider;
+    }
     public CodeRunner create(JavaProject project) {
-      return new CodeRunnerImpl(project);
+      return new CodeRunnerImpl(project, progressHandlerProvider.get());
     }
   }
   

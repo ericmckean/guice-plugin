@@ -18,6 +18,7 @@ package com.google.inject.tools.ideplugin.eclipse;
 
 import com.google.inject.Singleton;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import com.google.inject.tools.ideplugin.Messenger;
 
@@ -30,9 +31,15 @@ import com.google.inject.tools.ideplugin.Messenger;
 public class EclipseMessenger implements Messenger {
   private Shell shell;
   
-  private void showMessage(String message) {
-    if (shell == null || shell.isDisposed()) shell = new Shell();
-    MessageDialog.openInformation(shell, "Guice", message);
+  private class MessageDisplayer implements Runnable {
+    private final String message;
+    public MessageDisplayer(String message) {
+      this.message = message;
+    }
+    public void run() {
+      if (shell == null || shell.isDisposed()) shell = new Shell();
+      MessageDialog.openInformation(shell, "Guice", message);
+    }
   }
   
   /**
@@ -40,7 +47,11 @@ public class EclipseMessenger implements Messenger {
    * @see com.google.inject.tools.ideplugin.Messenger#display(java.lang.String)
    */
   public void display(String message) {
-    showMessage(message);
+    try {
+      Display.getDefault().syncExec(new MessageDisplayer(message));
+    } catch (java.lang.UnsatisfiedLinkError error) {
+      //means we are running in testing mode
+    }
   }
   
   /**

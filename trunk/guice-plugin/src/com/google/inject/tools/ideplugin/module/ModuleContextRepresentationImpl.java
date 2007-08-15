@@ -81,7 +81,6 @@ public class ModuleContextRepresentationImpl implements ModuleContextRepresentat
     codeRunner.addListener(this);
     RunModuleContextSnippet runnable = new RunModuleContextSnippet(codeRunner,this);
     codeRunner.queue(runnable);
-    codeRunner.run();
     return runnable;
   }
   

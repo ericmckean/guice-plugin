@@ -19,10 +19,9 @@ package com.google.inject.tools.ideplugin.module;
 import com.google.inject.tools.ideplugin.code.CodeRunner;
 import com.google.inject.tools.ideplugin.module.ModulesListener;
 import com.google.inject.tools.ideplugin.problem.ProblemsHandler;
+import com.google.inject.tools.ideplugin.snippets.CodeSnippetResult;
 import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.ideplugin.GuicePluginModule.CodeRunnerFactory;
-import com.google.inject.tools.ideplugin.ProgressHandler;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.google.inject.Inject;
 import java.util.Set;
@@ -35,11 +34,10 @@ import java.util.HashMap;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 @Singleton
-public class ModuleManagerImpl implements ModuleManager {
+public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListener {
   private final ModulesListener modulesListener;
   private final ProblemsHandler problemsHandler;
   private final CodeRunnerFactory codeRunnerFactory;
-  private final Provider<ProgressHandler> progressHandlerProvider;
   private final HashMap<JavaProject,HashSet<ModuleRepresentation>> projectModules;
   private final HashMap<JavaProject,HashSet<ModuleContextRepresentation>> projectModuleContexts;
   private HashSet<ModuleRepresentation> modules;
@@ -52,12 +50,10 @@ public class ModuleManagerImpl implements ModuleManager {
   @Inject
   public ModuleManagerImpl(ModulesListener modulesListener,
       ProblemsHandler problemsHandler,
-      CodeRunnerFactory codeRunnerFactory, 
-      Provider<ProgressHandler> progressHandlerProvider) {
+      CodeRunnerFactory codeRunnerFactory) {
     this.modulesListener = modulesListener;
     this.problemsHandler = problemsHandler;
     this.codeRunnerFactory = codeRunnerFactory;
-    this.progressHandlerProvider = progressHandlerProvider;
     projectModules = new HashMap<JavaProject,HashSet<ModuleRepresentation>>();
     projectModuleContexts = new HashMap<JavaProject,HashSet<ModuleContextRepresentation>>();
     modules = null;
@@ -75,7 +71,8 @@ public class ModuleManagerImpl implements ModuleManager {
         initModule(moduleName);
       }
     }
-    cleanModules();
+    //TODO: don't wait here... (the true) but go on to make contexts elsewhere
+    cleanModules(true);
   }
   
   private void initModule(String moduleName) {
@@ -268,7 +265,7 @@ public class ModuleManagerImpl implements ModuleManager {
    * (non-Javadoc)
    * @see com.google.inject.tools.ideplugin.module.ModuleManager#updateModules(com.google.inject.tools.ideplugin.JavaProject)
    */
-  public synchronized boolean updateModules(JavaProject javaProject) {
+  public synchronized boolean updateModules(JavaProject javaProject, boolean waitFor) {
     if (currentProject != javaProject) {
       currentProject = javaProject;
       if (projectModules.get(currentProject) == null) {
@@ -287,7 +284,7 @@ public class ModuleManagerImpl implements ModuleManager {
       modulesListener.findChanges();
     }
     if (currentProject != null) {
-      return cleanModuleContexts();
+      return cleanModuleContexts(waitFor);
     } else {
       return true;
     }
@@ -296,42 +293,42 @@ public class ModuleManagerImpl implements ModuleManager {
   /*
    * Tells the contexts to run themselves anew.  Uses the progress handler.
    */
-  protected synchronized boolean cleanModuleContexts() {
-    ProgressHandler progressHandler = progressHandlerProvider.get();
-    int numDirty = 0;
-    for (ModuleContextRepresentation moduleContext : moduleContexts) {
-      if (moduleContext.isDirty()) numDirty++;
-    }
-    progressHandler.initialize(numDirty);
+  protected synchronized boolean cleanModuleContexts(boolean waitFor) {
+    CodeRunner codeRunner = codeRunnerFactory.create(currentProject);
     for (ModuleContextRepresentation moduleContext : moduleContexts) {
       if (moduleContext.isDirty()) {
-        CodeRunner codeRunner = codeRunnerFactory.create(currentProject);
-        progressHandler.step(
-            "Running module context '" + moduleContext.getName() + "'",
-            moduleContext.clean(codeRunner));
-        problemsHandler.foundProblems(moduleContext.getProblems());
-        if (progressHandler.isCancelled()) {
-          System.out.println("wtf");
-          return false;
-        }
+        moduleContext.clean(codeRunner);
+      }
+    }
+    codeRunner.addListener(this);
+    codeRunner.run("Running module contexts", false);
+    if (waitFor) {
+      try {
+        codeRunner.waitFor();
+        return !codeRunner.isCancelled();
+      } catch (InterruptedException exception) {
+        //TODO: what to do here?
       }
     }
     return true;
   }
   
-  protected synchronized boolean cleanModules() {
-    ProgressHandler progressHandler = progressHandlerProvider.get();
-    int numDirty = 0;
-    for (ModuleRepresentation module : modules) {
-      if (module.isDirty()) numDirty++;
-    }
-    progressHandler.initialize(numDirty);
+  protected synchronized boolean cleanModules(boolean waitFor) {
+    CodeRunner codeRunner = codeRunnerFactory.create(currentProject);
     for (ModuleRepresentation module : modules) {
       if (module.isDirty()) {
-        CodeRunner codeRunner = codeRunnerFactory.create(currentProject);
-        progressHandler.step("Running module '" + module.getName() + "'",
-            module.clean(codeRunner));
-        if (progressHandler.isCancelled()) return false;
+        module.clean(codeRunner);
+      }
+    }
+    codeRunner.addListener(this);
+    //TODO: change to true here
+    codeRunner.run("Running modules", false);
+    if (waitFor) {
+      try {
+        codeRunner.waitFor();
+        return !codeRunner.isCancelled();
+      } catch (InterruptedException exception) {
+        //TODO: what to do here?
       }
     }
     return true;
@@ -343,5 +340,29 @@ public class ModuleManagerImpl implements ModuleManager {
    */
   public JavaProject getCurrentProject() {
     return currentProject;
+  }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.code.CodeRunner.CodeRunListener#acceptCodeRunResult(com.google.inject.tools.ideplugin.snippets.CodeSnippetResult)
+   */
+  public void acceptCodeRunResult(CodeSnippetResult result) {
+    problemsHandler.foundProblems(result.getProblems());
+  }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.code.CodeRunner.CodeRunListener#acceptUserCancelled()
+   */
+  public void acceptUserCancelled() {
+    //do nothing
+  }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.code.CodeRunner.CodeRunListener#acceptDone()
+   */
+  public void acceptDone() {
+    //do nothing
   }
 }

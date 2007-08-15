@@ -35,11 +35,13 @@ import com.google.inject.tools.ideplugin.snippets.ModuleContextSnippet;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class ModuleContextRepresentationTest extends TestCase {
-  public void testModuleContextRepresentation() {
+  public void testModuleContextRepresentation() throws Exception {
     ModuleContextRepresentation moduleContext = 
       new ModuleContextRepresentationImpl("Working Module Context");
     CodeRunner codeRunner = new SimulatedCodeRunner();
     moduleContext.clean(codeRunner);
+    codeRunner.run("", true);
+    codeRunner.waitFor();
     assertFalse(moduleContext.isDirty());
     assertTrue(moduleContext.getName().equals("Working Module Context"));
     assertTrue(moduleContext
@@ -51,6 +53,18 @@ public class ModuleContextRepresentationTest extends TestCase {
     private CodeRunListener listener;
     public void addListener(CodeRunListener listener) {
       this.listener = listener;
+    }
+    
+    public boolean isCancelled() {
+      return false;
+    }
+    
+    public boolean isDone() {
+      return true;
+    }
+    
+    public boolean isDone(Runnable runnable) {
+      return true;
     }
     
     public void kill() {
@@ -72,7 +86,7 @@ public class ModuleContextRepresentationTest extends TestCase {
     public void queue(Runnable runnable) {
     }
     
-    public void run() {
+    public void run(String label, boolean backgroundAutomatically) {
       notifyResult(null,simulatedSnippetResult());
     }
     

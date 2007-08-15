@@ -25,6 +25,7 @@ import junit.framework.TestCase;
 import com.google.inject.tools.ideplugin.code.CodeRunner;
 import com.google.inject.tools.ideplugin.code.CodeRunnerImpl;
 import com.google.inject.tools.ideplugin.snippets.CodeSnippetResult;
+import com.google.inject.tools.ideplugin.test.MockProgressHandler;
 import com.google.inject.tools.ideplugin.test.TestSnippet;
 
 /**
@@ -40,35 +41,36 @@ public class CodeRunnerTest extends TestCase implements CodeRunner.CodeRunListen
   private boolean hitResult = true;
   
   public void testCodeRunnerSimple() throws Exception {
-    CodeRunner runner = new CodeRunnerImpl(new MockJavaProject());
+    ProgressHandler progressHandler = new MockProgressHandler();
+    CodeRunner runner = new CodeRunnerImpl(new MockJavaProject(), progressHandler);
     runner.addListener(this);
     CodeRunner.Runnable runnable = new TestRunnable(runner);
     runner.queue(runnable);
-    runner.run();
-    runner.waitFor(runnable);
+    runner.run("", false);
+    runner.waitFor();
     assertTrue(hitResult);
     assertTrue(hitDone);
   }
   
   public void testCodeRunnerLongProcess() throws Exception {
-    CodeRunner runner = new CodeRunnerImpl(new MockJavaProject());
+    CodeRunner runner = new CodeRunnerImpl(new MockJavaProject(), new MockProgressHandler());
     runner.addListener(this);
     CodeRunner.Runnable runnable = new TestRunnable(runner,5);
     runner.queue(runnable);
-    runner.run();
-    runner.waitFor(runnable);
+    runner.run("", false);
+    runner.waitFor();
     assertTrue(hitResult);
     assertTrue(hitDone);
   }
   
   public void testCodeRunnerMultiple() throws Exception {
-    CodeRunner runner = new CodeRunnerImpl(new MockJavaProject());
+    CodeRunner runner = new CodeRunnerImpl(new MockJavaProject(), new MockProgressHandler());
     runner.addListener(this);
     CodeRunner.Runnable runnable1 = new TestRunnable(runner,2);
     CodeRunner.Runnable runnable2 = new TestRunnable(runner,4);
     runner.queue(runnable1);
     runner.queue(runnable2);
-    runner.run();
+    runner.run("", false);
     runner.waitFor();
     assertTrue(hitResult);
     assertTrue(hitDone);
@@ -104,6 +106,10 @@ public class CodeRunnerTest extends TestCase implements CodeRunner.CodeRunListen
   
   public static class TestRunnable extends CodeRunner.Runnable {
     private final int secsToTake;
+    @Override
+    public String label() {
+      return "TestRunnable";
+    }
     @Override
     protected List<? extends Object> getSnippetArguments() {
       List<String> args = new ArrayList<String>();

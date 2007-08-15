@@ -35,6 +35,11 @@ public class RunModuleSnippet extends CodeRunner.Runnable {
   }
   
   @Override
+  public String label() {
+    return "Running module " + module.getName();
+  }
+  
+  @Override
   protected String getFullyQualifiedSnippetClass() {
     return "com.google.inject.tools.ideplugin.snippets.ModuleSnippet";
   }

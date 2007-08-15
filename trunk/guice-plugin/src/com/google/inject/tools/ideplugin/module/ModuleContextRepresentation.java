@@ -92,6 +92,7 @@ public interface ModuleContextRepresentation {
   
   /**
    * Clean the context by rerunning it in userspace.
+   * NOTE: The runnable returned will not actually be run until the client calls .run() on it.
    * 
    * @param codeRunner the {@link CodeRunner} to run the module context with
    */

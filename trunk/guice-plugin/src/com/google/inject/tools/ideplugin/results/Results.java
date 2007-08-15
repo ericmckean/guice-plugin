@@ -103,7 +103,6 @@ public class Results {
         final StringBuilder string = new StringBuilder();
         for (ActionStringElement element : elements) {
           string.append(element.label());
-          string.append(" ");
         }
         return string.toString();
       }

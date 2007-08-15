@@ -16,8 +16,6 @@
 
 package com.google.inject.tools.ideplugin;
 
-import com.google.inject.tools.ideplugin.code.CodeRunner;
-
 /**
  * The ProgressHandler is responsible for displaying a progress bar or other indicator to
  * the user during long operations.  It should allow the user to cancel the operation.
@@ -25,12 +23,13 @@ import com.google.inject.tools.ideplugin.code.CodeRunner;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public interface ProgressHandler {
-  /**
-   * Begin displaying the progress meter for the given number of steps.
-   * 
-   * @param numSteps the number of steps this meter will have
-   */
-  public void initialize(int numSteps);
+  public interface ProgressStep {
+    public String label();
+    public void run();
+    public void cancel();
+    public void complete();
+    public boolean isDone();
+  }
   
   /**
    * Start the next step of the ProgressHandler.
@@ -39,10 +38,18 @@ public interface ProgressHandler {
    * @param label the label to display for this step
    * @param codeRunner the CodeRunner to kill on cancel
    */
-  public void step(String label,CodeRunner.Runnable runnable);
+  public void step(ProgressStep step);
   
   /**
    * Return true if the user cancelled the operation.
    */
   public boolean isCancelled();
+  
+  /**
+   * Actually execute the steps.
+   * 
+   * @param label the display label for the handler initially
+   * @param backgroundAutomatically true if the progress should be backgrounded initially
+   */
+  public void go(String label, boolean backgroundAutomatically);
 }

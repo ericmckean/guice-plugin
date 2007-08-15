@@ -97,7 +97,6 @@ public class ModuleRepresentationImpl implements ModuleRepresentation, CodeRunne
     codeRunner.addListener(this);
     RunModuleSnippet runnable = new RunModuleSnippet(codeRunner,this);
     codeRunner.queue(runnable);
-    codeRunner.run();
     return runnable;
   }
   

@@ -14,22 +14,33 @@
  * limitations under the License.
  */
 
-package com.google.inject.tools.ideplugin.results;
+package com.google.inject.tools.ideplugin.test;
 
-/** 
- * Interface to be implemented by IDE specific objects that display results from CodeSnippets
- * and display error messages to the user.
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.inject.tools.ideplugin.ProgressHandler;
+
+/**
+ * Mock the {@link ProgressHandler} object.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public interface ResultsView {
-  /**
-   * Display the {@link Results}.
-   * 
-   * Note: this may be called from any thread, it is up to the implementation to
-   * ensure a UI thread executes any UI code.
-   * 
-   * @param results the results
-   */
-  public void displayResults(Results results);
+public class MockProgressHandler implements ProgressHandler {
+  private final List<ProgressStep> steps = new ArrayList<ProgressStep>();
+  
+  public void go(String label, boolean backgroundAutomatically) {
+    for (ProgressStep step : steps) {
+      step.run();
+    }
+  }
+
+  public boolean isCancelled() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  public void step(ProgressStep step) {
+    steps.add(step);
+  }
 }
