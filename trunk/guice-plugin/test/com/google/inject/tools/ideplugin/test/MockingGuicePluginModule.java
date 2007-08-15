@@ -24,6 +24,7 @@ import org.easymock.EasyMock;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.binder.AnnotatedBindingBuilder;
 import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.ideplugin.Messenger;
 import com.google.inject.tools.ideplugin.ActionsHandler;
@@ -145,9 +146,9 @@ public class MockingGuicePluginModule extends GuicePluginModule {
   }
   
   @Override
-  protected void bindBindingsEngine() {
-    if (useRealBindingsEngine) super.bindBindingsEngine();
-    else bindToMockInstance(BindingsEngineFactory.class);
+  protected void bindBindingsEngine(AnnotatedBindingBuilder<BindingsEngineFactory> builder) {
+    if (useRealBindingsEngine) super.bindBindingsEngine(builder);
+    else bindToMockInstance(builder, BindingsEngineFactory.class);
   }
   
   /**
@@ -155,10 +156,10 @@ public class MockingGuicePluginModule extends GuicePluginModule {
    * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindModuleManager()
    */
   @Override
-  protected void bindModuleManager() {
-    if (moduleManager!=null) bindToInstance(ModuleManager.class,moduleManager);
-    else if (useRealModuleManager) super.bindModuleManager();
-    else bindToMockInstance(ModuleManager.class);
+  protected void bindModuleManager(AnnotatedBindingBuilder<ModuleManager> builder) {
+    if (moduleManager!=null) bindToInstance(builder, moduleManager);
+    else if (useRealModuleManager) super.bindModuleManager(builder);
+    else bindToMockInstance(builder, ModuleManager.class);
   }
   
   /**
@@ -166,17 +167,17 @@ public class MockingGuicePluginModule extends GuicePluginModule {
    * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindResultsHandler()
    */
   @Override
-  protected void bindResultsHandler() {
-    if (resultsHandler!=null) bindToInstance(ResultsHandler.class,resultsHandler);
-    else if (useRealResultsHandler) super.bindResultsHandler();
-    else bindToMockInstance(ResultsHandler.class);
+  protected void bindResultsHandler(AnnotatedBindingBuilder<ResultsHandler> builder) {
+    if (resultsHandler!=null) bindToInstance(builder, resultsHandler);
+    else if (useRealResultsHandler) super.bindResultsHandler(builder);
+    else bindToMockInstance(builder, ResultsHandler.class);
   }
   
   @Override
-  protected void bindProblemsHandler() {
-    if (problemsHandler!=null) bindToInstance(ProblemsHandler.class,problemsHandler);
-    else if (useRealProblemsHandler) super.bindProblemsHandler();
-    else bindToMockInstance(ProblemsHandler.class);
+  protected void bindProblemsHandler(AnnotatedBindingBuilder<ProblemsHandler> builder) {
+    if (problemsHandler!=null) bindToInstance(builder, problemsHandler);
+    else if (useRealProblemsHandler) super.bindProblemsHandler(builder);
+    else bindToMockInstance(builder, ProblemsHandler.class);
   }
   
   /**
@@ -184,9 +185,9 @@ public class MockingGuicePluginModule extends GuicePluginModule {
    * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindResultsView()
    */
   @Override
-  protected void bindResultsView() {
-    if (resultsView != null) bindToInstance(ResultsView.class,resultsView);
-    else bindToMockInstance(ResultsView.class);
+  protected void bindResultsView(AnnotatedBindingBuilder<ResultsView> builder) {
+    if (resultsView != null) bindToInstance(builder, resultsView);
+    else bindToMockInstance(builder, ResultsView.class);
   }
   
   /**
@@ -194,9 +195,9 @@ public class MockingGuicePluginModule extends GuicePluginModule {
    * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindModuleSelectionView()
    */
   @Override
-  protected void bindModuleSelectionView() {
-    if (moduleSelectionView != null) bindToInstance(ModuleSelectionView.class,moduleSelectionView);
-    else bindToMockInstance(ModuleSelectionView.class);
+  protected void bindModuleSelectionView(AnnotatedBindingBuilder<ModuleSelectionView> builder) {
+    if (moduleSelectionView != null) bindToInstance(builder, moduleSelectionView);
+    else bindToMockInstance(builder, ModuleSelectionView.class);
   }
   
   /**
@@ -204,9 +205,9 @@ public class MockingGuicePluginModule extends GuicePluginModule {
    * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindMessenger()
    */
   @Override
-  protected void bindMessenger() {
-    if (messenger != null) bindToInstance(Messenger.class,messenger);
-    else bindToMockInstance(Messenger.class);
+  protected void bindMessenger(AnnotatedBindingBuilder<Messenger> builder) {
+    if (messenger != null) bindToInstance(builder, messenger);
+    else bindToMockInstance(builder, Messenger.class);
   }
   
   /**
@@ -214,9 +215,9 @@ public class MockingGuicePluginModule extends GuicePluginModule {
    * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindActionsHandler()
    */
   @Override
-  protected void bindActionsHandler() {
-    if (actionsHandler != null) bindToInstance(ActionsHandler.class,actionsHandler);
-    else bindToMockInstance(ActionsHandler.class);
+  protected void bindActionsHandler(AnnotatedBindingBuilder<ActionsHandler> builder) {
+    if (actionsHandler != null) bindToInstance(builder, actionsHandler);
+    else bindToMockInstance(builder, ActionsHandler.class);
   }
   
   /**
@@ -224,21 +225,21 @@ public class MockingGuicePluginModule extends GuicePluginModule {
    * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindModulesListener()
    */
   @Override
-  protected void bindModulesListener() {
-    if (modulesListener != null) bindToInstance(ModulesListener.class,modulesListener);
-    else bindToMockInstance(ModulesListener.class);
+  protected void bindModulesListener(AnnotatedBindingBuilder<ModulesListener> builder) {
+    if (modulesListener != null) bindToInstance(builder, modulesListener);
+    else bindToMockInstance(builder, ModulesListener.class);
   }
   
   @Override
-  protected void bindCodeRunner() {
-    if (codeRunner != null) bind(CodeRunnerFactory.class).toInstance(new CodeRunnerInstanceFactory(codeRunner));
-    else bind(CodeRunnerFactory.class).to(CodeRunnerMockFactory.class);
+  protected void bindCodeRunner(AnnotatedBindingBuilder<CodeRunnerFactory> builder) {
+    if (codeRunner != null) builder.toInstance(new CodeRunnerInstanceFactory(codeRunner));
+    else builder.to(CodeRunnerMockFactory.class);
   }
   
   @Override
-  protected void bindProgressHandler() {
-    if (progressHandler != null) bindToInstance(ProgressHandler.class,progressHandler);
-    else bindToMockInstance(ProgressHandler.class);
+  protected void bindProgressHandler(AnnotatedBindingBuilder<ProgressHandler> builder) {
+    if (progressHandler != null) bindToInstance(builder, progressHandler);
+    else bindToMockInstance(builder, ProgressHandler.class);
   }
   
   public static class ProxyException extends RuntimeException {
@@ -255,13 +256,13 @@ public class MockingGuicePluginModule extends GuicePluginModule {
   }
   
   @SuppressWarnings({"unchecked"})
-  private <T> void bindToMockInstance(Class<T> theClass) {
-    bind(theClass).toProvider(new MockFactory<T>(theClass));
+  private <T> void bindToMockInstance(AnnotatedBindingBuilder<T> builder, Class<T> theClass) {
+    builder.toProvider(new MockFactory<T>(theClass));
   }
   
   @SuppressWarnings({"unchecked"})
-  private void bindToInstance(Class theClass,Object object) {
-    bind(theClass).toInstance(object);
+  private <T> void bindToInstance(AnnotatedBindingBuilder<T> builder,T instance) {
+    builder.toInstance(instance);
   }
   
   protected static class MockFactory<T> implements Provider<T> {
