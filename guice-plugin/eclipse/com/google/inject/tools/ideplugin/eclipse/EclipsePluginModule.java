@@ -16,6 +16,7 @@
 
 package com.google.inject.tools.ideplugin.eclipse;
 
+import com.google.inject.binder.AnnotatedBindingBuilder;
 import com.google.inject.tools.ideplugin.GuicePluginModule;
 import com.google.inject.tools.ideplugin.Messenger;
 import com.google.inject.tools.ideplugin.ActionsHandler;
@@ -45,8 +46,8 @@ public class EclipsePluginModule extends GuicePluginModule {
    * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindResultsView()
    */
   @Override
-  protected void bindResultsView() {
-    bind(ResultsView.class).toInstance(resultsView);
+  protected void bindResultsView(AnnotatedBindingBuilder<ResultsView> builder) {
+    builder.toInstance(resultsView);
   }
   
   /**
@@ -54,8 +55,8 @@ public class EclipsePluginModule extends GuicePluginModule {
    * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindModuleSelectionView()
    */
   @Override
-  protected void bindModuleSelectionView() {
-    bind(ModuleSelectionView.class).toInstance(moduleSelectionView);
+  protected void bindModuleSelectionView(AnnotatedBindingBuilder<ModuleSelectionView> builder) {
+    builder.toInstance(moduleSelectionView);
   }
   
   /**
@@ -63,8 +64,8 @@ public class EclipsePluginModule extends GuicePluginModule {
    * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindMessenger()
    */
   @Override
-  protected void bindMessenger() {
-    bind(Messenger.class).to(EclipseMessenger.class).asEagerSingleton();
+  protected void bindMessenger(AnnotatedBindingBuilder<Messenger> builder) {
+    builder.to(EclipseMessenger.class).asEagerSingleton();
   }
   
   /**
@@ -72,8 +73,8 @@ public class EclipsePluginModule extends GuicePluginModule {
    * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindActionsHandler()
    */
   @Override
-  protected void bindActionsHandler() {
-    bind(ActionsHandler.class).to(EclipseActionsHandler.class).asEagerSingleton();
+  protected void bindActionsHandler(AnnotatedBindingBuilder<ActionsHandler> builder) {
+    builder.to(EclipseActionsHandler.class).asEagerSingleton();
   }
   
   /**
@@ -81,13 +82,13 @@ public class EclipsePluginModule extends GuicePluginModule {
    * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindModulesListener()
    */
   @Override
-  protected void bindModulesListener() {
-    bind(ModulesListener.class).to(EclipseModulesListener.class).asEagerSingleton();
+  protected void bindModulesListener(AnnotatedBindingBuilder<ModulesListener> builder) {
+    builder.to(EclipseModulesListener.class).asEagerSingleton();
   }
   
   @Override
-  protected void bindProgressHandler() {
-    bind(ProgressHandler.class).to(EclipseProgressHandler.class);
+  protected void bindProgressHandler(AnnotatedBindingBuilder<ProgressHandler> builder) {
+    builder.to(EclipseProgressHandler.class);
   }
   
   /**
