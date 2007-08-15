@@ -237,7 +237,7 @@ public class ModuleSnippet<T extends Module> extends CodeSnippet {
   /**
    * Runs a module snippet.
    * 
-   * @param args args[0] shuld be the class of the module to run
+   * @param args args[0] should be the class of the module to run
    */
   //Expects 1 arg: the class name
   public static void main(String[] args) {

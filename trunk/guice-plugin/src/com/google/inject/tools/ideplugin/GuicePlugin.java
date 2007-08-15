@@ -20,6 +20,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.tools.ideplugin.bindings.BindingsEngine;
 import com.google.inject.tools.ideplugin.module.ModuleManager;
+import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
 import com.google.inject.tools.ideplugin.problem.ProblemsHandler;
 import com.google.inject.tools.ideplugin.results.ResultsHandler;
 
@@ -94,5 +95,12 @@ public abstract class GuicePlugin {
    */
   public ActionsHandler getActionsHandler() {
     return getInstance(ActionsHandler.class);
+  }
+  
+  /**
+   * Return the {@link ModuleSelectionView}.
+   */
+  public ModuleSelectionView getModuleSelectionView() {
+    return getInstance(ModuleSelectionView.class);
   }
 }

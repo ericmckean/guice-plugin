@@ -29,7 +29,7 @@ import com.google.inject.tools.ideplugin.GuicePluginModule;
 import com.google.inject.tools.ideplugin.ProgressHandler;
 import com.google.inject.tools.ideplugin.problem.ProblemsHandler;
 import com.google.inject.tools.ideplugin.ActionsHandler;
-import com.google.inject.tools.ideplugin.test.FakeJavaElement;
+import com.google.inject.tools.ideplugin.test.Fakes.FakeJavaElement;
 import com.google.inject.tools.ideplugin.JavaElement;
 
 /** 
@@ -53,8 +53,6 @@ public class StartupTest extends TestCase {
   public void testCreatingInjections() {
     Activator activator = new Activator();
     EclipsePluginModule module = new EclipsePluginModule();
-    module.setModuleSelectionView(new EclipseGuicePlugin.ModuleSelectionViewImpl());
-    module.setResultsView(new EclipseGuicePlugin.ResultsViewImpl());
     Injector injector = Guice.createInjector(module);
     assertNotNull(injector.getInstance(ModuleManager.class));
     assertNotNull(injector.getInstance(ModulesListener.class));
@@ -71,8 +69,6 @@ public class StartupTest extends TestCase {
   public void testCreateBindingsEngine() {
     boolean calledMessenger = false;
     EclipsePluginModule module = new EclipsePluginModule();
-    module.setModuleSelectionView(new EclipseGuicePlugin.ModuleSelectionViewImpl());
-    module.setResultsView(new EclipseGuicePlugin.ResultsViewImpl());
     new EclipseGuicePlugin(module).getBindingsEngine(new FakeJavaElement(JavaElement.Type.FIELD));
   }
 }

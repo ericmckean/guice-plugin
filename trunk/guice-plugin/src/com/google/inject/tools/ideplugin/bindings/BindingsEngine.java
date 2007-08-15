@@ -88,7 +88,6 @@ public final class BindingsEngine {
             resultsHandler.displayLocationsResults(results);
           }
         } else {
-          //TODO: messenger cant be used in this thread
           messenger.display("No module contexts configured.");
         }
       }

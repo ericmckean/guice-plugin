@@ -7,24 +7,77 @@
             id="com.google.inject.tools.ideplugin.eclipse.bindings.objectContribution"
             nameFilter="*"
             objectClass="org.eclipse.jdt.core.IJavaElement">
+         <menu label="Guice" path="additions"
+         	id="com.google.inject.tools.ideplugin.eclipse.objectmenu.guice">
+         	<separator name="actions"/>
+         	<separator name="modules"/>
+         	<separator name="options"/>
+         </menu>
          <action
                class="com.google.inject.tools.ideplugin.eclipse.BindingsObjectAction"
                enablesFor="1"
                id="com.google.inject.tools.ideplugin.eclipse.bindings.objectContributionAction"
-               label="Bindings"
-               menubarPath="additions"/>
+               label="Find Bindings"
+               menubarPath="com.google.inject.tools.ideplugin.eclipse.objectmenu.guice/actions"/>
+         <action
+         	   class="com.google.inject.tools.ideplugin.eclipse.GuicePluginConfigureAction"
+         	   enablesFor="*"
+         	   id="com.google.inject.tools.ideplugin.eclipse.guiceconfigpluginaction"
+         	   label="Configure..."
+         	   menubarPath="com.google.inject.tools.ideplugin.eclipse.objectmenu.guice/options"/>
+         <action
+         	   class="com.google.inject.tools.ideplugin.eclipse.RunModulesNowAction"
+         	   enablesFor="*"
+         	   id="com.google.inject.tools.ideplugin.eclipse.runmodulesaction"
+         	   label="Run Modules Now"
+         	   menubarPath="com.google.inject.tools.ideplugin.eclipse.objectmenu.guice/modules"/>
+         <action
+         	   class="com.google.inject.tools.ideplugin.eclipse.RunModulesAutoAction"
+         	   style="toggle"
+         	   state="false"
+         	   enablesFor="*"
+         	   id="com.google.inject.tools.ideplugin.eclipse.runmodulesautomaticallyaction"
+         	   label="Run Modules Automatically"
+         	   menubarPath="com.google.inject.tools.ideplugin.eclipse.objectmenu.guice/modules"/>
       </objectContribution>
       <viewerContribution
       		id="com.google.inject.tools.ideplugin.eclipse.bindings.viewerContribution"
       		targetID="#CompilationUnitEditorContext">
+      	 <menu label="Guice" path="additions"
+         	id="com.google.inject.tools.ideplugin.eclipse.viewermenu.guice">
+         	<separator name="actions"/>
+         	<separator name="modules"/>
+         	<separator name="options"/>
+         </menu>
       	 <action
       	 	 	class="com.google.inject.tools.ideplugin.eclipse.BindingsEditorAction"
       	 	 	id="com.google.inject.tools.ideplugin.eclipse.bindings.viewerContributionAction"
-      	 	 	label="Bindings"
-      	 	 	menubarPath="additions"/>
+      	 	 	label="Find Bindings"
+      	 	 	menubarPath="com.google.inject.tools.ideplugin.eclipse.viewermenu.guice/actions"/>
+		 <action
+         	   class="com.google.inject.tools.ideplugin.eclipse.GuicePluginConfigureAction"
+         	   enablesFor="*"
+         	   id="com.google.inject.tools.ideplugin.eclipse.guiceconfigpluginaction"
+         	   label="Configure..."
+         	   menubarPath="com.google.inject.tools.ideplugin.eclipse.viewermenu.guice/options"/>
+         <action
+         	   class="com.google.inject.tools.ideplugin.eclipse.RunModulesNowAction"
+         	   enablesFor="*"
+         	   id="com.google.inject.tools.ideplugin.eclipse.runmodulesaction"
+         	   label="Run Modules Now"
+         	   menubarPath="com.google.inject.tools.ideplugin.eclipse.viewermenu.guice/modules"/>
+         <action
+         	   class="com.google.inject.tools.ideplugin.eclipse.RunModulesAutoAction"
+         	   style="toggle"
+         	   state="false"
+         	   enablesFor="*"
+         	   id="com.google.inject.tools.ideplugin.eclipse.runmodulesautomaticallyaction"
+         	   label="Run Modules Automatically"
+         	   menubarPath="com.google.inject.tools.ideplugin.eclipse.viewermenu.guice/modules"/>
       </viewerContribution>
    </extension>
    <extension
+   		 id="com.google.inject.tools.ideplugin.viewextension"
          point="org.eclipse.ui.views">
       <category
             id="Guice_Plugin"
@@ -35,6 +88,21 @@
             class="com.google.inject.tools.ideplugin.eclipse.EclipseResultsView"
             icon="icons/sample.gif"
             id="com.google.inject.tools.ideplugin.eclipse.EclipseResultsView"
-            name="Bindings"/>
+            name="Guice Bindings"/>
+      <view
+      		allowMultiple="false"
+      		category="Guice_Plugin"
+      		class="com.google.inject.tools.ideplugin.eclipse.EclipseErrorView"
+      		icon="icons/sample.gif"
+      		id="com.google.inject.tools.ideplugin.eclipse.EclipseErrorView"
+      		name="Guice Error Log"/>
+   </extension>
+   <extension point="org.eclipse.ui.perspectiveExtensions">
+   	 <perspectiveExtension targetID="com.google.inject.tools.ideplugin.perspective">
+   	 	<viewShortcut id="com.google.inject.tools.ideplugin.viewextension"/>
+   	 	<view id="com.google.inject.tools.ideplugin.Guice"
+   	 		relative="org.eclipse.ui.TaskList"
+   	 		relationship="stack"/>
+   	 </perspectiveExtension>
    </extension>
 </plugin>

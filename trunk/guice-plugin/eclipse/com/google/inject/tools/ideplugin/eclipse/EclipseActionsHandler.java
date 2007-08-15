@@ -61,7 +61,7 @@ public class EclipseActionsHandler extends ActionsHandler {
         .getLineLength(action.location()-1);
       editor.selectAndReveal(offset, length);
     } catch (Exception exception) {
-      messenger.log("GotoCodeLocation Action Exception: " + exception.toString());
+      messenger.logException("GotoCodeLocation Action Exception", exception);
     }
   }
   
@@ -72,7 +72,7 @@ public class EclipseActionsHandler extends ActionsHandler {
       ICompilationUnit cu = type.getCompilationUnit();
       JavaUI.openInEditor(cu);
     } catch (Exception exception) {
-      messenger.log("GotoFile Action Exception: " + exception.toString());
+      messenger.logException("GotoFile Action Exception", exception);
     }
   }
 }

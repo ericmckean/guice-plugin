@@ -31,7 +31,12 @@ public interface Messenger {
   public void display(String message);
   
   /**
-   * Log a message to the console or other error output.
+   * Log a message to the guice error output view.
    */
-  public void log(String message);
+  public void logMessage(String message);
+  
+  /**
+   * Log an exception to the guice error output view.
+   */
+  public void logException(String label, Throwable throwable);
 }

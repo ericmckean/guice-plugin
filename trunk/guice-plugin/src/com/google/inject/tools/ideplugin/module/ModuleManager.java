@@ -153,4 +153,9 @@ public interface ModuleManager {
    * Return the current {@link JavaProject}.
    */
   public JavaProject getCurrentProject();
+  
+  /**
+   * Tell the module manager to run modules automatically as needed.
+   */
+  public void setRunAutomatically(boolean run);
 }

@@ -46,7 +46,7 @@ public class ProblemsHandlerImpl implements ProblemsHandler {
   
   private void foundProblem(CodeProblem problem) {
     //TODO: Phase II: what to do?  somehow do codeassist with problems
-    messenger.log("Problem found: " + problem.toString());
+    messenger.logMessage("Problem found: " + problem.toString());
   }
   
   /*

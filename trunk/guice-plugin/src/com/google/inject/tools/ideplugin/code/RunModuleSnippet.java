@@ -17,6 +17,8 @@
 package com.google.inject.tools.ideplugin.code;
 
 import com.google.inject.tools.ideplugin.module.ModuleRepresentation;
+import com.google.inject.tools.ideplugin.snippets.ModuleSnippet;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -41,7 +43,7 @@ public class RunModuleSnippet extends CodeRunner.Runnable {
   
   @Override
   protected String getFullyQualifiedSnippetClass() {
-    return "com.google.inject.tools.ideplugin.snippets.ModuleSnippet";
+    return ModuleSnippet.class.getName();
   }
   
   @Override

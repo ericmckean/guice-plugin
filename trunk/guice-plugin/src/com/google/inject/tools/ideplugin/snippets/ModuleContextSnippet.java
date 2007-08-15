@@ -217,7 +217,6 @@ public class ModuleContextSnippet extends CodeSnippet {
           }
           modules.add(new ModuleRepresentation(moduleClass,argTypes,argValues));
         } catch (Exception e) {
-          //TODO: what to do here? anything?
           i=numModules;
         }
       }

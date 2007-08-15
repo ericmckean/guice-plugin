@@ -20,6 +20,9 @@ import com.google.inject.Singleton;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.PlatformUI;
+
 import com.google.inject.tools.ideplugin.Messenger;
 
 /**
@@ -54,12 +57,25 @@ public class EclipseMessenger implements Messenger {
     }
   }
   
-  /**
-   * (non-Javadoc)
-   * @see com.google.inject.tools.ideplugin.Messenger#log(java.lang.String)
-   */
-  public void log(String message) {
-    //TODO: is this best choice?
-    System.out.println(message);
+  private void log(String message) {
+    try {
+      IViewPart viewPart = PlatformUI.getWorkbench().getWorkbenchWindows()[0].getActivePage().showView("com.google.inject.tools.ideplugin.eclipse.EclipseErrorView");
+      ((EclipseErrorView)viewPart).displayError(message);
+    } catch (Exception e) {
+      System.out.println("Problem displaying error messages..... " + e.toString());
+    }
+  }
+  
+  public void logMessage(String message) {
+    log(message);
+  }
+  
+  public void logException(String label, Throwable exception) {
+    log(label + ": " + exception.toString());
+    if (exception.getStackTrace() != null) {
+      for (StackTraceElement element : exception.getStackTrace()) {
+        log("  " + element);
+      }
+    }
   }
 }

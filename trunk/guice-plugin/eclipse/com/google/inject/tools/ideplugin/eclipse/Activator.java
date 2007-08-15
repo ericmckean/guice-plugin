@@ -44,8 +44,6 @@ public class Activator extends AbstractUIPlugin {
   public Activator() {
     plugin = this;
     EclipsePluginModule module = new EclipsePluginModule();
-    module.setModuleSelectionView(new EclipseGuicePlugin.ModuleSelectionViewImpl());
-    module.setResultsView(new EclipseGuicePlugin.ResultsViewImpl());
     guicePlugin = new EclipseGuicePlugin(module);
   }
   
@@ -55,8 +53,6 @@ public class Activator extends AbstractUIPlugin {
    */
   public Activator(EclipsePluginModule module) {
     plugin = this;
-    module.setModuleSelectionView(new EclipseGuicePlugin.ModuleSelectionViewImpl());
-    module.setResultsView(new EclipseGuicePlugin.ResultsViewImpl());
     guicePlugin = new EclipseGuicePlugin(module);
   }
   

@@ -18,6 +18,8 @@ package com.google.inject.tools.ideplugin.code;
 
 import com.google.inject.tools.ideplugin.module.ModuleContextRepresentation.ModuleInstanceRepresentation;
 import com.google.inject.tools.ideplugin.module.ModuleContextRepresentation;
+import com.google.inject.tools.ideplugin.snippets.ModuleContextSnippet;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -42,7 +44,7 @@ public class RunModuleContextSnippet extends CodeRunner.Runnable {
   
   @Override
   protected String getFullyQualifiedSnippetClass() {
-    return "com.google.inject.tools.ideplugin.snippets.ModuleContextSnippet";
+    return ModuleContextSnippet.class.getName();
   }
   
   @Override

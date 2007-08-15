@@ -95,11 +95,7 @@ public class ModuleContextRepresentationImpl implements ModuleContextRepresentat
         this.bindings = contextResult.getBindings();
         this.problems = contextResult.getProblems();
         dirty = false;
-      } else {
-        //TODO: what to do here?
       }
-    } else {
-      //TODO: what to do here?
     }
   }
   

@@ -116,11 +116,7 @@ public class ModuleRepresentationImpl implements ModuleRepresentation, CodeRunne
           }
         }
         dirty = false;
-      } else {
-        //TODO: what to do here?
       }
-    } else {
-      //TODO: what to do here?
     }
   }
   

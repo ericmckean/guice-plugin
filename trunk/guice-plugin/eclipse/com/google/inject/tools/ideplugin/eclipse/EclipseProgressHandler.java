@@ -83,7 +83,7 @@ public class EclipseProgressHandler implements ProgressHandler {
             try {
               Thread.sleep(100);
             } catch (InterruptedException exception) {
-              EclipseProgressHandler.this.messenger.log("Job interrupted " + exception.toString());
+              EclipseProgressHandler.this.messenger.logException("Job interrupted", exception);
             }
           }
           if (monitor.isCanceled()) {
@@ -100,25 +100,4 @@ public class EclipseProgressHandler implements ProgressHandler {
       else return Status.OK_STATUS;
     }
   }
-  
-  //TODO: remove this
-  //for testing...
-  /*private class LongJob extends Job {
-    public LongJob() {
-      super("Long Job");
-    }
-    @Override
-    protected IStatus run(IProgressMonitor monitor) {
-      monitor.beginTask("Long Job", 10);
-      for (int i=0; i<10; i++) {
-        try {
-          Thread.sleep(2000);
-        } catch (Exception e) {}
-        monitor.worked(1);
-      }
-      monitor.done();
-      if (monitor.isCanceled()) return Status.CANCEL_STATUS;
-      else return Status.OK_STATUS;
-    }
-  }*/
 }
