@@ -22,6 +22,8 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.util.List;
 import java.util.ArrayList;
+
+import com.google.inject.tools.ideplugin.Messenger;
 import com.google.inject.tools.ideplugin.snippets.CodeSnippetResult;
 import com.google.inject.tools.ideplugin.snippets.CodeSnippet;
 
@@ -142,10 +144,7 @@ public interface CodeRunner {
      * @param exception the exception that occurred during runtime
      */
     public void caughtException(Exception exception) {
-      System.out.println("caught exception");
-      exception.printStackTrace();
-      System.out.println(exception.toString());
-      //TODO: what to do here?
+      codeRunner.getMessenger().logException("Runnable exception", exception);
     }
     
     /**
@@ -154,14 +153,14 @@ public interface CodeRunner {
      * @param stream the data stream corresponding to stderr
      */
     public void gotErrorOutput(InputStream stream) {
-      //TODO: what to do here?
       InputStreamReader ir = new InputStreamReader(stream);
       BufferedReader r = new BufferedReader(ir);
       String line;
       try {
         while ((line = r.readLine()) != null)
-          System.out.println(line);
+          codeRunner.getMessenger().logMessage(line);
       } catch (Exception e) {
+        codeRunner.getMessenger().logException("Exception getting error output", e);
       }
     }
     
@@ -253,4 +252,9 @@ public interface CodeRunner {
    * Return true if the code run was cancelled.
    */
   public boolean isCancelled();
+  
+  /**
+   * Return the messenger to the runnable.
+   */
+  public Messenger getMessenger();
 }

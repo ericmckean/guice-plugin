@@ -16,9 +16,7 @@
 
 package com.google.inject.tools.ideplugin;
 
-import com.google.inject.tools.ideplugin.sample.MockInjectedInterface;
-import com.google.inject.tools.ideplugin.sample.ModuleWithArguments;
-import com.google.inject.tools.ideplugin.sample.WorkingModule;
+import com.google.inject.tools.ideplugin.sample.SampleModuleScenario;
 import com.google.inject.tools.ideplugin.snippets.CodeProblem;
 import com.google.inject.tools.ideplugin.snippets.ModuleSnippet;
 import junit.framework.TestCase;
@@ -33,7 +31,7 @@ public class ModuleSnippetTest extends TestCase {
    * Test that a correctly written module is represented correctly.
    */
   public void testModule() {
-    ModuleSnippet<WorkingModule> module = new ModuleSnippet<WorkingModule>(WorkingModule.class.getCanonicalName());
+    ModuleSnippet<SampleModuleScenario.WorkingModule> module = new ModuleSnippet<SampleModuleScenario.WorkingModule>(SampleModuleScenario.WorkingModule.class.getName());
     assertNotNull(module);
     assertTrue(module.getConstructors().size() > 0);
     assertTrue(module.hasDefaultConstructor());
@@ -45,7 +43,7 @@ public class ModuleSnippetTest extends TestCase {
    */
   public void testNotAModule() {
     @SuppressWarnings("unchecked")
-    ModuleSnippet module = new ModuleSnippet(MockInjectedInterface.class.getCanonicalName());
+    ModuleSnippet module = new ModuleSnippet(SampleModuleScenario.MockInjectedInterface.class.getName());
     assertFalse(module.isValid());
     assertTrue(module.getProblems().size() == 1);
     assertTrue(module.getProblems().iterator().next() instanceof CodeProblem.InvalidModuleProblem);
@@ -55,7 +53,7 @@ public class ModuleSnippetTest extends TestCase {
    * Test that creating a representation of a module with no default constructor behaves correctly.
    */
   public void testModuleWithArguments() {
-    ModuleSnippet<ModuleWithArguments> module = new ModuleSnippet<ModuleWithArguments>(ModuleWithArguments.class.getCanonicalName());
+    ModuleSnippet<SampleModuleScenario.ModuleWithArguments> module = new ModuleSnippet<SampleModuleScenario.ModuleWithArguments>(SampleModuleScenario.ModuleWithArguments.class.getName());
     assertFalse(module.hasDefaultConstructor());
     assertTrue(module.getConstructors().size() == 1);
   }

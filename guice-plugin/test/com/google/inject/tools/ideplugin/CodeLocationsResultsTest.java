@@ -21,7 +21,7 @@ import junit.framework.TestCase;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import com.google.inject.tools.ideplugin.test.FakeCreationException;
+import com.google.inject.tools.ideplugin.test.Fakes.FakeCreationException;
 import com.google.inject.tools.ideplugin.snippets.BindingCodeLocation;
 import com.google.inject.tools.ideplugin.snippets.CodeProblem;
 import com.google.inject.tools.ideplugin.snippets.CodeLocation;

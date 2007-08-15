@@ -68,9 +68,13 @@ public class BindingsEditorAction implements IEditorActionDelegate {
       if (elements.length > 0) {
         element = elements[0];
       }
-      guicePlugin.getBindingsEngine(new EclipseJavaElement(element,cu));
     } catch (JavaModelException exception) {
-      guicePlugin.getMessenger().display("Not a Java element: " + selection.toString());
+      element = null;
+    }
+    if (element != null) {
+      guicePlugin.getBindingsEngine(new EclipseJavaElement(element,cu));
+    } else {
+      guicePlugin.getMessenger().display("Selection is not a Java element: " + selection.getText());
     }
   }
   

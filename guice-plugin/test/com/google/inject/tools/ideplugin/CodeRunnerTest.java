@@ -24,7 +24,7 @@ import java.util.List;
 import junit.framework.TestCase;
 import com.google.inject.tools.ideplugin.code.CodeRunner;
 import com.google.inject.tools.ideplugin.code.CodeRunnerImpl;
-import com.google.inject.tools.ideplugin.sample.TestSnippet;
+import com.google.inject.tools.ideplugin.test.Fakes.TestSnippet;
 import com.google.inject.tools.ideplugin.snippets.CodeSnippetResult;
 
 /**
@@ -124,7 +124,7 @@ public class CodeRunnerTest extends TestCase implements CodeRunner.CodeRunListen
     }
     @Override
     public String getFullyQualifiedSnippetClass() {
-      return "com.google.inject.tools.ideplugin.sample.TestSnippet";
+      return TestSnippet.class.getName();
     }
     
     @Override

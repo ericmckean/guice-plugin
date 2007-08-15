@@ -24,7 +24,7 @@ import junit.framework.TestCase;
 import com.google.inject.tools.ideplugin.code.CodeRunner;
 import com.google.inject.tools.ideplugin.module.ModuleRepresentation;
 import com.google.inject.tools.ideplugin.module.ModuleRepresentationImpl;
-import com.google.inject.tools.ideplugin.sample.WorkingModule;
+import com.google.inject.tools.ideplugin.sample.SampleModuleScenario.WorkingModule;
 import com.google.inject.tools.ideplugin.snippets.CodeProblem;
 import com.google.inject.tools.ideplugin.snippets.CodeSnippetResult;
 import com.google.inject.tools.ideplugin.snippets.ModuleSnippet;
@@ -37,14 +37,14 @@ import com.google.inject.tools.ideplugin.snippets.ModuleSnippet.DefaultConstruct
  */
 public class ModuleRepresentationTest extends TestCase {
   public void testModuleRepresentation() throws Exception {
-    ModuleRepresentation module = new ModuleRepresentationImpl(WorkingModule.class.getCanonicalName());
+    ModuleRepresentation module = new ModuleRepresentationImpl(WorkingModule.class.getName());
     CodeRunner codeRunner = new SimulatedCodeRunner();
     module.clean(codeRunner);
     codeRunner.run("",true);
     codeRunner.waitFor();
     assertFalse(module.isDirty());
     assertTrue(module.hasDefaultConstructor());
-    assertTrue(module.getName().equals(WorkingModule.class.getCanonicalName()));
+    assertTrue(module.getName().equals(WorkingModule.class.getName()));
     assertTrue(module.getConstructors().equals(Collections.singleton(new DefaultConstructorRepresentation())));
   }
   
@@ -52,6 +52,14 @@ public class ModuleRepresentationTest extends TestCase {
     private CodeRunListener listener;
     public void addListener(CodeRunListener listener) {
       this.listener = listener;
+    }
+    
+    public Messenger getMessenger() {
+      return new Messenger() {
+        public void display(String message) {}
+        public void logException(String label, Throwable throwable) {}
+        public void logMessage(String message) {}
+      };
     }
     
     public boolean isCancelled() {
@@ -94,7 +102,7 @@ public class ModuleRepresentationTest extends TestCase {
     }
     
     private ModuleSnippet.ModuleResult simulatedSnippetResult() {
-      return new ModuleSnippet.ModuleResult(WorkingModule.class.getCanonicalName(),
+      return new ModuleSnippet.ModuleResult(WorkingModule.class.getName(),
           new HashSet<CodeProblem>(), true, Collections.singleton(new DefaultConstructorRepresentation()));
     }
   }

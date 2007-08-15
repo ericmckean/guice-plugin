@@ -91,12 +91,14 @@ public abstract class GuicePluginModule extends AbstractModule {
   
   protected static class CodeRunnerFactoryImpl implements CodeRunnerFactory {
     private final Provider<ProgressHandler> progressHandlerProvider;
+    private final Messenger messenger;
     @Inject
-    public CodeRunnerFactoryImpl(Provider<ProgressHandler> progressHandlerProvider) {
+    public CodeRunnerFactoryImpl(Provider<ProgressHandler> progressHandlerProvider, Messenger messenger) {
       this.progressHandlerProvider = progressHandlerProvider;
+      this.messenger = messenger;
     }
     public CodeRunner create(JavaProject project) {
-      return new CodeRunnerImpl(project, progressHandlerProvider.get());
+      return new CodeRunnerImpl(project, progressHandlerProvider.get(), messenger);
     }
   }
   

@@ -67,7 +67,7 @@ public abstract class CodeSnippet {
       CodeSnippetResult result = getResult();
       os.writeObject(result);
     } catch (IOException exception) {
-      //TODO: what happens here?
+      //do nothing, this will be found on the other end
     }
   }
   

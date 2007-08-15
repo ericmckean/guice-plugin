@@ -19,12 +19,12 @@ package com.google.inject.tools.ideplugin;
 import junit.framework.TestCase;
 
 import com.google.inject.tools.ideplugin.module.ModuleContextRepresentation;
-import com.google.inject.tools.ideplugin.sample.BrokenModule;
-import com.google.inject.tools.ideplugin.sample.MockInjectedInterface;
-import com.google.inject.tools.ideplugin.sample.MockInjectedInterfaceImpl;
-import com.google.inject.tools.ideplugin.sample.ModuleWithArguments;
-import com.google.inject.tools.ideplugin.sample.WorkingModule;
-import com.google.inject.tools.ideplugin.sample.WorkingModule2;
+import com.google.inject.tools.ideplugin.sample.SampleModuleScenario.BrokenModule;
+import com.google.inject.tools.ideplugin.sample.SampleModuleScenario.MockInjectedInterface;
+import com.google.inject.tools.ideplugin.sample.SampleModuleScenario.MockInjectedInterfaceImpl;
+import com.google.inject.tools.ideplugin.sample.SampleModuleScenario.ModuleWithArguments;
+import com.google.inject.tools.ideplugin.sample.SampleModuleScenario.WorkingModule;
+import com.google.inject.tools.ideplugin.sample.SampleModuleScenario.WorkingModule2;
 import com.google.inject.tools.ideplugin.snippets.BindingCodeLocation;
 import com.google.inject.tools.ideplugin.snippets.CodeProblem;
 import com.google.inject.tools.ideplugin.snippets.ModuleContextSnippet;
@@ -76,21 +76,23 @@ public class ModuleContextSnippetTest extends TestCase {
     String[] args = new String[4];
     args[0] = "Working Module Context";
     args[1] = "1"; // number of modules
-    args[2] = WorkingModule.class.getCanonicalName();
+    args[2] = WorkingModule.class.getName();
     args[3] = "0"; // number of args to WorkingModule
     Object obj = runASnippet(args);
     assertTrue(obj instanceof ModuleContextSnippet.ModuleContextResult);
     ModuleContextSnippet.ModuleContextResult result = (ModuleContextSnippet.ModuleContextResult)obj;
+    System.out.println(result.getBindings());
+    System.out.println(result.getProblems());
     assertTrue(result.getProblems().isEmpty());
     assertNotNull(result.getBindings());
-    BindingCodeLocation location = result.getBindings().get(MockInjectedInterface.class.getCanonicalName());
+    BindingCodeLocation location = result.getBindings().get(MockInjectedInterface.class.getName());
     assertNotNull(location);
-    assertTrue(location.bindTo().equals(MockInjectedInterfaceImpl.class.getCanonicalName()));
-    assertTrue(location.file().equals("WorkingModule.java"));
+    assertTrue(location.bindTo().equals(MockInjectedInterfaceImpl.class.getName()));
+    assertTrue(location.file().equals("SampleModuleScenario.java"));
     assertTrue(location.location() == WorkingModuleBindLocation);
   }
   
-  private static final int WorkingModuleBindLocation = 35;
+  private static final int WorkingModuleBindLocation = 39;
   
   /**
    * Test that constructing a broken module context causes a {@link com.google.inject.tools.ideplugin.snippets.CodeProblem.CreationProblem}.
@@ -99,7 +101,7 @@ public class ModuleContextSnippetTest extends TestCase {
     String[] args = new String[4];
     args[0] = "Broken Module Context";
     args[1] = "1";
-    args[2] = BrokenModule.class.getCanonicalName();
+    args[2] = BrokenModule.class.getName();
     args[3] = "0";
     Object obj = runASnippet(args);
     ModuleContextSnippet.ModuleContextResult result = (ModuleContextSnippet.ModuleContextResult)obj;
@@ -115,7 +117,7 @@ public class ModuleContextSnippetTest extends TestCase {
     String[] args = new String[4];
     args[0] = "Invalid Module Context";
     args[1] = "1";
-    args[2] = ModuleWithArguments.class.getCanonicalName();
+    args[2] = ModuleWithArguments.class.getName();
     args[3] = "0";
     Object obj = runASnippet(args);
     ModuleContextSnippet.ModuleContextResult result = (ModuleContextSnippet.ModuleContextResult)obj;
@@ -130,19 +132,19 @@ public class ModuleContextSnippetTest extends TestCase {
     String[] args = new String[6];
     args[0] = "Working Module Context";
     args[1] = "2"; // number of modules
-    args[2] = WorkingModule.class.getCanonicalName();
+    args[2] = WorkingModule.class.getName();
     args[3] = "0"; // number of args to WorkingModule
-    args[4] = WorkingModule2.class.getCanonicalName();
+    args[4] = WorkingModule2.class.getName();
     args[5] = "0";
     Object obj = runASnippet(args);
     assertTrue(obj instanceof ModuleContextSnippet.ModuleContextResult);
     ModuleContextSnippet.ModuleContextResult result = (ModuleContextSnippet.ModuleContextResult)obj;
     assertTrue(result.getProblems().isEmpty());
     assertNotNull(result.getBindings());
-    BindingCodeLocation location = result.getBindings().get(MockInjectedInterface.class.getCanonicalName());
+    BindingCodeLocation location = result.getBindings().get(MockInjectedInterface.class.getName());
     assertNotNull(location);
-    assertTrue(location.bindTo().equals(MockInjectedInterfaceImpl.class.getCanonicalName()));
-    assertTrue(location.file().equals("WorkingModule.java"));
+    assertTrue(location.bindTo().equals(MockInjectedInterfaceImpl.class.getName()));
+    assertTrue(location.file().equals("SampleModuleScenario.java"));
     assertTrue(location.location() == WorkingModuleBindLocation);
   }
 }

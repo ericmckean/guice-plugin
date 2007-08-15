@@ -26,8 +26,7 @@ import com.google.inject.Provider;
 import com.google.inject.tools.ideplugin.code.CodeRunner;
 import com.google.inject.tools.ideplugin.module.ModuleContextRepresentation;
 import com.google.inject.tools.ideplugin.module.ModuleContextRepresentationImpl;
-import com.google.inject.tools.ideplugin.sample.MockInjectedInterface;
-import com.google.inject.tools.ideplugin.sample.MockInjectedInterfaceImpl;
+import com.google.inject.tools.ideplugin.sample.SampleModuleScenario;
 import com.google.inject.tools.ideplugin.snippets.CodeProblem;
 import com.google.inject.tools.ideplugin.snippets.CodeSnippetResult;
 import com.google.inject.tools.ideplugin.snippets.ModuleContextSnippet;
@@ -47,8 +46,8 @@ public class ModuleContextRepresentationTest extends TestCase {
     assertFalse(moduleContext.isDirty());
     assertTrue(moduleContext.getName().equals("Working Module Context"));
     assertTrue(moduleContext
-        .findLocation(MockInjectedInterface.class.getCanonicalName())
-        .bindTo().equals(MockInjectedInterfaceImpl.class.getCanonicalName()));
+        .findLocation(SampleModuleScenario.MockInjectedInterface.class.getName())
+        .bindTo().equals(SampleModuleScenario.MockInjectedInterfaceImpl.class.getName()));
     //TODO: rest of stuff
   }
   
@@ -56,6 +55,14 @@ public class ModuleContextRepresentationTest extends TestCase {
     private CodeRunListener listener;
     public void addListener(CodeRunListener listener) {
       this.listener = listener;
+    }
+    
+    public Messenger getMessenger() {
+      return new Messenger() {
+        public void display(String message) {}
+        public void logException(String label, Throwable throwable) {}
+        public void logMessage(String message) {}
+      };
     }
     
     public boolean isCancelled() {
@@ -99,8 +106,8 @@ public class ModuleContextRepresentationTest extends TestCase {
     
     private ModuleContextSnippet.ModuleContextResult simulatedSnippetResult() {
       Map<Key<?>,Binding<?>> bindings = new HashMap<Key<?>,Binding<?>>();
-      Binding<?> binding = new MockBinding<com.google.inject.tools.ideplugin.sample.MockInjectedInterface>(com.google.inject.tools.ideplugin.sample.MockInjectedInterface.class,com.google.inject.tools.ideplugin.sample.MockInjectedInterfaceImpl.class);
-      bindings.put(Key.get(com.google.inject.tools.ideplugin.sample.MockInjectedInterface.class), binding);
+      Binding<?> binding = new MockBinding<com.google.inject.tools.ideplugin.sample.SampleModuleScenario.MockInjectedInterface>(com.google.inject.tools.ideplugin.sample.SampleModuleScenario.MockInjectedInterface.class,com.google.inject.tools.ideplugin.sample.SampleModuleScenario.MockInjectedInterfaceImpl.class);
+      bindings.put(Key.get(com.google.inject.tools.ideplugin.sample.SampleModuleScenario.MockInjectedInterface.class), binding);
       return new ModuleContextSnippet.ModuleContextResult("Working Module Context",
           bindings, new HashSet<CodeProblem>());
     }

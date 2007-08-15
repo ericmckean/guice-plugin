@@ -22,6 +22,7 @@ import com.google.inject.tools.ideplugin.module.ModuleContextRepresentation.Modu
 import com.google.inject.tools.ideplugin.problem.ProblemsHandler;
 import com.google.inject.tools.ideplugin.snippets.CodeSnippetResult;
 import com.google.inject.tools.ideplugin.JavaProject;
+import com.google.inject.tools.ideplugin.Messenger;
 import com.google.inject.tools.ideplugin.GuicePluginModule.CodeRunnerFactory;
 import com.google.inject.Singleton;
 import com.google.inject.Inject;
@@ -39,11 +40,14 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
   private final ModulesListener modulesListener;
   private final ProblemsHandler problemsHandler;
   private final CodeRunnerFactory codeRunnerFactory;
+  private final Messenger messenger;
   private final HashMap<JavaProject,HashSet<ModuleRepresentation>> projectModules;
   private final HashMap<JavaProject,HashSet<ModuleContextRepresentation>> projectModuleContexts;
   private HashSet<ModuleRepresentation> modules;
   private HashSet<ModuleContextRepresentation> moduleContexts;
   private JavaProject currentProject;
+  private boolean runAutomatically;
+  //TODO: implement running automatically
   
   /** 
    * Create a ModuleManagerImpl.  This should be done by injection as a singleton.
@@ -51,15 +55,18 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
   @Inject
   public ModuleManagerImpl(ModulesListener modulesListener,
       ProblemsHandler problemsHandler,
+      Messenger messenger,
       CodeRunnerFactory codeRunnerFactory) {
     this.modulesListener = modulesListener;
     this.problemsHandler = problemsHandler;
     this.codeRunnerFactory = codeRunnerFactory;
+    this.messenger = messenger;
     projectModules = new HashMap<JavaProject,HashSet<ModuleRepresentation>>();
     projectModuleContexts = new HashMap<JavaProject,HashSet<ModuleContextRepresentation>>();
     modules = null;
     moduleContexts = null;
     currentProject = null;
+    runAutomatically = false;
   }
   
   /*
@@ -72,7 +79,6 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
         initModule(moduleName);
       }
     }
-    //TODO: don't wait here... (the true) but go on to make contexts elsewhere
     cleanModules(true);
   }
   
@@ -308,7 +314,7 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
         codeRunner.waitFor();
         return !codeRunner.isCancelled();
       } catch (InterruptedException exception) {
-        //TODO: what to do here?
+        messenger.logException("ModuleContext cleaning interrupted", exception);
       }
     }
     return true;
@@ -322,14 +328,13 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
       }
     }
     codeRunner.addListener(this);
-    //TODO: change to true here
     codeRunner.run("Running modules", false);
     if (waitFor) {
       try {
         codeRunner.waitFor();
         return !codeRunner.isCancelled();
       } catch (InterruptedException exception) {
-        //TODO: what to do here?
+        messenger.logException("CodeRunner interrupted", exception);
       }
     }
     return true;
@@ -365,5 +370,13 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
    */
   public void acceptDone() {
     //do nothing
+  }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.module.ModuleManager#setRunAutomatically(boolean)
+   */
+  public void setRunAutomatically(boolean run) {
+    this.runAutomatically = run;
   }
 }

@@ -19,7 +19,7 @@ package com.google.inject.tools.ideplugin.eclipse;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.part.*;
+import org.eclipse.ui.part.ViewPart;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -29,7 +29,6 @@ import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-
 import com.google.inject.tools.ideplugin.results.Results;
 import com.google.inject.tools.ideplugin.results.ResultsView;
 import com.google.inject.tools.ideplugin.results.Results.Node.ActionString;
@@ -53,7 +52,6 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
   public EclipseResultsView() {
   }
   
-  //TODO: actions
   private ActionsHandler getActionsHandler() {
     return Activator.getGuicePlugin()!=null ? Activator.getGuicePlugin().getActionsHandler() : null;
   }
@@ -159,7 +157,6 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
     if (form != null) {
       form.setFocus();
     }
-    //viewer.getControl().setFocus();
   }
   
   /**
@@ -167,11 +164,11 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
    * @see com.google.inject.tools.ideplugin.results.ResultsView#displayResults(com.google.inject.tools.ideplugin.results.Results)
    */
   public void displayResults(Results results) {
-    EclipseResultsView.this.useResults(results);
+    this.useResults(results);
     try {
-      EclipseResultsView.this.getViewSite().getWorkbenchWindow().getActivePage().showView("com.google.inject.tools.ideplugin.eclipse.EclipseResultsView");
+      this.getViewSite().getWorkbenchWindow().getActivePage().showView("com.google.inject.tools.ideplugin.eclipse.EclipseResultsView");
     } catch (Exception e) {
-      EclipseResultsView.this.showMessage(e.toString());
+      this.showMessage(e.toString());
     }
   }
 }

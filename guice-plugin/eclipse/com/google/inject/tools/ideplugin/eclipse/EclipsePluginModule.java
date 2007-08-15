@@ -31,9 +31,6 @@ import com.google.inject.tools.ideplugin.module.ModulesListener;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class EclipsePluginModule extends GuicePluginModule {
-  private ResultsView resultsView;
-  private ModuleSelectionView moduleSelectionView;
-  
   /**
    * Create an Eclipse Plugin Module for injection.
    */
@@ -47,7 +44,7 @@ public class EclipsePluginModule extends GuicePluginModule {
    */
   @Override
   protected void bindResultsView(AnnotatedBindingBuilder<ResultsView> builder) {
-    builder.toInstance(resultsView);
+    builder.to(EclipseGuicePlugin.ResultsViewImpl.class).asEagerSingleton();
   }
   
   /**
@@ -56,7 +53,7 @@ public class EclipsePluginModule extends GuicePluginModule {
    */
   @Override
   protected void bindModuleSelectionView(AnnotatedBindingBuilder<ModuleSelectionView> builder) {
-    builder.toInstance(moduleSelectionView);
+    builder.to(EclipseGuicePlugin.ModuleSelectionViewImpl.class).asEagerSingleton();
   }
   
   /**
@@ -89,33 +86,5 @@ public class EclipsePluginModule extends GuicePluginModule {
   @Override
   protected void bindProgressHandler(AnnotatedBindingBuilder<ProgressHandler> builder) {
     builder.to(EclipseProgressHandler.class);
-  }
-  
-  /**
-   * Sets the results view; eclipse creates the instance.
-   */
-  public void setResultsView(ResultsView resultsView) {
-    this.resultsView = resultsView;
-  }
-  
-  /**
-   * Sets the module selection view; eclipse creates the instance.
-   */
-  public void setModuleSelectionView(ModuleSelectionView moduleSelectionView) {
-    this.moduleSelectionView = moduleSelectionView;
-  }
-  
-  /**
-   * Return the results view.
-   */
-  public ResultsView getResultsView() {
-    return resultsView;
-  }
-  
-  /**
-   * Return the module selection view.
-   */
-  public ModuleSelectionView getModuleSelectionView() {
-    return moduleSelectionView;
   }
 }

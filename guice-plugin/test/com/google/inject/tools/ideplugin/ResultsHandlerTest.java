@@ -23,8 +23,8 @@ import com.google.inject.Injector;
 import com.google.inject.tools.ideplugin.results.CodeLocationsResults;
 import com.google.inject.tools.ideplugin.results.ResultsHandler;
 import com.google.inject.tools.ideplugin.results.ResultsView;
-import com.google.inject.tools.ideplugin.test.FakeCodeLocationsResults;
-import com.google.inject.tools.ideplugin.test.MockingGuicePluginModule;
+import com.google.inject.tools.ideplugin.test.Fakes.FakeCodeLocationsResults;
+import com.google.inject.tools.ideplugin.test.Fakes.MockingGuicePluginModule;
 
 /**
  * Unit test the ResultsHander implementation.

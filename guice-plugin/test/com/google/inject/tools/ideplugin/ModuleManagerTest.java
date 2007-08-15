@@ -27,8 +27,8 @@ import com.google.inject.tools.ideplugin.module.ModuleContextRepresentationImpl;
 import com.google.inject.tools.ideplugin.module.ModuleRepresentation;
 import com.google.inject.tools.ideplugin.module.ModuleRepresentationImpl;
 import com.google.inject.tools.ideplugin.module.ModulesListener;
-import com.google.inject.tools.ideplugin.sample.WorkingModule;
-import com.google.inject.tools.ideplugin.test.MockingGuicePluginModule;
+import com.google.inject.tools.ideplugin.sample.SampleModuleScenario.WorkingModule;
+import com.google.inject.tools.ideplugin.test.Fakes.MockingGuicePluginModule;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -133,7 +133,7 @@ public class ModuleManagerTest extends TestCase {
     
     ModulesListener modulesListener = EasyMock.createMock(ModulesListener.class);
     Set<String> moduleNames = new HashSet<String>();
-    moduleNames.add(WorkingModule.class.getCanonicalName());
+    moduleNames.add(WorkingModule.class.getName());
     modulesListener.projectChanged(project);
     EasyMock.expect(modulesListener.findModules()).andReturn(moduleNames);
     EasyMock.replay(modulesListener);
@@ -146,13 +146,13 @@ public class ModuleManagerTest extends TestCase {
     moduleManager.updateModules(project, true);
     assertTrue(moduleManager.getModules().size() == 1);
     ModuleRepresentation module = moduleManager.getModules().iterator().next();
-    assertTrue(module.getName().equals(WorkingModule.class.getCanonicalName()));
-    moduleManager.removeModule(WorkingModule.class.getCanonicalName());
+    assertTrue(module.getName().equals(WorkingModule.class.getName()));
+    moduleManager.removeModule(WorkingModule.class.getName());
     assertTrue(moduleManager.getModules().isEmpty());
-    moduleManager.addModule(WorkingModule.class.getCanonicalName());
+    moduleManager.addModule(WorkingModule.class.getName());
     assertTrue(moduleManager.getModules().size() == 1);
     module = moduleManager.getModules().iterator().next();
-    assertTrue(module.getName().equals(WorkingModule.class.getCanonicalName()));
+    assertTrue(module.getName().equals(WorkingModule.class.getName()));
     EasyMock.verify(modulesListener);
   }
   
@@ -164,7 +164,7 @@ public class ModuleManagerTest extends TestCase {
     
     ModulesListener modulesListener = EasyMock.createMock(ModulesListener.class);
     Set<String> moduleNames = new HashSet<String>();
-    moduleNames.add(WorkingModule.class.getCanonicalName());
+    moduleNames.add(WorkingModule.class.getName());
     modulesListener.projectChanged(project);
     EasyMock.expect(modulesListener.findModules()).andReturn(moduleNames);
     EasyMock.replay(modulesListener);
@@ -177,7 +177,7 @@ public class ModuleManagerTest extends TestCase {
     moduleManager.updateModules(project, true);
     assertTrue(moduleManager.getModules().size() == 1);
     ModuleRepresentation module = moduleManager.getModules().iterator().next();
-    assertTrue(module.getName().equals(WorkingModule.class.getCanonicalName()));
+    assertTrue(module.getName().equals(WorkingModule.class.getName()));
     EasyMock.verify(modulesListener);
   }
 }

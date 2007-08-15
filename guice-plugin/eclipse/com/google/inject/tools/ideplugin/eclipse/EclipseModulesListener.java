@@ -18,11 +18,15 @@ package com.google.inject.tools.ideplugin.eclipse;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import org.eclipse.jdt.core.ElementChangedEvent;
 import org.eclipse.jdt.core.Flags;
+import org.eclipse.jdt.core.IElementChangedListener;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.ITypeHierarchy;
 import org.eclipse.jdt.core.ITypeHierarchyChangedListener;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import com.google.inject.Singleton;
 import com.google.inject.Inject;
@@ -31,7 +35,7 @@ import com.google.inject.tools.ideplugin.module.ModuleManager;
 import com.google.inject.tools.ideplugin.Messenger;
 import com.google.inject.tools.ideplugin.JavaProject;
 
-//TODO: listen to module classes for code changes
+//TODO: check that listens to module code changes correctly
 
 /**
  * Eclipse implementation of the {@link ModulesListener}.
@@ -58,6 +62,7 @@ public class EclipseModulesListener implements ModulesListener {
     javaProject = null;
     modules = new HashSet<String>();
     initialize();
+    JavaCore.addElementChangedListener(new ModuleElementChangedListener(), ElementChangedEvent.POST_CHANGE);
   }
   
   /**
@@ -161,8 +166,7 @@ public class EclipseModulesListener implements ModulesListener {
   }
   
   private void hadProblem(JavaModelException exception) {
-    //TODO: handle this for real
-    messenger.log("Modules Listener error: " + exception.toString());
+    messenger.logException("Modules Listener error", exception);
   }
   
   /**
@@ -171,5 +175,16 @@ public class EclipseModulesListener implements ModulesListener {
    */
   public void findChanges() {
     if (javaProject != null) findModulesInCode();
+  }
+  
+  protected class ModuleElementChangedListener implements IElementChangedListener {
+    public void elementChanged(ElementChangedEvent event) {
+      if (event.getDelta().getElement() instanceof IType) {
+        IType type = (IType)event.getDelta().getElement();
+        if (typeHierarchy.contains(type)) {
+          moduleManager.moduleChanged(type.getFullyQualifiedName());
+        }
+      }
+    }
   }
 }

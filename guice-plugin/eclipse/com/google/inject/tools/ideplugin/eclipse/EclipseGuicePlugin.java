@@ -20,7 +20,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PlatformUI;
 
+import com.google.inject.Inject;
 import com.google.inject.tools.ideplugin.GuicePlugin;
+import com.google.inject.tools.ideplugin.Messenger;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
 import com.google.inject.tools.ideplugin.results.ResultsView;
 import com.google.inject.tools.ideplugin.results.Results;
@@ -33,26 +35,46 @@ import com.google.inject.tools.ideplugin.results.Results;
 public class EclipseGuicePlugin extends GuicePlugin {
   private static class GetToUIThread implements Runnable {
     private final Results results;
-    public GetToUIThread(Results results) {
+    private final Messenger messenger;
+    public GetToUIThread(Results results, Messenger messenger) {
       this.results = results;
+      this.messenger = messenger;
     }
     public void run() {
       try {
         IViewPart viewPart = PlatformUI.getWorkbench().getWorkbenchWindows()[0].getActivePage().showView("com.google.inject.tools.ideplugin.eclipse.EclipseResultsView");
         ((EclipseResultsView)viewPart).displayResults(results);
-      } catch (Exception e) {
-        //TODO: what to do here?
+      } catch (Throwable e) {
+        messenger.logException("Error loading ResultsView", e);
       }
     }
   }
   
   public static class ResultsViewImpl implements ResultsView {
+    private final Messenger messenger;
+    @Inject
+    public ResultsViewImpl(Messenger messenger) {
+      this.messenger = messenger;
+    }
     public void displayResults(Results results) {
-      Display.getDefault().asyncExec(new GetToUIThread(results));
+      Display.getDefault().asyncExec(new GetToUIThread(results, messenger));
     }
   }
   
   public static class ModuleSelectionViewImpl implements ModuleSelectionView {
+    private final Messenger messenger;
+    @Inject
+    public ModuleSelectionViewImpl(Messenger messenger) {
+      this.messenger = messenger;
+    }
+    public void show() {
+      try {
+        messenger.logMessage("ModuleSelection not yet implemented.");
+        //TODO: do this
+      } catch (Throwable t) {
+        messenger.logException("Error opening ModuleSelectionView", t);
+      }
+    }
   }
   
   /**
@@ -62,7 +84,5 @@ public class EclipseGuicePlugin extends GuicePlugin {
    */
   public EclipseGuicePlugin(EclipsePluginModule module) {
     super(module);
-    module.getResultsView();
-    module.getModuleSelectionView();
   }
 }

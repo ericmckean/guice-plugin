@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
 import com.google.inject.tools.ideplugin.JavaProject;
+import com.google.inject.tools.ideplugin.Messenger;
 import com.google.inject.tools.ideplugin.ProgressHandler;
 import com.google.inject.tools.ideplugin.snippets.CodeSnippetResult;
 
@@ -34,6 +35,7 @@ import com.google.inject.tools.ideplugin.snippets.CodeSnippetResult;
  */
 public class CodeRunnerImpl implements CodeRunner {
   private final ProgressHandler progressHandler;
+  private final Messenger messenger;
   private final Set<CodeRunListener> listeners;
   private final JavaProject project;
   private final Map<Runnable,RunnableProgressStep> progressSteps;
@@ -41,13 +43,19 @@ public class CodeRunnerImpl implements CodeRunner {
   
   public CodeRunnerImpl(JavaProject project) {
     this.progressHandler = new NullProgressHandler();
+    this.messenger = new NullMessenger();
     this.project = project;
     listeners = new HashSet<CodeRunListener>();
     progressSteps = new HashMap<Runnable,RunnableProgressStep>();
     cancelled = false;
   }
   
-  public CodeRunnerImpl(JavaProject project, ProgressHandler progressHandler) {
+  public CodeRunnerImpl(JavaProject project, ProgressHandler progressHandler, Messenger messenger) {
+    if (messenger != null) {
+      this.messenger = messenger;
+    } else {
+      this.messenger = new NullMessenger();
+    }
     if (progressHandler != null) {
       this.progressHandler = progressHandler;
     } else {
@@ -79,6 +87,15 @@ public class CodeRunnerImpl implements CodeRunner {
     public void step(ProgressStep step) {
       steps.add(step);
     }
+  }
+  
+  /**
+   * An implementation of {@link Messenger} that does nothing.
+   */
+  protected class NullMessenger implements Messenger {
+    public void display(String message) {}
+    public void logException(String label, Throwable throwable) {}
+    public void logMessage(String message) {}
   }
   
   /**
@@ -290,5 +307,9 @@ public class CodeRunnerImpl implements CodeRunner {
   
   public boolean isCancelled() {
     return cancelled;
+  }
+  
+  public Messenger getMessenger() {
+    return messenger;
   }
 }
