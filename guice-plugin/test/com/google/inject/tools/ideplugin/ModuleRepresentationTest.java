@@ -35,10 +35,12 @@ import com.google.inject.tools.ideplugin.snippets.ModuleSnippet.DefaultConstruct
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class ModuleRepresentationTest extends TestCase {
-  public void testModuleRepresentation() {
+  public void testModuleRepresentation() throws Exception {
     ModuleRepresentation module = new ModuleRepresentationImpl("com.google.inject.tools.ideplugin.test.WorkingModule");
     CodeRunner codeRunner = new SimulatedCodeRunner();
     module.clean(codeRunner);
+    codeRunner.run("",true);
+    codeRunner.waitFor();
     assertFalse(module.isDirty());
     assertTrue(module.hasDefaultConstructor());
     assertTrue(module.getName().equals("com.google.inject.tools.ideplugin.test.WorkingModule"));
@@ -49,6 +51,18 @@ public class ModuleRepresentationTest extends TestCase {
     private CodeRunListener listener;
     public void addListener(CodeRunListener listener) {
       this.listener = listener;
+    }
+    
+    public boolean isCancelled() {
+      return false;
+    }
+    
+    public boolean isDone() {
+      return true;
+    }
+    
+    public boolean isDone(Runnable runnable) {
+      return true;
     }
     
     public void kill() {
@@ -70,7 +84,7 @@ public class ModuleRepresentationTest extends TestCase {
     public void queue(Runnable runnable) {
     }
     
-    public void run() {
+    public void run(String label, boolean backgroundAutomatically) {
       notifyResult(null,simulatedSnippetResult());
     }
     

@@ -16,10 +16,15 @@
 
 package com.google.inject.tools.ideplugin.eclipse;
 
+import java.util.ArrayList;
+import java.util.List;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import com.google.inject.Inject;
 import com.google.inject.tools.ideplugin.Messenger;
 import com.google.inject.tools.ideplugin.ProgressHandler;
-import com.google.inject.tools.ideplugin.code.CodeRunner;
 
 /**
  * Eclipse implementation of the {@link ProgressHandler}.
@@ -28,18 +33,12 @@ import com.google.inject.tools.ideplugin.code.CodeRunner;
  */
 public class EclipseProgressHandler implements ProgressHandler {
   private final Messenger messenger;
+  private final List<ProgressStep> steps;
   
   @Inject
   public EclipseProgressHandler(Messenger messenger) {
     this.messenger = messenger;
-  }
-  
-  /**
-   * (non-Javadoc)
-   * @see com.google.inject.tools.ideplugin.ProgressHandler#initialize(int)
-   */
-  public void initialize(int numSteps) {
-    //TODO: do this
+    this.steps = new ArrayList<ProgressStep>();
   }
   
   /**
@@ -54,11 +53,72 @@ public class EclipseProgressHandler implements ProgressHandler {
    * (non-Javadoc)
    * @see com.google.inject.tools.ideplugin.ProgressHandler#step(java.lang.String, com.google.inject.tools.ideplugin.code.CodeRunner)
    */
-  public void step(String label, CodeRunner.Runnable runnable) {
-    try {
-      runnable.waitFor();
-    } catch (InterruptedException exception) {
-      messenger.log("Interrupted: " + exception.toString());
+  public void step(ProgressStep step) {
+    steps.add(step);
+  }
+  
+  public void go(String label, boolean backgroundAutomatically) {
+    Job job = new ProgressHandlerJob(label);
+    //Job job = new LongJob();
+    job.setUser(!backgroundAutomatically);
+    job.schedule();
+  }
+  
+  private class ProgressHandlerJob extends Job {
+    private final String label;
+    public ProgressHandlerJob(String label) {
+      super(label);
+      this.label = label;
+    }
+    @Override
+    protected IStatus run(IProgressMonitor monitor) {
+      monitor.beginTask(label, steps.size());
+      for (ProgressStep step : steps) {
+        if (monitor.isCanceled()) {
+          step.cancel();
+        } else {
+          monitor.setTaskName(step.label());
+          step.run();
+          while (!monitor.isCanceled() && !step.isDone()) {
+            try {
+              Thread.sleep(100);
+            } catch (InterruptedException exception) {
+              EclipseProgressHandler.this.messenger.log("Job interrupted " + exception.toString());
+            }
+          }
+          if (monitor.isCanceled()) {
+            step.cancel();
+            monitor.done();
+          } else {
+            monitor.worked(1);
+            step.complete();
+          }
+        }
+      }
+      monitor.done();
+      if (monitor.isCanceled()) return Status.CANCEL_STATUS;
+      else return Status.OK_STATUS;
     }
   }
+  
+  //TODO: remove this
+  //for testing...
+  /*private class LongJob extends Job {
+    public LongJob() {
+      super("Long Job");
+    }
+    @Override
+    protected IStatus run(IProgressMonitor monitor) {
+      monitor.beginTask("Long Job", 10);
+      for (int i=0; i<10; i++) {
+        try {
+          Thread.sleep(2000);
+        } catch (Exception e) {}
+        monitor.worked(1);
+      }
+      monitor.done();
+      if (monitor.isCanceled()) return Status.CANCEL_STATUS;
+      else return Status.OK_STATUS;
+    }
+  }*/
 }

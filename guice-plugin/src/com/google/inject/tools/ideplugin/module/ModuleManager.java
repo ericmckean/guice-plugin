@@ -144,9 +144,10 @@ public interface ModuleManager {
   /**
    * Ask the Manager to update the module list to be the modules for the given project.
    * 
+   * @param waitFor true if the current thread should wait for the update
    * @return true if the update succeeded (false if the user cancelled the operation)
    */
-  public boolean updateModules(JavaProject javaProject);
+  public boolean updateModules(JavaProject javaProject, boolean waitFor);
   
   /**
    * Return the current {@link JavaProject}.

@@ -24,8 +24,9 @@ package com.google.inject.tools.ideplugin;
 public interface Messenger {
   /**
    * Display a message to the user in a dialog box.
-   * This should be a blocking method.
-   * Only threads allowed to access UI elements may call this method.
+   * 
+   * Any thread may call this, the implementation should insure that the actual
+   * execution happens in a UI thread.
    */
   public void display(String message);
   

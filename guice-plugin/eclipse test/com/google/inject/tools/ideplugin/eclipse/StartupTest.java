@@ -73,12 +73,6 @@ public class StartupTest extends TestCase {
     EclipsePluginModule module = new EclipsePluginModule();
     module.setModuleSelectionView(new EclipseGuicePlugin.ModuleSelectionViewImpl());
     module.setResultsView(new EclipseGuicePlugin.ResultsViewImpl());
-    try {
-      new EclipseGuicePlugin(module).getBindingsEngine(new MockJavaElement(JavaElement.Type.FIELD));
-    } catch (java.lang.UnsatisfiedLinkError linkError) {
-      //from the bindings engine trying to use the messenger
-      calledMessenger = true;
-    }
-    assertTrue(calledMessenger);
+    new EclipseGuicePlugin(module).getBindingsEngine(new MockJavaElement(JavaElement.Type.FIELD));
   }
 }

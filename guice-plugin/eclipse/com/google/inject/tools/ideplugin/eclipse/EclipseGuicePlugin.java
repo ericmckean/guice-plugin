@@ -16,6 +16,7 @@
 
 package com.google.inject.tools.ideplugin.eclipse;
 
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PlatformUI;
 
@@ -30,14 +31,24 @@ import com.google.inject.tools.ideplugin.results.Results;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class EclipseGuicePlugin extends GuicePlugin {
-  public static class ResultsViewImpl implements ResultsView {
-    public void displayResults(Results results) {
+  private static class GetToUIThread implements Runnable {
+    private final Results results;
+    public GetToUIThread(Results results) {
+      this.results = results;
+    }
+    public void run() {
       try {
         IViewPart viewPart = PlatformUI.getWorkbench().getWorkbenchWindows()[0].getActivePage().showView("com.google.inject.tools.ideplugin.eclipse.EclipseResultsView");
         ((EclipseResultsView)viewPart).displayResults(results);
       } catch (Exception e) {
         //TODO: what to do here?
       }
+    }
+  }
+  
+  public static class ResultsViewImpl implements ResultsView {
+    public void displayResults(Results results) {
+      Display.getDefault().asyncExec(new GetToUIThread(results));
     }
   }
   

@@ -95,11 +95,14 @@ public interface CodeRunner {
       }
     }
     
-    /**
-     * Wait for this runnable to finish.
-     */
-    public void waitFor() throws InterruptedException {
-      codeRunner.waitFor(this);
+    public abstract String label();
+    
+    public void kill() {
+      codeRunner.kill(this);
+    }
+    
+    public boolean isDone() {
+      return codeRunner.isDone(this);
     }
     
     /**
@@ -193,8 +196,11 @@ public interface CodeRunner {
   
   /**
    * Run the queued Runnables.
+   * 
+   * @param label the display label for this code run
+   * @param backgroundAutomatically true if the code run should be backgrounded initially
    */
-  public void run();
+  public void run(String label, boolean backgroundAutomatically);
   
   /**
    * Notify the runner that a result from a run is ready.
@@ -222,7 +228,22 @@ public interface CodeRunner {
   public void waitFor() throws InterruptedException;
   
   /**
-   * Wait for the CodeRunner to finish running the specified Runnable.
+   * Wait for the CodeRunner to finish running the given Runnable.
    */
   public void waitFor(Runnable runnable) throws InterruptedException;
+  
+  /**
+   * Return true if all the runnables have completed.
+   */
+  public boolean isDone();
+  
+  /**
+   * Return true if the given runnable has completed.
+   */
+  public boolean isDone(Runnable runnable);
+  
+  /**
+   * Return true if the code run was cancelled.
+   */
+  public boolean isCancelled();
 }

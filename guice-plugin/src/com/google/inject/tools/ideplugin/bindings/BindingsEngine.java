@@ -47,25 +47,50 @@ public final class BindingsEngine {
       ResultsHandler resultsHandler,
       Messenger messenger,
       JavaElement element) {
-    final String theClass = element.getClassName();
-    final CodeLocationsResults results = new CodeLocationsResults("Bindings for " + CodeLocationsResults.shorten(theClass),theClass);
-    if (!moduleManager.updateModules(element.getJavaProject())) {
-      results.userCancelled();
-    } else {
-      //TODO: if element.isInjectionPoint() ...
-      if ((moduleManager.getModuleContexts() != null) && (moduleManager.getModuleContexts().size() > 0)) {
-        for (ModuleContextRepresentation moduleContext : moduleManager.getModuleContexts()) {
-          BindingLocater locater = new BindingLocater(theClass,moduleContext);
-          if (locater.getCodeLocation()!=null) {
-            problemsHandler.foundProblems(locater.getCodeLocation().getProblems());
-            results.put(locater.getModuleContext().getName(), locater.getCodeLocation());
-          }
-        }
-        if (!results.keySet().isEmpty()) {
-          resultsHandler.displayLocationsResults(results);
-        }
+    Thread engineThread = new BindingsEngineThread(moduleManager, problemsHandler, resultsHandler, messenger, element);
+    engineThread.start();
+  }
+  
+  private class BindingsEngineThread extends Thread {
+    private final ModuleManager moduleManager;
+    private final ProblemsHandler problemsHandler;
+    private final ResultsHandler resultsHandler;
+    private final Messenger messenger;
+    private final JavaElement element;
+    public BindingsEngineThread(ModuleManager moduleManager,
+        ProblemsHandler problemsHandler,
+        ResultsHandler resultsHandler,
+        Messenger messenger,
+        JavaElement element) {
+      this.moduleManager = moduleManager;
+      this.problemsHandler = problemsHandler;
+      this.resultsHandler = resultsHandler;
+      this.messenger = messenger;
+      this.element = element;
+    }
+    @Override
+    public void run() {
+      final String theClass = element.getClassName();
+      final CodeLocationsResults results = new CodeLocationsResults("Bindings for " + CodeLocationsResults.shorten(theClass),theClass);
+      if (!moduleManager.updateModules(element.getJavaProject(), true)) {
+        results.userCancelled();
       } else {
-        messenger.display("No module contexts configured.");
+        //TODO: if element.isInjectionPoint() ...
+        if ((moduleManager.getModuleContexts() != null) && (moduleManager.getModuleContexts().size() > 0)) {
+          for (ModuleContextRepresentation moduleContext : moduleManager.getModuleContexts()) {
+            BindingLocater locater = new BindingLocater(theClass,moduleContext);
+            if (locater.getCodeLocation()!=null) {
+              problemsHandler.foundProblems(locater.getCodeLocation().getProblems());
+              results.put(locater.getModuleContext().getName(), locater.getCodeLocation());
+            }
+          }
+          if (!results.keySet().isEmpty()) {
+            resultsHandler.displayLocationsResults(results);
+          }
+        } else {
+          //TODO: messenger cant be used in this thread
+          messenger.display("No module contexts configured.");
+        }
       }
     }
   }

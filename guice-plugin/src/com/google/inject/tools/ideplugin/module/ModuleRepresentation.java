@@ -58,6 +58,7 @@ public interface ModuleRepresentation {
   
   /**
    * Tell the module to clean itself (run itself).
+   * NOTE: The runnable returned will not actually be run until the client calls .run() on it.
    * 
    * @param codeRunner the {@link CodeRunner} to run the {@link com.google.inject.tools.ideplugin.snippets.ModuleSnippet} with.
    */

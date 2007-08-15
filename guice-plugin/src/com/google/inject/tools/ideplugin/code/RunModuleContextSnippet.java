@@ -36,6 +36,11 @@ public class RunModuleContextSnippet extends CodeRunner.Runnable {
   }
   
   @Override
+  public String label() {
+    return "Running module context " + moduleContext.getName();
+  }
+  
+  @Override
   protected String getFullyQualifiedSnippetClass() {
     return "com.google.inject.tools.ideplugin.snippets.ModuleContextSnippet";
   }

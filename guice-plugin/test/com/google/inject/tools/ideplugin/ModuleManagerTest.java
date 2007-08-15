@@ -70,7 +70,7 @@ public class ModuleManagerTest extends TestCase {
     modulesListener.projectChanged(project);
     EasyMock.replay(modulesListener);
     ModuleManager moduleManager = injector.getInstance(ModuleManager.class);
-    moduleManager.updateModules(project);
+    moduleManager.updateModules(project, true);
     moduleManager.addModuleContext(workingModuleContext);
     assertTrue(moduleManager.getModuleContexts().contains(workingModuleContext));
     assertTrue(moduleManager.getModuleContexts().size() == 1);
@@ -102,7 +102,7 @@ public class ModuleManagerTest extends TestCase {
     modulesListener.projectChanged(project);
     EasyMock.replay(modulesListener);
     ModuleManager moduleManager = injector.getInstance(ModuleManager.class);
-    moduleManager.updateModules(project);
+    moduleManager.updateModules(project, true);
     moduleManager.addModule(workingModule);
     assertTrue(moduleManager.getModules().contains(workingModule));
     assertTrue(moduleManager.getModules().size() == 1);
@@ -135,7 +135,7 @@ public class ModuleManagerTest extends TestCase {
     EasyMock.expect(modulesListener.findModules()).andReturn(moduleNames);
     EasyMock.replay(modulesListener);
     ModuleManager moduleManager = injector.getInstance(ModuleManager.class);
-    moduleManager.updateModules(project);
+    moduleManager.updateModules(project, true);
     assertTrue(moduleManager.getModules().size() == 1);
     ModuleRepresentation module = moduleManager.getModules().iterator().next();
     assertTrue(module.getName().equals("com.google.inject.tools.ideplugin.test.WorkingModule"));
@@ -162,7 +162,7 @@ public class ModuleManagerTest extends TestCase {
     EasyMock.expect(modulesListener.findModules()).andReturn(moduleNames);
     EasyMock.replay(modulesListener);
     ModuleManager moduleManager = injector.getInstance(ModuleManager.class);
-    moduleManager.updateModules(project);
+    moduleManager.updateModules(project, true);
     assertTrue(moduleManager.getModules().size() == 1);
     ModuleRepresentation module = moduleManager.getModules().iterator().next();
     assertTrue(module.getName().equals("com.google.inject.tools.ideplugin.test.WorkingModule"));

@@ -88,7 +88,7 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
     GridLayout layout = new GridLayout();
     layout.marginHeight = 0;
     layout.marginBottom = 0;
-    layout.marginLeft = 20 * depth;
+    layout.marginLeft = 10 + 10 * depth;
     layout.marginRight = 0;
     layout.marginTop = 0;
     layout.marginWidth = 0;
@@ -163,14 +163,15 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
   }
   
   /**
-   * 
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ideplugin.results.ResultsView#displayResults(com.google.inject.tools.ideplugin.results.Results)
    */
   public void displayResults(Results results) {
-    useResults(results);
+    EclipseResultsView.this.useResults(results);
     try {
-      this.getViewSite().getWorkbenchWindow().getActivePage().showView("com.google.inject.tools.ideplugin.eclipse.EclipseResultsView");
+      EclipseResultsView.this.getViewSite().getWorkbenchWindow().getActivePage().showView("com.google.inject.tools.ideplugin.eclipse.EclipseResultsView");
     } catch (Exception e) {
-      showMessage(e.toString());
+      EclipseResultsView.this.showMessage(e.toString());
     }
   }
 }
