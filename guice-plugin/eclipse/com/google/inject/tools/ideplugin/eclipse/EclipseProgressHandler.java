@@ -51,12 +51,16 @@ public class EclipseProgressHandler implements ProgressHandler {
   
   /**
    * (non-Javadoc)
-   * @see com.google.inject.tools.ProgressHandler#step(java.lang.String, com.google.inject.tools.ideplugin.code.CodeRunner)
+   * @see com.google.inject.tools.ProgressHandler#step(com.google.inject.tools.ProgressHandler.ProgressStep)
    */
   public void step(ProgressStep step) {
     steps.add(step);
   }
   
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.ProgressHandler#go(java.lang.String, boolean)
+   */
   public void go(String label, boolean backgroundAutomatically) {
     Job job = new ProgressHandlerJob(label);
     //Job job = new LongJob();

@@ -35,17 +35,16 @@ public class EclipsePluginModule extends GuicePluginModule {
   public static class EclipseGuiceToolsModule extends GuiceToolsModuleImpl {
     /**
      * (non-Javadoc)
-     * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindMessenger()
+     * @see com.google.inject.tools.GuiceToolsModule#bindMessenger(com.google.inject.binder.AnnotatedBindingBuilder)
      */
     @Override
     protected void bindMessenger(AnnotatedBindingBuilder<Messenger> builder) {
       builder.to(EclipseMessenger.class).asEagerSingleton();
     }
     
-    
     /**
      * (non-Javadoc)
-     * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindModulesListener()
+     * @see com.google.inject.tools.GuiceToolsModule#bindModulesListener(com.google.inject.binder.AnnotatedBindingBuilder)
      */
     @Override
     protected void bindModulesListener(AnnotatedBindingBuilder<ModulesNotifier> builder) {
@@ -62,7 +61,7 @@ public class EclipsePluginModule extends GuicePluginModule {
   
   /**
    * (non-Javadoc)
-   * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindResultsView()
+   * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindResultsView(com.google.inject.binder.AnnotatedBindingBuilder)
    */
   @Override
   protected void bindResultsView(AnnotatedBindingBuilder<ResultsView> builder) {
@@ -71,7 +70,7 @@ public class EclipsePluginModule extends GuicePluginModule {
   
   /**
    * (non-Javadoc)
-   * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindModuleSelectionView()
+   * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindModuleSelectionView(com.google.inject.binder.AnnotatedBindingBuilder)
    */
   @Override
   protected void bindModuleSelectionView(AnnotatedBindingBuilder<ModuleSelectionView> builder) {
@@ -79,8 +78,7 @@ public class EclipsePluginModule extends GuicePluginModule {
   }
   
   /**
-   * (non-Javadoc)
-   * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindActionsHandler()
+   * Bind the {@link ActionsHandler} implementation.
    */
   @Override
   protected void bindActionsHandler(AnnotatedBindingBuilder<ActionsHandler> builder) {
