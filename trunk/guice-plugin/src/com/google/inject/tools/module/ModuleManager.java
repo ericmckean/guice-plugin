@@ -21,8 +21,7 @@ import com.google.inject.tools.JavaManager;
 
 /** 
  * Responsible for tracking the modules which should be run when resolving bindings and injections.
- * The {@link ModulesNotifier} notifies the ModuleManager when these change.  The {@link ModuleSelectionView}
- * notifies the ModuleManager when the user changes what modules they want run.
+ * The {@link ModulesNotifier} notifies the ModuleManager when these change.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */

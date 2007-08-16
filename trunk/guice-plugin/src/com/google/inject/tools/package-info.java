@@ -19,10 +19,10 @@
  * 
  * <p>The tools suite is the infrastructure for writing guice tools, such as IDE plugins.
  * 
- * <p>To use the tools suite, simply extend the {@link GuiceToolsModule} to a concrete set
- * of bindings and then use guice to inject a {@link ModuleManager} in your code.
+ * <p>To use the tools suite, simply extend the {@link com.google.inject.tools.GuiceToolsModule} to a concrete set
+ * of bindings and then use guice to inject a {@link com.google.inject.tools.module.ModuleManager} in your code.
  * 
- * <p>The {@link JavaManager}, {@link ProblemsHandler} and {@link Messenger} must also
+ * <p>The {@link com.google.inject.tools.JavaManager}, {@link com.google.inject.tools.ProblemsHandler} and {@link com.google.inject.tools.Messenger} must also
  * be implemented.
  *  
  * <p>The basic objects in our tool suite are:

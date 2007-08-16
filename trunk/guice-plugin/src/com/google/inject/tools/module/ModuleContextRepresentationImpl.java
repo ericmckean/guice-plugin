@@ -141,7 +141,7 @@ public class ModuleContextRepresentationImpl implements ModuleContextRepresentat
   
   /**
    * (non-Javadoc)
-   * @see com.google.inject.tools.module.ModuleContextRepresentation#add(com.google.inject.tools.module.ModuleInstanceRepresentation)
+   * @see com.google.inject.tools.module.ModuleContextRepresentation#add(com.google.inject.tools.module.ModuleContextRepresentation.ModuleInstanceRepresentation)
    */
   public synchronized ModuleContextRepresentation add(ModuleInstanceRepresentation module) {
     modules.add(module);
@@ -150,7 +150,7 @@ public class ModuleContextRepresentationImpl implements ModuleContextRepresentat
   
   /**
    * (non-Javadoc)
-   * @see com.google.inject.tools.module.ModuleContextRepresentation#removeModule(com.google.inject.tools.module.ModuleInstanceRepresentation)
+   * @see com.google.inject.tools.module.ModuleContextRepresentation#removeModule(com.google.inject.tools.module.ModuleContextRepresentation.ModuleInstanceRepresentation)
    */
   public synchronized void removeModule(ModuleInstanceRepresentation module) {
     modules.remove(module);
@@ -158,7 +158,7 @@ public class ModuleContextRepresentationImpl implements ModuleContextRepresentat
   
   /**
    * (non-Javadoc)
-   * @see com.google.inject.tools.module.ModuleContextRepresentation#contains(com.google.inject.tools.module.ModuleInstanceRepresentation)
+   * @see com.google.inject.tools.module.ModuleContextRepresentation#contains(com.google.inject.tools.module.ModuleContextRepresentation.ModuleInstanceRepresentation)
    */
   public synchronized boolean contains(ModuleInstanceRepresentation module) {
     return modules.contains(module);

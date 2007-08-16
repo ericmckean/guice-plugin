@@ -221,10 +221,6 @@ public class Fakes {
       else bindToMockInstance(builder, BindingsEngineFactory.class);
     }
     
-    /**
-     * (non-Javadoc)
-     * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindResultsHandler()
-     */
     @Override
     protected void bindResultsHandler(AnnotatedBindingBuilder<ResultsHandler> builder) {
       if (resultsHandler!=null) bindToInstance(builder, resultsHandler);
@@ -232,30 +228,18 @@ public class Fakes {
       else bindToMockInstance(builder, ResultsHandler.class);
     }
     
-    /**
-     * (non-Javadoc)
-     * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindResultsView()
-     */
     @Override
     protected void bindResultsView(AnnotatedBindingBuilder<ResultsView> builder) {
       if (resultsView != null) bindToInstance(builder, resultsView);
       else bindToMockInstance(builder, ResultsView.class);
     }
     
-    /**
-     * (non-Javadoc)
-     * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindModuleSelectionView()
-     */
     @Override
     protected void bindModuleSelectionView(AnnotatedBindingBuilder<ModuleSelectionView> builder) {
       if (moduleSelectionView != null) bindToInstance(builder, moduleSelectionView);
       else bindToMockInstance(builder, ModuleSelectionView.class);
     }
     
-    /**
-     * (non-Javadoc)
-     * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindActionsHandler()
-     */
     @Override
     protected void bindActionsHandler(AnnotatedBindingBuilder<ActionsHandler> builder) {
       if (actionsHandler != null) bindToInstance(builder, actionsHandler);

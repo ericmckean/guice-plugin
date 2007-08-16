@@ -273,7 +273,7 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
   
   /**
    * (non-Javadoc)
-   * @see com.google.inject.tools.module.ModuleManager#updateModules(com.google.inject.tools.JavaManager)
+   * @see com.google.inject.tools.module.ModuleManager#updateModules(com.google.inject.tools.JavaManager, boolean)
    */
   public synchronized boolean updateModules(JavaManager javaProject, boolean waitFor) {
     if (!javaProject.equals(currentProject)) {
