@@ -78,7 +78,7 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
         initModule(moduleName);
       }
     }
-    cleanModules(true);
+    cleanModules(true, true);
   }
   
   private void initModule(String moduleName) {
@@ -254,8 +254,8 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
       }
     }
     if (runAutomatically) {
-      cleanModules(false);
-      cleanModuleContexts(false);
+      cleanModules(false, true);
+      cleanModuleContexts(false, true);
     }
   }
   
@@ -294,7 +294,7 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
       modulesListener.findChanges();
     }
     if (currentProject != null) {
-      return cleanModuleContexts(waitFor);
+      return cleanModuleContexts(waitFor, false);
     } else {
       return true;
     }
@@ -303,7 +303,7 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
   /*
    * Tells the contexts to run themselves anew.  Uses the progress handler.
    */
-  protected synchronized boolean cleanModuleContexts(boolean waitFor) {
+  protected synchronized boolean cleanModuleContexts(boolean waitFor, boolean backgroundAutomatically) {
     CodeRunner codeRunner = codeRunnerFactory.create(currentProject);
     for (ModuleContextRepresentation moduleContext : moduleContexts) {
       if (moduleContext.isDirty()) {
@@ -311,7 +311,7 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
       }
     }
     codeRunner.addListener(this);
-    codeRunner.run("Running module contexts", false);
+    codeRunner.run("Running module contexts", backgroundAutomatically);
     if (waitFor) {
       try {
         codeRunner.waitFor();
@@ -323,7 +323,7 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
     return true;
   }
   
-  protected synchronized boolean cleanModules(boolean waitFor) {
+  protected synchronized boolean cleanModules(boolean waitFor, boolean backgroundAutomatically) {
     CodeRunner codeRunner = codeRunnerFactory.create(currentProject);
     for (ModuleRepresentation module : modules) {
       if (module.isDirty()) {
@@ -331,7 +331,7 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
       }
     }
     codeRunner.addListener(this);
-    codeRunner.run("Running modules", false);
+    codeRunner.run("Running modules", backgroundAutomatically);
     if (waitFor) {
       try {
         codeRunner.waitFor();
