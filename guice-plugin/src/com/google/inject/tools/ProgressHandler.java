@@ -32,11 +32,9 @@ public interface ProgressHandler {
   }
   
   /**
-   * Start the next step of the ProgressHandler.
-   * If the user cancels the operation, tell the CodeRunner to die.
+   * Add a step to the progress.  Do not run.
    * 
-   * @param label the label to display for this step
-   * @param codeRunner the CodeRunner to kill on cancel
+   * @param step the {@link ProgressStep} to add
    */
   public void step(ProgressStep step);
   

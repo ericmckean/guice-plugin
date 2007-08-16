@@ -108,10 +108,6 @@ public class Fakes {
       return this;
     }
     
-    /**
-     * (non-Javadoc)
-     * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindModuleManager()
-     */
     @Override
     protected void bindModuleManager(AnnotatedBindingBuilder<ModuleManager> builder) {
       if (moduleManager!=null) bindToInstance(builder, moduleManager);
@@ -125,20 +121,12 @@ public class Fakes {
       else bindToMockInstance(builder, ProblemsHandler.class);
     }
     
-    /**
-     * (non-Javadoc)
-     * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindMessenger()
-     */
     @Override
     protected void bindMessenger(AnnotatedBindingBuilder<Messenger> builder) {
       if (messenger != null) bindToInstance(builder, messenger);
       else bindToMockInstance(builder, Messenger.class);
     }
     
-    /**
-     * (non-Javadoc)
-     * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindModulesListener()
-     */
     @Override
     protected void bindModulesListener(AnnotatedBindingBuilder<ModulesNotifier> builder) {
       if (modulesListener != null) bindToInstance(builder, modulesListener);
