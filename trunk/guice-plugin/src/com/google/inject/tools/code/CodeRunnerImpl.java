@@ -23,7 +23,7 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
-import com.google.inject.tools.JavaProject;
+import com.google.inject.tools.JavaManager;
 import com.google.inject.tools.Messenger;
 import com.google.inject.tools.ProgressHandler;
 import com.google.inject.tools.snippets.CodeSnippetResult;
@@ -37,11 +37,11 @@ public class CodeRunnerImpl implements CodeRunner {
   private final ProgressHandler progressHandler;
   private final Messenger messenger;
   private final Set<CodeRunListener> listeners;
-  private final JavaProject project;
+  private final JavaManager project;
   private final Map<Runnable,RunnableProgressStep> progressSteps;
   private boolean cancelled;
   
-  public CodeRunnerImpl(JavaProject project) {
+  public CodeRunnerImpl(JavaManager project) {
     this.progressHandler = new NullProgressHandler();
     this.messenger = new NullMessenger();
     this.project = project;
@@ -50,7 +50,7 @@ public class CodeRunnerImpl implements CodeRunner {
     cancelled = false;
   }
   
-  public CodeRunnerImpl(JavaProject project, ProgressHandler progressHandler, Messenger messenger) {
+  public CodeRunnerImpl(JavaManager project, ProgressHandler progressHandler, Messenger messenger) {
     if (messenger != null) {
       this.messenger = messenger;
     } else {

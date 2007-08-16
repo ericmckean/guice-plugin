@@ -20,18 +20,15 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.binder.AnnotatedBindingBuilder;
+import com.google.inject.tools.Messenger;
+import com.google.inject.tools.ProblemsHandler;
+import com.google.inject.tools.ProgressHandler;
 import com.google.inject.tools.ideplugin.bindings.BindingsEngine;
-import com.google.inject.tools.ideplugin.code.CodeRunner;
-import com.google.inject.tools.ideplugin.code.CodeRunnerImpl;
-import com.google.inject.tools.ideplugin.module.ModuleManager;
-import com.google.inject.tools.ideplugin.module.ModuleManagerImpl;
-import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
-import com.google.inject.tools.ideplugin.module.ModulesListener;
-import com.google.inject.tools.ideplugin.problem.ProblemsHandler;
-import com.google.inject.tools.ideplugin.problem.ProblemsHandlerImpl;
 import com.google.inject.tools.ideplugin.results.ResultsHandler;
 import com.google.inject.tools.ideplugin.results.ResultsHandlerImpl;
 import com.google.inject.tools.ideplugin.results.ResultsView;
+import com.google.inject.tools.module.ModuleManager;
+import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
 
 /** 
  * Abstract module for the plugin's dependency injection.  IDE specific implementations are
@@ -50,17 +47,6 @@ import com.google.inject.tools.ideplugin.results.ResultsView;
 public abstract class GuicePluginModule extends AbstractModule {
   protected interface BindingsEngineFactory {
     public BindingsEngine create(JavaElement element);
-  }
-  
-  /**
-   * Factory for creating {@link CodeRunner}s.
-   */
-  public interface CodeRunnerFactory {
-    /**
-     * Create a {@link CodeRunner}.
-     * @param project the {@link JavaProject} to run code in
-     */
-    public CodeRunner create(JavaProject project);
   }
   
   protected static class BindingsEngineFactoryImpl implements BindingsEngineFactory {
@@ -89,19 +75,6 @@ public abstract class GuicePluginModule extends AbstractModule {
     }
   }
   
-  protected static class CodeRunnerFactoryImpl implements CodeRunnerFactory {
-    private final Provider<ProgressHandler> progressHandlerProvider;
-    private final Messenger messenger;
-    @Inject
-    public CodeRunnerFactoryImpl(Provider<ProgressHandler> progressHandlerProvider, Messenger messenger) {
-      this.progressHandlerProvider = progressHandlerProvider;
-      this.messenger = messenger;
-    }
-    public CodeRunner create(JavaProject project) {
-      return new CodeRunnerImpl(project, progressHandlerProvider.get(), messenger);
-    }
-  }
-  
   /** 
    * (non-Javadoc)
    * @see com.google.inject.AbstractModule#configure()
@@ -109,16 +82,11 @@ public abstract class GuicePluginModule extends AbstractModule {
   @Override
   protected void configure() {
     bindBindingsEngine(bind(BindingsEngineFactory.class));
-    bindCodeRunner(bind(CodeRunnerFactory.class));
     bindProgressHandler(bind(ProgressHandler.class));
     bindActionsHandler(bind(ActionsHandler.class));
-    bindModuleManager(bind(ModuleManager.class));
     bindResultsHandler(bind(ResultsHandler.class));
-    bindProblemsHandler(bind(ProblemsHandler.class));
     bindResultsView(bind(ResultsView.class));
-    bindModulesListener(bind(ModulesListener.class));
     bindModuleSelectionView(bind(ModuleSelectionView.class));
-    bindMessenger(bind(Messenger.class));
   }
   
   /**
@@ -129,13 +97,6 @@ public abstract class GuicePluginModule extends AbstractModule {
   }
   
   /** 
-   * Bind the {@link ModuleManager} implementation.
-   */
-  protected void bindModuleManager(AnnotatedBindingBuilder<ModuleManager> builder) {
-    builder.to(ModuleManagerImpl.class).asEagerSingleton();
-  }
-  
-  /** 
    * Bind the {@link ResultsHandler} implementation.
    */
   protected void bindResultsHandler(AnnotatedBindingBuilder<ResultsHandler> builder) {
@@ -143,43 +104,19 @@ public abstract class GuicePluginModule extends AbstractModule {
   }
   
   /**
-   * Bind the {@link ProblemsHandler} implementation.
-   */
-  protected void bindProblemsHandler(AnnotatedBindingBuilder<ProblemsHandler> builder) {
-    builder.to(ProblemsHandlerImpl.class).asEagerSingleton();
-  }
-  
-  /**
    * Bind the {@link com.google.inject.tools.ideplugin.results.ResultsView} instance.
    */
   protected abstract void bindResultsView(AnnotatedBindingBuilder<ResultsView> builder);
-  
+
   /**
-   * Bind the {@link com.google.inject.tools.ideplugin.module.ModulesListener} instance.
-   */
-  protected abstract void bindModulesListener(AnnotatedBindingBuilder<ModulesListener> builder);
-  
-  /**
-   * Bind the {@link com.google.inject.tools.ideplugin.module.ModuleSelectionView} instance.
+   * Bind the {@link com.google.inject.tools.module.ModuleSelectionView} instance.
    */
   protected abstract void bindModuleSelectionView(AnnotatedBindingBuilder<ModuleSelectionView> builder);
-  
-  /**
-   * Bind the {@link Messenger} implementation.
-   */
-  protected abstract void bindMessenger(AnnotatedBindingBuilder<Messenger> builder);
   
   /**
    * Bind the {@link ActionsHandler} implementation.
    */
   protected abstract void bindActionsHandler(AnnotatedBindingBuilder<ActionsHandler> builder);
-  
-  /**
-   * Bind the {@link CodeRunner} implementation.
-   */
-  protected void bindCodeRunner(AnnotatedBindingBuilder<CodeRunnerFactory> builder) {
-    builder.to(CodeRunnerFactoryImpl.class);
-  }
   
   /**
    * Bind the {@link ProgressHandler} implementation.

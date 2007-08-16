@@ -17,13 +17,14 @@
 package com.google.inject.tools.ideplugin.eclipse;
 
 import com.google.inject.binder.AnnotatedBindingBuilder;
+import com.google.inject.tools.Messenger;
+import com.google.inject.tools.ProgressHandler;
 import com.google.inject.tools.ideplugin.GuicePluginModule;
-import com.google.inject.tools.ideplugin.Messenger;
 import com.google.inject.tools.ideplugin.ActionsHandler;
-import com.google.inject.tools.ideplugin.ProgressHandler;
-import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
+import com.google.inject.tools.ideplugin.GuiceToolsModuleImpl;
 import com.google.inject.tools.ideplugin.results.ResultsView;
-import com.google.inject.tools.ideplugin.module.ModulesListener;
+import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
+import com.google.inject.tools.module.ModulesNotifier;
 
 /** 
  * The module binding Eclipse implementations to interfaces.
@@ -31,6 +32,27 @@ import com.google.inject.tools.ideplugin.module.ModulesListener;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class EclipsePluginModule extends GuicePluginModule {
+  public static class EclipseGuiceToolsModule extends GuiceToolsModuleImpl {
+    /**
+     * (non-Javadoc)
+     * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindMessenger()
+     */
+    @Override
+    protected void bindMessenger(AnnotatedBindingBuilder<Messenger> builder) {
+      builder.to(EclipseMessenger.class).asEagerSingleton();
+    }
+    
+    
+    /**
+     * (non-Javadoc)
+     * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindModulesListener()
+     */
+    @Override
+    protected void bindModulesListener(AnnotatedBindingBuilder<ModulesNotifier> builder) {
+      builder.to(EclipseModulesListener.class).asEagerSingleton();
+    }
+  }
+  
   /**
    * Create an Eclipse Plugin Module for injection.
    */
@@ -58,29 +80,11 @@ public class EclipsePluginModule extends GuicePluginModule {
   
   /**
    * (non-Javadoc)
-   * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindMessenger()
-   */
-  @Override
-  protected void bindMessenger(AnnotatedBindingBuilder<Messenger> builder) {
-    builder.to(EclipseMessenger.class).asEagerSingleton();
-  }
-  
-  /**
-   * (non-Javadoc)
    * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindActionsHandler()
    */
   @Override
   protected void bindActionsHandler(AnnotatedBindingBuilder<ActionsHandler> builder) {
     builder.to(EclipseActionsHandler.class).asEagerSingleton();
-  }
-  
-  /**
-   * (non-Javadoc)
-   * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindModulesListener()
-   */
-  @Override
-  protected void bindModulesListener(AnnotatedBindingBuilder<ModulesListener> builder) {
-    builder.to(EclipseModulesListener.class).asEagerSingleton();
   }
   
   @Override

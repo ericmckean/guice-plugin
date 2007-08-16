@@ -24,8 +24,9 @@ import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.Signature;
+
+import com.google.inject.tools.JavaManager;
 import com.google.inject.tools.ideplugin.JavaElement;
-import com.google.inject.tools.ideplugin.JavaProject;
 
 /** 
  * Eclipse implementation of {@link JavaElement}.  Basically a wrapper around {@link
@@ -146,7 +147,7 @@ public class EclipseJavaElement implements JavaElement {
    * (non-Javadoc)
    * @see com.google.inject.tools.ideplugin.JavaElement#getJavaProject()
    */
-  public JavaProject getJavaProject() {
+  public JavaManager getJavaProject() {
     return javaProject;
   }
   

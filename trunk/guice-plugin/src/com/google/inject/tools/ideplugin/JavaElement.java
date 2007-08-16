@@ -16,6 +16,8 @@
 
 package com.google.inject.tools.ideplugin;
 
+import com.google.inject.tools.JavaManager;
+
 /** 
  * Representation of a Java element.  Likely just a wrapper around IDE specific
  * representations, for instance EclipseJavaElement is a wrapper around Eclipse's IJavaElement.
@@ -55,7 +57,7 @@ public interface JavaElement {
    * 
    * @return the project
    */
-  public JavaProject getJavaProject();
+  public JavaManager getJavaProject();
   
   /**
    * Return true if the java element is injected at this location in code.

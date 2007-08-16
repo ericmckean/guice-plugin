@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PlatformUI;
 
-import com.google.inject.tools.ideplugin.Messenger;
+import com.google.inject.tools.Messenger;
 
 /**
  * Eclipse implementation of the Messenger object.
@@ -47,7 +47,7 @@ public class EclipseMessenger implements Messenger {
   
   /**
    * (non-Javadoc)
-   * @see com.google.inject.tools.ideplugin.Messenger#display(java.lang.String)
+   * @see com.google.inject.tools.Messenger#display(java.lang.String)
    */
   public void display(String message) {
     try {

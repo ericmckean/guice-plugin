@@ -18,8 +18,11 @@ package com.google.inject.tools.ideplugin.eclipse;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+
+import com.google.inject.tools.GuiceToolsModule;
 import com.google.inject.tools.ideplugin.eclipse.EclipsePluginModule;
 import com.google.inject.tools.ideplugin.eclipse.EclipseGuicePlugin;
+import com.google.inject.tools.ideplugin.eclipse.EclipsePluginModule.EclipseGuiceToolsModule;
 
 /** 
  * The activator is created when the plugin is first initialized; it is the equivalent of
@@ -44,7 +47,8 @@ public class Activator extends AbstractUIPlugin {
   public Activator() {
     plugin = this;
     EclipsePluginModule module = new EclipsePluginModule();
-    guicePlugin = new EclipseGuicePlugin(module);
+    GuiceToolsModule toolsModule = new EclipseGuiceToolsModule();
+    guicePlugin = new EclipseGuicePlugin(module, toolsModule);
   }
   
   /** 
@@ -53,7 +57,8 @@ public class Activator extends AbstractUIPlugin {
    */
   public Activator(EclipsePluginModule module) {
     plugin = this;
-    guicePlugin = new EclipseGuicePlugin(module);
+    GuiceToolsModule toolsModule = new EclipseGuiceToolsModule();
+    guicePlugin = new EclipseGuicePlugin(module, toolsModule);
   }
   
   /** 

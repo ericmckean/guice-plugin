@@ -22,7 +22,6 @@ import org.eclipse.ui.IEditorActionDelegate;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
-
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
 
 /**

@@ -14,28 +14,23 @@
  * limitations under the License.
  */
 
-package com.google.inject.tools.ideplugin.eclipse;
+package com.google.inject.tools;
 
-import com.google.inject.tools.ideplugin.AllNonIDESpecificTests;
+import java.util.Set;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import com.google.inject.tools.snippets.CodeProblem;
 
 /**
- * Run all the tests for the Eclipse version of the plugin.
+ * Notify the user in realtime of problems with their guice code by code assist or other (nonblocking) means.
+ * These should respond concurrently to the existing flow, i.e. be nonblocking methods.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public class EclipseAllTests extends TestCase {  
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-    
-    suite.addTest(AllNonIDESpecificTests.suite());
-    
-    suite.addTestSuite(EclipseJavaElementTest.class);
-    suite.addTestSuite(StartupTest.class);
-    
-    return suite;
-  }
+public interface ProblemsHandler {
+  /**
+   * Handle a set of problems found with user's code.
+   * 
+   * @param problem
+   */
+  public void foundProblems(Set<? extends CodeProblem> problem);
 }

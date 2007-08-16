@@ -32,7 +32,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.part.ViewPart;
 
 /**
- * Displays error output from the Guice plugin that is logged to the {@link com.google.inject.tools.ideplugin.Messenger}.
+ * Displays error output from the Guice plugin that is logged to the {@link com.google.inject.tools.Messenger}.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */

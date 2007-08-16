@@ -24,17 +24,17 @@
  * 
  * <p>The basic objects in our plugin are:
  * <dl>
- *  <dt>{@link com.google.inject.tools.ideplugin.module.ModuleManager} <dd>manages the modules in the user's code
- *  <dt>{@link com.google.inject.tools.ideplugin.problem.ProblemsHandler} <dd>notifies the user of guice related problems in the code
+ *  <dt>{@link com.google.inject.tools.module.ModuleManager} <dd>manages the modules in the user's code
+ *  <dt>{@link com.google.inject.tools.ProblemsHandler} <dd>notifies the user of guice related problems in the code
  *  <dt>{@link com.google.inject.tools.ideplugin.results.ResultsHandler} <dd>manages results of user queries such as finding bindings
  *  <dt>{@link com.google.inject.tools.ideplugin.bindings.BindingsEngine} <dd>performs the actual lookup of bindings in the code
- *  <dt>{@link com.google.inject.tools.ideplugin.code.CodeRunner} <dd>runs {@link com.google.inject.tools.ideplugin.snippets.CodeSnippet}s in user space to resolve bindings
+ *  <dt>{@link com.google.inject.tools.code.CodeRunner} <dd>runs {@link com.google.inject.tools.snippets.CodeSnippet}s in user space to resolve bindings
  * </dl>
  *
  * <p>Key objects which must be created in IDE specific manner are:
  * <dl>
- *  <dt>{@link com.google.inject.tools.ideplugin.module.ModulesListener} <dd>listen for changes in the user's code involving modules
- *  <dt>{@link com.google.inject.tools.ideplugin.module.ModuleSelectionView} <dd>allow the user to configure what modules the plugin runs
+ *  <dt>{@link com.google.inject.tools.module.ModulesNotifier} <dd>listen for changes in the user's code involving modules
+ *  <dt>{@link com.google.inject.tools.module.ModuleSelectionView} <dd>allow the user to configure what modules the plugin runs
  *  <dt>{@link com.google.inject.tools.ideplugin.results.ResultsView} <dd>displays results of searches, e.g. for bindings
  * </dl>
  * 

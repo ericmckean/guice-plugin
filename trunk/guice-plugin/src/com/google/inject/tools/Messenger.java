@@ -14,28 +14,29 @@
  * limitations under the License.
  */
 
-package com.google.inject.tools.ideplugin.eclipse;
-
-import com.google.inject.tools.ideplugin.AllNonIDESpecificTests;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+package com.google.inject.tools;
 
 /**
- * Run all the tests for the Eclipse version of the plugin.
+ * Responsible for displaying messages to the user in dialog box format.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public class EclipseAllTests extends TestCase {  
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-    
-    suite.addTest(AllNonIDESpecificTests.suite());
-    
-    suite.addTestSuite(EclipseJavaElementTest.class);
-    suite.addTestSuite(StartupTest.class);
-    
-    return suite;
-  }
+public interface Messenger {
+  /**
+   * Display a message to the user in a dialog box.
+   * 
+   * Any thread may call this, the implementation should insure that the actual
+   * execution happens in a UI thread.
+   */
+  public void display(String message);
+  
+  /**
+   * Log a message to the guice error output view.
+   */
+  public void logMessage(String message);
+  
+  /**
+   * Log an exception to the guice error output view.
+   */
+  public void logException(String label, Throwable throwable);
 }

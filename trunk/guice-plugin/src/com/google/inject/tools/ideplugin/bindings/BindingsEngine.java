@@ -16,13 +16,13 @@
 
 package com.google.inject.tools.ideplugin.bindings;
 
+import com.google.inject.tools.Messenger;
+import com.google.inject.tools.ProblemsHandler;
 import com.google.inject.tools.ideplugin.JavaElement;
-import com.google.inject.tools.ideplugin.Messenger;
-import com.google.inject.tools.ideplugin.module.ModuleManager;
-import com.google.inject.tools.ideplugin.module.ModuleContextRepresentation;
-import com.google.inject.tools.ideplugin.problem.ProblemsHandler;
 import com.google.inject.tools.ideplugin.results.CodeLocationsResults;
 import com.google.inject.tools.ideplugin.results.ResultsHandler;
+import com.google.inject.tools.module.ModuleContextRepresentation;
+import com.google.inject.tools.module.ModuleManager;
 
 /**
  * The BindingsEngine is the glue between the other objects; it is responsible
