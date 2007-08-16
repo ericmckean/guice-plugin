@@ -20,9 +20,10 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.ui.texteditor.ITextEditor;
+
+import com.google.inject.tools.Messenger;
 import com.google.inject.tools.ideplugin.ActionsHandler;
-import com.google.inject.tools.ideplugin.Messenger;
-import com.google.inject.tools.ideplugin.module.ModuleManager;
+import com.google.inject.tools.module.ModuleManager;
 import com.google.inject.Singleton;
 import com.google.inject.Inject;
 

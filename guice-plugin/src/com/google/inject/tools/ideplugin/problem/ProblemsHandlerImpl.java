@@ -20,13 +20,14 @@ package com.google.inject.tools.ideplugin.problem;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.tools.ideplugin.Messenger;
-import com.google.inject.tools.ideplugin.snippets.CodeProblem;
+import com.google.inject.tools.Messenger;
+import com.google.inject.tools.ProblemsHandler;
+import com.google.inject.tools.snippets.CodeProblem;
 
 import java.util.Set;
 
 /**
- * Standard implementation of the ErrorsHandler.
+ * Standard implementation of the ProblemsHandler for the IDE plugin.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */

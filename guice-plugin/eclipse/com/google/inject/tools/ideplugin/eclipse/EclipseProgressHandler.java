@@ -23,8 +23,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import com.google.inject.Inject;
-import com.google.inject.tools.ideplugin.Messenger;
-import com.google.inject.tools.ideplugin.ProgressHandler;
+import com.google.inject.tools.Messenger;
+import com.google.inject.tools.ProgressHandler;
 
 /**
  * Eclipse implementation of the {@link ProgressHandler}.
@@ -43,7 +43,7 @@ public class EclipseProgressHandler implements ProgressHandler {
   
   /**
    * (non-Javadoc)
-   * @see com.google.inject.tools.ideplugin.ProgressHandler#isCancelled()
+   * @see com.google.inject.tools.ProgressHandler#isCancelled()
    */
   public boolean isCancelled() {
     return false;
@@ -51,7 +51,7 @@ public class EclipseProgressHandler implements ProgressHandler {
   
   /**
    * (non-Javadoc)
-   * @see com.google.inject.tools.ideplugin.ProgressHandler#step(java.lang.String, com.google.inject.tools.ideplugin.code.CodeRunner)
+   * @see com.google.inject.tools.ProgressHandler#step(java.lang.String, com.google.inject.tools.ideplugin.code.CodeRunner)
    */
   public void step(ProgressStep step) {
     steps.add(step);

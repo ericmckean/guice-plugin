@@ -53,7 +53,6 @@ public class EclipseJavaElementTest extends TestCase {
    */
   public void testElementFields() {
     setUpVariable();
-    System.out.println(element.getClassName());
     assertTrue(element.getClassName().equals("com.google.inject.tools.ideplugin.sample.eclipse.TestVariableClass"));
     assertTrue(element.getName().equals("TestVariable"));
     assertTrue(element.getType().equals(JavaElement.Type.FIELD));

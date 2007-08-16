@@ -20,7 +20,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.inject.tools.ideplugin.JavaProject;
+import com.google.inject.tools.JavaManager;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
@@ -29,11 +29,11 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.osgi.framework.Bundle;
 
 /**
- * Eclipse specific implementation of the {@link JavaProject}.
+ * Eclipse specific implementation of the {@link JavaManager}.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public class EclipseJavaProject implements JavaProject {
+public class EclipseJavaProject implements JavaManager {
   private final IJavaProject project;
   
   public EclipseJavaProject(IJavaProject project) {
@@ -49,7 +49,7 @@ public class EclipseJavaProject implements JavaProject {
   
   /**
    * (non-Javadoc)
-   * @see com.google.inject.tools.ideplugin.JavaProject#getJavaCommand()
+   * @see com.google.inject.tools.JavaManager#getJavaCommand()
    */
   public String getJavaCommand() throws Exception {
     //TODO: fix this
@@ -58,7 +58,7 @@ public class EclipseJavaProject implements JavaProject {
   
   /**
    * (non-Javadoc)
-   * @see com.google.inject.tools.ideplugin.JavaProject#getProjectClasspath()
+   * @see com.google.inject.tools.JavaManager#getProjectClasspath()
    */
   public String getProjectClasspath() throws Exception {
     final List<String> args = new ArrayList<String>();
@@ -83,7 +83,7 @@ public class EclipseJavaProject implements JavaProject {
   
   /**
    * (non-Javadoc)
-   * @see com.google.inject.tools.ideplugin.JavaProject#getSnippetsClasspath()
+   * @see com.google.inject.tools.JavaManager#getSnippetsClasspath()
    */
   public String getSnippetsClasspath() throws Exception {
     Bundle bundle = Platform.getBundle("GuicePlugin");

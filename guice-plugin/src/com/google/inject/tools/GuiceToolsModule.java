@@ -46,9 +46,9 @@ public abstract class GuiceToolsModule extends AbstractModule {
   public interface CodeRunnerFactory {
     /**
      * Create a {@link CodeRunner}.
-     * @param project the {@link JavaProject} to run code in
+     * @param project the {@link JavaManager} to run code in
      */
-    public CodeRunner create(JavaProject project);
+    public CodeRunner create(JavaManager project);
   }
   
   protected static class CodeRunnerFactoryImpl implements CodeRunnerFactory {
@@ -59,7 +59,7 @@ public abstract class GuiceToolsModule extends AbstractModule {
       this.progressHandlerProvider = progressHandlerProvider;
       this.messenger = messenger;
     }
-    public CodeRunner create(JavaProject project) {
+    public CodeRunner create(JavaManager project) {
       return new CodeRunnerImpl(project, progressHandlerProvider.get(), messenger);
     }
   }

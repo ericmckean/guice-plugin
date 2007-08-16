@@ -18,11 +18,13 @@ package com.google.inject.tools.ideplugin;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.tools.GuiceToolsModule;
+import com.google.inject.tools.Messenger;
+import com.google.inject.tools.ProblemsHandler;
 import com.google.inject.tools.ideplugin.bindings.BindingsEngine;
-import com.google.inject.tools.ideplugin.module.ModuleManager;
-import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
-import com.google.inject.tools.ideplugin.problem.ProblemsHandler;
 import com.google.inject.tools.ideplugin.results.ResultsHandler;
+import com.google.inject.tools.module.ModuleManager;
+import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
 
 /** 
  * The main object of the plugin.  Unfortunately, it must be created in IDE specific ways.
@@ -39,8 +41,8 @@ public abstract class GuicePlugin {
    * 
    * @param module the (IDE specific) module to inject based on
    */
-  public GuicePlugin(GuicePluginModule module) {
-    injector = Guice.createInjector(module);
+  public GuicePlugin(GuicePluginModule module, GuiceToolsModule toolsModule) {
+    injector = Guice.createInjector(module, toolsModule);
   }
   
   /**

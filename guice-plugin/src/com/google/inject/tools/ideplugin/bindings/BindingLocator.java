@@ -16,8 +16,8 @@
 
 package com.google.inject.tools.ideplugin.bindings;
 
-import com.google.inject.tools.ideplugin.module.ModuleContextRepresentation;
-import com.google.inject.tools.ideplugin.snippets.BindingCodeLocation;
+import com.google.inject.tools.module.ModuleContextRepresentation;
+import com.google.inject.tools.snippets.BindingCodeLocation;
 
 /**
  * The BindingLocater performs the actual determination of what an interface is bound to

@@ -30,20 +30,20 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import com.google.inject.Singleton;
 import com.google.inject.Inject;
-import com.google.inject.tools.ideplugin.module.ModulesListener;
-import com.google.inject.tools.ideplugin.module.ModuleManager;
-import com.google.inject.tools.ideplugin.Messenger;
-import com.google.inject.tools.ideplugin.JavaProject;
+import com.google.inject.tools.JavaManager;
+import com.google.inject.tools.Messenger;
+import com.google.inject.tools.module.ModuleManager;
+import com.google.inject.tools.module.ModulesNotifier;
 
 //TODO: check that listens to module code changes correctly
 
 /**
- * Eclipse implementation of the {@link ModulesListener}.
+ * Eclipse implementation of the {@link ModulesNotifier}.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 @Singleton
-public class EclipseModulesListener implements ModulesListener {
+public class EclipseModulesListener implements ModulesNotifier {
   private final Messenger messenger;
   private final HashSet<String> modules;
   private final ModuleManager moduleManager;
@@ -67,9 +67,9 @@ public class EclipseModulesListener implements ModulesListener {
   
   /**
    * (non-Javadoc)
-   * @see com.google.inject.tools.ideplugin.module.ModulesListener#projectChanged(com.google.inject.tools.ideplugin.JavaProject)
+   * @see com.google.inject.tools.module.ModulesNotifier#projectChanged(com.google.inject.tools.JavaManager)
    */
-  public void projectChanged(JavaProject project) {
+  public void projectChanged(JavaManager project) {
     if (project instanceof EclipseJavaProject) {
       javaProject = ((EclipseJavaProject)project).getIJavaProject();
       initialize();
@@ -99,7 +99,7 @@ public class EclipseModulesListener implements ModulesListener {
   
   /**
    * (non-Javadoc)
-   * @see com.google.inject.tools.ideplugin.module.ModulesListener#findModules()
+   * @see com.google.inject.tools.module.ModulesNotifier#findModules()
    */
   public Set<String> findModules() {
     if (typeHierarchy!=null) {
@@ -171,7 +171,7 @@ public class EclipseModulesListener implements ModulesListener {
   
   /**
    * (non-Javadoc)
-   * @see com.google.inject.tools.ideplugin.module.ModulesListener#findChanges()
+   * @see com.google.inject.tools.module.ModulesNotifier#findChanges()
    */
   public void findChanges() {
     if (javaProject != null) findModulesInCode();

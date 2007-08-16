@@ -21,11 +21,12 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PlatformUI;
 
 import com.google.inject.Inject;
+import com.google.inject.tools.GuiceToolsModule;
+import com.google.inject.tools.Messenger;
 import com.google.inject.tools.ideplugin.GuicePlugin;
-import com.google.inject.tools.ideplugin.Messenger;
-import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
 import com.google.inject.tools.ideplugin.results.ResultsView;
 import com.google.inject.tools.ideplugin.results.Results;
+import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
 
 /**
  * Eclipse implementation of the GuicePlugin.
@@ -82,7 +83,7 @@ public class EclipseGuicePlugin extends GuicePlugin {
    * 
    * @param module the guice module to inject from
    */
-  public EclipseGuicePlugin(EclipsePluginModule module) {
-    super(module);
+  public EclipseGuicePlugin(EclipsePluginModule module, GuiceToolsModule toolsModule) {
+    super(module, toolsModule);
   }
 }

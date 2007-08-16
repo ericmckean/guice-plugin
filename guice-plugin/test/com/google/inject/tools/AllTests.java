@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 
-package com.google.inject.tools.ideplugin;
+package com.google.inject.tools;
 
-import com.google.inject.tools.AllTests;
+import com.google.inject.tools.CodeRunnerTest;
+import com.google.inject.tools.ModuleContextRepresentationTest;
+import com.google.inject.tools.ModuleContextSnippetTest;
+import com.google.inject.tools.ModuleManagerTest;
+import com.google.inject.tools.ModuleRepresentationTest;
+import com.google.inject.tools.ModuleSnippetTest;
 
 import junit.framework.TestSuite;
 import junit.framework.Test;
@@ -26,14 +31,16 @@ import junit.framework.Test;
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public class AllNonIDESpecificTests {
+public class AllTests {
   public static Test suite() {
     TestSuite suite = new TestSuite();
     
-    suite.addTest(AllTests.suite());
-    
-    suite.addTestSuite(CodeLocationsResultsTest.class);
-    suite.addTestSuite(ResultsHandlerTest.class);
+    suite.addTestSuite(CodeRunnerTest.class);
+    suite.addTestSuite(ModuleContextRepresentationTest.class);
+    suite.addTestSuite(ModuleRepresentationTest.class);
+    suite.addTestSuite(ModuleManagerTest.class);
+    suite.addTestSuite(ModuleSnippetTest.class);
+    suite.addTestSuite(ModuleContextSnippetTest.class);
     
     return suite;
   }

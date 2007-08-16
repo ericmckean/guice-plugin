@@ -20,11 +20,12 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.tools.ideplugin.Fakes.FakeActionsHandler;
+import com.google.inject.tools.ideplugin.Fakes.FakeCodeLocationsResults;
+import com.google.inject.tools.ideplugin.Fakes.MockingGuicePluginModule;
 import com.google.inject.tools.ideplugin.results.CodeLocationsResults;
 import com.google.inject.tools.ideplugin.results.ResultsHandler;
 import com.google.inject.tools.ideplugin.results.ResultsView;
-import com.google.inject.tools.ideplugin.test.Fakes.FakeCodeLocationsResults;
-import com.google.inject.tools.ideplugin.test.Fakes.MockingGuicePluginModule;
 
 /**
  * Unit test the ResultsHander implementation.
@@ -36,14 +37,16 @@ public class ResultsHandlerTest extends TestCase {
    * Test that Locations esults get correctly passed to the ResultsView.
    */
   public void testDisplayLocationsResults() {
-    Injector injector = Guice.createInjector(
-        new MockingGuicePluginModule().useRealResultsHandler()
-        .useResultsView(EasyMock.createMock(ResultsView.class)));
-    ResultsHandler resultsHandler = injector.getInstance(ResultsHandler.class);
-    ResultsView resultsView = injector.getInstance(ResultsView.class);
     CodeLocationsResults results = new FakeCodeLocationsResults();
+    ResultsView resultsView = EasyMock.createMock(ResultsView.class);
     resultsView.displayResults(results);
     EasyMock.replay(resultsView);
+    Injector injector = Guice.createInjector(
+        new MockingGuicePluginModule()
+          .useRealResultsHandler()
+          .useResultsView(resultsView)
+          .useActionsHandler(new FakeActionsHandler()));
+    ResultsHandler resultsHandler = injector.getInstance(ResultsHandler.class);
     resultsHandler.displayLocationsResults(results);
     EasyMock.verify(resultsView);
   }

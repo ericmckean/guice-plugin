@@ -25,7 +25,8 @@ import org.eclipse.ui.IEditorActionDelegate;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
-import com.google.inject.tools.ideplugin.module.ModuleManager;
+
+import com.google.inject.tools.module.ModuleManager;
 
 /**
  * Menu action to run the modules now.

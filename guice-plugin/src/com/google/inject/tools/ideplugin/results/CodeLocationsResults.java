@@ -19,9 +19,9 @@ package com.google.inject.tools.ideplugin.results;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
-import com.google.inject.tools.ideplugin.snippets.CodeLocation;
-import com.google.inject.tools.ideplugin.snippets.CodeProblem;
 import com.google.inject.tools.ideplugin.results.Results;
+import com.google.inject.tools.snippets.CodeLocation;
+import com.google.inject.tools.snippets.CodeProblem;
 
 /**
  * Represents the results of a code location search, such as finding the bindings of something.
@@ -108,7 +108,7 @@ public class CodeLocationsResults extends Results {
   }
   
   /**
-   * Add a {@link com.google.inject.tools.ideplugin.module.ModuleContextRepresentation} to {@link CodeLocation} pairing to the results.
+   * Add a {@link com.google.inject.tools.module.ModuleContextRepresentation} to {@link CodeLocation} pairing to the results.
    * 
    * @param module the module context
    * @param location the code location
@@ -119,7 +119,7 @@ public class CodeLocationsResults extends Results {
   }
   
   /**
-   * Return all the {@link com.google.inject.tools.ideplugin.module.ModuleContextRepresentation}s in the results.
+   * Return all the {@link com.google.inject.tools.module.ModuleContextRepresentation}s in the results.
    * 
    * @return the modules
    */
@@ -128,7 +128,7 @@ public class CodeLocationsResults extends Results {
   }
   
   /**
-   * Return the {@link CodeLocation} in this results for the given {@link com.google.inject.tools.ideplugin.module.ModuleContextRepresentation}.
+   * Return the {@link CodeLocation} in this results for the given {@link com.google.inject.tools.module.ModuleContextRepresentation}.
    * 
    * @param module the module context
    * @return the code location

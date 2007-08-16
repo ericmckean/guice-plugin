@@ -18,7 +18,7 @@ package com.google.inject.tools.ideplugin.problem;
 
 /**
  * Responsible for listening the changes in the user's code relating to modules and notifying the
- * {@link com.google.inject.tools.ideplugin.problem.ProblemsHandler} of any problems with their code.
+ * {@link com.google.inject.tools.ProblemsHandler} of any problems with their code.
  * This requires IDE specific implementations.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
