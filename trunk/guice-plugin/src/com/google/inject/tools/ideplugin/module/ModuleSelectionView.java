@@ -18,8 +18,8 @@ package com.google.inject.tools.ideplugin.module;
 
 /**
  * Interface for IDE specific objects presenting the module choices to the user.
- * Responsible for notifying the {@link ModuleManager} of the user's selections by creating
- * {@link ModuleContextRepresentation} objects and passing them to the manager.
+ * Responsible for notifying the {@link com.google.inject.tools.module.ModuleManager} of the user's selections by creating
+ * {@link com.google.inject.tools.module.ModuleContextRepresentation} objects and passing them to the manager.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */

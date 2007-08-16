@@ -36,7 +36,7 @@ public class Results {
    */
   public static class Node {
     /**
-     * An ActionStringElement is a piece of text with an {@link Action} associated to it.
+     * An ActionStringElement is a piece of text with an Action associated to it.
      */
     public static class ActionStringElement {
       private final String label;

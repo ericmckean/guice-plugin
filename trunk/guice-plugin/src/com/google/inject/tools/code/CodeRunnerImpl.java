@@ -198,7 +198,7 @@ public class CodeRunnerImpl implements CodeRunner {
   
   /**
    * (non-Javadoc)
-   * @see com.google.inject.tools.code.CodeRunner#run()
+   * @see com.google.inject.tools.code.CodeRunner#run(java.lang.String, boolean)
    */
   public void run(String label, boolean backgroundAutomatically) {
     cancelled = false;

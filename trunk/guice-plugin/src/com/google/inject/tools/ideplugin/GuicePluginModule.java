@@ -109,7 +109,7 @@ public abstract class GuicePluginModule extends AbstractModule {
   protected abstract void bindResultsView(AnnotatedBindingBuilder<ResultsView> builder);
 
   /**
-   * Bind the {@link com.google.inject.tools.module.ModuleSelectionView} instance.
+   * Bind the {@link com.google.inject.tools.ideplugin.module.ModuleSelectionView} instance.
    */
   protected abstract void bindModuleSelectionView(AnnotatedBindingBuilder<ModuleSelectionView> builder);
   
