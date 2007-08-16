@@ -91,4 +91,13 @@ public class EclipseJavaProject implements JavaManager {
     url = FileLocator.toFileURL(url);
     return url.getFile();
   }
+  
+  @Override
+  public boolean equals(Object object) {
+    if (object instanceof EclipseJavaProject) {
+      EclipseJavaProject project = (EclipseJavaProject)object;
+      return project.getIJavaProject().equals(getIJavaProject());
+    }
+    return false;
+  }
 }

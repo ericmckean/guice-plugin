@@ -17,9 +17,7 @@
 package com.google.inject.tools.ideplugin ;
 
 import junit.framework.TestCase;
-
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 import com.google.inject.tools.Fakes.FakeCreationException;
 import com.google.inject.tools.ideplugin.results.CodeLocationsResults;
@@ -61,7 +59,7 @@ public class CodeLocationsResultsTest extends TestCase {
           "com.google.inject.tools.ideplugin.test.MockJavaElement",
           "Valid Module Context",
           "MockGuicePlugin.java", 145,
-          new HashSet<CodeProblem>());
+          Collections.<CodeProblem>emptySet());
     CodeLocationsResults results = new CodeLocationsResults("Test Results",null);
     results.put("Valid Module Context", validLocation);
     return results;
@@ -73,7 +71,7 @@ public class CodeLocationsResultsTest extends TestCase {
           "com.google.inject.tools.ideplugin.test.MockJavaElement",
           "Valid Module Context",
           "MockGuicePlugin.java", 145,
-          new HashSet<CodeProblem>());
+          Collections.<CodeProblem>emptySet());
     
     CodeLocation problemsLocation =
       new BindingCodeLocation(null, "com.google.inject.tools.ideplugin.JavaElement",
