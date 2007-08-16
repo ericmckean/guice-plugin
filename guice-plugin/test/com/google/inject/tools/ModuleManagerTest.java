@@ -31,6 +31,8 @@ import com.google.inject.tools.module.ModuleRepresentation;
 import com.google.inject.tools.module.ModuleRepresentationImpl;
 import com.google.inject.tools.module.ModulesNotifier;
 import com.google.inject.tools.module.ModuleContextRepresentation.ModuleInstanceRepresentation;
+
+import java.util.Collections;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -57,7 +59,7 @@ public class ModuleManagerTest extends TestCase {
       new ModuleContextRepresentationImpl("Empty Module Context");
     
     ModulesNotifier modulesListener = EasyMock.createMock(ModulesNotifier.class);
-    EasyMock.expect(modulesListener.findModules()).andReturn(new HashSet<String>());
+    EasyMock.expect(modulesListener.findModules()).andReturn(Collections.<String>emptySet());
     modulesListener.projectChanged(project);
     EasyMock.replay(modulesListener);
     Injector injector = Guice.createInjector(
@@ -99,7 +101,7 @@ public class ModuleManagerTest extends TestCase {
       new ModuleRepresentationImpl("ModuleWithArguments");
     
     ModulesNotifier modulesListener = EasyMock.createMock(ModulesNotifier.class);
-    EasyMock.expect(modulesListener.findModules()).andReturn(new HashSet<String>());
+    EasyMock.expect(modulesListener.findModules()).andReturn(Collections.<String>emptySet());
     modulesListener.projectChanged(project);
     EasyMock.replay(modulesListener);
     

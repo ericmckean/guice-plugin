@@ -17,7 +17,6 @@
 package com.google.inject.tools;
 
 import java.util.Collections;
-import java.util.HashSet;
 import junit.framework.TestCase;
 import com.google.inject.tools.Messenger;
 import com.google.inject.tools.SampleModuleScenario.WorkingModule;
@@ -102,7 +101,7 @@ public class ModuleRepresentationTest extends TestCase {
     
     private ModuleSnippet.ModuleResult simulatedSnippetResult() {
       return new ModuleSnippet.ModuleResult(WorkingModule.class.getName(),
-          new HashSet<CodeProblem>(), true, Collections.singleton(new DefaultConstructorRepresentation()));
+          Collections.<CodeProblem>emptySet(), true, Collections.singleton(new DefaultConstructorRepresentation()));
     }
   }
 }

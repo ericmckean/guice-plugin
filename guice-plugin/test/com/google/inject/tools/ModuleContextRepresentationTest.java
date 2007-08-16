@@ -16,8 +16,8 @@
 
 package com.google.inject.tools;
 
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import junit.framework.TestCase;
 import com.google.inject.Binding;
@@ -110,7 +110,7 @@ public class ModuleContextRepresentationTest extends TestCase {
       Binding<?> binding = new MockBinding<com.google.inject.tools.SampleModuleScenario.MockInjectedInterface>(com.google.inject.tools.SampleModuleScenario.MockInjectedInterface.class,com.google.inject.tools.SampleModuleScenario.MockInjectedInterfaceImpl.class);
       bindings.put(Key.get(com.google.inject.tools.SampleModuleScenario.MockInjectedInterface.class), binding);
       return new ModuleContextSnippet.ModuleContextResult("Working Module Context",
-          bindings, new HashSet<CodeProblem>());
+          bindings, Collections.<CodeProblem>emptySet());
     }
     
     public class MockBinding<T> implements Binding<T> {

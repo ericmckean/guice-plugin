@@ -19,7 +19,8 @@ package com.google.inject.tools;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 //import java.lang.reflect.Proxy;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.Set;
 import org.easymock.EasyMock;
 import com.google.inject.CreationException;
 import com.google.inject.Inject;
@@ -46,12 +47,7 @@ public class Fakes {
      * Automatically generated serial version UID.
      */
     private static final long serialVersionUID = -6889671178292449161L;
-    private static HashSet<Message> messages = makeMessages();
-    private static HashSet<Message> makeMessages() {
-      HashSet<Message> collection = new HashSet<Message>();
-      collection.add(new Message("Mock Guice Message."));
-      return collection;
-    }
+    private static Set<Message> messages = Collections.singleton(new Message("Mock Guice Message."));
     
     /**
      * Create the Mock object.
@@ -229,7 +225,7 @@ public class Fakes {
     public static class TestSnippetResult extends CodeSnippetResult {
       private final String blah = "blah";
       public TestSnippetResult() {
-        super(new HashSet<CodeProblem>());
+        super(Collections.<CodeProblem>emptySet());
       }
       public String getBlah() {
         return blah;
