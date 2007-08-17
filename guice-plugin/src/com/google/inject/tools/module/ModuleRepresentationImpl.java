@@ -144,4 +144,18 @@ public class ModuleRepresentationImpl implements ModuleRepresentation, CodeRunne
   public String toString() {
     return "Module Representation [" + constructor + "]";
   }
+  
+  @Override
+  public boolean equals(Object object) {
+    if (object instanceof ModuleRepresentation) {
+      return ((ModuleRepresentation)object).getName().equals(getName());
+    } else {
+      return false;
+    }
+  }
+  
+  @Override
+  public int hashCode() {
+    return getName().hashCode();
+  }
 }

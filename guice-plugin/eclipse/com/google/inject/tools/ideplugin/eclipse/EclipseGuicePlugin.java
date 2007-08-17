@@ -17,16 +17,19 @@
 package com.google.inject.tools.ideplugin.eclipse;
 
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PlatformUI;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.google.inject.tools.GuiceToolsModule;
 import com.google.inject.tools.Messenger;
 import com.google.inject.tools.ideplugin.GuicePlugin;
 import com.google.inject.tools.ideplugin.results.ResultsView;
 import com.google.inject.tools.ideplugin.results.Results;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
+import com.google.inject.tools.module.ModuleManager;
 
 /**
  * Eclipse implementation of the GuicePlugin.
@@ -51,6 +54,7 @@ public class EclipseGuicePlugin extends GuicePlugin {
     }
   }
   
+  @Singleton
   public static class ResultsViewImpl implements ResultsView {
     private final Messenger messenger;
     @Inject
@@ -62,19 +66,31 @@ public class EclipseGuicePlugin extends GuicePlugin {
     }
   }
   
+  @Singleton
   public static class ModuleSelectionViewImpl implements ModuleSelectionView {
+    private class GetToUIThread implements Runnable {
+      public void run() {
+        try {
+          if (shell==null || shell.isDisposed()) {
+            shell = new Shell();
+          }
+          new EclipseModuleDialog(shell, moduleManager).display(moduleManager.getModuleContexts(), moduleManager.getActiveModuleContexts(), moduleManager.activateModulesByDefault());
+        } catch (Throwable t) {
+          messenger.logException("Error opening ModuleSelectionView", t);
+        }
+      }
+    }
     private final Messenger messenger;
+    private final ModuleManager moduleManager;
+    private Shell shell;
     @Inject
-    public ModuleSelectionViewImpl(Messenger messenger) {
+    public ModuleSelectionViewImpl(Messenger messenger, ModuleManager moduleManager) {
       this.messenger = messenger;
+      this.moduleManager = moduleManager;
+      this.shell = new Shell();
     }
     public void show() {
-      try {
-        messenger.logMessage("ModuleSelection not yet implemented.");
-        //TODO: do this
-      } catch (Throwable t) {
-        messenger.logException("Error opening ModuleSelectionView", t);
-      }
+      Display.getDefault().syncExec(new GetToUIThread());
     }
   }
   

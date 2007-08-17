@@ -111,7 +111,6 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
       makeFormFromNode(depth+1, child);
     }
     nodeForm.pack();
-    nodeForm.update();
   }
   
   public void useResults(Results results) {
@@ -120,6 +119,8 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
       form = null;
     }
     form = toolkit.createScrolledForm(parent);
+    form.setExpandHorizontal(true);
+    form.setExpandVertical(true);
     GridLayout layout = new GridLayout();
     layout.marginHeight = 0;
     layout.marginBottom = 0;
@@ -138,7 +139,6 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
     }
     form.pack();
     form.reflow(true);
-    form.update();
   }
   
   private void showMessage(String message) {

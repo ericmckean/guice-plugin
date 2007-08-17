@@ -16,6 +16,9 @@
 
 package com.google.inject.tools.ideplugin.eclipse;
 
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.internal.ui.JavaPlugin;
+import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorActionDelegate;
@@ -23,6 +26,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
+import com.google.inject.tools.module.ModuleManager;
 
 /**
  * Responds to the user choosing configure from the Guice menu by opening the configure
@@ -30,18 +34,39 @@ import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
+@SuppressWarnings("restriction")
+//TODO: remove internal class use if possible
 public class GuicePluginConfigureAction implements IEditorActionDelegate, IObjectActionDelegate {
   private final ModuleSelectionView moduleSelectionView;
+  private final ModuleManager moduleManager;
+  private IEditorPart editor;
   
   public GuicePluginConfigureAction() {
     this.moduleSelectionView = Activator.getGuicePlugin().getModuleSelectionView();
+    this.moduleManager = Activator.getGuicePlugin().getModuleManager();
   }
   
-  public void setActiveEditor(IAction action, IEditorPart targetEditor) {}
+  public void setActiveEditor(IAction action, IEditorPart targetEditor) {
+    this.editor = targetEditor;
+  }
   public void setActivePart(IAction action, IWorkbenchPart targetPart) {}
   public void selectionChanged(IAction action, ISelection selection) {}
 
+  private class NonUIThread extends Thread {
+    private final ICompilationUnit cu;
+    public NonUIThread(ICompilationUnit cu) {
+      this.cu = cu;
+    }
+    @Override
+    public void run() {
+      moduleManager.updateModules(new EclipseJavaProject(cu.getJavaProject()), true);
+      moduleSelectionView.show();
+    }
+  }
+  
   public void run(IAction action) {
-    moduleSelectionView.show();
+    ICompilationUnit cu = JavaPlugin.getDefault().getWorkingCopyManager().getWorkingCopy(((CompilationUnitEditor)editor).getEditorInput());
+    Thread nonUIThread = new NonUIThread(cu);
+    nonUIThread.start();
   }
 }

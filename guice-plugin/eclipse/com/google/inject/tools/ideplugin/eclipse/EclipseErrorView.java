@@ -85,9 +85,7 @@ public class EclipseErrorView extends ViewPart {
     String dateString = new SimpleDateFormat("dd/MM HH:mm:ss").format(new Date());
     String msg = "[" + dateString + "]   " + message + "\n";
     toolkit.createLabel(form.getBody(), msg);
-    form.pack();
     form.reflow(true);
-    form.update();
     try {
       this.getViewSite().getWorkbenchWindow().getActivePage().showView("com.google.inject.tools.ideplugin.eclipse.EclipseErrorView");
     } catch (Exception e) {
@@ -118,6 +116,8 @@ public class EclipseErrorView extends ViewPart {
       form = null;
     }
     form = toolkit.createScrolledForm(parent);
+    form.setExpandHorizontal(true);
+    form.setExpandVertical(true);
     GridLayout layout = new GridLayout();
     layout.marginHeight = 3;
     layout.marginBottom = 0;
@@ -130,8 +130,6 @@ public class EclipseErrorView extends ViewPart {
     form.getBody().setLayout(layout);
     form.setText("Guice Error Log");
     createMenu();
-    form.pack();
     form.reflow(true);
-    form.update();
   }
 }

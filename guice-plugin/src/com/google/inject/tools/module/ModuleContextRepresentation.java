@@ -114,6 +114,18 @@ public interface ModuleContextRepresentation {
       }
       return result;
     }
+    
+    @Override
+    public boolean equals(Object object) {
+      if (!(object instanceof ModuleInstanceRepresentation)) return false;
+      ModuleInstanceRepresentation otherModule = (ModuleInstanceRepresentation)object;
+      return otherModule.getClassName().equals(getClassName());
+    }
+    
+    @Override
+    public int hashCode() {
+      return getClassName().hashCode();
+    }
   }
   
   /**
