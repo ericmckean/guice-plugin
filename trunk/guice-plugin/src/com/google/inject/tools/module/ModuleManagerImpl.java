@@ -43,10 +43,13 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
   private final Messenger messenger;
   private final HashMap<JavaManager,HashSet<ModuleRepresentation>> projectModules;
   private final HashMap<JavaManager,HashSet<ModuleContextRepresentation>> projectModuleContexts;
+  private final HashMap<JavaManager, HashSet<ModuleContextRepresentation>> projectActiveModuleContexts;
   private HashSet<ModuleRepresentation> modules;
   private HashSet<ModuleContextRepresentation> moduleContexts;
+  private HashSet<ModuleContextRepresentation> activeModuleContexts;
   private JavaManager currentProject;
   private boolean runAutomatically;
+  private boolean activateByDefault;
   
   /** 
    * Create a ModuleManagerImpl.  This should be done by injection as a singleton.
@@ -62,10 +65,13 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
     this.messenger = messenger;
     projectModules = new HashMap<JavaManager,HashSet<ModuleRepresentation>>();
     projectModuleContexts = new HashMap<JavaManager,HashSet<ModuleContextRepresentation>>();
+    projectActiveModuleContexts = new HashMap<JavaManager,HashSet<ModuleContextRepresentation>>();
     modules = null;
     moduleContexts = null;
+    activeModuleContexts = null;
     currentProject = null;
     runAutomatically = false;
+    activateByDefault = true;
   }
   
   /*
@@ -78,7 +84,7 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
         initModule(moduleName);
       }
     }
-    cleanModules(true, true);
+    cleanAllModules(true, true);
   }
   
   private void initModule(String moduleName) {
@@ -95,21 +101,25 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
         ModuleInstanceRepresentation moduleInstance = new ModuleInstanceRepresentation(module.getName());
         moduleContext.add(moduleInstance);
         moduleContexts.add(moduleContext);
+        if (activateByDefault) activeModuleContexts.add(moduleContext);
       }
     }
   }
   
   /**
    * (non-Javadoc)
-   * @see com.google.inject.tools.module.ModuleManager#addModule(com.google.inject.tools.module.ModuleRepresentation)
+   * @see com.google.inject.tools.module.ModuleManager#addModule(com.google.inject.tools.module.ModuleRepresentation, boolean)
    */
-  public synchronized void addModule(ModuleRepresentation module) throws NoProjectException {
+  public synchronized void addModule(ModuleRepresentation module, boolean createContext) throws NoProjectException {
     if (currentProject != null) {
       modules.add(module);
       if (module.hasDefaultConstructor()) {
         ModuleContextRepresentation moduleContext = new ModuleContextRepresentationImpl(module.getName());
         moduleContext.add(new ModuleInstanceRepresentation(module.getName()));
         moduleContexts.add(moduleContext);
+        if (createContext) {
+          activeModuleContexts.add(moduleContext);
+        }
       }
     } else {
       throw new NoProjectException(this);
@@ -118,14 +128,22 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
   
   /**
    * (non-Javadoc)
-   * @see com.google.inject.tools.module.ModuleManager#addModule(java.lang.String)
+   * @see com.google.inject.tools.module.ModuleManager#initModuleName(java.lang.String)
    */
-  public synchronized void addModule(String moduleName) throws NoProjectException {
+  public synchronized void initModuleName(String moduleName) throws NoProjectException {
+    initModule(moduleName);
+  }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.module.ModuleManager#addModule(java.lang.String, boolean)
+   */
+  public synchronized void addModule(String moduleName, boolean createContext) throws NoProjectException {
     if (currentProject != null) {
       for (ModuleRepresentation module : modules) {
         if (module.getName().equals(moduleName)) return;
       }
-      initModule(moduleName);
+      addModule(new ModuleRepresentationImpl(moduleName), createContext);
     } else {
       throw new NoProjectException(this);
     }
@@ -156,6 +174,7 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
       for (ModuleContextRepresentation moduleContext : moduleContexts) {
         if (moduleContext.contains(module.getName())) {
           moduleContexts.remove(moduleContext);
+          activeModuleContexts.remove(moduleContext);
         }
       }
     } else {
@@ -199,11 +218,12 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
   
   /**
    * (non-Javadoc)
-   * @see com.google.inject.tools.module.ModuleManager#addModuleContext(com.google.inject.tools.module.ModuleContextRepresentation)
+   * @see com.google.inject.tools.module.ModuleManager#addModuleContext(com.google.inject.tools.module.ModuleContextRepresentation, boolean)
    */
-  public synchronized void addModuleContext(ModuleContextRepresentation moduleContext) throws NoProjectException {
+  public synchronized void addModuleContext(ModuleContextRepresentation moduleContext, boolean active) throws NoProjectException {
     if (currentProject != null) {
       moduleContexts.add(moduleContext);
+      if (active) activeModuleContexts.add(moduleContext);
     } else {
       throw new NoProjectException(this);
     }
@@ -232,6 +252,15 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
    */
   public synchronized Set<ModuleContextRepresentation> getModuleContexts() {
     return moduleContexts!=null ? new HashSet<ModuleContextRepresentation>(moduleContexts) : null;
+  }
+  
+  public synchronized Set<ModuleContextRepresentation> getActiveModuleContexts() {
+    return activeModuleContexts!=null ? new HashSet<ModuleContextRepresentation>(activeModuleContexts) : null;
+  }
+  
+  public synchronized Set<ModuleContextRepresentation> getActiveModuleContexts(JavaManager whichProject) {
+    return projectActiveModuleContexts.get(whichProject)!=null ? 
+        new HashSet<ModuleContextRepresentation>(projectActiveModuleContexts.get(whichProject)) : null;
   }
   
   /**
@@ -266,6 +295,7 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
   public synchronized void removeModuleContext(ModuleContextRepresentation moduleContext) throws NoProjectException {
     if (currentProject != null) {
       moduleContexts.remove(moduleContext);
+      activeModuleContexts.remove(moduleContext);
     } else {
       throw new NoProjectException(this);
     }
@@ -281,8 +311,10 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
       if (projectModules.get(currentProject) == null) {
         projectModules.put(currentProject,new HashSet<ModuleRepresentation>());
         projectModuleContexts.put(currentProject,new HashSet<ModuleContextRepresentation>());
+        projectActiveModuleContexts.put(currentProject, new HashSet<ModuleContextRepresentation>());
         modules = projectModules.get(currentProject);
         moduleContexts = projectModuleContexts.get(currentProject);
+        activeModuleContexts = projectActiveModuleContexts.get(currentProject);
         modulesListener.projectChanged(currentProject);
         initModules();
         initContexts();
@@ -304,8 +336,8 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
    * Tells the contexts to run themselves anew.  Uses the progress handler.
    */
   protected synchronized boolean cleanModuleContexts(boolean waitFor, boolean backgroundAutomatically) {
-    CodeRunner codeRunner = codeRunnerFactory.create(currentProject);
-    for (ModuleContextRepresentation moduleContext : moduleContexts) {
+   CodeRunner codeRunner = codeRunnerFactory.create(currentProject);
+    for (ModuleContextRepresentation moduleContext : activeModuleContexts) {
       if (moduleContext.isDirty()) {
         moduleContext.clean(codeRunner);
       }
@@ -323,9 +355,17 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
     return true;
   }
   
+  protected synchronized boolean cleanAllModules(boolean waitFor, boolean backgroundAutomatically) {
+    return cleanModules(waitFor, backgroundAutomatically, modules);
+  }
+  
   protected synchronized boolean cleanModules(boolean waitFor, boolean backgroundAutomatically) {
+    return cleanModules(waitFor, backgroundAutomatically, getModulesInActiveContexts());
+  }
+    
+  protected synchronized boolean cleanModules(boolean waitFor, boolean backgroundAutomatically, Set<ModuleRepresentation> modulesToClean) {
     CodeRunner codeRunner = codeRunnerFactory.create(currentProject);
-    for (ModuleRepresentation module : modules) {
+    for (ModuleRepresentation module : modulesToClean) {
       if (module.isDirty()) {
         module.clean(codeRunner);
       }
@@ -341,6 +381,25 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
       }
     }
     return true;
+  }
+  
+  private Set<ModuleRepresentation> getModulesInActiveContexts() {
+    Set<ModuleRepresentation> activeModules = new HashSet<ModuleRepresentation>();
+    if (currentProject != null) {
+      for (ModuleContextRepresentation moduleContext : activeModuleContexts) {
+        for (ModuleInstanceRepresentation module : moduleContext.getModules()) {
+          activeModules.add(getModule(module.getClassName()));
+        }
+      }
+    }
+    return activeModules;
+  }
+  
+  protected ModuleRepresentation getModule(String name) {
+    for (ModuleRepresentation module : modules) {
+      if (module.getName().equals(name)) return module;
+    }
+    return null;
   }
   
   /**
@@ -381,5 +440,33 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
    */
   public void setRunAutomatically(boolean run) {
     this.runAutomatically = run;
+  }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.module.ModuleManager#activateModulesByDefault()
+   */
+  public boolean activateModulesByDefault() {
+    return activateByDefault;
+  }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.module.ModuleManager#setActivateModulesByDefault(boolean)
+   */
+  public void setActivateModulesByDefault(boolean activateByDefault) {
+    this.activateByDefault = activateByDefault;
+  }
+  
+  public synchronized void activateModuleContext(ModuleContextRepresentation moduleContext) {
+    if (currentProject!=null) {
+      activeModuleContexts.add(moduleContext);
+    }
+  }
+  
+  public synchronized void deactivateModuleContext(ModuleContextRepresentation moduleContext) {
+    if (currentProject!=null) {
+      activeModuleContexts.remove(moduleContext);
+    }
   }
 }

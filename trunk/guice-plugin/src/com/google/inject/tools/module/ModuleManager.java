@@ -41,8 +41,9 @@ public interface ModuleManager {
    * Notify the ModuleManager that a module has been added by the user.
    * 
    * @param module the module added
+   * @param createContext true if the manager should create a new context for this module
    */
-  public void addModule(ModuleRepresentation module) throws NoProjectException;
+  public void addModule(ModuleRepresentation module, boolean createContext) throws NoProjectException;
   
   /**
    * Notify the ModuleManager that a module has been removed by the user.
@@ -55,8 +56,15 @@ public interface ModuleManager {
    * Notify the ModuleManager that a module has been added by the user.
    * 
    * @param moduleName the name of the module added
+   * @param createContext true if the manager should create a new context for this module
    */
-  public void addModule(String moduleName) throws NoProjectException;
+  public void addModule(String moduleName, boolean createContext) throws NoProjectException;
+  
+  /**
+   * Notify the manager that a new module name is available.
+   * This should only be called the {@link ModulesNotifier}.
+   */
+  public void initModuleName(String moduleName);
   
   /**
    * Notify the ModuleManager that a module has been removed by the user.
@@ -96,8 +104,9 @@ public interface ModuleManager {
    * Add a {@link ModuleContextRepresentation} to the manager.
    * 
    * @param moduleContext the module context
+   * @param active true if the context should be marked as active
    */
-  public void addModuleContext(ModuleContextRepresentation moduleContext) throws NoProjectException;
+  public void addModuleContext(ModuleContextRepresentation moduleContext, boolean active) throws NoProjectException;
   
   /**
    * Remove a {@link ModuleContextRepresentation} from the manager.
@@ -134,6 +143,16 @@ public interface ModuleManager {
   public Set<ModuleContextRepresentation> getModuleContexts(JavaManager whichProject);
   
   /**
+   * Return the active contexts.
+   */
+  public Set<ModuleContextRepresentation> getActiveModuleContexts();
+  
+  /**
+   * Return the active contexts for the given project.
+   */
+  public Set<ModuleContextRepresentation> getActiveModuleContexts(JavaManager whichProject);
+  
+  /**
    * Notify the manager that a module has changed; it will tell the contexts.
    * 
    * @param module the module
@@ -157,4 +176,24 @@ public interface ModuleManager {
    * Tell the module manager to run modules automatically as needed.
    */
   public void setRunAutomatically(boolean run);
+  
+  /**
+   * True if newly created modules should be activated by default.
+   */
+  public boolean activateModulesByDefault();
+  
+  /**
+   * Set default activation of modules.
+   */
+  public void setActivateModulesByDefault(boolean activateByDefault);
+  
+  /**
+   * Activate a module context.
+   */
+  public void activateModuleContext(ModuleContextRepresentation moduleContext);
+  
+  /**
+   * Deactivate a module context.
+   */
+  public void deactivateModuleContext(ModuleContextRepresentation moduleContext); 
 }

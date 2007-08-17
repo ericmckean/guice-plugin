@@ -76,8 +76,8 @@ public final class BindingsEngine {
         results.userCancelled();
       } else {
         //TODO: if element.isInjectionPoint() ...
-        if ((moduleManager.getModuleContexts() != null) && (moduleManager.getModuleContexts().size() > 0)) {
-          for (ModuleContextRepresentation moduleContext : moduleManager.getModuleContexts()) {
+        if ((moduleManager.getActiveModuleContexts() != null) && (moduleManager.getActiveModuleContexts().size() > 0)) {
+          for (ModuleContextRepresentation moduleContext : moduleManager.getActiveModuleContexts()) {
             BindingLocator locater = new BindingLocator(theClass,moduleContext);
             if (locater.getCodeLocation()!=null) {
               problemsHandler.foundProblems(locater.getCodeLocation().getProblems());
@@ -88,7 +88,7 @@ public final class BindingsEngine {
             resultsHandler.displayLocationsResults(results);
           }
         } else {
-          messenger.display("No module contexts configured.");
+          messenger.display("No active module contexts configured.");
         }
       }
     }

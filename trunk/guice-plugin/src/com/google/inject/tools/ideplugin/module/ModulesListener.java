@@ -102,7 +102,7 @@ public abstract class ModulesListener implements ModulesNotifier {
       }
     }
     for (String moduleName : newModules) {
-      moduleManager.addModule(moduleName);
+      moduleManager.initModuleName(moduleName);
       modules.add(moduleName);
     }
   }

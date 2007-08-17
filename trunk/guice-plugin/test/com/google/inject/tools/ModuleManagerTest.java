@@ -69,17 +69,17 @@ public class ModuleManagerTest extends TestCase {
     
     ModuleManager moduleManager = injector.getInstance(ModuleManager.class);
     moduleManager.updateModules(project, true);
-    moduleManager.addModuleContext(workingModuleContext);
+    moduleManager.addModuleContext(workingModuleContext, true);
     assertTrue(moduleManager.getModuleContexts().contains(workingModuleContext));
     assertTrue(moduleManager.getModuleContexts().size() == 1);
-    moduleManager.addModuleContext(emptyModuleContext);
+    moduleManager.addModuleContext(emptyModuleContext, true);
     assertTrue(moduleManager.getModuleContexts().contains(workingModuleContext));
     assertTrue(moduleManager.getModuleContexts().contains(emptyModuleContext));
     assertTrue(moduleManager.getModuleContexts().size() == 2);
     moduleManager.removeModuleContext(workingModuleContext);
     assertTrue(moduleManager.getModuleContexts().contains(emptyModuleContext));
     assertTrue(moduleManager.getModuleContexts().size() == 1);
-    moduleManager.addModuleContext(brokenModuleContext);
+    moduleManager.addModuleContext(brokenModuleContext, true);
     assertTrue(moduleManager.getModuleContexts().contains(emptyModuleContext));
     assertTrue(moduleManager.getModuleContexts().contains(brokenModuleContext));
     assertTrue(moduleManager.getModuleContexts().size() == 2);
@@ -112,17 +112,17 @@ public class ModuleManagerTest extends TestCase {
     
     ModuleManager moduleManager = injector.getInstance(ModuleManager.class);
     moduleManager.updateModules(project, true);
-    moduleManager.addModule(workingModule);
+    moduleManager.addModule(workingModule, false);
     assertTrue(moduleManager.getModules().contains(workingModule));
     assertTrue(moduleManager.getModules().size() == 1);
-    moduleManager.addModule(moduleWithArguments);
+    moduleManager.addModule(moduleWithArguments, false);
     assertTrue(moduleManager.getModules().contains(workingModule));
     assertTrue(moduleManager.getModules().contains(moduleWithArguments));
     assertTrue(moduleManager.getModules().size() == 2);
     moduleManager.removeModule(workingModule);
     assertTrue(moduleManager.getModules().contains(moduleWithArguments));
     assertTrue(moduleManager.getModules().size() == 1);
-    moduleManager.addModule(brokenModule);
+    moduleManager.addModule(brokenModule, false);
     assertTrue(moduleManager.getModules().contains(moduleWithArguments));
     assertTrue(moduleManager.getModules().contains(brokenModule));
     assertTrue(moduleManager.getModules().size() == 2);
@@ -155,7 +155,7 @@ public class ModuleManagerTest extends TestCase {
     assertTrue(module.getName().equals(WorkingModule.class.getName()));
     moduleManager.removeModule(WorkingModule.class.getName());
     assertTrue(moduleManager.getModules().isEmpty());
-    moduleManager.addModule(WorkingModule.class.getName());
+    moduleManager.addModule(WorkingModule.class.getName(), false);
     assertTrue(moduleManager.getModules().size() == 1);
     module = moduleManager.getModules().iterator().next();
     assertTrue(module.getName().equals(WorkingModule.class.getName()));
