@@ -91,19 +91,16 @@ public class EclipseModuleDialog extends Dialog {
     layout.horizontalSpacing = 0;
     layout.verticalSpacing = 0;
     if (moduleContexts == null) {
-      System.out.println("null contexts");
       layout.numColumns = 1;
       form.setLayout(layout);
       toolkit.createLabel(form.getBody(), "No project is currently selected.");
       toolkit.createButton(form.getBody(), "Close", SWT.PUSH).addSelectionListener(cancelListener);
     } else if (moduleContexts.size() == 0) {
-      System.out.println("zero contexts");
       layout.numColumns = 1;
       form.setLayout(layout);
       toolkit.createLabel(form.getBody(), "There are no module contexts available.");
       toolkit.createButton(form.getBody(), "Close", SWT.PUSH).addSelectionListener(cancelListener);
     } else {
-      System.out.println("1+ contexts");
       layout.numColumns = 3;
       form.setLayout(layout);
       toolkit.createLabel(form.getBody(), "Active?", SWT.BOLD);
