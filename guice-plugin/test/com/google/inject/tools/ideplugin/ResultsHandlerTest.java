@@ -22,7 +22,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.tools.ideplugin.Fakes.FakeActionsHandler;
 import com.google.inject.tools.ideplugin.Fakes.FakeCodeLocationsResults;
-import com.google.inject.tools.ideplugin.Fakes.MockingGuicePluginModule;
+import com.google.inject.tools.ideplugin.MockingGuicePluginModule;
 import com.google.inject.tools.ideplugin.results.CodeLocationsResults;
 import com.google.inject.tools.ideplugin.results.ResultsHandler;
 import com.google.inject.tools.ideplugin.results.ResultsView;

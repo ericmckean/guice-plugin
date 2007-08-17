@@ -23,14 +23,19 @@
  * of bindings and then use guice to inject a {@link com.google.inject.tools.module.ModuleManager} in your code.
  * 
  * <p>The {@link com.google.inject.tools.JavaManager}, {@link com.google.inject.tools.ProblemsHandler} and {@link com.google.inject.tools.Messenger} must also
- * be implemented.
+ * be implemented and bound in a subclass of {@link GuiceToolsModule} that should be used
+ * for the injections.
  *  
  * <p>The basic objects in our tool suite are:
  * <dl>
  *  <dt>{@link com.google.inject.tools.module.ModuleManager} <dd>manages the modules in the user's code
+ *  <dt>{@link com.google.inject.tools.module.ModulesNotifier} <dd>notify the manager of changes in modules
  *  <dt>{@link com.google.inject.tools.ProblemsHandler} <dd>notifies the user of guice related problems in the code
  *  <dt>{@link com.google.inject.tools.code.CodeRunner} <dd>runs {@link com.google.inject.tools.snippets.CodeSnippet}s in user space to resolve bindings
  * </dl>
+ * 
+ * <p>There is also the snippets package which is packaged a standalone jar file that
+ * needs to be on the classpath provided by the JavaManager.
  */
 
 package com.google.inject.tools;

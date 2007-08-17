@@ -23,6 +23,13 @@ import com.google.inject.tools.JavaManager;
  * Responsible for tracking the modules which should be run when resolving bindings and injections.
  * The {@link ModulesNotifier} notifies the ModuleManager when these change.
  * 
+ * Users should call updateModules() periodically and then getActiveModuleContexts()
+ * and use the resulting objects to find information about guice modules.
+ * 
+ * The manager supports holding several "projects" in memory, each corresponding to its
+ * own {@link JavaManager}.  Users may ignore this if they wish so long as an 
+ * implementation of JavaManager is available for injection.
+ * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public interface ModuleManager {
@@ -160,12 +167,28 @@ public interface ModuleManager {
   public void moduleChanged(String module);
   
   /**
-   * Ask the Manager to update the module list to be the modules for the given project.
+   * Ask the Manager to update the module list to be the modules for the given project
+   * and to (re)run any dirty module contexts.
    * 
    * @param waitFor true if the current thread should wait for the update
    * @return true if the update succeeded (false if the user cancelled the operation)
    */
   public boolean updateModules(JavaManager javaProject, boolean waitFor);
+  
+  /**
+   * Update the modules for the current project by rerunning any dirty.
+   * 
+   * @param waitFor true if the current thread should wait for the update
+   * @return true if the update succeeded (false if the user cancelled the operation)
+   */
+  public boolean updateModules(boolean waitFor);
+  
+  /**
+   * Wait for the manager to clean the modules in the current project.
+   * 
+   * @return true if the update succeeded (false if the user cancelled the operation)
+   */
+  public boolean updateModules();
   
   /**
    * Return the current {@link JavaManager}.

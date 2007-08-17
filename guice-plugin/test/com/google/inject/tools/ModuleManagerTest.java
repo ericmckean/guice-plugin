@@ -23,7 +23,7 @@ import com.google.inject.Injector;
 import com.google.inject.tools.JavaManager;
 import com.google.inject.tools.SampleModuleScenario.WorkingModule;
 import com.google.inject.tools.Fakes.FakeCodeRunner;
-import com.google.inject.tools.Fakes.MockingGuiceToolsModule;
+import com.google.inject.tools.MockingGuiceToolsModule;
 import com.google.inject.tools.module.ModuleContextRepresentation;
 import com.google.inject.tools.module.ModuleContextRepresentationImpl;
 import com.google.inject.tools.module.ModuleManager;

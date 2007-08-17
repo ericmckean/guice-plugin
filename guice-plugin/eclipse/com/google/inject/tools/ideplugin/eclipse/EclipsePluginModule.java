@@ -38,8 +38,8 @@ public class EclipsePluginModule extends GuicePluginModule {
      * @see com.google.inject.tools.GuiceToolsModule#bindMessenger(com.google.inject.binder.AnnotatedBindingBuilder)
      */
     @Override
-    protected void bindMessenger(AnnotatedBindingBuilder<Messenger> builder) {
-      builder.to(EclipseMessenger.class).asEagerSingleton();
+    protected void bindMessenger(AnnotatedBindingBuilder<Messenger> bindMessenger) {
+      bindMessenger.to(EclipseMessenger.class).asEagerSingleton();
     }
     
     /**
@@ -47,8 +47,8 @@ public class EclipsePluginModule extends GuicePluginModule {
      * @see com.google.inject.tools.GuiceToolsModule#bindModulesListener(com.google.inject.binder.AnnotatedBindingBuilder)
      */
     @Override
-    protected void bindModulesListener(AnnotatedBindingBuilder<ModulesNotifier> builder) {
-      builder.to(EclipseModulesListener.class).asEagerSingleton();
+    protected void bindModulesListener(AnnotatedBindingBuilder<ModulesNotifier> bindModulesListener) {
+      bindModulesListener.to(EclipseModulesListener.class).asEagerSingleton();
     }
   }
   
@@ -64,8 +64,8 @@ public class EclipsePluginModule extends GuicePluginModule {
    * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindResultsView(com.google.inject.binder.AnnotatedBindingBuilder)
    */
   @Override
-  protected void bindResultsView(AnnotatedBindingBuilder<ResultsView> builder) {
-    builder.to(EclipseGuicePlugin.ResultsViewImpl.class).asEagerSingleton();
+  protected void bindResultsView(AnnotatedBindingBuilder<ResultsView> bindResultsView) {
+    bindResultsView.to(EclipseGuicePlugin.ResultsViewImpl.class).asEagerSingleton();
   }
   
   /**
@@ -73,20 +73,20 @@ public class EclipsePluginModule extends GuicePluginModule {
    * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindModuleSelectionView(com.google.inject.binder.AnnotatedBindingBuilder)
    */
   @Override
-  protected void bindModuleSelectionView(AnnotatedBindingBuilder<ModuleSelectionView> builder) {
-    builder.to(EclipseGuicePlugin.ModuleSelectionViewImpl.class).asEagerSingleton();
+  protected void bindModuleSelectionView(AnnotatedBindingBuilder<ModuleSelectionView> bindModuleSelectionView) {
+    bindModuleSelectionView.to(EclipseGuicePlugin.ModuleSelectionViewImpl.class).asEagerSingleton();
   }
   
   /**
    * Bind the {@link ActionsHandler} implementation.
    */
   @Override
-  protected void bindActionsHandler(AnnotatedBindingBuilder<ActionsHandler> builder) {
-    builder.to(EclipseActionsHandler.class).asEagerSingleton();
+  protected void bindActionsHandler(AnnotatedBindingBuilder<ActionsHandler> bindActionsHandler) {
+    bindActionsHandler.to(EclipseActionsHandler.class).asEagerSingleton();
   }
   
   @Override
-  protected void bindProgressHandler(AnnotatedBindingBuilder<ProgressHandler> builder) {
-    builder.to(EclipseProgressHandler.class);
+  protected void bindProgressHandler(AnnotatedBindingBuilder<ProgressHandler> bindProgressHandler) {
+    bindProgressHandler.to(EclipseProgressHandler.class);
   }
 }

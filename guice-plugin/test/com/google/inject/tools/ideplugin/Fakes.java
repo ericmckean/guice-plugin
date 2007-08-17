@@ -20,14 +20,10 @@ import org.easymock.EasyMock;
 import com.google.inject.binder.AnnotatedBindingBuilder;
 import com.google.inject.tools.JavaManager;
 import com.google.inject.tools.ProblemsHandler;
-import com.google.inject.tools.ProgressHandler;
-import com.google.inject.tools.Fakes.MockingGuiceToolsModule.ProxyMock;
 import com.google.inject.tools.ideplugin.ActionsHandler;
 import com.google.inject.tools.ideplugin.GuicePlugin;
-import com.google.inject.tools.ideplugin.GuicePluginModule;
 import com.google.inject.tools.ideplugin.JavaElement;
 import com.google.inject.tools.ideplugin.results.CodeLocationsResults;
-import com.google.inject.tools.ideplugin.results.ResultsHandler;
 import com.google.inject.tools.ideplugin.results.ResultsView;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
 
@@ -143,7 +139,7 @@ public class Fakes {
     }
   }
   
-  public static class MockingGuiceToolsModule extends com.google.inject.tools.Fakes.MockingGuiceToolsModule {
+  public static class MockingGuiceToolsModule extends com.google.inject.tools.MockingGuiceToolsModule {
     private boolean useRealProblemsHandler = false;
     
     /**
@@ -158,108 +154,6 @@ public class Fakes {
     protected void bindProblemsHandler(AnnotatedBindingBuilder<ProblemsHandler> builder) {
       if (useRealProblemsHandler) super.bindProblemsHandler(builder);
       else bindToMockInstance(builder, ProblemsHandler.class);
-    }
-  }
-  
-  public static class MockingGuicePluginModule extends GuicePluginModule {
-    private boolean useRealResultsHandler = false;
-    private boolean useRealBindingsEngine = false;
-    
-    private ResultsHandler resultsHandler = null;
-    private ResultsView resultsView = null;
-    private ModuleSelectionView moduleSelectionView = null;
-    private ActionsHandler actionsHandler = null;
-    private ProgressHandler progressHandler = null;
-    
-    /**
-     * Create a purely mocked module.
-     */
-    public MockingGuicePluginModule() {
-    }
-    
-    /**
-     * Tell the module to use a real ResultsHandler.
-     */
-    public MockingGuicePluginModule useRealResultsHandler() {
-      useRealResultsHandler = true;
-      return this;
-    }
-    
-    public MockingGuicePluginModule useRealBindingsEngine() {
-      useRealBindingsEngine = true;
-      return this;
-    }
-    
-    public MockingGuicePluginModule useResultsHandler(ResultsHandler resultsHandler) {
-      this.resultsHandler = resultsHandler;
-      return this;
-    }
-    
-    public MockingGuicePluginModule useResultsView(ResultsView resultsView) {
-      this.resultsView = resultsView;
-      return this;
-    }
-    
-    public MockingGuicePluginModule useModuleSelectionView(ModuleSelectionView moduleSelectionView) {
-      this.moduleSelectionView = moduleSelectionView;
-      return this;
-    }
-    
-    public MockingGuicePluginModule useActionsHandler(ActionsHandler actionsHandler) {
-      this.actionsHandler = actionsHandler;
-      return this;
-    }
-    
-    public MockingGuicePluginModule useProgressHandler(ProgressHandler progressHandler) {
-      this.progressHandler = progressHandler;
-      return this;
-    }
-    
-    @Override
-    protected void bindBindingsEngine(AnnotatedBindingBuilder<BindingsEngineFactory> builder) {
-      if (useRealBindingsEngine) super.bindBindingsEngine(builder);
-      else bindToMockInstance(builder, BindingsEngineFactory.class);
-    }
-    
-    @Override
-    protected void bindResultsHandler(AnnotatedBindingBuilder<ResultsHandler> builder) {
-      if (resultsHandler!=null) bindToInstance(builder, resultsHandler);
-      else if (useRealResultsHandler) super.bindResultsHandler(builder);
-      else bindToMockInstance(builder, ResultsHandler.class);
-    }
-    
-    @Override
-    protected void bindResultsView(AnnotatedBindingBuilder<ResultsView> builder) {
-      if (resultsView != null) bindToInstance(builder, resultsView);
-      else bindToMockInstance(builder, ResultsView.class);
-    }
-    
-    @Override
-    protected void bindModuleSelectionView(AnnotatedBindingBuilder<ModuleSelectionView> builder) {
-      if (moduleSelectionView != null) bindToInstance(builder, moduleSelectionView);
-      else bindToMockInstance(builder, ModuleSelectionView.class);
-    }
-    
-    @Override
-    protected void bindActionsHandler(AnnotatedBindingBuilder<ActionsHandler> builder) {
-      if (actionsHandler != null) bindToInstance(builder, actionsHandler);
-      else bindToMockInstance(builder, ActionsHandler.class);
-    }
-    
-    @Override
-    protected void bindProgressHandler(AnnotatedBindingBuilder<ProgressHandler> builder) {
-      if (progressHandler != null) bindToInstance(builder, progressHandler);
-      else bindToMockInstance(builder, ProgressHandler.class);
-    }
-    
-    @SuppressWarnings({"unchecked"})
-    protected <T> void bindToMockInstance(AnnotatedBindingBuilder<T> builder, Class<T> theClass) {
-      builder.toInstance(new ProxyMock<T>(theClass).getInstance());
-    }
-    
-    @SuppressWarnings({"unchecked"})
-    protected <T> void bindToInstance(AnnotatedBindingBuilder<T> builder,T instance) {
-      builder.toInstance(instance);
     }
   }
   
