@@ -28,7 +28,7 @@ import com.google.inject.tools.ideplugin.problem.ProblemsHandlerImpl;
  */
 public abstract class GuiceToolsModuleImpl extends GuiceToolsModule {
   @Override
-  protected void bindProblemsHandler(AnnotatedBindingBuilder<ProblemsHandler> builder) {
-    builder.to(ProblemsHandlerImpl.class).asEagerSingleton();
+  protected void bindProblemsHandler(AnnotatedBindingBuilder<ProblemsHandler> bindProblemsHandler) {
+    bindProblemsHandler.to(ProblemsHandlerImpl.class).asEagerSingleton();
   }
 }

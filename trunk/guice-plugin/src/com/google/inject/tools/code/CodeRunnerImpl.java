@@ -23,6 +23,8 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
+
+import com.google.inject.Inject;
 import com.google.inject.tools.JavaManager;
 import com.google.inject.tools.Messenger;
 import com.google.inject.tools.ProgressHandler;
@@ -50,6 +52,7 @@ public class CodeRunnerImpl implements CodeRunner {
     cancelled = false;
   }
   
+  @Inject
   public CodeRunnerImpl(JavaManager project, ProgressHandler progressHandler, Messenger messenger) {
     if (messenger != null) {
       this.messenger = messenger;
@@ -153,6 +156,7 @@ public class CodeRunnerImpl implements CodeRunner {
       done = false;
       List<String> cmd = new ArrayList<String>();
       try {
+        //TODO: fix : to work with any OS
         classpath = project.getSnippetsClasspath() + ":" + project.getProjectClasspath();
         cmd.add(project.getJavaCommand());
         cmd.add("-classpath");

@@ -87,9 +87,10 @@ public class EclipseGuicePlugin extends GuicePlugin {
     public ModuleSelectionViewImpl(Messenger messenger, ModuleManager moduleManager) {
       this.messenger = messenger;
       this.moduleManager = moduleManager;
-      this.shell = new Shell();
+      this.shell = null;
     }
     public void show() {
+      if (shell == null || shell.isDisposed()) shell = new Shell();
       Display.getDefault().syncExec(new GetToUIThread());
     }
   }

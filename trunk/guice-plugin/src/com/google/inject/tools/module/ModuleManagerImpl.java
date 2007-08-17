@@ -58,6 +58,7 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
   public ModuleManagerImpl(ModulesNotifier modulesListener,
       ProblemsHandler problemsHandler,
       Messenger messenger,
+      JavaManager javaManager,
       CodeRunnerFactory codeRunnerFactory) {
     this.modulesListener = modulesListener;
     this.problemsHandler = problemsHandler;
@@ -66,12 +67,34 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
     projectModules = new HashMap<JavaManager,HashSet<ModuleRepresentation>>();
     projectModuleContexts = new HashMap<JavaManager,HashSet<ModuleContextRepresentation>>();
     projectActiveModuleContexts = new HashMap<JavaManager,HashSet<ModuleContextRepresentation>>();
-    modules = null;
-    moduleContexts = null;
-    activeModuleContexts = null;
-    currentProject = null;
+    if (javaManager instanceof NullJavaManager) {
+      modules = null;
+      moduleContexts = null;
+      activeModuleContexts = null;
+      currentProject = null;
+    } else {
+      currentProject = javaManager;
+      projectModules.put(javaManager, new HashSet<ModuleRepresentation>());
+      projectModuleContexts.put(javaManager, new HashSet<ModuleContextRepresentation>());
+      projectActiveModuleContexts.put(javaManager, new HashSet<ModuleContextRepresentation>());
+      modules = projectModules.get(javaManager);
+      moduleContexts = projectModuleContexts.get(javaManager);
+      activeModuleContexts = projectActiveModuleContexts.get(javaManager);
+    }
     runAutomatically = false;
     activateByDefault = true;
+  }
+  
+  public static class NullJavaManager implements JavaManager {
+    public String getJavaCommand() throws Exception {
+      return null;
+    }
+    public String getProjectClasspath() throws Exception {
+      return null;
+    }
+    public String getSnippetsClasspath() throws Exception {
+      return null;
+    }
   }
   
   /*
@@ -330,6 +353,22 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
     } else {
       return true;
     }
+  }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.module.ModuleManager#updateModules(boolean)
+   */
+  public boolean updateModules(boolean waitFor) {
+    return updateModules(currentProject, waitFor);
+  }
+  
+  /**
+   * (non-Javadoc)
+   * @see com.google.inject.tools.module.ModuleManager#updateModules()
+   */
+  public boolean updateModules() {
+    return updateModules(true);
   }
   
   /*

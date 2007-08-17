@@ -92,34 +92,34 @@ public abstract class GuicePluginModule extends AbstractModule {
   /**
    * Bind the {@link BindingsEngine} factory.
    */
-  protected void bindBindingsEngine(AnnotatedBindingBuilder<BindingsEngineFactory> builder) {
-    builder.to(BindingsEngineFactoryImpl.class).asEagerSingleton();
+  protected void bindBindingsEngine(AnnotatedBindingBuilder<BindingsEngineFactory> bindBindingsEngine) {
+    bindBindingsEngine.to(BindingsEngineFactoryImpl.class).asEagerSingleton();
   }
   
   /** 
    * Bind the {@link ResultsHandler} implementation.
    */
-  protected void bindResultsHandler(AnnotatedBindingBuilder<ResultsHandler> builder) {
-    builder.to(ResultsHandlerImpl.class).asEagerSingleton();
+  protected void bindResultsHandler(AnnotatedBindingBuilder<ResultsHandler> bindResultsHandler) {
+    bindResultsHandler.to(ResultsHandlerImpl.class).asEagerSingleton();
   }
   
   /**
    * Bind the {@link com.google.inject.tools.ideplugin.results.ResultsView} instance.
    */
-  protected abstract void bindResultsView(AnnotatedBindingBuilder<ResultsView> builder);
+  protected abstract void bindResultsView(AnnotatedBindingBuilder<ResultsView> bindResultsView);
 
   /**
    * Bind the {@link com.google.inject.tools.ideplugin.module.ModuleSelectionView} instance.
    */
-  protected abstract void bindModuleSelectionView(AnnotatedBindingBuilder<ModuleSelectionView> builder);
+  protected abstract void bindModuleSelectionView(AnnotatedBindingBuilder<ModuleSelectionView> bindModuleSelectionView);
   
   /**
    * Bind the {@link ActionsHandler} implementation.
    */
-  protected abstract void bindActionsHandler(AnnotatedBindingBuilder<ActionsHandler> builder);
+  protected abstract void bindActionsHandler(AnnotatedBindingBuilder<ActionsHandler> bindActionsHandler);
   
   /**
    * Bind the {@link ProgressHandler} implementation.
    */
-  protected abstract void bindProgressHandler(AnnotatedBindingBuilder<ProgressHandler> builder);
+  protected abstract void bindProgressHandler(AnnotatedBindingBuilder<ProgressHandler> bindProgressHandler);
 }
