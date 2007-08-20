@@ -172,7 +172,7 @@ public class ModuleSnippet<T extends Module> extends CodeSnippet {
    */
   public Set<ConstructorRepresentation> getConstructors() {
     final Set<ConstructorRepresentation> cons = new HashSet<ConstructorRepresentation>();
-    for (Constructor<T> constructor : moduleClass.getConstructors()) {
+    for (Constructor<?> constructor : moduleClass.getConstructors()) {
       List<Class<?>> argumentTypes = new ArrayList<Class<?>>();
       Set<Class<?>> exceptionTypes = new HashSet<Class<?>>();
       for (Object arg : constructor.getParameterTypes()) {

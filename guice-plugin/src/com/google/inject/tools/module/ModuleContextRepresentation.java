@@ -115,6 +115,22 @@ public interface ModuleContextRepresentation {
       return result;
     }
     
+    /**
+     * Return a string of how the module instance is created.
+     */
+    public String getCreationString() {
+      StringBuilder text = new StringBuilder();
+      text.append("new " + className + "(");
+      int count = 0;
+      for (Argument argument : arguments) {
+        text.append(argument.value());
+        count++;
+        if (count < arguments.size()) text.append(", ");
+      }
+      text.append(")");
+      return text.toString();
+    }
+    
     @Override
     public boolean equals(Object object) {
       if (!(object instanceof ModuleInstanceRepresentation)) return false;

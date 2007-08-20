@@ -21,7 +21,10 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jdt.core.ElementChangedEvent;
 import org.eclipse.jdt.core.Flags;
+import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IElementChangedListener;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IJavaElementDelta;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.ITypeHierarchy;
 import org.eclipse.jdt.core.ITypeHierarchyChangedListener;
@@ -99,13 +102,25 @@ public class EclipseModulesListener extends ModulesListener {
     }
   }
   
-  //TODO: test that this works
   protected class ModuleElementChangedListener implements IElementChangedListener {
     public void elementChanged(ElementChangedEvent event) {
-      if (event.getDelta().getElement() instanceof IType) {
-        IType type = (IType)event.getDelta().getElement();
-        if (typeHierarchy.contains(type)) {
-          moduleManager.moduleChanged(type.getFullyQualifiedName());
+      handleDelta(event.getDelta());
+    }
+    private void handleDelta(IJavaElementDelta delta) {
+      handleJavaElement(delta.getElement());
+      for (IJavaElementDelta child : delta.getAffectedChildren()) {
+        handleDelta(child);
+      }
+    }
+    private void handleJavaElement(IJavaElement element) {
+      if (element instanceof ICompilationUnit) {
+        ICompilationUnit cu = (ICompilationUnit)element;
+        //TODO: deal with inner classes...
+        IType type = cu.findPrimaryType();
+        if (type != null) {
+          if (typeHierarchy.contains(type)) {
+            moduleManager.moduleChanged(type.getFullyQualifiedName());
+          }
         }
       }
     }
