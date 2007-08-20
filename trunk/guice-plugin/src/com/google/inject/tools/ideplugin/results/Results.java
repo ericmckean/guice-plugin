@@ -42,20 +42,16 @@ public class Results {
       private final String label;
       private final ActionsHandler.Action action;
       private final String tooltip;
-      public ActionStringElement(String label) {
-        this.label = label;
-        this.action = new ActionsHandler.NullAction();
-        this.tooltip = null;
-      }
-      public ActionStringElement(String label, String tooltip) {
-        this.label = label;
-        this.tooltip = tooltip;
-        this.action = new ActionsHandler.NullAction();
-      }
       public ActionStringElement(String label,ActionsHandler.Action action,String tooltip) {
         this.label = label;
         this.action = action;
         this.tooltip = tooltip;
+      }
+      public ActionStringElement(String label) {
+        this(label, new ActionsHandler.NullAction(), null);
+      }
+      public ActionStringElement(String label, String tooltip) {
+        this(label, new ActionsHandler.NullAction(), tooltip);
       }
       public String label() {
         return label;
@@ -69,7 +65,8 @@ public class Results {
       @Override
       public boolean equals(Object object) {
         if (!(object instanceof ActionStringElement)) return false;
-        return label.equals(((ActionStringElement)object).label()) && action.equals(((ActionStringElement)object).action());
+        ActionStringElement element = (ActionStringElement)object;
+        return label.equals(element.label()) && action.equals(element.action());
       }
       @Override
       public int hashCode() {

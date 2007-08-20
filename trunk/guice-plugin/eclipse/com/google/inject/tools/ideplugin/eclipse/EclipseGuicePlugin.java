@@ -71,10 +71,7 @@ public class EclipseGuicePlugin extends GuicePlugin {
     private class GetToUIThread implements Runnable {
       public void run() {
         try {
-          if (shell==null || shell.isDisposed()) {
-            shell = new Shell();
-          }
-          new EclipseModuleDialog(shell, moduleManager).display(moduleManager.getModuleContexts(), moduleManager.getActiveModuleContexts(), moduleManager.activateModulesByDefault());
+          EclipseModuleDialog.display(new Shell(), moduleManager);
         } catch (Throwable t) {
           messenger.logException("Error opening ModuleSelectionView", t);
         }
@@ -82,15 +79,12 @@ public class EclipseGuicePlugin extends GuicePlugin {
     }
     private final Messenger messenger;
     private final ModuleManager moduleManager;
-    private Shell shell;
     @Inject
     public ModuleSelectionViewImpl(Messenger messenger, ModuleManager moduleManager) {
       this.messenger = messenger;
       this.moduleManager = moduleManager;
-      this.shell = null;
     }
     public void show() {
-      if (shell == null || shell.isDisposed()) shell = new Shell();
       Display.getDefault().syncExec(new GetToUIThread());
     }
   }
