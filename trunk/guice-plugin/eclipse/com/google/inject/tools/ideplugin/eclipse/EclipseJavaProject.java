@@ -70,6 +70,8 @@ public class EclipseJavaProject implements JavaManager {
     } catch (Exception e) {
       e.printStackTrace();
     }
+    final String projectRootPath = project.getPath().toOSString();
+    if (!hasprinted) System.out.println(projectRootPath);
     final String workspacePath = project.getProject().getWorkspace().getRoot().getLocation().toOSString();
     final String projectPath = workspacePath + project.getOutputLocation().toOSString();
     args.add(projectPath);

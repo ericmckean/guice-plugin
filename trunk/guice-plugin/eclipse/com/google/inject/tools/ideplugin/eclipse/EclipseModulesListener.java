@@ -76,7 +76,11 @@ public class EclipseModulesListener extends ModulesListener {
   
   private void setTypeHierarchy(EclipseJavaProject javaManager, ITypeHierarchy typeHierarchy) {
     typeHierarchies.put(javaManager, typeHierarchy);
-    getModules(javaManager);
+    try {
+      keepModulesByName(javaManager, locateModules(javaManager));
+    } catch (Throwable throwable) {
+      hadProblem(throwable);
+    }
   }
   
   @Override
@@ -93,7 +97,6 @@ public class EclipseModulesListener extends ModulesListener {
       typeHierarchies.put(javaManager, types.get(javaManager).newTypeHierarchy(null));
       typeHierarchyListeners.put(javaManager, new MyTypeHierarchyChangedListener(javaManager));
       if (typeHierarchies.get(javaManager)!=null) {
-        setTypeHierarchy(javaManager, typeHierarchies.get(javaManager));
         typeHierarchies.get(javaManager).addTypeHierarchyChangedListener(typeHierarchyListeners.get(javaManager));
       }
     } catch (Throwable throwable) {
@@ -124,9 +127,6 @@ public class EclipseModulesListener extends ModulesListener {
   protected Set<String> locateModules(EclipseJavaProject javaManager) throws Throwable {
     if (javaManager != null) {
       final Set<String> moduleNames = new HashSet<String>();
-      if (typeHierarchies.get(javaManager) == null) {
-        initialize(javaManager);
-      }
       typeHierarchies.get(javaManager).refresh(null);
       IType[] subclasses = typeHierarchies.get(javaManager).getAllSubtypes(types.get(javaManager));
       for (IType subclass : subclasses) {
@@ -144,6 +144,9 @@ public class EclipseModulesListener extends ModulesListener {
   
   protected class ModuleElementChangedListener implements IElementChangedListener {
     public void elementChanged(ElementChangedEvent event) {
+      
+      //TODO: deal with closing projects
+      //TODO: make this work
       if (event.getDelta().getKind() == IJavaElementDelta.F_OPENED) {
         if (event.getDelta().getElement() instanceof IJavaProject) {
           EclipseJavaProject javaManager = new EclipseJavaProject((IJavaProject)event.getDelta().getElement());
