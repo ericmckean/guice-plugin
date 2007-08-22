@@ -23,7 +23,7 @@ import com.google.inject.Inject;
 import com.google.inject.binder.AnnotatedBindingBuilder;
 import com.google.inject.tools.code.CodeRunner;
 import com.google.inject.tools.module.ModuleManager;
-import com.google.inject.tools.module.ModulesNotifier;
+import com.google.inject.tools.module.ModulesSource;
 
 /**
  * Implementation of the {@link GuiceToolsModule} that injects mock objects.
@@ -37,7 +37,7 @@ public class MockingGuiceToolsModule extends GuiceToolsModule {
   private Messenger messenger = null;
   private CodeRunner codeRunner = null;
   private ProblemsHandler problemsHandler = null;
-  private ModulesNotifier modulesListener = null;
+  private ModulesSource modulesListener = null;
   
   /**
    * Tell the module to use a real ModuleManager.
@@ -52,7 +52,7 @@ public class MockingGuiceToolsModule extends GuiceToolsModule {
     return this;
   }
   
-  public MockingGuiceToolsModule useModulesListener(ModulesNotifier modulesListener) {
+  public MockingGuiceToolsModule useModulesListener(ModulesSource modulesListener) {
     this.modulesListener = modulesListener;
     return this;
   }
@@ -70,6 +70,13 @@ public class MockingGuiceToolsModule extends GuiceToolsModule {
   public MockingGuiceToolsModule useCodeRunner(CodeRunner codeRunner) {
     this.codeRunner = codeRunner;
     return this;
+  }
+  
+  @Override
+  protected void bindModuleManagerFactory(AnnotatedBindingBuilder<ModuleManagerFactory> builder) {
+    if (useRealModuleManager) super.bindModuleManagerFactory(builder);
+    else if (moduleManager!=null) builder.toInstance(new ModuleManagerInstanceFactory(moduleManager));
+    else builder.to(ModuleManagerMockFactory.class);
   }
   
   @Override
@@ -92,9 +99,9 @@ public class MockingGuiceToolsModule extends GuiceToolsModule {
   }
   
   @Override
-  protected void bindModulesListener(AnnotatedBindingBuilder<ModulesNotifier> builder) {
+  protected void bindModulesListener(AnnotatedBindingBuilder<ModulesSource> builder) {
     if (modulesListener != null) bindToInstance(builder, modulesListener);
-    else bindToMockInstance(builder, ModulesNotifier.class);
+    else bindToMockInstance(builder, ModulesSource.class);
   }
   
   @Override
@@ -165,6 +172,23 @@ public class MockingGuiceToolsModule extends GuiceToolsModule {
     @Inject
     public CodeRunnerMockFactory() {
       super(new ProxyMock<CodeRunner>(CodeRunner.class).getInstance());
+    }
+  }
+  
+  public static class ModuleManagerInstanceFactory implements ModuleManagerFactory {
+    private final ModuleManager instance;
+    public ModuleManagerInstanceFactory(ModuleManager instance) {
+      this.instance = instance;
+    }
+    public ModuleManager create(JavaManager project) {
+      return instance;
+    }
+  }
+  
+  public static class ModuleManagerMockFactory extends ModuleManagerInstanceFactory {
+    @Inject
+    public ModuleManagerMockFactory() {
+      super(new ProxyMock<ModuleManager>(ModuleManager.class).getInstance());
     }
   }
 }

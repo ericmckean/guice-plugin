@@ -17,30 +17,25 @@
 package com.google.inject.tools.module;
 
 import java.util.Set;
-import com.google.inject.tools.JavaManager;
 
 /** 
  * Responsible for tracking the modules which should be run when resolving bindings and injections.
- * The {@link ModulesNotifier} notifies the ModuleManager when these change.
+ * The {@link ModulesSource} notifies the ModuleManager when these change.
  * 
  * Users should call updateModules() periodically and then getActiveModuleContexts()
  * and use the resulting objects to find information about guice modules.
  * 
- * The manager supports holding several "projects" in memory, each corresponding to its
- * own {@link JavaManager}.  Users may ignore this if they wish so long as an 
- * implementation of JavaManager is available for injection.
- * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public interface ModuleManager {
-  public static class NoProjectException extends RuntimeException {
+  public static class NoJavaManagerException extends RuntimeException {
     private final ModuleManager moduleManager;
-    public NoProjectException(ModuleManager moduleManager) {
+    public NoJavaManagerException(ModuleManager moduleManager) {
       this.moduleManager = moduleManager;
     }
     @Override
     public String toString() {
-      return "No project selected in ModuleManager: " + moduleManager;
+      return "No java manager for this ModuleManager: " + moduleManager;
     }
   }
   
@@ -50,14 +45,14 @@ public interface ModuleManager {
    * @param module the module added
    * @param createContext true if the manager should create a new context for this module
    */
-  public void addModule(ModuleRepresentation module, boolean createContext) throws NoProjectException;
+  public void addModule(ModuleRepresentation module, boolean createContext) throws NoJavaManagerException;
   
   /**
    * Notify the ModuleManager that a module has been removed by the user.
    * 
    * @param module the module removed
    */
-  public void removeModule(ModuleRepresentation module) throws NoProjectException;
+  public void removeModule(ModuleRepresentation module) throws NoJavaManagerException;
   
   /**
    * Notify the ModuleManager that a module has been added by the user.
@@ -65,11 +60,11 @@ public interface ModuleManager {
    * @param moduleName the name of the module added
    * @param createContext true if the manager should create a new context for this module
    */
-  public void addModule(String moduleName, boolean createContext) throws NoProjectException;
+  public void addModule(String moduleName, boolean createContext) throws NoJavaManagerException;
   
   /**
    * Notify the manager that a new module name is available.
-   * This should only be called the {@link ModulesNotifier}.
+   * This should only be called the {@link ModulesSource}.
    */
   public void initModuleName(String moduleName);
   
@@ -78,19 +73,12 @@ public interface ModuleManager {
    * 
    * @param moduleName the name of the module removed
    */
-  public void removeModule(String moduleName) throws NoProjectException;
+  public void removeModule(String moduleName) throws NoJavaManagerException;
   
   /**
    * Notify the ModuleManager that all modules for the current project should be cleared from memory.
    */
   public void clearModules();
-  
-  /**
-   * Notify the ModuleManager to clear all modules for the given project.
-   * 
-   * @param whichProject the project to clear modules from
-   */
-  public void clearModules(JavaManager whichProject);
   
   /**
    * Get all modules that have been added for the current project.
@@ -100,39 +88,24 @@ public interface ModuleManager {
   public Set<ModuleRepresentation> getModules();
   
   /**
-   * Get all modules that have been added to the given project.
-   * 
-   * @param whichProject the project
-   * @return the modules
-   */
-  public Set<ModuleRepresentation> getModules(JavaManager whichProject);
-  
-  /**
    * Add a {@link ModuleContextRepresentation} to the manager.
    * 
    * @param moduleContext the module context
    * @param active true if the context should be marked as active
    */
-  public void addModuleContext(ModuleContextRepresentation moduleContext, boolean active) throws NoProjectException;
+  public void addModuleContext(ModuleContextRepresentation moduleContext, boolean active) throws NoJavaManagerException;
   
   /**
    * Remove a {@link ModuleContextRepresentation} from the manager.
    * 
    * @param moduleContext the module context
    */
-  public void removeModuleContext(ModuleContextRepresentation moduleContext) throws NoProjectException;
+  public void removeModuleContext(ModuleContextRepresentation moduleContext) throws NoJavaManagerException;
   
   /**
    * Clear all {@link ModuleContextRepresentation}s from the manager for the current project.
    */
   public void clearModuleContexts();
-  
-  /**
-   * Clear the {@link ModuleContextRepresentation}s from the manager for the given project.
-   * 
-   * @param whichProject the project to clear contexts from
-   */
-  public void clearModuleContexts(JavaManager whichProject);
   
   /**
    * Return a set of all {@link ModuleContextRepresentation}s the manager has for the current project.
@@ -142,22 +115,9 @@ public interface ModuleManager {
   public Set<ModuleContextRepresentation> getModuleContexts();
   
   /**
-   * Return a set of all {@link ModuleContextRepresentation}s for the given project.
-   * 
-   * @param whichProject the project
-   * @return the modules
-   */
-  public Set<ModuleContextRepresentation> getModuleContexts(JavaManager whichProject);
-  
-  /**
    * Return the active contexts.
    */
   public Set<ModuleContextRepresentation> getActiveModuleContexts();
-  
-  /**
-   * Return the active contexts for the given project.
-   */
-  public Set<ModuleContextRepresentation> getActiveModuleContexts(JavaManager whichProject);
   
   /**
    * Notify the manager that a module has changed; it will tell the contexts.
@@ -165,15 +125,6 @@ public interface ModuleManager {
    * @param module the module
    */
   public void moduleChanged(String module);
-  
-  /**
-   * Ask the Manager to update the module list to be the modules for the given project
-   * and to (re)run any dirty module contexts.
-   * 
-   * @param waitFor true if the current thread should wait for the update
-   * @return true if the update succeeded (false if the user cancelled the operation)
-   */
-  public boolean updateModules(JavaManager javaProject, boolean waitFor);
   
   /**
    * Update the modules for the current project by rerunning any dirty.
@@ -189,11 +140,6 @@ public interface ModuleManager {
    * @return true if the update succeeded (false if the user cancelled the operation)
    */
   public boolean updateModules();
-  
-  /**
-   * Return the current {@link JavaManager}.
-   */
-  public JavaManager getCurrentProject();
   
   /**
    * Tell the module manager to run modules automatically as needed.

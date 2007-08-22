@@ -16,79 +16,59 @@
 
 package com.google.inject.tools.ideplugin.module;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import com.google.inject.Inject;
 import com.google.inject.tools.JavaManager;
 import com.google.inject.tools.Messenger;
-import com.google.inject.tools.module.ModuleManager;
-import com.google.inject.tools.module.ModulesNotifier;
+import com.google.inject.tools.ideplugin.ProjectManager;
+import com.google.inject.tools.module.ModulesSource;
 
 /**
- * Abstract implementation of the {@link ModulesNotifier} for the IDE plugins.
+ * Abstract implementation of the {@link ModulesSource} for the IDE plugins.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public abstract class ModulesListener implements ModulesNotifier {
+public abstract class ModulesListener implements ModulesSource {
   protected final Messenger messenger;
-  protected final HashSet<String> modules;
-  protected final ModuleManager moduleManager;
-  protected JavaManager javaManager;
+  protected final ProjectManager projectManager;
+  private final Set<ModulesSourceListener> listeners;
+  private final Map<JavaManager, Set<String>> modules;
   
   /**
    * Create an EclipseModulesListener.  This should be injected.
    */
   @Inject
-  public ModulesListener(ModuleManager moduleManager,Messenger messenger) {
-    this.moduleManager = moduleManager;
+  public ModulesListener(ProjectManager projectManager, Messenger messenger) {
+    this.projectManager = projectManager;
     this.messenger = messenger;
-    modules = new HashSet<String>();
-    try {
-      initialize();
-    } catch (Throwable throwable) {
-      hadProblem(throwable);
-    }
+    this.listeners = new HashSet<ModulesSourceListener>();
+    this.modules = new HashMap<JavaManager, Set<String>>();
   }
-  
-  /**
-   * (non-Javadoc)
-   * @see com.google.inject.tools.module.ModulesNotifier#projectChanged(com.google.inject.tools.JavaManager)
-   */
-  public void projectChanged(JavaManager manager) {
-    javaManager = manager;
-    try {
-      initialize();
-    } catch (Throwable throwable) {
-      hadProblem(throwable);
-    }
-  }
-  
-  /**
-   * Initialize the module listening for a new java project.
-   */
-  protected abstract void initialize() throws Throwable;
   
   /**
    * Locate the modules.
    */
-  protected abstract Set<String> locateModules() throws Throwable;
+  protected abstract Set<String> locateModules(JavaManager javaManager) throws Throwable;
   
-  /**
-   * (non-Javadoc)
-   * @see com.google.inject.tools.module.ModulesNotifier#findModules()
-   */
-  public Set<String> findModules() {
+  public Set<String> getModules(JavaManager javaManager) {
+    if (modules.get(javaManager) == null) {
+      initialize(javaManager);
+    }
     try {
-      keepModulesByName(locateModules());
+      keepModulesByName(javaManager, locateModules(javaManager));
     } catch (Throwable throwable) {
       hadProblem(throwable);
     }
-    return new HashSet<String>(modules);
+    return new HashSet<String>(modules.get(javaManager));
   }
   
-  protected synchronized void keepModulesByName(Set<String> modulesNames) {
+  protected synchronized void keepModulesByName(JavaManager javaManager, Set<String> modulesNames) {
     Set<String> newModules = new HashSet<String>(modulesNames);
-    for (String module : modules) {
+    Set<String> removeModules = new HashSet<String>();
+    for (String module : modules.get(javaManager)) {
       boolean keep = false;
       for (String name : modulesNames) {
         if (name.equals(module)) {
@@ -97,13 +77,22 @@ public abstract class ModulesListener implements ModulesNotifier {
         }
       }
       if (!keep) {
-        modules.remove(module);
-        moduleManager.removeModule(module);
+        removeModules.add(module);
       }
     }
+    for (String module : removeModules) {   
+      modules.get(javaManager).remove(module);
+      moduleRemoved(javaManager, module);
+    }
     for (String moduleName : newModules) {
-      moduleManager.initModuleName(moduleName);
-      modules.add(moduleName);
+      modules.get(javaManager).add(moduleName);
+      moduleAdded(javaManager, moduleName);
+    }
+  }
+  
+  protected void initialize(JavaManager javaManager) {
+    if (modules.get(javaManager) == null) {
+      modules.put(javaManager, new HashSet<String>());
     }
   }
   
@@ -111,11 +100,29 @@ public abstract class ModulesListener implements ModulesNotifier {
     messenger.logException("Modules Listener error", exception);
   }
   
-  /**
-   * (non-Javadoc)
-   * @see com.google.inject.tools.module.ModulesNotifier#findChanges()
-   */
-  public void findChanges() {
-    if (javaManager != null) findModules();
+  public void addListener(ModulesSourceListener listener) {
+    listeners.add(listener);
+  }
+  
+  public void removeListener(ModulesSourceListener listener) {
+    listeners.remove(listener);
+  }
+  
+  protected void moduleChanged(JavaManager javaManager, String moduleName) {
+    for (ModulesSourceListener listener : listeners) {
+      listener.moduleChanged(this, javaManager, moduleName);
+    }
+  }
+  
+  protected void moduleRemoved(JavaManager javaManager, String moduleName) {
+    for (ModulesSourceListener listener : listeners) {
+      listener.moduleRemoved(this, javaManager, moduleName);
+    }
+  }
+  
+  protected void moduleAdded(JavaManager javaManager, String moduleName) {
+    for (ModulesSourceListener listener : listeners) {
+      listener.moduleAdded(this, javaManager, moduleName);
+    }
   }
 }

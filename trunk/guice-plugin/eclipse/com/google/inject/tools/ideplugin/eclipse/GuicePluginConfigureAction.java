@@ -25,8 +25,8 @@ import org.eclipse.ui.IEditorActionDelegate;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
+import com.google.inject.tools.ideplugin.ProjectManager;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
-import com.google.inject.tools.module.ModuleManager;
 
 /**
  * Responds to the user choosing configure from the Guice menu by opening the configure
@@ -38,12 +38,12 @@ import com.google.inject.tools.module.ModuleManager;
 //TODO: remove internal class use if possible
 public class GuicePluginConfigureAction implements IEditorActionDelegate, IObjectActionDelegate {
   private final ModuleSelectionView moduleSelectionView;
-  private final ModuleManager moduleManager;
+  private final ProjectManager projectManager;
   private IEditorPart editor;
   
   public GuicePluginConfigureAction() {
     this.moduleSelectionView = Activator.getGuicePlugin().getModuleSelectionView();
-    this.moduleManager = Activator.getGuicePlugin().getModuleManager();
+    this.projectManager = Activator.getGuicePlugin().getProjectManager();
   }
   
   public void setActiveEditor(IAction action, IEditorPart targetEditor) {
@@ -59,7 +59,7 @@ public class GuicePluginConfigureAction implements IEditorActionDelegate, IObjec
     }
     @Override
     public void run() {
-      moduleManager.updateModules(new EclipseJavaProject(cu.getJavaProject()), true);
+      projectManager.getModuleManager(new EclipseJavaProject(cu.getJavaProject())).updateModules(true);
       moduleSelectionView.show();
     }
   }

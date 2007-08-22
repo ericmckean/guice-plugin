@@ -83,6 +83,11 @@ public class MockingGuicePluginModule extends GuicePluginModule {
   }
   
   @Override
+  protected void bindProjectManager(AnnotatedBindingBuilder<ProjectManager> builder) {
+    bindToMockInstance(builder, ProjectManager.class);
+  }
+  
+  @Override
   protected void bindBindingsEngine(AnnotatedBindingBuilder<BindingsEngineFactory> builder) {
     if (useRealBindingsEngine) super.bindBindingsEngine(builder);
     else bindToMockInstance(builder, BindingsEngineFactory.class);

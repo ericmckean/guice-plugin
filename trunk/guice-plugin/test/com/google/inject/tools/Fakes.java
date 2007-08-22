@@ -111,4 +111,16 @@ public class Fakes {
     public void waitFor() {}
     public void waitFor(Runnable runnable) {}
   }
+  
+  public static class FakeJavaManager implements JavaManager {
+    public String getJavaCommand() throws Exception {
+      return null;
+    }
+    public String getProjectClasspath() throws Exception {
+      return null;
+    }
+    public String getSnippetsClasspath() throws Exception {
+      return null;
+    }
+  }
 }

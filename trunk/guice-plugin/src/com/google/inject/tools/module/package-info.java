@@ -19,7 +19,7 @@
  * 
  * <p>Modules in the user's code are managed by the {@link com.google.inject.tools.module.ModuleManager}
  * which is injected as a singleton. The {@link com.google.inject.tools.ideplugin.module.ModuleSelectionView} 
- * and {@link com.google.inject.tools.module.ModulesNotifier} interfaces must be implemented by IDE 
+ * and {@link com.google.inject.tools.module.ModulesSource} interfaces must be implemented by IDE 
  * specific classes to notify the manager of changes in the user's code and configuration.
  * 
  * <p>Modules are represented by the {@link com.google.inject.tools.module.ModuleRepresentation} class 

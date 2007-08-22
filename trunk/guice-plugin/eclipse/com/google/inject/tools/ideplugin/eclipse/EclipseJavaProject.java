@@ -24,8 +24,10 @@ import com.google.inject.tools.JavaManager;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.osgi.framework.Bundle;
 
 /**
@@ -62,23 +64,60 @@ public class EclipseJavaProject implements JavaManager {
    */
   public String getProjectClasspath() throws Exception {
     final List<String> args = new ArrayList<String>();
-    final IClasspathEntry[] cp = project.getResolvedClasspath(true);
+    IClasspathEntry[] cp = new IClasspathEntry[0];
+    try {
+     cp = project.getResolvedClasspath(false);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     final String workspacePath = project.getProject().getWorkspace().getRoot().getLocation().toOSString();
     final String projectPath = workspacePath + project.getOutputLocation().toOSString();
     args.add(projectPath);
-    for (IClasspathEntry entry : cp ) {
-      if (entry.getOutputLocation() != null) {
-        args.add(entry.getOutputLocation().toOSString());
-      }
-      args.add(entry.getPath().toOSString());
-    }
+    args.addAll(expandClasspath(cp, workspacePath));
     final StringBuilder args2 = new StringBuilder();
     for (int i=0;i<args.size()-1;i++) {
       args2.append(args.get(i));
       args2.append(":");
     }
     args2.append(args.get(args.size()-1));
+    if (!hasprinted) {
+      for (String arg : args) {
+        System.out.println(arg);
+      }
+      hasprinted = true;
+    }
     return args2.toString();
+  }
+  
+  private static boolean hasprinted = false;
+  
+  private List<String> expandClasspath(IClasspathEntry[] entries, String workspacePath) throws Exception {
+    final List<String> args = new ArrayList<String>();
+    for (IClasspathEntry entry : entries ) {
+      switch (entry.getEntryKind()) {
+        case IClasspathEntry.CPE_CONTAINER:
+          IClasspathContainer container = JavaCore.getClasspathContainer(entry.getPath(), project);
+          args.addAll(expandClasspath(container.getClasspathEntries(), workspacePath));
+          break;
+        case IClasspathEntry.CPE_SOURCE:
+          if (entry.getOutputLocation() != null) {
+            args.add(entry.getOutputLocation().toOSString());
+            args.add(workspacePath + entry.getOutputLocation().toOSString());
+          } else {
+            args.add(entry.getPath().toFile().getAbsolutePath());
+            if (!hasprinted) System.out.println("no output loc     " + entry.getPath().toFile().getAbsolutePath());
+          }
+          break;
+        case IClasspathEntry.CPE_LIBRARY:
+          args.add(entry.getPath().makeAbsolute().toOSString());
+          break;
+        case IClasspathEntry.CPE_PROJECT:
+          
+        case IClasspathEntry.CPE_VARIABLE:
+          
+      }
+    }
+    return args;
   }
   
   /**
@@ -99,5 +138,10 @@ public class EclipseJavaProject implements JavaManager {
       return project.getIJavaProject().equals(getIJavaProject());
     }
     return false;
+  }
+  
+  @Override
+  public int hashCode() {
+    return getIJavaProject().hashCode();
   }
 }

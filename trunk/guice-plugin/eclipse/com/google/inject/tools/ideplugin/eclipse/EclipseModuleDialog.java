@@ -65,7 +65,7 @@ public class EclipseModuleDialog extends FormDialog {
     dialog.create();
     dialog.setBlockOnOpen(true);
     dialog.open();
-    if (dialog.getReturnCode() == Window.OK) {
+    if (dialog.getReturnCode() == Window.OK && moduleManager.getActiveModuleContexts() != null && moduleManager.getActiveModuleContexts().size() > 0) {
       dialog.updateSettings();
     }
   }

@@ -16,9 +16,8 @@
 
 package com.google.inject.tools.module;
 
-import java.util.Set;
-
 import com.google.inject.tools.JavaManager;
+import java.util.Set;
 
 /**
  * Responsible for listening to changes in the user's code involving {@link com.google.inject.Module}s.
@@ -27,24 +26,15 @@ import com.google.inject.tools.JavaManager;
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public interface ModulesNotifier {
-  /**
-   * Find the modules in the user's code by name.  The {@link ModuleManager} will call this method
-   * when it is created and if it ever needs to refresh its list.
-   * 
-   * @return the module names
-   */
-  public Set<String> findModules();
+public interface ModulesSource {
+  public Set<String> getModules(JavaManager javaManager);
   
-  /**
-   * Notify the listener that the project changed at the user's request.
-   * 
-   * @param project the new project
-   */
-  public void projectChanged(JavaManager project);
+  public void addListener(ModulesSourceListener listener);
+  public void removeListener(ModulesSourceListener listener);
   
-  /**
-   * Search the user's code for changes to the modules and notify the {@link ModuleManager} of any found.
-   */
-  public void findChanges();
+  public interface ModulesSourceListener {
+    void moduleChanged(ModulesSource source, JavaManager javaManager, String module);
+    void moduleAdded(ModulesSource source, JavaManager javaManager, String module);
+    void moduleRemoved(ModulesSource source, JavaManager javaManager, String module);
+  }
 }

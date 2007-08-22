@@ -21,6 +21,8 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import com.google.inject.Module;
+
+import java.util.Collections;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.List;
@@ -171,6 +173,7 @@ public class ModuleSnippet<T extends Module> extends CodeSnippet {
    * Return the constructors of the module.
    */
   public Set<ConstructorRepresentation> getConstructors() {
+    if (moduleClass != null) {
     final Set<ConstructorRepresentation> cons = new HashSet<ConstructorRepresentation>();
     for (Constructor<?> constructor : moduleClass.getConstructors()) {
       List<Class<?>> argumentTypes = new ArrayList<Class<?>>();
@@ -184,6 +187,7 @@ public class ModuleSnippet<T extends Module> extends CodeSnippet {
       cons.add(new ConstructorRepresentation(argumentTypes,exceptionTypes));
     }
     return cons;
+    } else return Collections.<ConstructorRepresentation>emptySet();
   }
   
   /**

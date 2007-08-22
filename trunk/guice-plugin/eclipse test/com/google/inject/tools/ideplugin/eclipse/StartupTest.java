@@ -23,15 +23,16 @@ import com.google.inject.tools.GuiceToolsModule;
 import com.google.inject.tools.Messenger;
 import com.google.inject.tools.ProblemsHandler;
 import com.google.inject.tools.ProgressHandler;
+import com.google.inject.tools.Fakes.FakeJavaManager;
 import com.google.inject.tools.ideplugin.Fakes.FakeJavaElement;
 import com.google.inject.tools.ideplugin.eclipse.EclipsePluginModule.EclipseGuiceToolsModule;
 import com.google.inject.tools.ideplugin.results.ResultsView;
 import com.google.inject.tools.ideplugin.results.ResultsHandler;
 import com.google.inject.tools.ideplugin.ActionsHandler;
 import com.google.inject.tools.ideplugin.JavaElement;
-import com.google.inject.tools.module.ModuleManager;
+import com.google.inject.tools.ideplugin.ProjectManager;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
-import com.google.inject.tools.module.ModulesNotifier;
+import com.google.inject.tools.module.ModulesSource;
 
 /** 
  * Test the activator and therefore the plugin object and the module for our plugin for guice 
@@ -56,8 +57,8 @@ public class StartupTest extends TestCase {
     EclipsePluginModule module = new EclipsePluginModule();
     EclipseGuiceToolsModule toolsModule = new EclipseGuiceToolsModule();
     Injector injector = Guice.createInjector(module, toolsModule);
-    assertNotNull(injector.getInstance(ModuleManager.class));
-    assertNotNull(injector.getInstance(ModulesNotifier.class));
+    assertNotNull(injector.getInstance(ProjectManager.class));
+    assertNotNull(injector.getInstance(ModulesSource.class));
     assertNotNull(injector.getInstance(ResultsView.class));
     assertNotNull(injector.getInstance(ModuleSelectionView.class));
     assertNotNull(injector.getInstance(ResultsHandler.class));
@@ -68,10 +69,16 @@ public class StartupTest extends TestCase {
     assertNotNull(injector.getInstance(ProgressHandler.class));
   }
   
+  public void testCreateModuleManager() {
+    EclipsePluginModule module = new EclipsePluginModule();
+    GuiceToolsModule toolsModule = new EclipseGuiceToolsModule();
+    new EclipseGuicePlugin(module, toolsModule).getModuleManager(new FakeJavaManager());
+  }
+  
   public void testCreateBindingsEngine() {
     boolean calledMessenger = false;
     EclipsePluginModule module = new EclipsePluginModule();
     GuiceToolsModule toolsModule = new EclipseGuiceToolsModule();
-    new EclipseGuicePlugin(module, toolsModule).getBindingsEngine(new FakeJavaElement(JavaElement.Type.FIELD));
+    new EclipseGuicePlugin(module, toolsModule).getBindingsEngine(new FakeJavaElement(JavaElement.Type.FIELD), new FakeJavaManager());
   }
 }

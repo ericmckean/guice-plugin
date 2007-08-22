@@ -25,8 +25,7 @@ import org.eclipse.ui.IEditorActionDelegate;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
-
-import com.google.inject.tools.module.ModuleManager;
+import com.google.inject.tools.ideplugin.ProjectManager;
 
 /**
  * Menu action to run the modules now.
@@ -36,11 +35,11 @@ import com.google.inject.tools.module.ModuleManager;
 @SuppressWarnings("restriction")
 //TODO: remove internal class use if possible
 public class RunModulesNowAction implements IEditorActionDelegate, IObjectActionDelegate {
-  private final ModuleManager moduleManager;
+  private final ProjectManager projectManager;
   private IEditorPart editor;
   
   public RunModulesNowAction() {
-    this.moduleManager = Activator.getGuicePlugin().getModuleManager();
+    this.projectManager = Activator.getGuicePlugin().getProjectManager();
   }
   
   public void setActiveEditor(IAction action, IEditorPart targetEditor) {
@@ -51,6 +50,6 @@ public class RunModulesNowAction implements IEditorActionDelegate, IObjectAction
 
   public void run(IAction action) {
     ICompilationUnit cu = JavaPlugin.getDefault().getWorkingCopyManager().getWorkingCopy(((CompilationUnitEditor)editor).getEditorInput());
-    moduleManager.updateModules(new EclipseJavaProject(cu.getJavaProject()), false);
+    projectManager.getModuleManager(new EclipseJavaProject(cu.getJavaProject())).updateModules(false);
   }
 }

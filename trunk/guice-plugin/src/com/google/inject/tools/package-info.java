@@ -29,7 +29,7 @@
  * <p>The basic objects in our tool suite are:
  * <dl>
  *  <dt>{@link com.google.inject.tools.module.ModuleManager} <dd>manages the modules in the user's code
- *  <dt>{@link com.google.inject.tools.module.ModulesNotifier} <dd>notify the manager of changes in modules
+ *  <dt>{@link com.google.inject.tools.module.ModulesSource} <dd>notify the manager of changes in modules
  *  <dt>{@link com.google.inject.tools.ProblemsHandler} <dd>notifies the user of guice related problems in the code
  *  <dt>{@link com.google.inject.tools.code.CodeRunner} <dd>runs {@link com.google.inject.tools.snippets.CodeSnippet}s in user space to resolve bindings
  * </dl>

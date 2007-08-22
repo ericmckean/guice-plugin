@@ -52,7 +52,7 @@ public interface ModuleRepresentation {
   
   /**
    * Mark the module as dirty.  This is called by the {@link ModuleManager} 
-   * in response to the {@link ModulesNotifier}.
+   * in response to the {@link ModulesSource}.
    */
   public void makeDirty();
   
