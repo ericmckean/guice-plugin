@@ -45,6 +45,7 @@ public class ProjectManagerImpl implements ProjectManager, ModulesSource.Modules
 
   public void moduleAdded(ModulesSource source, JavaManager javaManager,
       String module) {
+    if (moduleManagers.get(javaManager) == null) projectOpened(javaManager);
     moduleManagers.get(javaManager).initModuleName(module);
   }
 
