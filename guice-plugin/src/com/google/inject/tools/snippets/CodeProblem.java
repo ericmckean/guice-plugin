@@ -218,7 +218,7 @@ public class CodeProblem implements Serializable {
   public CodeProblem(String moduleContext,Throwable exception) {
     this.moduleContext = moduleContext;
     if (exception != null) {
-      this.message = exception.getMessage();
+      this.message = exception.toString();
       this.stacktrace = exception.getStackTrace();
     } else {
       this.message = null;

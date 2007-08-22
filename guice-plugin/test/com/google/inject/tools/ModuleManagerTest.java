@@ -23,13 +23,15 @@ import com.google.inject.Injector;
 import com.google.inject.tools.JavaManager;
 import com.google.inject.tools.SampleModuleScenario.WorkingModule;
 import com.google.inject.tools.Fakes.FakeCodeRunner;
+import com.google.inject.tools.Fakes.FakeJavaManager;
+import com.google.inject.tools.GuiceToolsModule.ModuleManagerFactory;
 import com.google.inject.tools.MockingGuiceToolsModule;
 import com.google.inject.tools.module.ModuleContextRepresentation;
 import com.google.inject.tools.module.ModuleContextRepresentationImpl;
 import com.google.inject.tools.module.ModuleManager;
 import com.google.inject.tools.module.ModuleRepresentation;
 import com.google.inject.tools.module.ModuleRepresentationImpl;
-import com.google.inject.tools.module.ModulesNotifier;
+import com.google.inject.tools.module.ModulesSource;
 import com.google.inject.tools.module.ModuleContextRepresentation.ModuleInstanceRepresentation;
 
 import java.util.Collections;
@@ -46,7 +48,7 @@ public class ModuleManagerTest extends TestCase {
    * Test that adding and removing module contexts works as expected.
    */
   public void testAddRemoveModuleContexts() throws Throwable {    
-    JavaManager project = EasyMock.createMock(JavaManager.class);
+    JavaManager project = new FakeJavaManager();
     ModuleInstanceRepresentation workingModuleInstance =
       new ModuleInstanceRepresentation("WorkingModule");
     ModuleInstanceRepresentation brokenModuleInstance =
@@ -58,17 +60,16 @@ public class ModuleManagerTest extends TestCase {
     ModuleContextRepresentation emptyModuleContext = 
       new ModuleContextRepresentationImpl("Empty Module Context");
     
-    ModulesNotifier modulesListener = EasyMock.createMock(ModulesNotifier.class);
-    EasyMock.expect(modulesListener.findModules()).andReturn(Collections.<String>emptySet());
-    modulesListener.projectChanged(project);
+    ModulesSource modulesListener = EasyMock.createMock(ModulesSource.class);
+    EasyMock.expect(modulesListener.getModules(project)).andReturn(Collections.<String>emptySet());
     EasyMock.replay(modulesListener);
     Injector injector = Guice.createInjector(
         new MockingGuiceToolsModule().useRealModuleManager()
         .useModulesListener(modulesListener)
         .useCodeRunner(new FakeCodeRunner()));
     
-    ModuleManager moduleManager = injector.getInstance(ModuleManager.class);
-    moduleManager.updateModules(project, true);
+    ModuleManager moduleManager = injector.getInstance(ModuleManagerFactory.class).create(project);
+    moduleManager.updateModules(true);
     moduleManager.addModuleContext(workingModuleContext, true);
     assertTrue(moduleManager.getModuleContexts().contains(workingModuleContext));
     assertTrue(moduleManager.getModuleContexts().size() == 1);
@@ -100,9 +101,8 @@ public class ModuleManagerTest extends TestCase {
     ModuleRepresentation moduleWithArguments =
       new ModuleRepresentationImpl("ModuleWithArguments");
     
-    ModulesNotifier modulesListener = EasyMock.createMock(ModulesNotifier.class);
-    EasyMock.expect(modulesListener.findModules()).andReturn(Collections.<String>emptySet());
-    modulesListener.projectChanged(project);
+    ModulesSource modulesListener = EasyMock.createMock(ModulesSource.class);
+    EasyMock.expect(modulesListener.getModules(project)).andReturn(Collections.<String>emptySet());
     EasyMock.replay(modulesListener);
     
     Injector injector = Guice.createInjector(
@@ -110,8 +110,8 @@ public class ModuleManagerTest extends TestCase {
         .useModulesListener(modulesListener)
         .useCodeRunner(new FakeCodeRunner()));
     
-    ModuleManager moduleManager = injector.getInstance(ModuleManager.class);
-    moduleManager.updateModules(project, true);
+    ModuleManager moduleManager = injector.getInstance(ModuleManagerFactory.class).create(project);
+    moduleManager.updateModules(true);
     moduleManager.addModule(workingModule, false);
     assertTrue(moduleManager.getModules().contains(workingModule));
     assertTrue(moduleManager.getModules().size() == 1);
@@ -136,11 +136,10 @@ public class ModuleManagerTest extends TestCase {
   public void testAddRemoveByName() {
     JavaManager project = EasyMock.createMock(JavaManager.class);
     
-    ModulesNotifier modulesListener = EasyMock.createMock(ModulesNotifier.class);
+    ModulesSource modulesListener = EasyMock.createMock(ModulesSource.class);
     Set<String> moduleNames = new HashSet<String>();
     moduleNames.add(WorkingModule.class.getName());
-    modulesListener.projectChanged(project);
-    EasyMock.expect(modulesListener.findModules()).andReturn(moduleNames);
+    EasyMock.expect(modulesListener.getModules(project)).andReturn(moduleNames);
     EasyMock.replay(modulesListener);
     
     Injector injector = Guice.createInjector(
@@ -148,8 +147,8 @@ public class ModuleManagerTest extends TestCase {
         .useModulesListener(modulesListener)
         .useCodeRunner(new FakeCodeRunner()));
     
-    ModuleManager moduleManager = injector.getInstance(ModuleManager.class);
-    moduleManager.updateModules(project, true);
+    ModuleManager moduleManager = injector.getInstance(ModuleManagerFactory.class).create(project);
+    moduleManager.updateModules(true);
     assertTrue(moduleManager.getModules().size() == 1);
     ModuleRepresentation module = moduleManager.getModules().iterator().next();
     assertTrue(module.getName().equals(WorkingModule.class.getName()));
@@ -168,11 +167,10 @@ public class ModuleManagerTest extends TestCase {
   public void testInitializesModules() {
     JavaManager project = EasyMock.createMock(JavaManager.class);
     
-    ModulesNotifier modulesListener = EasyMock.createMock(ModulesNotifier.class);
+    ModulesSource modulesListener = EasyMock.createMock(ModulesSource.class);
     Set<String> moduleNames = new HashSet<String>();
     moduleNames.add(WorkingModule.class.getName());
-    modulesListener.projectChanged(project);
-    EasyMock.expect(modulesListener.findModules()).andReturn(moduleNames);
+    EasyMock.expect(modulesListener.getModules(project)).andReturn(moduleNames);
     EasyMock.replay(modulesListener);
     
     Injector injector = Guice.createInjector(
@@ -180,8 +178,8 @@ public class ModuleManagerTest extends TestCase {
         .useModulesListener(modulesListener)
         .useCodeRunner(new FakeCodeRunner()));
     
-    ModuleManager moduleManager = injector.getInstance(ModuleManager.class);
-    moduleManager.updateModules(project, true);
+    ModuleManager moduleManager = injector.getInstance(ModuleManagerFactory.class).create(project);
+    moduleManager.updateModules(true);
     assertTrue(moduleManager.getModules().size() == 1);
     ModuleRepresentation module = moduleManager.getModules().iterator().next();
     assertTrue(module.getName().equals(WorkingModule.class.getName()));

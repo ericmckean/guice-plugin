@@ -83,7 +83,7 @@ public class EclipseErrorView extends ViewPart {
    */
   public void displayError(String message) {
     String dateString = new SimpleDateFormat("dd/MM HH:mm:ss").format(new Date());
-    String msg = "[" + dateString + "]   " + message + "\n";
+    String msg = "[" + dateString + "]   " + message;
     toolkit.createLabel(form.getBody(), msg);
     form.reflow(true);
     try {

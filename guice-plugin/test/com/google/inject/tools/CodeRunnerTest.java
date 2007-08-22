@@ -38,7 +38,7 @@ public class CodeRunnerTest extends TestCase implements CodeRunner.CodeRunListen
   private static final String CLASSPATH = "/Users/d/Documents/workspace/Guice Plugin/bin";
   
   private boolean hitDone = false;
-  private boolean hitResult = true;
+  private boolean hitResult = false;
   
   public void testCodeRunnerSimple() throws Exception {
     CodeRunner runner = new CodeRunnerImpl(new MockJavaProject());
@@ -138,8 +138,9 @@ public class CodeRunnerTest extends TestCase implements CodeRunner.CodeRunListen
       BufferedReader r = new BufferedReader(ir);
       String line;
       try {
-        while ((line = r.readLine()) != null)
+        while ((line = r.readLine()) != null) {
           fail();
+        }
       } catch (Exception e) {
       }
     }

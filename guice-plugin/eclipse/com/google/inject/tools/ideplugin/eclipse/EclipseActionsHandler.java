@@ -23,7 +23,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.google.inject.tools.Messenger;
 import com.google.inject.tools.ideplugin.ActionsHandler;
-import com.google.inject.tools.module.ModuleManager;
+import com.google.inject.tools.ideplugin.ProjectManager;
 import com.google.inject.Singleton;
 import com.google.inject.Inject;
 
@@ -34,15 +34,15 @@ import com.google.inject.Inject;
  */
 @Singleton
 public class EclipseActionsHandler extends ActionsHandler {
-  private final ModuleManager moduleManager;
+  private final ProjectManager projectManager;
   private final Messenger messenger;
   
   /**
    * Create the ActionsHandler.  This should be injected as a singleton.
    */
   @Inject
-  public EclipseActionsHandler(ModuleManager moduleManager, Messenger messenger) {
-    this.moduleManager = moduleManager;
+  public EclipseActionsHandler(ProjectManager projectManager, Messenger messenger) {
+    this.projectManager = projectManager;
     this.messenger = messenger;
   }
   
@@ -53,7 +53,7 @@ public class EclipseActionsHandler extends ActionsHandler {
   @Override
   public void run(GotoCodeLocation action) {
     try {
-      IType type = ((EclipseJavaProject)moduleManager.getCurrentProject()).getIJavaProject().findType(action.getStackTraceElement().getClassName());
+      IType type = ((EclipseJavaProject)projectManager.getCurrentProject()).getIJavaProject().findType(action.getStackTraceElement().getClassName());
       ICompilationUnit cu = type.getCompilationUnit();
       ITextEditor editor = ((ITextEditor)JavaUI.openInEditor(cu));
       int offset = editor.getDocumentProvider().getDocument(editor.getEditorInput())
@@ -69,7 +69,7 @@ public class EclipseActionsHandler extends ActionsHandler {
   @Override
   public void run(GotoFile action) {
     try {
-      IType type = ((EclipseJavaProject)moduleManager.getCurrentProject()).getIJavaProject().findType(action.getClassname());
+      IType type = ((EclipseJavaProject)projectManager.getCurrentProject()).getIJavaProject().findType(action.getClassname());
       ICompilationUnit cu = type.getCompilationUnit();
       JavaUI.openInEditor(cu);
     } catch (Exception exception) {

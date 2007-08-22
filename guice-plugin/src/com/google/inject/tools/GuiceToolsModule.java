@@ -24,7 +24,10 @@ import com.google.inject.tools.code.CodeRunner;
 import com.google.inject.tools.code.CodeRunnerImpl;
 import com.google.inject.tools.module.ModuleManager;
 import com.google.inject.tools.module.ModuleManagerImpl;
-import com.google.inject.tools.module.ModulesNotifier;
+import com.google.inject.tools.module.ModulesSource;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The guice module controlling the tools suite.
@@ -65,22 +68,58 @@ public abstract class GuiceToolsModule extends AbstractModule {
     }
   }
   
+  public interface ModuleManagerFactory {
+    public ModuleManager create(JavaManager javaManager);
+  }
+  
+  protected static class ModuleManagerFactoryImpl implements ModuleManagerFactory {
+    private final Provider<ModulesSource> modulesSourceProvider;
+    private final Provider<ProblemsHandler> problemsHandlerProvider;
+    private final Provider<Messenger> messengerProvider;
+    private final Provider<CodeRunnerFactory> codeRunnerFactoryProvider;
+    private final Map<JavaManager, ModuleManager> moduleManagerInstances;
+    @Inject
+    public ModuleManagerFactoryImpl(Provider<ModulesSource> modulesSourceProvider,
+        Provider<ProblemsHandler> problemsHandlerProvider,
+        Provider<Messenger> messengerProvider,
+        Provider<CodeRunnerFactory> codeRunnerFactoryProvider) {
+      this.modulesSourceProvider = modulesSourceProvider;
+      this.problemsHandlerProvider = problemsHandlerProvider;
+      this.messengerProvider = messengerProvider;
+      this.codeRunnerFactoryProvider = codeRunnerFactoryProvider;
+      this.moduleManagerInstances = new HashMap<JavaManager, ModuleManager>();
+    }
+    public ModuleManager create(JavaManager javaManager) {
+      if (moduleManagerInstances.get(javaManager) == null) {
+        moduleManagerInstances.put(javaManager,
+            new ModuleManagerImpl(modulesSourceProvider.get(), problemsHandlerProvider.get(),
+                messengerProvider.get(), javaManager, codeRunnerFactoryProvider.get()));
+      }
+      return moduleManagerInstances.get(javaManager);
+    }
+  }
+  
   @Override
   protected void configure() {
     bindCodeRunnerFactory(bind(CodeRunnerFactory.class));
     bindCodeRunner(bind(CodeRunner.class));
+    bindModuleManagerFactory(bind(ModuleManagerFactory.class));
     bindModuleManager(bind(ModuleManager.class));
-    bindModulesListener(bind(ModulesNotifier.class));
+    bindModulesListener(bind(ModulesSource.class));
     bindProblemsHandler(bind(ProblemsHandler.class));
     bindMessenger(bind(Messenger.class));
     bindJavaManager(bind(JavaManager.class));
+  }
+  
+  protected void bindModuleManagerFactory(AnnotatedBindingBuilder<ModuleManagerFactory> bindModuleManagerFactory) {
+    bindModuleManagerFactory.to(ModuleManagerFactoryImpl.class).asEagerSingleton();
   }
   
   /** 
    * Bind the {@link ModuleManager} implementation.
    */
   protected void bindModuleManager(AnnotatedBindingBuilder<ModuleManager> bindModuleManager) {
-    bindModuleManager.to(ModuleManagerImpl.class).asEagerSingleton();
+    bindModuleManager.to(ModuleManagerImpl.class);
   }
   
   /**
@@ -89,9 +128,9 @@ public abstract class GuiceToolsModule extends AbstractModule {
   protected abstract void bindProblemsHandler(AnnotatedBindingBuilder<ProblemsHandler> bindProblemsHandler);
   
   /**
-   * Bind the {@link com.google.inject.tools.module.ModulesNotifier} implementation.
+   * Bind the {@link com.google.inject.tools.module.ModulesSource} implementation.
    */
-  protected abstract void bindModulesListener(AnnotatedBindingBuilder<ModulesNotifier> bindModulesListener);
+  protected abstract void bindModulesListener(AnnotatedBindingBuilder<ModulesSource> bindModulesListener);
   
   /**
    * Bind the {@link Messenger} implementation.

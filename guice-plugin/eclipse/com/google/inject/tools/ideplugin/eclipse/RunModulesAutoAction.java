@@ -22,8 +22,7 @@ import org.eclipse.ui.IEditorActionDelegate;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
-
-import com.google.inject.tools.module.ModuleManager;
+import com.google.inject.tools.ideplugin.ProjectManager;
 
 /**
  * Menu action to run modules automatically or not.
@@ -32,11 +31,11 @@ import com.google.inject.tools.module.ModuleManager;
  */
 public class RunModulesAutoAction implements IEditorActionDelegate, IObjectActionDelegate {
   private boolean state;
-  private final ModuleManager moduleManager;
+  private final ProjectManager projectManager;
   
   public RunModulesAutoAction() {
     this.state = false;
-    this.moduleManager = Activator.getGuicePlugin().getModuleManager();
+    this.projectManager = Activator.getGuicePlugin().getProjectManager();
   }
   
   public void setActiveEditor(IAction action, IEditorPart targetEditor) {}
@@ -45,6 +44,6 @@ public class RunModulesAutoAction implements IEditorActionDelegate, IObjectActio
 
   public void run(IAction action) {
     state = !state;
-    moduleManager.setRunAutomatically(state);
+    projectManager.getModuleManager().setRunAutomatically(state);
   }
 }

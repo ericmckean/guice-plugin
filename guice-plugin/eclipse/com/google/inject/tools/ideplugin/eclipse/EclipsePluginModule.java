@@ -24,7 +24,7 @@ import com.google.inject.tools.ideplugin.ActionsHandler;
 import com.google.inject.tools.ideplugin.GuiceToolsModuleImpl;
 import com.google.inject.tools.ideplugin.results.ResultsView;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
-import com.google.inject.tools.module.ModulesNotifier;
+import com.google.inject.tools.module.ModulesSource;
 
 /** 
  * The module binding Eclipse implementations to interfaces.
@@ -47,7 +47,7 @@ public class EclipsePluginModule extends GuicePluginModule {
      * @see com.google.inject.tools.GuiceToolsModule#bindModulesListener(com.google.inject.binder.AnnotatedBindingBuilder)
      */
     @Override
-    protected void bindModulesListener(AnnotatedBindingBuilder<ModulesNotifier> bindModulesListener) {
+    protected void bindModulesListener(AnnotatedBindingBuilder<ModulesSource> bindModulesListener) {
       bindModulesListener.to(EclipseModulesListener.class).asEagerSingleton();
     }
   }

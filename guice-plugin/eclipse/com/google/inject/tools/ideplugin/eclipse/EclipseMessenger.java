@@ -45,6 +45,23 @@ public class EclipseMessenger implements Messenger {
     }
   }
   
+  private class ErrorLogDisplayer implements Runnable {
+    private final String message;
+    public ErrorLogDisplayer(String message) {
+      this.message = message;
+    }
+    public void run() {
+      try {
+        IViewPart viewPart = PlatformUI.getWorkbench().getWorkbenchWindows()[0].getActivePage().showView("com.google.inject.tools.ideplugin.eclipse.EclipseErrorView");
+        ((EclipseErrorView)viewPart).displayError(message);
+      } catch (java.lang.IllegalStateException e) {
+        //means we are running in testing mode
+      } catch (Exception e) {
+        System.out.println("Problem displaying error messages..... " + e.toString());
+      }
+    }
+  }
+  
   /**
    * (non-Javadoc)
    * @see com.google.inject.tools.Messenger#display(java.lang.String)
@@ -59,8 +76,9 @@ public class EclipseMessenger implements Messenger {
   
   private void log(String message) {
     try {
-      IViewPart viewPart = PlatformUI.getWorkbench().getWorkbenchWindows()[0].getActivePage().showView("com.google.inject.tools.ideplugin.eclipse.EclipseErrorView");
-      ((EclipseErrorView)viewPart).displayError(message);
+      Display.getDefault().syncExec(new ErrorLogDisplayer(message));
+    } catch (java.lang.UnsatisfiedLinkError error) {
+      //means we are running in testing mode
     } catch (Exception e) {
       System.out.println("Problem displaying error messages..... " + e.toString());
     }

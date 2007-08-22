@@ -20,16 +20,15 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PlatformUI;
-
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.tools.GuiceToolsModule;
 import com.google.inject.tools.Messenger;
 import com.google.inject.tools.ideplugin.GuicePlugin;
+import com.google.inject.tools.ideplugin.ProjectManager;
 import com.google.inject.tools.ideplugin.results.ResultsView;
 import com.google.inject.tools.ideplugin.results.Results;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
-import com.google.inject.tools.module.ModuleManager;
 
 /**
  * Eclipse implementation of the GuicePlugin.
@@ -71,18 +70,18 @@ public class EclipseGuicePlugin extends GuicePlugin {
     private class GetToUIThread implements Runnable {
       public void run() {
         try {
-          EclipseModuleDialog.display(new Shell(), moduleManager);
+          EclipseModuleDialog.display(new Shell(), projectManager.getModuleManager());
         } catch (Throwable t) {
           messenger.logException("Error opening ModuleSelectionView", t);
         }
       }
     }
     private final Messenger messenger;
-    private final ModuleManager moduleManager;
+    private final ProjectManager projectManager;
     @Inject
-    public ModuleSelectionViewImpl(Messenger messenger, ModuleManager moduleManager) {
+    public ModuleSelectionViewImpl(Messenger messenger, ProjectManager projectManager) {
       this.messenger = messenger;
-      this.moduleManager = moduleManager;
+      this.projectManager = projectManager;
     }
     public void show() {
       Display.getDefault().syncExec(new GetToUIThread());

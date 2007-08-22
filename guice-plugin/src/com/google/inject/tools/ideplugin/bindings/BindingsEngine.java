@@ -72,7 +72,7 @@ public final class BindingsEngine {
     public void run() {
       final String theClass = element.getClassName();
       final CodeLocationsResults results = new CodeLocationsResults("Bindings for " + CodeLocationsResults.shorten(theClass),theClass);
-      if (!moduleManager.updateModules(element.getJavaProject(), true)) {
+      if (!moduleManager.updateModules(true)) {
         results.userCancelled();
       } else {
         //TODO: if element.isInjectionPoint() ...

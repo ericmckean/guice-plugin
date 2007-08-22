@@ -66,6 +66,7 @@ public class ModuleContextSnippet extends CodeSnippet {
           } else {
             try {
               bindTo = binding.getProvider().get().getClass().getName();
+              //TODO: if not STE then treat as String
               source = (StackTraceElement)binding.getSource();
               file = source.getFileName();
               location = source.getLineNumber();

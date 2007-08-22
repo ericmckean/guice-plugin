@@ -57,7 +57,7 @@ public class BindingsObjectAction implements IObjectActionDelegate {
   public void run(IAction action) {
     IJavaElement element = (IJavaElement)((IStructuredSelection)part.getSite().getSelectionProvider().getSelection()).getFirstElement();
     ICompilationUnit cu = (ICompilationUnit)element.getAncestor(IJavaElement.COMPILATION_UNIT);
-    guicePlugin.getBindingsEngine(new EclipseJavaElement(element,cu));
+    guicePlugin.getBindingsEngine(new EclipseJavaElement(element,cu), new EclipseJavaProject(element.getJavaProject()));
   }
   
   /**
