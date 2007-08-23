@@ -127,12 +127,20 @@ public interface ModuleManager {
   public void moduleChanged(String module);
   
   /**
-   * Update the modules for the current project by rerunning any dirty.
+   * Update the modules by rerunning any dirty.
    * 
    * @param waitFor true if the current thread should wait for the update
    * @return true if the update succeeded (false if the user canceled the operation)
    */
   public boolean updateModules(boolean waitFor);
+  
+  /**
+   * (Re)run the modules by marking them all as dirty and then updating.
+   * 
+   * @param waitFor true if the current thread should wait for the update
+   * @return true if the update succeeded (false on user cancel)
+   */
+  public boolean rerunModules(boolean waitFor);
   
   /**
    * (Re)run the modules in user to find any new context options.

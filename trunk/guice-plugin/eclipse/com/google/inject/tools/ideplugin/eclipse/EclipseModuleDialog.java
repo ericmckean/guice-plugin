@@ -20,8 +20,11 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -68,11 +71,10 @@ public class EclipseModuleDialog extends FormDialog {
     EclipseModuleDialog dialog = new EclipseModuleDialog(parent, moduleManager);
     dialog.create();
     dialog.getShell().setBounds(200, 200, 500, 500);
-    //dialog.getShell().setSize(500, 500);
     dialog.getShell().setText("Guice Context Configuration");
     dialog.setBlockOnOpen(true);
     dialog.open();
-    if (dialog.getReturnCode() == Window.OK && moduleManager.getActiveModuleContexts() != null) {
+    if (dialog.getReturnCode() == Window.OK) {
       dialog.updateSettings();
     }
   }
@@ -88,8 +90,8 @@ public class EclipseModuleDialog extends FormDialog {
     } else {
       createUserContexts(scrolledForm.getBody());
       createPremadeContexts(scrolledForm.getBody());
-      makeCheckbox(parent, activateByDefault, "Activate new modules by default", "")
-      .addSelectionListener(activateByDefaultListener);
+      makeCheckbox(parent, activateByDefault, "Find and activate new modules automatically", "")
+        .addSelectionListener(activateByDefaultListener);
     }
     scrolledForm.pack();
     scrolledForm.reflow(true);
@@ -100,6 +102,9 @@ public class EclipseModuleDialog extends FormDialog {
     private Text classNameText = null;
     private Text methodNameText = null;
     private Text titleText = null;
+    private String classNameTextValue;
+    private String methodNameTextValue;
+    private String titleTextValue;
     public NewContextDialog(Shell parent, ModuleManager moduleManager) {
       super(parent);
       this.moduleManager = moduleManager;
@@ -113,32 +118,48 @@ public class EclipseModuleDialog extends FormDialog {
       layout.numColumns = 2;
       body.setLayout(layout);
       toolkit.createLabel(body, "Context Name");
-      titleText = toolkit.createText(body, "");
+      titleText = toolkit.createText(body, "", SWT.BORDER);
+      titleText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1));
+      titleText.addModifyListener(new ModifyListener() {
+        public void modifyText(ModifyEvent e) {
+          titleTextValue = titleText.getText();
+        }
+      });
       toolkit.createLabel(body, "Fully Qualified Class Name");
-      classNameText = toolkit.createText(body, "");
+      classNameText = toolkit.createText(body, "", SWT.BORDER);
+      classNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1));
+      classNameText.addModifyListener(new ModifyListener() {
+        public void modifyText(ModifyEvent e) {
+          classNameTextValue = classNameText.getText();
+        }
+      });
       toolkit.createLabel(body, "Method Name");
-      methodNameText = toolkit.createText(body, "");
+      methodNameText = toolkit.createText(body, "", SWT.BORDER);
+      methodNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1));
+      methodNameText.addModifyListener(new ModifyListener() {
+        public void modifyText(ModifyEvent e) {
+          methodNameTextValue = methodNameText.getText();
+        }
+      });
     }
     public void saveSettings() {
-      System.out.println("...");
-      String title = titleText.getText();
-      String classToUse = classNameText.getText();
-      String methodToUse = methodNameText.getText();
-      System.out.println("...");
+      String title = titleTextValue;
+      String classToUse = classNameTextValue;
+      String methodToUse = methodNameTextValue;
       ModuleContextRepresentation context = new CustomModuleContextRepresentation(title, classToUse, methodToUse);
-      System.out.println("...");
       moduleManager.addModuleContext(context, true);
     }
     public static void display(Shell parent, ModuleManager moduleManager) {
       NewContextDialog dialog = new NewContextDialog(parent, moduleManager);
       dialog.create();
-      dialog.getShell().setBounds(200, 200, 500, 500);
+      dialog.getShell().setBounds(200, 200, 500, 200);
       dialog.getShell().setText("Create a Guice Context");
       dialog.setBlockOnOpen(true);
       dialog.open();
       if (dialog.getReturnCode() == Window.OK) {
         dialog.saveSettings();
       }
+      EclipseModuleDialog.display(parent, moduleManager);
     }
   }
 
@@ -160,29 +181,8 @@ public class EclipseModuleDialog extends FormDialog {
 
     makeHyperlink(body, "Create new context", new IHyperlinkListener() {
       public void linkActivated(HyperlinkEvent e) {
+        EclipseModuleDialog.this.close();
         NewContextDialog.display(shell, moduleManager);
-        //TODO: rebuild this dialog
-      }
-      public void linkEntered(HyperlinkEvent e) {}
-      public void linkExited(HyperlinkEvent e) {}
-    });
-
-    makeText(body, SWT.NONE, " ");
-
-    makeHyperlink(body, "Activate all", new IHyperlinkListener() {
-      public void linkActivated(HyperlinkEvent e) {
-        for (Button checkbox : userCheckboxes) {
-          checkbox.setSelection(true);
-        }
-      }
-      public void linkEntered(HyperlinkEvent e) {}
-      public void linkExited(HyperlinkEvent e) {}
-    });
-    makeHyperlink(body, "Deactivate all", new IHyperlinkListener() {
-      public void linkActivated(HyperlinkEvent e) {
-        for (Button checkbox : userCheckboxes) {
-          checkbox.setSelection(false);
-        }
       }
       public void linkEntered(HyperlinkEvent e) {}
       public void linkExited(HyperlinkEvent e) {}
@@ -190,7 +190,7 @@ public class EclipseModuleDialog extends FormDialog {
 
     userCheckboxes = new HashSet<Button>();
     for (ModuleContextRepresentation moduleContext : moduleContexts) {
-      if (moduleContext.getModules().size() != 1) {
+      if (moduleContext instanceof CustomModuleContextRepresentation) {
         CheckboxListener listener = 
           new CheckboxListener(moduleContext, activeModuleContexts.contains(moduleContext));
         String tooltip = moduleContext.getLongName();
@@ -212,7 +212,7 @@ public class EclipseModuleDialog extends FormDialog {
   private void createPremadeContexts(Composite parent) {
     checkboxListeners = new HashSet<CheckboxListener>();
     Section section = toolkit.createSection(parent, Section.EXPANDED | Section.TITLE_BAR);
-    section.setText("Individual Module Contexts");
+    section.setText("Autogenerated Module Contexts");
 
     ScrolledForm insideScrolledForm = toolkit.createScrolledForm(section);
     insideScrolledForm.setExpandHorizontal(true);
@@ -222,8 +222,26 @@ public class EclipseModuleDialog extends FormDialog {
     GridLayout layout = new GridLayout();
     layout.numColumns = 1;
     body.setLayout(layout);
-
-    if (moduleContexts.size() == 0) {
+    
+    makeHyperlink(body, "Scan for new contexts", new IHyperlinkListener() {
+      public void linkActivated(HyperlinkEvent e) {
+        //TODO: set cursor??
+        moduleManager.findNewContexts(true);
+        EclipseModuleDialog.this.close();
+        EclipseModuleDialog.display(shell, moduleManager);
+      }
+      public void linkEntered(HyperlinkEvent e) {}
+      public void linkExited(HyperlinkEvent e) {}
+    });
+    
+    boolean hasAutoModuleContexts = false;
+    for (ModuleContextRepresentation moduleContext : moduleContexts) {
+      if (!(moduleContext instanceof CustomModuleContextRepresentation)) {
+        hasAutoModuleContexts = true;
+        break;
+      }
+    }
+    if (!hasAutoModuleContexts) {
       makeText(body, SWT.NONE, "No Module Contexts Available");
     } else {
       makeHyperlink(body, "Activate all", new IHyperlinkListener() {
@@ -247,7 +265,7 @@ public class EclipseModuleDialog extends FormDialog {
 
       checkboxes = new HashSet<Button>();
       for (ModuleContextRepresentation moduleContext : moduleContexts) {
-        if (moduleContext.getModules().size() == 1) {
+        if (!(moduleContext instanceof CustomModuleContextRepresentation)) {
           StringBuilder text = new StringBuilder();
           text.append("Guice.createInjector(");
           int count=0;
@@ -265,12 +283,12 @@ public class EclipseModuleDialog extends FormDialog {
           checkboxListeners.add(listener);
         }
       }
-      body.pack();
-      insideScrolledForm.pack();
-      insideScrolledForm.reflow(true);
-      section.setClient(insideScrolledForm);
-      section.pack();
     }
+    body.pack();
+    insideScrolledForm.pack();
+    insideScrolledForm.reflow(true);
+    section.setClient(insideScrolledForm);
+    section.pack();
   }
 
   private static String shorten(String className) {

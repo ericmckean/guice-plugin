@@ -46,7 +46,8 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
   private final JavaManager javaManager;
   private boolean runAutomatically;
   private boolean activateByDefault;
-  private boolean waitOnInit;
+  private boolean initing;
+  private final InitThread initThread;
   
   /** 
    * Create a ModuleManagerImpl.  This should be done by injection as a singleton.
@@ -72,17 +73,20 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
       moduleContexts = new HashSet<ModuleContextRepresentation>();
       activeModuleContexts = new HashSet<ModuleContextRepresentation>();
     }
-    
-    //TODO: make these prefs be passed in somehow
-    runAutomatically = false;
-    activateByDefault = false;
-    waitOnInit = false;
+
+    this.runAutomatically = false;
+    this.activateByDefault = false;
+    boolean waitOnInit = false;
     
     if (waitOnInit) {
+      initThread = null;
       initModules();
       initContexts();
+      initing = false;
     } else {
-      new InitThread().start();
+      initing = true;
+      initThread = new InitThread();
+      initThread.start();
     }
   }
   
@@ -92,6 +96,15 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
     public void run() {
       initModules();
       initContexts();
+      initing = false;
+    }
+  }
+  
+  public void waitForInitThread() {
+    if (initing) {
+      try {
+        initThread.join();
+      } catch (InterruptedException e) {}
     }
   }
   
@@ -124,7 +137,7 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
     modules.add(new ModuleRepresentationImpl(moduleName));
   }
   
-  public boolean findNewContexts(boolean waitFor) {
+  public synchronized boolean findNewContexts(boolean waitFor) {
     boolean result = cleanAllModules(waitFor, true);
     initContexts();
     return result;
@@ -136,17 +149,13 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
   private synchronized void initContexts() {
     for (ModuleRepresentation module : modules) {
       if (module.hasDefaultConstructor()) {
-        ModuleContextRepresentation moduleContext = new ModuleContextRepresentationImpl(module.getName(), shorten(module.getName()), "Guice.createInjector(new " + module.getName() + ")");
+        ModuleContextRepresentation moduleContext = new ModuleContextRepresentationImpl(module.getName());
         ModuleInstanceRepresentation moduleInstance = new ModuleInstanceRepresentation(module.getName());
         moduleContext.add(moduleInstance);
         moduleContexts.add(moduleContext);
         if (activateByDefault) activeModuleContexts.add(moduleContext);
       }
     }
-  }
-  
-  private static String shorten(String className) {
-    return className.substring(className.lastIndexOf(".")+1);
   }
   
   /**
@@ -157,7 +166,7 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
     if (javaManager != null) {
       modules.add(module);
       if (module.hasDefaultConstructor()) {
-        ModuleContextRepresentation moduleContext = new ModuleContextRepresentationImpl(module.getName(), shorten(module.getName()), "Guice.createInjector(new " + module.getName() + ")");
+        ModuleContextRepresentation moduleContext = new ModuleContextRepresentationImpl(module.getName());
         moduleContext.add(new ModuleInstanceRepresentation(module.getName()));
         moduleContexts.add(moduleContext);
         if (createContext) {
@@ -243,7 +252,7 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
    * (non-Javadoc)
    * @see com.google.inject.tools.module.ModuleManager#getModules()
    */
-  public Set<ModuleRepresentation> getModules() {
+  public synchronized Set<ModuleRepresentation> getModules() {
     return modules!=null ? new HashSet<ModuleRepresentation>(modules) : null;
   }
   
@@ -301,10 +310,6 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
     }
   }
   
-  /**
-   * (non-Javadoc)
-   * @see com.google.inject.tools.module.ModuleManager#updateModules(boolean)
-   */
   public synchronized boolean updateModules(boolean waitFor) {
     if (javaManager != null) {
       cleanAllModules(true, true);
@@ -314,10 +319,13 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
     }
   }
   
-  /**
-   * (non-Javadoc)
-   * @see com.google.inject.tools.module.ModuleManager#updateModules()
-   */
+  public synchronized boolean rerunModules(boolean waitFor) {
+    for (ModuleContextRepresentation context : activeModuleContexts) {
+      context.markDirty();
+    }
+    return updateModules(waitFor);
+  }
+  
   public boolean updateModules() {
     return updateModules(true);
   }
@@ -385,7 +393,7 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
     return activeModules;
   }
   
-  protected ModuleRepresentation getModule(String name) {
+  protected synchronized ModuleRepresentation getModule(String name) {
     for (ModuleRepresentation module : modules) {
       if (module.getName().equals(name)) return module;
     }

@@ -69,11 +69,16 @@ public class EclipseModulesListener extends ModulesListener {
   @Override
   public Set<JavaManager> getOpenProjects() {
     Set<JavaManager> projects = new HashSet<JavaManager>();
-    if (ResourcesPlugin.getWorkspace() != null) {
-      for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
-        IJavaProject javaProject = JavaCore.create(project);
-        projects.add(new EclipseJavaProject(javaProject));
+    try {
+      if (ResourcesPlugin.getWorkspace() != null) {
+        for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
+          IJavaProject javaProject = JavaCore.create(project);
+          projects.add(new EclipseJavaProject(javaProject));
+        }
       }
+    } catch (IllegalStateException exception) {
+      //workspace is not open
+      //means we are in testing mode
     }
     return projects;
   }

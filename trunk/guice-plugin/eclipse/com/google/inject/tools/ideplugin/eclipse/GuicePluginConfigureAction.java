@@ -65,7 +65,6 @@ public class GuicePluginConfigureAction implements IEditorActionDelegate, IObjec
     public void run() {
       JavaManager project = new EclipseJavaProject(cu.getJavaProject());
       ModuleManager moduleManager = projectManager.getModuleManager(project);
-      moduleManager.findNewContexts(true);
       moduleSelectionView.show(project);
     }
   }

@@ -50,6 +50,6 @@ public class RunModulesNowAction implements IEditorActionDelegate, IObjectAction
 
   public void run(IAction action) {
     ICompilationUnit cu = JavaPlugin.getDefault().getWorkingCopyManager().getWorkingCopy(((CompilationUnitEditor)editor).getEditorInput());
-    projectManager.getModuleManager(new EclipseJavaProject(cu.getJavaProject())).updateModules(false);
+    projectManager.getModuleManager(new EclipseJavaProject(cu.getJavaProject())).rerunModules(false);
   }
 }
