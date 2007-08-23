@@ -39,7 +39,7 @@ import com.google.inject.tools.snippets.ModuleContextSnippet;
 public class ModuleContextRepresentationTest extends TestCase {
   public void testModuleContextRepresentation() throws Exception {
     ModuleContextRepresentation moduleContext = 
-      new ModuleContextRepresentationImpl("Working Module Context", "WMC", "WMC");
+      new ModuleContextRepresentationImpl("Working Module Context");
     CodeRunner codeRunner = new SimulatedCodeRunner();
     moduleContext.clean(codeRunner);
     codeRunner.run("", true);
@@ -110,6 +110,7 @@ public class ModuleContextRepresentationTest extends TestCase {
       Binding<?> binding = new MockBinding<com.google.inject.tools.SampleModuleScenario.MockInjectedInterface>(com.google.inject.tools.SampleModuleScenario.MockInjectedInterface.class,com.google.inject.tools.SampleModuleScenario.MockInjectedInterfaceImpl.class);
       bindings.put(Key.get(com.google.inject.tools.SampleModuleScenario.MockInjectedInterface.class), binding);
       return new ModuleContextSnippet.ModuleContextResult("Working Module Context",
+          Collections.singleton(new ModuleContextSnippet.ModuleRepresentation(SampleModuleScenario.WorkingModule.class, null, null)),
           bindings, Collections.<CodeProblem>emptySet());
     }
     

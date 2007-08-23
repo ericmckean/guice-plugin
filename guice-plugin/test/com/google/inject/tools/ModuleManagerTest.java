@@ -29,6 +29,7 @@ import com.google.inject.tools.MockingGuiceToolsModule;
 import com.google.inject.tools.module.ModuleContextRepresentation;
 import com.google.inject.tools.module.ModuleContextRepresentationImpl;
 import com.google.inject.tools.module.ModuleManager;
+import com.google.inject.tools.module.ModuleManagerImpl;
 import com.google.inject.tools.module.ModuleRepresentation;
 import com.google.inject.tools.module.ModuleRepresentationImpl;
 import com.google.inject.tools.module.ModulesSource;
@@ -54,11 +55,11 @@ public class ModuleManagerTest extends TestCase {
     ModuleInstanceRepresentation brokenModuleInstance =
       new ModuleInstanceRepresentation("BrokenModule");
     ModuleContextRepresentation workingModuleContext = 
-      new ModuleContextRepresentationImpl("Working Module Context", "WMC", "WMC").add(workingModuleInstance);
+      new ModuleContextRepresentationImpl("Working Module Context").add(workingModuleInstance);
     ModuleContextRepresentation brokenModuleContext = 
-      new ModuleContextRepresentationImpl("Broken Module Context", "BMC", "BMC").add(brokenModuleInstance);
+      new ModuleContextRepresentationImpl("Broken Module Context").add(brokenModuleInstance);
     ModuleContextRepresentation emptyModuleContext = 
-      new ModuleContextRepresentationImpl("Empty Module Context", "EMC", "EMC");
+      new ModuleContextRepresentationImpl("Empty Module Context");
     
     ModulesSource modulesListener = EasyMock.createMock(ModulesSource.class);
     EasyMock.expect(modulesListener.getModules(project)).andReturn(Collections.<String>emptySet());
@@ -148,6 +149,8 @@ public class ModuleManagerTest extends TestCase {
         .useCodeRunner(new FakeCodeRunner()));
     
     ModuleManager moduleManager = injector.getInstance(ModuleManagerFactory.class).create(project);
+    ((ModuleManagerImpl)moduleManager).waitForInitThread();
+    moduleManager.findNewContexts(true);
     moduleManager.updateModules(true);
     assertTrue(moduleManager.getModules().size() == 1);
     ModuleRepresentation module = moduleManager.getModules().iterator().next();
@@ -179,6 +182,8 @@ public class ModuleManagerTest extends TestCase {
         .useCodeRunner(new FakeCodeRunner()));
     
     ModuleManager moduleManager = injector.getInstance(ModuleManagerFactory.class).create(project);
+    ((ModuleManagerImpl)moduleManager).waitForInitThread();
+    moduleManager.findNewContexts(true);
     moduleManager.updateModules(true);
     assertTrue(moduleManager.getModules().size() == 1);
     ModuleRepresentation module = moduleManager.getModules().iterator().next();

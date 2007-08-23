@@ -47,9 +47,17 @@ public class ModuleContextSnippet extends CodeSnippet {
   public static class ModuleContextResult extends CodeSnippetResult {
     private final String name;
     private final Map<String,BindingCodeLocation> bindings;
-    public ModuleContextResult(String name,Map<Key<?>,Binding<?>> moduleBindings,Set<? extends CodeProblem> problems) {
+    private final Set<String> modules;
+    public ModuleContextResult(String name, Set<ModuleRepresentation> moduleReps, 
+        Map<Key<?>,Binding<?>> moduleBindings, Set<? extends CodeProblem> problems) {
       super(problems);
       this.name = name;
+      this.modules = new HashSet<String>();
+      if (moduleReps != null) {
+        for (ModuleRepresentation module : moduleReps) {
+          this.modules.add(module.getName());
+        }
+      }
       this.bindings = new HashMap<String,BindingCodeLocation>();
       if (moduleBindings!=null) {
         for (Key<?> key : moduleBindings.keySet()) {
@@ -84,6 +92,9 @@ public class ModuleContextSnippet extends CodeSnippet {
     }
     public String getName() {
       return name;
+    }
+    public Set<String> getModules() {
+      return modules;
     }
     public Map<String,BindingCodeLocation> getBindings() {
       return bindings;
@@ -124,6 +135,7 @@ public class ModuleContextSnippet extends CodeSnippet {
   private Injector injector;
   private String name;
   private Map<Key<?>,Binding<?>> bindings;
+  private Set<ModuleRepresentation> modules;
   private boolean isValid;
   
   /**
@@ -132,6 +144,7 @@ public class ModuleContextSnippet extends CodeSnippet {
   public ModuleContextSnippet(Set<ModuleRepresentation> modules, String name) {
     super();
     isValid = false;
+    this.modules = modules;
     if (!modules.isEmpty()) {
       Set<Module> instances = new HashSet<Module>();
       for (ModuleRepresentation module : modules) {
@@ -184,7 +197,7 @@ public class ModuleContextSnippet extends CodeSnippet {
   
   @Override
   public ModuleContextResult getResult() {
-    return new ModuleContextResult(name,bindings,problems);
+    return new ModuleContextResult(name,modules,bindings,problems);
   }
   
   public Injector getInjector() {
@@ -244,8 +257,8 @@ public class ModuleContextSnippet extends CodeSnippet {
         snippet = new ModuleContextSnippet(modules,contextName);
       } else {
         Class<?> classToUse = Class.forName(arguments.next());
-        Method methodToCall = classToUse.getMethod(arguments.next(), null);
-        Object result = methodToCall.invoke(classToUse.newInstance(), null);
+        Method methodToCall = classToUse.getMethod(arguments.next(), (Class[])null);
+        Object result = methodToCall.invoke(classToUse.newInstance(), (Object[])null);
         Iterable<com.google.inject.Module> moduleInstances = (Iterable<com.google.inject.Module>)result;
         snippet = new ModuleContextSnippet(moduleInstances, contextName);
       }

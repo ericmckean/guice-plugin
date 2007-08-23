@@ -33,24 +33,23 @@ import com.google.inject.tools.snippets.ModuleContextSnippet;
  */
 public class ModuleContextRepresentationImpl implements ModuleContextRepresentation, CodeRunner.CodeRunListener {
   private final String title;
-  private final String longName;
-  private final String shortName;
+  protected String longName;
+  protected String shortName;
   private final Set<ModuleInstanceRepresentation> modules;
   private Map<String,BindingCodeLocation> bindings;
   private Set<? extends CodeProblem> problems;
   private boolean dirty;
   
-  /**
-   * Create a ModuleContextRepresentation with the given title.
-   * 
-   * @param title the name of the context
-   */
-  public ModuleContextRepresentationImpl(String title, String shortName, String longName) {
-    this.shortName = shortName;
-    this.longName = longName;
-    this.title = title;
+  public ModuleContextRepresentationImpl(String moduleClass) {
+    this.title = moduleClass;
+    this.shortName = shorten(moduleClass);
+    this.longName = "Guice.createInjector(new " + moduleClass + "())";
     modules = new HashSet<ModuleInstanceRepresentation>();
     dirty = true;
+  }
+  
+  private static String shorten(String className) {
+    return className.substring(className.lastIndexOf(".")+1);
   }
   
   public String getShortName() {

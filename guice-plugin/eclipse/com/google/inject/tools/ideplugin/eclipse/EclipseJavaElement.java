@@ -92,10 +92,11 @@ public class EclipseJavaElement implements JavaElement {
         case FIELD:
           if (element instanceof IField) {
             return ((IField)element).getTypeSignature();
-          }
+          } else
           if (element instanceof ILocalVariable) {
             return ((ILocalVariable)element).getTypeSignature();
-          }
+          } else
+            return null;
         default:
           return null;
       }
