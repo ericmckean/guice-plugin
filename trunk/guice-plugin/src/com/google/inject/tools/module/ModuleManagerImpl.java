@@ -312,7 +312,6 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
   
   public synchronized boolean updateModules(boolean waitFor) {
     if (javaManager != null) {
-      cleanAllModules(true, true);
       return cleanModuleContexts(waitFor, false);
     } else {
       return true;
