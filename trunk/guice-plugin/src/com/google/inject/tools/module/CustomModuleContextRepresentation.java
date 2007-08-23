@@ -29,7 +29,6 @@ public class CustomModuleContextRepresentation extends ModuleContextRepresentati
     super(title);
     this.longName = "Guice.createInjector(new " + classToUse + "()." + methodToCall + "())";
     this.shortName = title;
-    System.out.println("making it " + classToUse + " " + methodToCall);
     this.classToUse = classToUse;
     this.methodToCall = methodToCall;
   }
