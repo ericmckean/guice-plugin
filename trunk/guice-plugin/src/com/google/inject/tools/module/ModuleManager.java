@@ -130,9 +130,17 @@ public interface ModuleManager {
    * Update the modules for the current project by rerunning any dirty.
    * 
    * @param waitFor true if the current thread should wait for the update
-   * @return true if the update succeeded (false if the user cancelled the operation)
+   * @return true if the update succeeded (false if the user canceled the operation)
    */
   public boolean updateModules(boolean waitFor);
+  
+  /**
+   * (Re)run the modules in user to find any new context options.
+   * 
+   * @param waitFor true if the current thread should wait for the update
+   * @return true if the operation succeeded (false if the user canceled it)
+   */
+  public boolean findNewContexts(boolean waitFor);
   
   /**
    * Wait for the manager to clean the modules in the current project.

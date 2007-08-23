@@ -49,6 +49,11 @@ public abstract class ModulesListener implements ModulesSource {
   }
   
   /**
+   * Create listeners and find initially opened projects.
+   */
+  public abstract Set<JavaManager> getOpenProjects();
+  
+  /**
    * Locate the modules.
    */
   protected abstract Set<String> locateModules(JavaManager javaManager) throws Throwable;
@@ -82,11 +87,11 @@ public abstract class ModulesListener implements ModulesSource {
     }
     for (String module : removeModules) {   
       modules.get(javaManager).remove(module);
-      moduleRemoved(javaManager, module);
+      //moduleRemoved(javaManager, module);
     }
     for (String moduleName : newModules) {
       modules.get(javaManager).add(moduleName);
-      moduleAdded(javaManager, moduleName);
+      //moduleAdded(javaManager, moduleName);
     }
   }
   

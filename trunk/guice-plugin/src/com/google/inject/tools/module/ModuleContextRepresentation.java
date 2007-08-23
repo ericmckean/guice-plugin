@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import com.google.inject.tools.code.CodeRunner;
-import com.google.inject.tools.code.RunModuleContextSnippet;
 import com.google.inject.tools.snippets.BindingCodeLocation;
 import com.google.inject.tools.snippets.CodeProblem;
 
@@ -178,6 +177,10 @@ public interface ModuleContextRepresentation {
    */
   public String getName();
   
+  public String getLongName();
+  
+  public String getShortName();
+  
   /**
    * Does this context have the given module in it?
    * 
@@ -210,7 +213,7 @@ public interface ModuleContextRepresentation {
    * 
    * @param codeRunner the {@link CodeRunner} to run the module context with
    */
-  public RunModuleContextSnippet clean(CodeRunner codeRunner);
+  public CodeRunner.Runnable clean(CodeRunner codeRunner);
   
   /**
    * Return the set of {@link CodeProblem}s occurring with this context.

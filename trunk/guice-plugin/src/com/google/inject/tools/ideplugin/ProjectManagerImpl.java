@@ -19,6 +19,7 @@ package com.google.inject.tools.ideplugin;
 import com.google.inject.Inject;
 import com.google.inject.tools.JavaManager;
 import com.google.inject.tools.GuiceToolsModule.ModuleManagerFactory;
+import com.google.inject.tools.ideplugin.module.ModulesListener;
 import com.google.inject.tools.module.ModuleManager;
 import com.google.inject.tools.module.ModulesSource;
 
@@ -41,6 +42,11 @@ public class ProjectManagerImpl implements ProjectManager, ModulesSource.Modules
     this.moduleManagers = new HashMap<JavaManager, ModuleManager>();
     currentProject = null;
     modulesSource.addListener(this);
+    if (modulesSource instanceof ModulesListener) { //which it should be
+      for (JavaManager project : ((ModulesListener)modulesSource).getOpenProjects()) {
+        createModuleManager(project);
+      }
+    }
   }
 
   public void moduleAdded(ModulesSource source, JavaManager javaManager,
@@ -68,7 +74,6 @@ public class ProjectManagerImpl implements ProjectManager, ModulesSource.Modules
   }
 
   public void projectOpened(JavaManager javaManager) {
-    currentProject = javaManager;
     createModuleManager(javaManager);
   }
   
@@ -82,6 +87,7 @@ public class ProjectManagerImpl implements ProjectManager, ModulesSource.Modules
   }
   
   private ModuleManager createModuleManager(JavaManager javaManager) {
+    currentProject = javaManager;
     if (moduleManagers.get(javaManager) == null) moduleManagers.put(javaManager, moduleManagerFactory.create(javaManager));
     return moduleManagers.get(javaManager);
   }

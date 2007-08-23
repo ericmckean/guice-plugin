@@ -96,9 +96,12 @@ public class EclipseJavaElement implements JavaElement {
           if (element instanceof ILocalVariable) {
             return ((ILocalVariable)element).getTypeSignature();
           }
+        default:
+          return null;
       }
-    } catch (JavaModelException e) {}
-    return null;
+    } catch (JavaModelException e) {
+      return null;
+    }
   }
   
   private String findName() {

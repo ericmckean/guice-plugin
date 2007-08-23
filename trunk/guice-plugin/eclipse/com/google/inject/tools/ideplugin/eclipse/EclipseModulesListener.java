@@ -21,6 +21,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jdt.core.ElementChangedEvent;
 import org.eclipse.jdt.core.Flags;
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -55,12 +58,24 @@ public class EclipseModulesListener extends ModulesListener {
    * Create an EclipseModulesListener.  This should be injected.
    */
   @Inject
-  public EclipseModulesListener(ProjectManager projectManager,Messenger messenger) {
+  public EclipseModulesListener(ProjectManager projectManager, Messenger messenger) {
     super(projectManager, messenger);
     typeHierarchies = new HashMap<EclipseJavaProject, ITypeHierarchy>();
     typeHierarchyListeners = new HashMap<EclipseJavaProject, MyTypeHierarchyChangedListener>();
     types = new HashMap<EclipseJavaProject, IType>();
     JavaCore.addElementChangedListener(new ModuleElementChangedListener(), ElementChangedEvent.POST_CHANGE);
+  }
+  
+  @Override
+  public Set<JavaManager> getOpenProjects() {
+    Set<JavaManager> projects = new HashSet<JavaManager>();
+    if (ResourcesPlugin.getWorkspace() != null) {
+      for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
+        IJavaProject javaProject = JavaCore.create(project);
+        projects.add(new EclipseJavaProject(javaProject));
+      }
+    }
+    return projects;
   }
   
   private class MyTypeHierarchyChangedListener implements ITypeHierarchyChangedListener {
@@ -144,25 +159,24 @@ public class EclipseModulesListener extends ModulesListener {
   
   protected class ModuleElementChangedListener implements IElementChangedListener {
     public void elementChanged(ElementChangedEvent event) {
-      
-      //TODO: deal with closing projects
-      //TODO: make this work
-      if (event.getDelta().getKind() == IJavaElementDelta.F_OPENED) {
-        if (event.getDelta().getElement() instanceof IJavaProject) {
-          EclipseJavaProject javaManager = new EclipseJavaProject((IJavaProject)event.getDelta().getElement());
-          initialize(javaManager);
-          projectManager.projectOpened(javaManager);
+      if (event.getDelta().getElement() instanceof IJavaProject) {
+        EclipseJavaProject javaManager = new EclipseJavaProject((IJavaProject)event.getDelta().getElement());
+        switch (event.getDelta().getKind()) {
+          case IJavaElementDelta.F_CLOSED:
+            projectManager.projectClosed(javaManager);
+            break;
+          case IJavaElementDelta.F_OPENED:
+            projectManager.projectOpened(javaManager);
+            break;
+          default:
+            //do nothing
         }
+      } else {
+        handleDelta(event.getDelta());
       }
-      handleDelta(event.getDelta());
     }
     private void handleDelta(IJavaElementDelta delta) {
-      handleJavaElement(delta.getElement());
-      for (IJavaElementDelta child : delta.getAffectedChildren()) {
-        handleDelta(child);
-      }
-    }
-    private void handleJavaElement(IJavaElement element) {
+      IJavaElement element = delta.getElement();
       if (element instanceof ICompilationUnit) {
         IJavaProject project = element.getJavaProject();
         EclipseJavaProject javaManager = new EclipseJavaProject(project);
@@ -171,9 +185,24 @@ public class EclipseModulesListener extends ModulesListener {
         IType type = cu.findPrimaryType();
         if (type != null) {
           if (typeHierarchies.get(javaManager).contains(type)) {
-            EclipseModulesListener.this.moduleChanged(javaManager, type.getFullyQualifiedName());
+            switch (delta.getKind()) {
+              case IJavaElementDelta.ADDED:
+                EclipseModulesListener.this.moduleAdded(javaManager, type.getFullyQualifiedName());
+                break;
+              case IJavaElementDelta.CHANGED:
+                EclipseModulesListener.this.moduleChanged(javaManager, type.getFullyQualifiedName());
+                break;
+              case IJavaElementDelta.REMOVED:
+                EclipseModulesListener.this.moduleRemoved(javaManager, type.getFullyQualifiedName());
+                break;
+              default:
+                //do nothing
+            }
           }
         }
+      }
+      for (IJavaElementDelta child : delta.getAffectedChildren()) {
+        handleDelta(child);
       }
     }
   }

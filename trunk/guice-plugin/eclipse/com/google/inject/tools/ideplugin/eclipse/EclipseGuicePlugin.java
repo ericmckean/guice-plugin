@@ -23,6 +23,7 @@ import org.eclipse.ui.PlatformUI;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.tools.GuiceToolsModule;
+import com.google.inject.tools.JavaManager;
 import com.google.inject.tools.Messenger;
 import com.google.inject.tools.ideplugin.GuicePlugin;
 import com.google.inject.tools.ideplugin.ProjectManager;
@@ -68,9 +69,13 @@ public class EclipseGuicePlugin extends GuicePlugin {
   @Singleton
   public static class ModuleSelectionViewImpl implements ModuleSelectionView {
     private class GetToUIThread implements Runnable {
+      private final JavaManager project;
+      public GetToUIThread(JavaManager project) {
+        this.project = project;
+      }
       public void run() {
         try {
-          EclipseModuleDialog.display(new Shell(), projectManager.getModuleManager());
+          EclipseModuleDialog.display(new Shell(), projectManager.getModuleManager(project));
         } catch (Throwable t) {
           messenger.logException("Error opening ModuleSelectionView", t);
         }
@@ -83,8 +88,8 @@ public class EclipseGuicePlugin extends GuicePlugin {
       this.messenger = messenger;
       this.projectManager = projectManager;
     }
-    public void show() {
-      Display.getDefault().syncExec(new GetToUIThread());
+    public void show(JavaManager project) {
+      Display.getDefault().syncExec(new GetToUIThread(project));
     }
   }
   

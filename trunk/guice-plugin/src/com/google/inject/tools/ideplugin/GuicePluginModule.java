@@ -85,6 +85,8 @@ public abstract class GuicePluginModule extends AbstractModule {
     bindBindingsEngine(bind(BindingsEngineFactory.class));
     bindProgressHandler(bind(ProgressHandler.class));
     bindActionsHandler(bind(ActionsHandler.class));
+    bindGotoCodeLocationHandler(bind(GotoCodeLocationHandler.class));
+    bindGotoFileHandler(bind(GotoFileHandler.class));
     bindResultsHandler(bind(ResultsHandler.class));
     bindResultsView(bind(ResultsView.class));
     bindModuleSelectionView(bind(ModuleSelectionView.class));
@@ -121,7 +123,13 @@ public abstract class GuicePluginModule extends AbstractModule {
   /**
    * Bind the {@link ActionsHandler} implementation.
    */
-  protected abstract void bindActionsHandler(AnnotatedBindingBuilder<ActionsHandler> bindActionsHandler);
+  protected void bindActionsHandler(AnnotatedBindingBuilder<ActionsHandler> bindActionsHandler) {
+    bindActionsHandler.to(ActionsHandlerImpl.class).asEagerSingleton();
+  }
+  
+  protected abstract void bindGotoCodeLocationHandler(AnnotatedBindingBuilder<GotoCodeLocationHandler> bindGotoCodeLocationHandler);
+  
+  protected abstract void bindGotoFileHandler(AnnotatedBindingBuilder<GotoFileHandler> bindGotoFileHandler);
   
   /**
    * Bind the {@link ProgressHandler} implementation.

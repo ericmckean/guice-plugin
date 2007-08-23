@@ -19,54 +19,29 @@ package com.google.inject.tools.ideplugin.eclipse;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.ui.JavaUI;
-import org.eclipse.ui.texteditor.ITextEditor;
-
 import com.google.inject.tools.Messenger;
-import com.google.inject.tools.ideplugin.ActionsHandler;
+import com.google.inject.tools.ideplugin.GotoFileHandler;
 import com.google.inject.tools.ideplugin.ProjectManager;
+import com.google.inject.tools.ideplugin.ActionsHandler.GotoFile;
 import com.google.inject.Singleton;
 import com.google.inject.Inject;
 
 /**
- * Eclipse implementation of the {@link ActionsHandler}.
+ * {@inheritDoc}
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 @Singleton
-public class EclipseActionsHandler extends ActionsHandler {
+public class EclipseGotoFileHandler implements GotoFileHandler {
   private final ProjectManager projectManager;
   private final Messenger messenger;
   
-  /**
-   * Create the ActionsHandler.  This should be injected as a singleton.
-   */
   @Inject
-  public EclipseActionsHandler(ProjectManager projectManager, Messenger messenger) {
+  public EclipseGotoFileHandler(ProjectManager projectManager, Messenger messenger) {
     this.projectManager = projectManager;
     this.messenger = messenger;
   }
-  
-  /**
-   * (non-Javadoc)
-   * @see com.google.inject.tools.ideplugin.ActionsHandler#run(com.google.inject.tools.ideplugin.ActionsHandler.GotoCodeLocation)
-   */
-  @Override
-  public void run(GotoCodeLocation action) {
-    try {
-      IType type = ((EclipseJavaProject)projectManager.getCurrentProject()).getIJavaProject().findType(action.getStackTraceElement().getClassName());
-      ICompilationUnit cu = type.getCompilationUnit();
-      ITextEditor editor = ((ITextEditor)JavaUI.openInEditor(cu));
-      int offset = editor.getDocumentProvider().getDocument(editor.getEditorInput())
-        .getLineOffset(action.location()-1);
-      int length = editor.getDocumentProvider().getDocument(editor.getEditorInput())
-        .getLineLength(action.location()-1);
-      editor.selectAndReveal(offset, length);
-    } catch (Exception exception) {
-      messenger.logException("GotoCodeLocation Action Exception", exception);
-    }
-  }
-  
-  @Override
+
   public void run(GotoFile action) {
     try {
       IType type = ((EclipseJavaProject)projectManager.getCurrentProject()).getIJavaProject().findType(action.getClassname());

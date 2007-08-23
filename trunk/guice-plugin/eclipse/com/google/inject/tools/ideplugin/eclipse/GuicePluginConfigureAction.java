@@ -25,8 +25,11 @@ import org.eclipse.ui.IEditorActionDelegate;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
+
+import com.google.inject.tools.JavaManager;
 import com.google.inject.tools.ideplugin.ProjectManager;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
+import com.google.inject.tools.module.ModuleManager;
 
 /**
  * Responds to the user choosing configure from the Guice menu by opening the configure
@@ -52,6 +55,7 @@ public class GuicePluginConfigureAction implements IEditorActionDelegate, IObjec
   public void setActivePart(IAction action, IWorkbenchPart targetPart) {}
   public void selectionChanged(IAction action, ISelection selection) {}
 
+  //TODO: move this to non-eclipse land, same for similar in other places
   private class NonUIThread extends Thread {
     private final ICompilationUnit cu;
     public NonUIThread(ICompilationUnit cu) {
@@ -59,8 +63,10 @@ public class GuicePluginConfigureAction implements IEditorActionDelegate, IObjec
     }
     @Override
     public void run() {
-      projectManager.getModuleManager(new EclipseJavaProject(cu.getJavaProject())).updateModules(true);
-      moduleSelectionView.show();
+      JavaManager project = new EclipseJavaProject(cu.getJavaProject());
+      ModuleManager moduleManager = projectManager.getModuleManager(project);
+      moduleManager.findNewContexts(true);
+      moduleSelectionView.show(project);
     }
   }
   
