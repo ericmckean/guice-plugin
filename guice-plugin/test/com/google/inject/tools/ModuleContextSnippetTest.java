@@ -92,9 +92,9 @@ public class ModuleContextSnippetTest extends TestCase {
     assertTrue(location.location() == WorkingModuleBindLocation);
   }
   
-  private static final int WorkingModuleBindLocation = 38;
+  private static final int WorkingModuleBindLocation = 41;
   private static final String WorkingModuleBindFile = "SampleModuleScenario.java";
-  private static final int WorkingModuleBindLocation2 = 65;
+  private static final int WorkingModuleBindLocation2 = 68;
   private static final String WorkingModuleBindFile2 = "SampleModuleScenario.java";
   
   /**
@@ -154,5 +154,23 @@ public class ModuleContextSnippetTest extends TestCase {
     assertTrue(location2.bindTo().equals(MockInjectedInterface2Impl.class.getName()));
     assertTrue(location2.file().equals(WorkingModuleBindFile2));
     assertTrue(location2.location() == WorkingModuleBindLocation2);
+  }
+  
+  public void testCustomModuleContext() throws Exception {
+    String[] args = new String[4];
+    args[0] = "Custom Context";
+    args[1] = String.valueOf(-1);
+    args[2] = SampleModuleScenario.CustomContextBuilder.class.getName();
+    args[3] = "getModules";
+    Object obj = runASnippet(args);
+    assertTrue(obj instanceof ModuleContextSnippet.ModuleContextResult);
+    ModuleContextSnippet.ModuleContextResult result = (ModuleContextSnippet.ModuleContextResult)obj;
+    assertTrue(result.getProblems().isEmpty());
+    assertNotNull(result.getBindings());
+    BindingCodeLocation location = result.getBindings().get(MockInjectedInterface.class.getName());
+    assertNotNull(location);
+    assertTrue(location.bindTo().equals(MockInjectedInterfaceImpl.class.getName()));
+    assertTrue(location.file().equals(WorkingModuleBindFile));
+    assertTrue(location.location() == WorkingModuleBindLocation);
   }
 }

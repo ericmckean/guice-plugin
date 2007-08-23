@@ -18,6 +18,7 @@ package com.google.inject.tools.snippets;
 
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -115,20 +116,22 @@ public class ModuleContextSnippet extends CodeSnippet {
     public String getName() {
       return moduleClass.getName();
     }
+    public List<String> getArgValues() {
+      return argValues;
+    }
   }
   
   private Injector injector;
-  private final String name;
-  private final Map<Key<?>,Binding<?>> bindings;
+  private String name;
+  private Map<Key<?>,Binding<?>> bindings;
   private boolean isValid;
   
   /**
    * Create a ModuleContextSnippet with the given modules.
    */
-  public ModuleContextSnippet(Set<ModuleRepresentation> modules,String name) {
+  public ModuleContextSnippet(Set<ModuleRepresentation> modules, String name) {
     super();
     isValid = false;
-    this.name = name;
     if (!modules.isEmpty()) {
       Set<Module> instances = new HashSet<Module>();
       for (ModuleRepresentation module : modules) {
@@ -138,17 +141,28 @@ public class ModuleContextSnippet extends CodeSnippet {
           problems.add(new CodeProblem.InvalidModuleProblem(module.getName()));
         }
       }
-      try {
-        injector = Guice.createInjector(instances);
-        isValid = true;
-      } catch (CreationException exception) {
-        problems.add(new CodeProblem.CreationProblem(getName(),exception));
-      }
-      if (isValid) {
-        bindings = injector.getBindings();
-      } else {
-        bindings = null;
-      }
+      initialize(instances, name);
+    } else {
+      bindings = null;
+    }
+  }
+  
+  public ModuleContextSnippet(Iterable<com.google.inject.Module> moduleInstances, String name) {
+    super();
+    isValid = false;
+    initialize(moduleInstances, name);
+  }
+  
+  private void initialize(Iterable<com.google.inject.Module> moduleInstances, String name) {
+    this.name = name;
+    try {
+      injector = Guice.createInjector(moduleInstances);
+      isValid = true;
+    } catch (CreationException exception) {
+      problems.add(new CodeProblem.CreationProblem(getName(),exception));
+    }
+    if (isValid) {
+      bindings = injector.getBindings();
     } else {
       bindings = null;
     }
@@ -185,8 +199,13 @@ public class ModuleContextSnippet extends CodeSnippet {
    * modules, args[2] is the class of the first module, args[3] thru args[n] are the arguments
    * for the first module, etc.
    */
-  //Expects 1+n args, args[0] is context name, args[1] is number of modules
-  //   each past is { module class, # args, arg types ..., args ...
+  //Expects 1+n args, args[0] is context name, args[1] is number of modules, args[2] is first module, etc.
+  //all modules must have default constructors
+  
+  //if args[1] == -1 then we have a custom module
+  // then args[2] is the name of a class with a default constructor
+  // and args[3] is the name of a method in that class that takes no arguments
+  // and returns an iterable of modules Iterable<com.google.inject.Module>
   public static void main(String[] args) {
     runSnippet(System.out, args);
   }
@@ -202,26 +221,34 @@ public class ModuleContextSnippet extends CodeSnippet {
       Iterator<String> arguments = argsSet.iterator();
       contextName = arguments.next();
       int numModules = Integer.valueOf(arguments.next());
-      for (int i=0;i<numModules;i++) {
-        try {
-          Class<?> aClass = Class.forName(arguments.next());
-          aClass.asSubclass(Module.class);
-          Class<? extends Module> moduleClass = (Class<? extends Module>)aClass;
-          int numArgs = Integer.valueOf(arguments.next());
-          List<Class<?>> argTypes = new ArrayList<Class<?>>();
-          List<String> argValues = new ArrayList<String>();
-          if (numArgs > 0) {
-            for (int j=0;j<numArgs;j++) {
-              argTypes.add(Class.forName(arguments.next()));
-              argValues.add(arguments.next());
+      if (numModules >= 0) {
+        for (int i=0;i<numModules;i++) {
+          try {
+            Class<?> aClass = Class.forName(arguments.next());
+            aClass.asSubclass(Module.class);
+            Class<? extends Module> moduleClass = (Class<? extends Module>)aClass;
+            int numArgs = Integer.valueOf(arguments.next());
+            List<Class<?>> argTypes = new ArrayList<Class<?>>();
+            List<String> argValues = new ArrayList<String>();
+            if (numArgs > 0) {
+              for (int j=0;j<numArgs;j++) {
+                argTypes.add(Class.forName(arguments.next()));
+                argValues.add(arguments.next());
+              }
             }
+            modules.add(new ModuleRepresentation(moduleClass,argTypes,argValues));
+          } catch (Exception e) {
+            i=numModules;
           }
-          modules.add(new ModuleRepresentation(moduleClass,argTypes,argValues));
-        } catch (Exception e) {
-          i=numModules;
         }
+        snippet = new ModuleContextSnippet(modules,contextName);
+      } else {
+        Class<?> classToUse = Class.forName(arguments.next());
+        Method methodToCall = classToUse.getMethod(arguments.next(), null);
+        Object result = methodToCall.invoke(classToUse.newInstance(), null);
+        Iterable<com.google.inject.Module> moduleInstances = (Iterable<com.google.inject.Module>)result;
+        snippet = new ModuleContextSnippet(moduleInstances, contextName);
       }
-      snippet = new ModuleContextSnippet(modules,contextName);
     } catch(Throwable t) {
       if (snippet == null) {
         snippet = new ModuleContextSnippet(new HashSet<ModuleRepresentation>(), contextName);

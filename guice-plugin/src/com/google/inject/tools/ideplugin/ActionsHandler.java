@@ -24,19 +24,24 @@ package com.google.inject.tools.ideplugin;
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public abstract class ActionsHandler {
+public interface ActionsHandler {
   /**
    * An Action is anything the IDE can do in response to a trigger.
    * For example, going to a code location.
    * 
    * The ActionHandler/Action follows th visitor pattern.
    */
-  public static interface Action {}
+  public static class Action {
+    public Action() {}
+  }
   
   /**
    * An action that does nothing.
    */
-  public static class NullAction implements Action {
+  public static class NullAction extends Action {
+    public NullAction() {
+      super();
+    }
     @Override
     public String toString() {
       return "Null Action";
@@ -55,7 +60,7 @@ public abstract class ActionsHandler {
    * Represents the IDE action of going to a location in the code, i.e. opening
    * the file and moving to the line number.
    */
-  public static class GotoCodeLocation implements Action {
+  public static class GotoCodeLocation extends Action {
     private final String file;
     private final int location;
     private final StackTraceElement[] stackTrace;
@@ -112,7 +117,7 @@ public abstract class ActionsHandler {
   /**
    * An Action that opens a file to a declaration.
    */
-  public static class GotoFile implements Action {
+  public static class GotoFile extends Action {
     private final String classname;
     public GotoFile(String classname) {
       this.classname = classname;
@@ -132,24 +137,6 @@ public abstract class ActionsHandler {
   }
   
   /**
-   * Perform a GotoCodeLocation Action.
-   */
-  public abstract void run(GotoCodeLocation action);
-  
-  /**
-   * Perform a GotoFile Action.
-   */
-  public abstract void run(GotoFile action);
-  
-  /**
-   * Perform a NullAction action.
-   * Likely this does nothing.
-   */
-  public void run(NullAction action) {
-    //do nothing
-  }
-  
-  /**
    * Runtime exception thrown if run is called on an undefined action.
    */
   public static class InvalidActionException extends RuntimeException {
@@ -164,19 +151,24 @@ public abstract class ActionsHandler {
   }
   
   /**
+   * Perform a GotoCodeLocation Action.
+   */
+  public void run(GotoCodeLocation action);
+  
+  /**
+   * Perform a GotoFile Action.
+   */
+  public void run(GotoFile action);
+  
+  /**
+   * Perform a NullAction action.
+   * Likely this does nothing.
+   */
+  public void run(NullAction action);
+  
+  /**
    * Perform a nonspecific Action (does not satisfy any of the above types).
    * Likely this causes an exception.
    */
-  public void run(Action action) {
-    if (action instanceof GotoCodeLocation) {
-      run((GotoCodeLocation)action);
-    } else 
-      if (action instanceof GotoFile) {
-        run((GotoFile)action);
-      } else
-        if (action instanceof NullAction) {
-          run((NullAction)action);
-        } else
-          throw new InvalidActionException(action);
-  }
+  public void run(Action action);
 }

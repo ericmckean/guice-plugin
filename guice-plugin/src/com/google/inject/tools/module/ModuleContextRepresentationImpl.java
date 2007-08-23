@@ -33,6 +33,8 @@ import com.google.inject.tools.snippets.ModuleContextSnippet;
  */
 public class ModuleContextRepresentationImpl implements ModuleContextRepresentation, CodeRunner.CodeRunListener {
   private final String title;
+  private final String longName;
+  private final String shortName;
   private final Set<ModuleInstanceRepresentation> modules;
   private Map<String,BindingCodeLocation> bindings;
   private Set<? extends CodeProblem> problems;
@@ -43,10 +45,20 @@ public class ModuleContextRepresentationImpl implements ModuleContextRepresentat
    * 
    * @param title the name of the context
    */
-  public ModuleContextRepresentationImpl(String title) {
+  public ModuleContextRepresentationImpl(String title, String shortName, String longName) {
+    this.shortName = shortName;
+    this.longName = longName;
     this.title = title;
     modules = new HashSet<ModuleInstanceRepresentation>();
     dirty = true;
+  }
+  
+  public String getShortName() {
+    return shortName;
+  }
+  
+  public String getLongName() {
+    return longName;
   }
   
   /*
@@ -77,7 +89,7 @@ public class ModuleContextRepresentationImpl implements ModuleContextRepresentat
    * (non-Javadoc)
    * @see com.google.inject.tools.ideplugin.module.ModuleContextRepresentation#clean(com.google.inject.tools.ideplugin.code.CodeRunner)
    */
-  public RunModuleContextSnippet clean(CodeRunner codeRunner) {
+  public CodeRunner.Runnable clean(CodeRunner codeRunner) {
     codeRunner.addListener(this);
     RunModuleContextSnippet runnable = new RunModuleContextSnippet(codeRunner,this);
     codeRunner.queue(runnable);

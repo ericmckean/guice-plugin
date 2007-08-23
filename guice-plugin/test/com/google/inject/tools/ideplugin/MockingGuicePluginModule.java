@@ -119,6 +119,16 @@ public class MockingGuicePluginModule extends GuicePluginModule {
   }
   
   @Override
+  protected void bindGotoCodeLocationHandler(AnnotatedBindingBuilder<GotoCodeLocationHandler> bindGotoCodeLocationHandler) {
+    bindToMockInstance(bindGotoCodeLocationHandler, GotoCodeLocationHandler.class);
+  }
+  
+  @Override
+  protected void bindGotoFileHandler(AnnotatedBindingBuilder<GotoFileHandler> bindGotoFileHandler) {
+    bindToMockInstance(bindGotoFileHandler, GotoFileHandler.class);
+  }
+  
+  @Override
   protected void bindProgressHandler(AnnotatedBindingBuilder<ProgressHandler> builder) {
     if (progressHandler != null) bindToInstance(builder, progressHandler);
     else bindToMockInstance(builder, ProgressHandler.class);

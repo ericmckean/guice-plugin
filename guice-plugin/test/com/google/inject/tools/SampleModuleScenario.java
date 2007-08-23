@@ -18,8 +18,11 @@ package com.google.inject.tools;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.Collections;
+import java.util.Set;
 import com.google.inject.AbstractModule;
 import com.google.inject.BindingAnnotation;
+import com.google.inject.Module;
 import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
 
@@ -63,6 +66,12 @@ public class SampleModuleScenario {
     @Override
     protected void configure() {
       bind(MockInjectedInterface2.class).to(MockInjectedInterface2Impl.class);
+    }
+  }
+  
+  public static class CustomContextBuilder {
+    public Set<Module> getModules() {
+      return Collections.singleton((Module) new WorkingModule());
     }
   }
   

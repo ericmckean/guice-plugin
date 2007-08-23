@@ -16,6 +16,7 @@
 
 package com.google.inject.tools.snippets;
 
+import java.util.Collections;
 import java.util.Set;
 import com.google.inject.tools.ideplugin.ActionsHandler;
 import com.google.inject.tools.ideplugin.results.Results.Node.ActionString;
@@ -26,6 +27,23 @@ import com.google.inject.tools.ideplugin.results.Results.Node.ActionString;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class BindingCodeLocation extends CodeLocation {
+  public static class NoBindingLocation extends CodeLocation {
+    private final ActionString display;
+    
+    public NoBindingLocation(String theClass) {
+      super(new StackTraceElement[0], "", -1, Collections.<CodeProblem>emptySet());
+      display = new ActionString();
+      display.addText("No binding for","");
+      display.addTextWithAction(shorten(theClass), new ActionsHandler.GotoFile(theClass), "Goto source of " + theClass);
+    }
+
+    @Override
+    public ActionString getDisplay() {
+      return display;
+    }
+  }
+  
+  
   private final String moduleContext;
   private final String bindWhat;
   private final String bindTo;
@@ -62,7 +80,7 @@ public class BindingCodeLocation extends CodeLocation {
     return text;
   }
 
-  private String shorten(String label) {
+  private static String shorten(String label) {
     return label.substring(label.lastIndexOf(".")+1);
   }
   

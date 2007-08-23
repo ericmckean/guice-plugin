@@ -54,11 +54,11 @@ public class ModuleManagerTest extends TestCase {
     ModuleInstanceRepresentation brokenModuleInstance =
       new ModuleInstanceRepresentation("BrokenModule");
     ModuleContextRepresentation workingModuleContext = 
-      new ModuleContextRepresentationImpl("Working Module Context").add(workingModuleInstance);
+      new ModuleContextRepresentationImpl("Working Module Context", "WMC", "WMC").add(workingModuleInstance);
     ModuleContextRepresentation brokenModuleContext = 
-      new ModuleContextRepresentationImpl("Broken Module Context").add(brokenModuleInstance);
+      new ModuleContextRepresentationImpl("Broken Module Context", "BMC", "BMC").add(brokenModuleInstance);
     ModuleContextRepresentation emptyModuleContext = 
-      new ModuleContextRepresentationImpl("Empty Module Context");
+      new ModuleContextRepresentationImpl("Empty Module Context", "EMC", "EMC");
     
     ModulesSource modulesListener = EasyMock.createMock(ModulesSource.class);
     EasyMock.expect(modulesListener.getModules(project)).andReturn(Collections.<String>emptySet());

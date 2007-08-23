@@ -19,8 +19,9 @@ package com.google.inject.tools.ideplugin.eclipse;
 import com.google.inject.binder.AnnotatedBindingBuilder;
 import com.google.inject.tools.Messenger;
 import com.google.inject.tools.ProgressHandler;
+import com.google.inject.tools.ideplugin.GotoCodeLocationHandler;
+import com.google.inject.tools.ideplugin.GotoFileHandler;
 import com.google.inject.tools.ideplugin.GuicePluginModule;
-import com.google.inject.tools.ideplugin.ActionsHandler;
 import com.google.inject.tools.ideplugin.GuiceToolsModuleImpl;
 import com.google.inject.tools.ideplugin.results.ResultsView;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
@@ -77,12 +78,14 @@ public class EclipsePluginModule extends GuicePluginModule {
     bindModuleSelectionView.to(EclipseGuicePlugin.ModuleSelectionViewImpl.class).asEagerSingleton();
   }
   
-  /**
-   * Bind the {@link ActionsHandler} implementation.
-   */
   @Override
-  protected void bindActionsHandler(AnnotatedBindingBuilder<ActionsHandler> bindActionsHandler) {
-    bindActionsHandler.to(EclipseActionsHandler.class).asEagerSingleton();
+  protected void bindGotoCodeLocationHandler(AnnotatedBindingBuilder<GotoCodeLocationHandler> bindGotoCodeLocationHandler) {
+    bindGotoCodeLocationHandler.to(EclipseGotoCodeLocationHandler.class).asEagerSingleton();
+  }
+  
+  @Override
+  protected void bindGotoFileHandler(AnnotatedBindingBuilder<GotoFileHandler> bindGotoFileHandler) {
+    bindGotoFileHandler.to(EclipseGotoFileHandler.class).asEagerSingleton();
   }
   
   @Override

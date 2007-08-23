@@ -23,6 +23,7 @@ import com.google.inject.tools.ideplugin.results.CodeLocationsResults;
 import com.google.inject.tools.ideplugin.results.ResultsHandler;
 import com.google.inject.tools.module.ModuleContextRepresentation;
 import com.google.inject.tools.module.ModuleManager;
+import com.google.inject.tools.snippets.BindingCodeLocation.NoBindingLocation;
 
 /**
  * The BindingsEngine is the glue between the other objects; it is responsible
@@ -82,6 +83,8 @@ public final class BindingsEngine {
             if (locater.getCodeLocation()!=null) {
               problemsHandler.foundProblems(locater.getCodeLocation().getProblems());
               results.put(locater.getModuleContext().getName(), locater.getCodeLocation());
+            } else {
+              results.put(locater.getModuleContext().getName(), new NoBindingLocation(theClass));
             }
           }
           if (!results.keySet().isEmpty()) {

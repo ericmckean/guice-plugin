@@ -157,10 +157,10 @@ public class Fakes {
     }
   }
   
-  public static class FakeActionsHandler extends ActionsHandler {
-    @Override
+  public static class FakeActionsHandler implements ActionsHandler {
     public void run(GotoCodeLocation action) {}
-    @Override
     public void run(GotoFile action) {}
+    public void run(NullAction action) {}
+    public void run(Action action) {}
   }
 }

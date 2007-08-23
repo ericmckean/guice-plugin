@@ -16,6 +16,8 @@
 
 package com.google.inject.tools.ideplugin.module;
 
+import com.google.inject.tools.JavaManager;
+
 /**
  * Interface for IDE specific objects presenting the module choices to the user.
  * Responsible for notifying the {@link com.google.inject.tools.module.ModuleManager} of the user's selections by creating
@@ -24,5 +26,5 @@ package com.google.inject.tools.ideplugin.module;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public interface ModuleSelectionView {
-  public void show();
+  public void show(JavaManager project);
 }

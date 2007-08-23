@@ -39,7 +39,7 @@ import com.google.inject.tools.snippets.ModuleContextSnippet;
 public class ModuleContextRepresentationTest extends TestCase {
   public void testModuleContextRepresentation() throws Exception {
     ModuleContextRepresentation moduleContext = 
-      new ModuleContextRepresentationImpl("Working Module Context");
+      new ModuleContextRepresentationImpl("Working Module Context", "WMC", "WMC");
     CodeRunner codeRunner = new SimulatedCodeRunner();
     moduleContext.clean(codeRunner);
     codeRunner.run("", true);

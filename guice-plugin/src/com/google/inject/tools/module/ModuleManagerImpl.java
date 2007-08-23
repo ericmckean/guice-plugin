@@ -46,6 +46,7 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
   private final JavaManager javaManager;
   private boolean runAutomatically;
   private boolean activateByDefault;
+  private boolean waitOnInit;
   
   /** 
    * Create a ModuleManagerImpl.  This should be done by injection as a singleton.
@@ -71,10 +72,27 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
       moduleContexts = new HashSet<ModuleContextRepresentation>();
       activeModuleContexts = new HashSet<ModuleContextRepresentation>();
     }
+    
+    //TODO: make these prefs be passed in somehow
     runAutomatically = false;
-    activateByDefault = true;
-    initModules();
-    initContexts();
+    activateByDefault = false;
+    waitOnInit = false;
+    
+    if (waitOnInit) {
+      initModules();
+      initContexts();
+    } else {
+      new InitThread().start();
+    }
+  }
+  
+  //this is to avoid blocking loading in the UI if there is one
+  private class InitThread extends Thread {
+    @Override
+    public void run() {
+      initModules();
+      initContexts();
+    }
   }
   
   public static class NullJavaManager implements JavaManager {
@@ -92,33 +110,43 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
   /*
    * Ask the ModulesListener for all the modules in the user's code.
    */
-  private void initModules() {
+  private synchronized void initModules() {
     if (javaManager != null) {
       Set<String> moduleNames = modulesListener.getModules(javaManager);
       for (String moduleName : moduleNames) {
         initModule(moduleName);
       }
     }
-    cleanAllModules(true, true);
+    if (runAutomatically) cleanAllModules(true, true);
   }
   
   private void initModule(String moduleName) {
     modules.add(new ModuleRepresentationImpl(moduleName));
   }
   
+  public boolean findNewContexts(boolean waitFor) {
+    boolean result = cleanAllModules(waitFor, true);
+    initContexts();
+    return result;
+  }
+  
   /*
    * Create module contexts for each module that we can.
    */
-  private void initContexts() {
+  private synchronized void initContexts() {
     for (ModuleRepresentation module : modules) {
       if (module.hasDefaultConstructor()) {
-        ModuleContextRepresentation moduleContext = new ModuleContextRepresentationImpl(module.getName());
+        ModuleContextRepresentation moduleContext = new ModuleContextRepresentationImpl(module.getName(), shorten(module.getName()), "Guice.createInjector(new " + module.getName() + ")");
         ModuleInstanceRepresentation moduleInstance = new ModuleInstanceRepresentation(module.getName());
         moduleContext.add(moduleInstance);
         moduleContexts.add(moduleContext);
         if (activateByDefault) activeModuleContexts.add(moduleContext);
       }
     }
+  }
+  
+  private static String shorten(String className) {
+    return className.substring(className.lastIndexOf(".")+1);
   }
   
   /**
@@ -129,7 +157,7 @@ public class ModuleManagerImpl implements ModuleManager, CodeRunner.CodeRunListe
     if (javaManager != null) {
       modules.add(module);
       if (module.hasDefaultConstructor()) {
-        ModuleContextRepresentation moduleContext = new ModuleContextRepresentationImpl(module.getName());
+        ModuleContextRepresentation moduleContext = new ModuleContextRepresentationImpl(module.getName(), shorten(module.getName()), "Guice.createInjector(new " + module.getName() + ")");
         moduleContext.add(new ModuleInstanceRepresentation(module.getName()));
         moduleContexts.add(moduleContext);
         if (createContext) {
