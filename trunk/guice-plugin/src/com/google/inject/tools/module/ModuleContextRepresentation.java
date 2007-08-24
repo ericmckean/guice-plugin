@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import com.google.inject.tools.code.CodeRunner;
-import com.google.inject.tools.snippets.BindingCodeLocation;
+import com.google.inject.tools.snippets.CodeLocation;
 import com.google.inject.tools.snippets.CodeProblem;
 
 /**
@@ -164,7 +164,7 @@ public interface ModuleContextRepresentation {
    * @param theClass the class to find the binding for
    * @return the location in code and/or problems finding the binding
    */
-  public BindingCodeLocation findLocation(String theClass);
+  public CodeLocation findLocation(String theClass);
 
   /**
    * Add the module with the given name to this context.

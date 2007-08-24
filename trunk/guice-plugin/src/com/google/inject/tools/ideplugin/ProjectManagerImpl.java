@@ -22,7 +22,6 @@ import com.google.inject.tools.GuiceToolsModule.ModuleManagerFactory;
 import com.google.inject.tools.ideplugin.CustomContextDefinitionSource.CustomContextDefinitionListener;
 import com.google.inject.tools.ideplugin.module.ModulesListener;
 import com.google.inject.tools.module.ModuleManager;
-import com.google.inject.tools.module.ModuleManagerImpl;
 import com.google.inject.tools.module.ModulesSource;
 
 import java.util.HashMap;
@@ -33,7 +32,7 @@ import java.util.Map;
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public class ProjectManagerImpl implements ProjectManager,
+class ProjectManagerImpl implements ProjectManager,
     ModulesSource.ModulesSourceListener, CustomContextDefinitionListener {
   private final Map<JavaManager, ModuleManager> moduleManagers;
   private final ModuleManagerFactory moduleManagerFactory;
@@ -73,12 +72,13 @@ public class ProjectManagerImpl implements ProjectManager,
 
     @Override
     public void run() {
-      // TODO: either waitFor is in MM or this goes
-      ((ModuleManagerImpl) moduleManager).waitForInitThread();
-      for (String customContextName : customContextDefinitionSource
-          .getContexts(project)) {
-        moduleManager.addCustomContext(customContextName);
-      }
+      try {
+        moduleManager.waitForInitialization();
+        for (String customContextName : customContextDefinitionSource
+            .getContexts(project)) {
+          moduleManager.addCustomContext(customContextName);
+        }
+      } catch (InterruptedException e) {}
     }
   }
 

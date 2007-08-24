@@ -16,6 +16,8 @@
 
 package com.google.inject.tools.module;
 
+import com.google.inject.tools.JavaManager;
+
 import java.util.Set;
 
 /**
@@ -44,6 +46,25 @@ public interface ModuleManager {
     @Override
     public String toString() {
       return "No java manager for this ModuleManager: " + moduleManager;
+    }
+  }
+  
+  /**
+   * A {@link JavaManager} implementation that does nothing.
+   * 
+   * @author Darren Creutz <dcreutz@gmail.com>
+   */
+  public static class NullJavaManager implements JavaManager {
+    public String getJavaCommand() throws Exception {
+      return null;
+    }
+
+    public String getProjectClasspath() throws Exception {
+      return null;
+    }
+
+    public String getSnippetsClasspath() throws Exception {
+      return null;
     }
   }
 
@@ -225,4 +246,6 @@ public interface ModuleManager {
   public void removeCustomContext(String contextName);
 
   public void customContextChanged(String contextName);
+  
+  public void waitForInitialization() throws InterruptedException;
 }

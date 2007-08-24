@@ -16,6 +16,13 @@
 
 package com.google.inject.tools;
 
+
+import com.google.inject.tools.code.CodeRunnerTest;
+import com.google.inject.tools.module.ModuleContextRepresentationTest;
+import com.google.inject.tools.module.ModuleContextSnippetTest;
+import com.google.inject.tools.module.ModuleManagerTest;
+import com.google.inject.tools.module.ModuleRepresentationTest;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 

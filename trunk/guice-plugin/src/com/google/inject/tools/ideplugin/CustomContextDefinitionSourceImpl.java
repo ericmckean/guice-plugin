@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class CustomContextDefinitionSourceImpl implements
+class CustomContextDefinitionSourceImpl implements
     CustomContextDefinitionSource {
   private final Set<CustomContextDefinitionListener> listeners;
   private final Messenger messenger;

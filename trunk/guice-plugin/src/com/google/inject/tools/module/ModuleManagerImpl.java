@@ -35,7 +35,7 @@ import java.util.Set;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 @Singleton
-public class ModuleManagerImpl implements ModuleManager,
+class ModuleManagerImpl implements ModuleManager,
     CodeRunner.CodeRunListener {
   private final ModulesSource modulesListener;
   private final ProblemsHandler problemsHandler;
@@ -97,26 +97,9 @@ public class ModuleManagerImpl implements ModuleManager,
     }
   }
 
-  public void waitForInitThread() {
+  public void waitForInitialization() throws InterruptedException {
     if (initing) {
-      try {
-        initThread.join();
-      } catch (InterruptedException e) {
-      }
-    }
-  }
-
-  public static class NullJavaManager implements JavaManager {
-    public String getJavaCommand() throws Exception {
-      return null;
-    }
-
-    public String getProjectClasspath() throws Exception {
-      return null;
-    }
-
-    public String getSnippetsClasspath() throws Exception {
-      return null;
+      initThread.join();
     }
   }
 

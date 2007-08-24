@@ -17,17 +17,12 @@
 package com.google.inject.tools;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.binder.AnnotatedBindingBuilder;
 import com.google.inject.tools.code.CodeRunner;
-import com.google.inject.tools.code.CodeRunnerImpl;
+import com.google.inject.tools.code.CodeRunnerFactoryImpl;
 import com.google.inject.tools.module.ModuleManager;
-import com.google.inject.tools.module.ModuleManagerImpl;
+import com.google.inject.tools.module.ModuleManagerFactoryImpl;
 import com.google.inject.tools.module.ModulesSource;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * The guice module controlling the tools suite.
@@ -56,57 +51,8 @@ public abstract class GuiceToolsModule extends AbstractModule {
     public CodeRunner create(JavaManager project);
   }
 
-  protected static class CodeRunnerFactoryImpl implements CodeRunnerFactory {
-    private final Provider<ProgressHandler> progressHandlerProvider;
-    private final Messenger messenger;
-
-    @Inject
-    public CodeRunnerFactoryImpl(
-        Provider<ProgressHandler> progressHandlerProvider, Messenger messenger) {
-      this.progressHandlerProvider = progressHandlerProvider;
-      this.messenger = messenger;
-    }
-
-    public CodeRunner create(JavaManager project) {
-      return new CodeRunnerImpl(project, progressHandlerProvider.get(),
-          messenger);
-    }
-  }
-
   public interface ModuleManagerFactory {
     public ModuleManager create(JavaManager javaManager);
-  }
-
-  protected static class ModuleManagerFactoryImpl implements
-      ModuleManagerFactory {
-    private final Provider<ModulesSource> modulesSourceProvider;
-    private final Provider<ProblemsHandler> problemsHandlerProvider;
-    private final Provider<Messenger> messengerProvider;
-    private final Provider<CodeRunnerFactory> codeRunnerFactoryProvider;
-    private final Map<JavaManager, ModuleManager> moduleManagerInstances;
-
-    @Inject
-    public ModuleManagerFactoryImpl(
-        Provider<ModulesSource> modulesSourceProvider,
-        Provider<ProblemsHandler> problemsHandlerProvider,
-        Provider<Messenger> messengerProvider,
-        Provider<CodeRunnerFactory> codeRunnerFactoryProvider) {
-      this.modulesSourceProvider = modulesSourceProvider;
-      this.problemsHandlerProvider = problemsHandlerProvider;
-      this.messengerProvider = messengerProvider;
-      this.codeRunnerFactoryProvider = codeRunnerFactoryProvider;
-      this.moduleManagerInstances = new HashMap<JavaManager, ModuleManager>();
-    }
-
-    public ModuleManager create(JavaManager javaManager) {
-      if (moduleManagerInstances.get(javaManager) == null) {
-        moduleManagerInstances.put(javaManager, new ModuleManagerImpl(
-            modulesSourceProvider.get(), problemsHandlerProvider.get(),
-            messengerProvider.get(), javaManager, codeRunnerFactoryProvider
-                .get()));
-      }
-      return moduleManagerInstances.get(javaManager);
-    }
   }
 
   @Override
@@ -132,7 +78,7 @@ public abstract class GuiceToolsModule extends AbstractModule {
    */
   protected void bindModuleManager(
       AnnotatedBindingBuilder<ModuleManager> bindModuleManager) {
-    bindModuleManager.to(ModuleManagerImpl.class);
+    ModuleManagerFactoryImpl.bindModuleManager(bindModuleManager);
   }
 
   /**
@@ -167,7 +113,7 @@ public abstract class GuiceToolsModule extends AbstractModule {
    */
   protected void bindCodeRunner(
       AnnotatedBindingBuilder<CodeRunner> bindCodeRunner) {
-    bindCodeRunner.to(CodeRunnerImpl.class);
+    CodeRunnerFactoryImpl.bindCodeRunner(bindCodeRunner);
   }
 
   /**
@@ -175,6 +121,6 @@ public abstract class GuiceToolsModule extends AbstractModule {
    */
   protected void bindJavaManager(
       AnnotatedBindingBuilder<JavaManager> bindJavaManager) {
-    bindJavaManager.to(ModuleManagerImpl.NullJavaManager.class);
+    bindJavaManager.to(ModuleManager.NullJavaManager.class);
   }
 }

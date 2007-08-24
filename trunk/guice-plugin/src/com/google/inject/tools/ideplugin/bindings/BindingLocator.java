@@ -17,7 +17,7 @@
 package com.google.inject.tools.ideplugin.bindings;
 
 import com.google.inject.tools.module.ModuleContextRepresentation;
-import com.google.inject.tools.snippets.BindingCodeLocation;
+import com.google.inject.tools.snippets.CodeLocation;
 
 /**
  * The BindingLocater performs the actual determination of what an interface is
@@ -28,7 +28,7 @@ import com.google.inject.tools.snippets.BindingCodeLocation;
 public class BindingLocator {
   private final String theClass;
   private final ModuleContextRepresentation moduleContext;
-  private final BindingCodeLocation location;
+  private final CodeLocation location;
 
   public BindingLocator(String theClass,
       ModuleContextRepresentation moduleContext) {
@@ -55,7 +55,7 @@ public class BindingLocator {
    * Return the code location where the binding happens (and/or problems finding
    * it).
    */
-  public BindingCodeLocation getCodeLocation() {
+  public CodeLocation getCodeLocation() {
     return location;
   }
 }

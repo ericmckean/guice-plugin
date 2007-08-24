@@ -14,10 +14,12 @@
  * the License.
  */
 
-package com.google.inject.tools;
+package com.google.inject.tools.module;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.tools.JavaManager;
+import com.google.inject.tools.MockingGuiceToolsModule;
 import com.google.inject.tools.Fakes.FakeCodeRunner;
 import com.google.inject.tools.Fakes.FakeJavaManager;
 import com.google.inject.tools.GuiceToolsModule.ModuleManagerFactory;
@@ -25,7 +27,6 @@ import com.google.inject.tools.SampleModuleScenario.WorkingModule;
 import com.google.inject.tools.module.ModuleContextRepresentation;
 import com.google.inject.tools.module.ModuleContextRepresentationImpl;
 import com.google.inject.tools.module.ModuleManager;
-import com.google.inject.tools.module.ModuleManagerImpl;
 import com.google.inject.tools.module.ModuleRepresentation;
 import com.google.inject.tools.module.ModuleRepresentationImpl;
 import com.google.inject.tools.module.ModulesSource;
@@ -74,7 +75,7 @@ public class ModuleManagerTest extends TestCase {
 
     ModuleManager moduleManager =
         injector.getInstance(ModuleManagerFactory.class).create(project);
-    ((ModuleManagerImpl) moduleManager).waitForInitThread();
+    moduleManager.waitForInitialization();
     moduleManager.findNewContexts(true, true);
     moduleManager.updateModules(true, true);
     moduleManager.addModuleContext(workingModuleContext, true);
@@ -99,7 +100,7 @@ public class ModuleManagerTest extends TestCase {
   /**
    * Test that adding and removing modules works as expected.
    */
-  public void testAddRemoveModules() {
+  public void testAddRemoveModules() throws Exception {
     JavaManager project = EasyMock.createMock(JavaManager.class);
     ModuleRepresentation workingModule =
         new ModuleRepresentationImpl("WorkingModule");
@@ -120,7 +121,7 @@ public class ModuleManagerTest extends TestCase {
 
     ModuleManager moduleManager =
         injector.getInstance(ModuleManagerFactory.class).create(project);
-    ((ModuleManagerImpl) moduleManager).waitForInitThread();
+    moduleManager.waitForInitialization();
     moduleManager.updateModules(true, true);
     moduleManager.addModule(workingModule, false);
     assertTrue(moduleManager.getModules().contains(workingModule));
@@ -143,7 +144,7 @@ public class ModuleManagerTest extends TestCase {
   /**
    * Test that the ModuleManager correctly adds and removes by name.
    */
-  public void testAddRemoveByName() {
+  public void testAddRemoveByName() throws Exception {
     JavaManager project = EasyMock.createMock(JavaManager.class);
 
     ModulesSource modulesListener = EasyMock.createMock(ModulesSource.class);
@@ -159,7 +160,7 @@ public class ModuleManagerTest extends TestCase {
 
     ModuleManager moduleManager =
         injector.getInstance(ModuleManagerFactory.class).create(project);
-    ((ModuleManagerImpl) moduleManager).waitForInitThread();
+    moduleManager.waitForInitialization();
     moduleManager.findNewContexts(true, true);
     moduleManager.updateModules(true, true);
     assertTrue(moduleManager.getModules().size() == 1);
@@ -177,7 +178,7 @@ public class ModuleManagerTest extends TestCase {
   /**
    * Test that the ModuleManager correctly initializes modules.
    */
-  public void testInitializesModules() {
+  public void testInitializesModules() throws Exception {
     JavaManager project = EasyMock.createMock(JavaManager.class);
 
     ModulesSource modulesListener = EasyMock.createMock(ModulesSource.class);
@@ -193,7 +194,7 @@ public class ModuleManagerTest extends TestCase {
 
     ModuleManager moduleManager =
         injector.getInstance(ModuleManagerFactory.class).create(project);
-    ((ModuleManagerImpl) moduleManager).waitForInitThread();
+    moduleManager.waitForInitialization();
     moduleManager.findNewContexts(true, true);
     moduleManager.updateModules(true, true);
     assertTrue(moduleManager.getModules().size() == 1);
