@@ -1,17 +1,17 @@
 /**
  * Copyright (C) 2007 Google Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package com.google.inject.tools.ideplugin.eclipse;
@@ -35,31 +35,34 @@ public class EclipseProgressHandler implements ProgressHandler {
   private final Messenger messenger;
   private final List<ProgressStep> steps;
   private Job job;
-  
+
   @Inject
   public EclipseProgressHandler(Messenger messenger) {
     this.messenger = messenger;
     this.steps = new ArrayList<ProgressStep>();
   }
-  
+
   /**
    * (non-Javadoc)
+   * 
    * @see com.google.inject.tools.ProgressHandler#isCancelled()
    */
   public boolean isCancelled() {
     return false;
   }
-  
+
   /**
    * (non-Javadoc)
+   * 
    * @see com.google.inject.tools.ProgressHandler#step(com.google.inject.tools.ProgressHandler.ProgressStep)
    */
   public void step(ProgressStep step) {
     steps.add(step);
   }
-  
+
   /**
    * (non-Javadoc)
+   * 
    * @see com.google.inject.tools.ProgressHandler#go(java.lang.String, boolean)
    */
   public void go(String label, boolean backgroundAutomatically) {
@@ -67,17 +70,19 @@ public class EclipseProgressHandler implements ProgressHandler {
     job.setUser(!backgroundAutomatically);
     job.schedule();
   }
-  
+
   public void waitForStart() throws InterruptedException {
     job.join();
   }
-  
+
   private class ProgressHandlerJob extends Job {
     private final String label;
+
     public ProgressHandlerJob(String label) {
       super(label);
       this.label = label;
     }
+
     @Override
     protected IStatus run(IProgressMonitor monitor) {
       monitor.beginTask(label, steps.size());
@@ -89,10 +94,11 @@ public class EclipseProgressHandler implements ProgressHandler {
           step.run();
           while (!monitor.isCanceled() && !step.isDone()) {
             try {
-              //TODO: there has to be a better way
+              // TODO: there has to be a better way
               Thread.sleep(100);
             } catch (InterruptedException exception) {
-              EclipseProgressHandler.this.messenger.logException("Job interrupted", exception);
+              EclipseProgressHandler.this.messenger.logException(
+                  "Job interrupted", exception);
             }
           }
           if (monitor.isCanceled()) {
@@ -105,8 +111,11 @@ public class EclipseProgressHandler implements ProgressHandler {
         }
       }
       monitor.done();
-      if (monitor.isCanceled()) return Status.CANCEL_STATUS;
-      else return Status.OK_STATUS;
+      if (monitor.isCanceled()) {
+        return Status.CANCEL_STATUS;
+      } else {
+        return Status.OK_STATUS;
+      }
     }
   }
 }

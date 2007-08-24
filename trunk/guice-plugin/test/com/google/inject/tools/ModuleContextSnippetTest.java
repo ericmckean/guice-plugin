@@ -1,17 +1,17 @@
 /**
  * Copyright (C) 2007 Google Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package com.google.inject.tools;
@@ -42,34 +42,36 @@ import java.io.PipedOutputStream;
  */
 public class ModuleContextSnippetTest extends TestCase {
   public void testModuleContextSnippetModuleRepresentation() throws Exception {
-    ModuleContextSnippet.ModuleRepresentation module = 
-      new ModuleContextSnippet.ModuleRepresentation(WorkingModule.class,
-          null, null);
+    ModuleContextSnippet.ModuleRepresentation module =
+        new ModuleContextSnippet.ModuleRepresentation(WorkingModule.class,
+            null, null);
     assertNotNull(module.getInstance());
   }
-  
+
   private class ThreadWithStream extends Thread {
     private final OutputStream stream;
     private final String[] args;
-    public ThreadWithStream(OutputStream stream,String[] args) {
+
+    public ThreadWithStream(OutputStream stream, String[] args) {
       this.stream = stream;
       this.args = args;
     }
+
     @Override
     public void run() {
       ModuleContextSnippet.runSnippet(stream, args);
     }
   }
-  
+
   private Object runASnippet(String[] args) throws Exception {
     PipedInputStream is = new PipedInputStream();
     Object obj = null;
     PipedOutputStream os = new PipedOutputStream(is);
-    new ThreadWithStream(os,args).start();
+    new ThreadWithStream(os, args).start();
     ObjectInputStream ois = new ObjectInputStream(is);
     return ois.readObject();
   }
-  
+
   /**
    * Test that constructing a working module context happens without problems
    * and that the correct binding location is constructed.
@@ -82,23 +84,29 @@ public class ModuleContextSnippetTest extends TestCase {
     args[3] = "0"; // number of args to WorkingModule
     Object obj = runASnippet(args);
     assertTrue(obj instanceof ModuleContextSnippet.ModuleContextResult);
-    ModuleContextSnippet.ModuleContextResult result = (ModuleContextSnippet.ModuleContextResult)obj;
+    ModuleContextSnippet.ModuleContextResult result =
+        (ModuleContextSnippet.ModuleContextResult) obj;
     assertTrue(result.getProblems().isEmpty());
     assertNotNull(result.getBindings());
-    BindingCodeLocation location = result.getBindings().get(MockInjectedInterface.class.getName());
+    BindingCodeLocation location =
+        result.getBindings().get(MockInjectedInterface.class.getName());
     assertNotNull(location);
-    assertTrue(location.bindTo().equals(MockInjectedInterfaceImpl.class.getName()));
+    assertTrue(location.bindTo().equals(
+        MockInjectedInterfaceImpl.class.getName()));
     assertTrue(location.file().equals(WorkingModuleBindFile));
     assertTrue(location.location() == WorkingModuleBindLocation);
   }
-  
+
   private static final int WorkingModuleBindLocation = 41;
-  private static final String WorkingModuleBindFile = "SampleModuleScenario.java";
+  private static final String WorkingModuleBindFile =
+      "SampleModuleScenario.java";
   private static final int WorkingModuleBindLocation2 = 68;
-  private static final String WorkingModuleBindFile2 = "SampleModuleScenario.java";
-  
+  private static final String WorkingModuleBindFile2 =
+      "SampleModuleScenario.java";
+
   /**
-   * Test that constructing a broken module context causes a {@link com.google.inject.tools.snippets.CodeProblem.CreationProblem}.
+   * Test that constructing a broken module context causes a
+   * {@link com.google.inject.tools.snippets.CodeProblem.CreationProblem}.
    */
   public void testConstructBrokenModuleContext() throws Exception {
     String[] args = new String[4];
@@ -107,12 +115,13 @@ public class ModuleContextSnippetTest extends TestCase {
     args[2] = BrokenModule.class.getName();
     args[3] = "0";
     Object obj = runASnippet(args);
-    ModuleContextSnippet.ModuleContextResult result = (ModuleContextSnippet.ModuleContextResult)obj;
+    ModuleContextSnippet.ModuleContextResult result =
+        (ModuleContextSnippet.ModuleContextResult) obj;
     assertFalse(result.getProblems().isEmpty());
     assertTrue(result.getBindings().size() == 0);
     assertTrue(result.getProblems().iterator().next() instanceof CodeProblem.CreationProblem);
   }
-  
+
   /**
    * Test that constructing an invalid module context fails.
    */
@@ -123,11 +132,12 @@ public class ModuleContextSnippetTest extends TestCase {
     args[2] = ModuleWithArguments.class.getName();
     args[3] = "0";
     Object obj = runASnippet(args);
-    ModuleContextSnippet.ModuleContextResult result = (ModuleContextSnippet.ModuleContextResult)obj;
+    ModuleContextSnippet.ModuleContextResult result =
+        (ModuleContextSnippet.ModuleContextResult) obj;
     assertFalse(result.getProblems().isEmpty());
     assertTrue(result.getProblems().iterator().next() instanceof CodeProblem.InvalidModuleProblem);
   }
-  
+
   /**
    * Test that using multiple modules in a single context works correctly.
    */
@@ -141,21 +151,26 @@ public class ModuleContextSnippetTest extends TestCase {
     args[5] = "0";
     Object obj = runASnippet(args);
     assertTrue(obj instanceof ModuleContextSnippet.ModuleContextResult);
-    ModuleContextSnippet.ModuleContextResult result = (ModuleContextSnippet.ModuleContextResult)obj;
+    ModuleContextSnippet.ModuleContextResult result =
+        (ModuleContextSnippet.ModuleContextResult) obj;
     assertTrue(result.getProblems().isEmpty());
     assertNotNull(result.getBindings());
-    BindingCodeLocation location = result.getBindings().get(MockInjectedInterface.class.getName());
+    BindingCodeLocation location =
+        result.getBindings().get(MockInjectedInterface.class.getName());
     assertNotNull(location);
-    assertTrue(location.bindTo().equals(MockInjectedInterfaceImpl.class.getName()));
+    assertTrue(location.bindTo().equals(
+        MockInjectedInterfaceImpl.class.getName()));
     assertTrue(location.file().equals(WorkingModuleBindFile));
     assertTrue(location.location() == WorkingModuleBindLocation);
-    BindingCodeLocation location2 = result.getBindings().get(MockInjectedInterface2.class.getName());
+    BindingCodeLocation location2 =
+        result.getBindings().get(MockInjectedInterface2.class.getName());
     assertNotNull(location);
-    assertTrue(location2.bindTo().equals(MockInjectedInterface2Impl.class.getName()));
+    assertTrue(location2.bindTo().equals(
+        MockInjectedInterface2Impl.class.getName()));
     assertTrue(location2.file().equals(WorkingModuleBindFile2));
     assertTrue(location2.location() == WorkingModuleBindLocation2);
   }
-  
+
   public void testCustomModuleContext() throws Exception {
     String[] args = new String[4];
     args[0] = "Custom Context";
@@ -164,12 +179,15 @@ public class ModuleContextSnippetTest extends TestCase {
     args[3] = "getModules";
     Object obj = runASnippet(args);
     assertTrue(obj instanceof ModuleContextSnippet.ModuleContextResult);
-    ModuleContextSnippet.ModuleContextResult result = (ModuleContextSnippet.ModuleContextResult)obj;
+    ModuleContextSnippet.ModuleContextResult result =
+        (ModuleContextSnippet.ModuleContextResult) obj;
     assertTrue(result.getProblems().isEmpty());
     assertNotNull(result.getBindings());
-    BindingCodeLocation location = result.getBindings().get(MockInjectedInterface.class.getName());
+    BindingCodeLocation location =
+        result.getBindings().get(MockInjectedInterface.class.getName());
     assertNotNull(location);
-    assertTrue(location.bindTo().equals(MockInjectedInterfaceImpl.class.getName()));
+    assertTrue(location.bindTo().equals(
+        MockInjectedInterfaceImpl.class.getName()));
     assertTrue(location.file().equals(WorkingModuleBindFile));
     assertTrue(location.location() == WorkingModuleBindLocation);
   }
