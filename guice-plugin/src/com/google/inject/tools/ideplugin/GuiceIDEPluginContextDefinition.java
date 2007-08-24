@@ -19,10 +19,21 @@ package com.google.inject.tools.ideplugin;
 import com.google.inject.Module;
 
 /**
- * Users should implement this interface to define custom module contexts.
+ * Users can implement this interface in their code to create a module
+ * context for the guice plugin.  The modules returned will be used to
+ * create a (simulated) {@link com.google.inject.Injector} to resolve bindings.
+ * 
+ * The guice plugin will automatically load module contexts that are
+ * defined by implementing this interface.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public interface GuiceIDEPluginContextDefinition {
+  /**
+   * Return the modules to use for the context.
+   * 
+   * This method must either be static or the implementing class must
+   * have a default (zero argument) constructor.
+   */
   public Iterable<Module> getModuleContextDefinition();
 }
