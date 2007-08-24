@@ -97,10 +97,10 @@ public class ModuleContextSnippetTest extends TestCase {
     assertTrue(location.location() == WorkingModuleBindLocation);
   }
 
-  private static final int WorkingModuleBindLocation = 41;
+  private static final int WorkingModuleBindLocation = 42;
   private static final String WorkingModuleBindFile =
       "SampleModuleScenario.java";
-  private static final int WorkingModuleBindLocation2 = 68;
+  private static final int WorkingModuleBindLocation2 = 77;
   private static final String WorkingModuleBindFile2 =
       "SampleModuleScenario.java";
 
@@ -190,5 +190,41 @@ public class ModuleContextSnippetTest extends TestCase {
         MockInjectedInterfaceImpl.class.getName()));
     assertTrue(location.file().equals(WorkingModuleBindFile));
     assertTrue(location.location() == WorkingModuleBindLocation);
+  }
+  
+  public void testStaticCustomModuleContext() throws Exception {
+    String[] args = new String[4];
+    args[0] = "Custom Context";
+    args[1] = String.valueOf(-1);
+    args[2] = SampleModuleScenario.StaticCustomContextBuilder.class.getName();
+    args[3] = "getModules";
+    Object obj = runASnippet(args);
+    assertTrue(obj instanceof ModuleContextSnippet.ModuleContextResult);
+    ModuleContextSnippet.ModuleContextResult result =
+        (ModuleContextSnippet.ModuleContextResult) obj;
+    assertTrue(result.getProblems().isEmpty());
+    assertNotNull(result.getBindings());
+    BindingCodeLocation location =
+        result.getBindings().get(MockInjectedInterface.class.getName());
+    assertNotNull(location);
+    assertTrue(location.bindTo().equals(
+        MockInjectedInterfaceImpl.class.getName()));
+    assertTrue(location.file().equals(WorkingModuleBindFile));
+    assertTrue(location.location() == WorkingModuleBindLocation);
+  }
+  
+  public void testAnnotatedBindingCodeLocation() throws Exception {
+    String[] args = new String[4];
+    args[0] = "Working Module Context";
+    args[1] = "1";
+    args[2] = WorkingModule.class.getName();
+    args[3] = "0";
+    Object obj = runASnippet(args);
+    assertTrue(obj instanceof ModuleContextSnippet.ModuleContextResult);
+    ModuleContextSnippet.ModuleContextResult result =
+      (ModuleContextSnippet.ModuleContextResult) obj;
+    assertTrue(result.getProblems().isEmpty());
+    assertNotNull(result.getBindings());
+    //TODO: finish this test
   }
 }

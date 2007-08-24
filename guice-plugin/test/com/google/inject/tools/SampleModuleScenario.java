@@ -23,6 +23,7 @@ import java.util.Set;
 import com.google.inject.AbstractModule;
 import com.google.inject.BindingAnnotation;
 import com.google.inject.Module;
+import com.google.inject.Provider;
 import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
 
@@ -41,9 +42,16 @@ public class SampleModuleScenario {
       bind(MockInjectedInterface.class).to(MockInjectedInterfaceImpl.class);
       bind(Service.class).annotatedWith(Names.named("blue")).to(
           BlueService.class);
+      bind(Service.class).annotatedWith(Names.named("red")).to(
+          RedService.class);
       bindConstant().annotatedWith(ServerHost.class).to(1);
       bind(new TypeLiteral<PaymentService<CreditCard>>() {}).to(
           CreditCardPaymentService.class);
+      bind(ProvidedService.class).toProvider(new Provider<ProvidedService>() {
+        public ProvidedService get() {
+          return new ProvidedService() {};
+        }
+      });
     }
   }
   public static class BrokenModule extends AbstractModule {
@@ -75,6 +83,12 @@ public class SampleModuleScenario {
       return Collections.singleton((Module) new WorkingModule());
     }
   }
+  
+  public static class StaticCustomContextBuilder {
+    public static Set<Module> getModules() {
+      return Collections.singleton((Module) new WorkingModule());
+    }
+  }
 
 
   public interface MockInjectedInterface {
@@ -92,6 +106,8 @@ public class SampleModuleScenario {
   }
   public static class BlueService implements Service {
   }
+  public static class RedService implements Service {
+  }
   public static class ServiceImpl implements Service {
   }
 
@@ -106,5 +122,8 @@ public class SampleModuleScenario {
   @BindingAnnotation
   @Retention(RetentionPolicy.RUNTIME)
   public @interface ServerHost {
+  }
+  
+  public interface ProvidedService {
   }
 }
