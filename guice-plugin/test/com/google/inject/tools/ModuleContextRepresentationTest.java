@@ -94,6 +94,8 @@ public class ModuleContextRepresentationTest extends TestCase {
       listener.acceptCodeRunResult(result);
     }
     
+    public void notifyDone(Runnable runnable) {}
+    
     public void queue(Runnable runnable) {
     }
     

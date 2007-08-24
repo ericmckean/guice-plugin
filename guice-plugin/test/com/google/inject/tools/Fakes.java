@@ -110,6 +110,7 @@ public class Fakes {
     public void run(String label) {}
     public void waitFor() {}
     public void waitFor(Runnable runnable) {}
+    public void notifyDone(Runnable runnable) {}
   }
   
   public static class FakeJavaManager implements JavaManager {

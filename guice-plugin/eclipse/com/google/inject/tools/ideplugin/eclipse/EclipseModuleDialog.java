@@ -28,6 +28,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
@@ -225,10 +226,16 @@ public class EclipseModuleDialog extends FormDialog {
     
     makeHyperlink(body, "Scan for new contexts", new IHyperlinkListener() {
       public void linkActivated(HyperlinkEvent e) {
-        //TODO: set cursor??
-        moduleManager.findNewContexts(true);
         EclipseModuleDialog.this.close();
-        EclipseModuleDialog.display(shell, moduleManager);
+        moduleManager.findNewContexts(new ModuleManager.PostUpdater() {
+          public void execute(boolean success) {
+            Display.getDefault().asyncExec(new Runnable() {
+              public void run() {
+                EclipseModuleDialog.display(shell, moduleManager);
+              }
+            });
+          }
+        }, false);
       }
       public void linkEntered(HyperlinkEvent e) {}
       public void linkExited(HyperlinkEvent e) {}
@@ -249,6 +256,9 @@ public class EclipseModuleDialog extends FormDialog {
           for (Button checkbox : checkboxes) {
             checkbox.setSelection(true);
           }
+          for (CheckboxListener listener : checkboxListeners) {
+            listener.setState(true);
+          }
         }
         public void linkEntered(HyperlinkEvent e) {}
         public void linkExited(HyperlinkEvent e) {}
@@ -257,6 +267,9 @@ public class EclipseModuleDialog extends FormDialog {
         public void linkActivated(HyperlinkEvent e) {
           for (Button checkbox : checkboxes) {
             checkbox.setSelection(false);
+          }
+          for (CheckboxListener listener : checkboxListeners) {
+            listener.setState(false);
           }
         }
         public void linkEntered(HyperlinkEvent e) {}
@@ -332,6 +345,9 @@ public class EclipseModuleDialog extends FormDialog {
     }
     public ModuleContextRepresentation getModuleContext() {
       return moduleContext;
+    }
+    public void setState(boolean state) {
+      this.state = state;
     }
     public boolean getState() {
       return state;

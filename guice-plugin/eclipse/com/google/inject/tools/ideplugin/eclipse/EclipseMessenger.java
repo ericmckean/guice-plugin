@@ -81,6 +81,7 @@ public class EclipseMessenger implements Messenger {
       //means we are running in testing mode
     } catch (Exception e) {
       System.out.println("Problem displaying error messages..... " + e.toString());
+      System.out.println("  meant to diplay: " + message);
     }
   }
   

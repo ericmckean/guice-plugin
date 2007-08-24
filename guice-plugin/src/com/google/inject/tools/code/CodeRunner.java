@@ -173,6 +173,7 @@ public interface CodeRunner {
       try {
         final Object output = stream.readObject();
         if (output instanceof CodeSnippetResult) {
+          codeRunner.notifyDone(this);
           codeRunner.notifyResult(this, (CodeSnippetResult)output);
         } else {
           throw new NotCodeSnippetResultException(this,output);
@@ -182,6 +183,8 @@ public interface CodeRunner {
       }
     }
   }
+  
+  public void notifyDone(Runnable runnable);
   
   /**
    * Add a listener to the CodeRunner.

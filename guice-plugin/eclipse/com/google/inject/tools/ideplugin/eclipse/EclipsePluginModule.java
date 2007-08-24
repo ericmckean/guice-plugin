@@ -19,6 +19,7 @@ package com.google.inject.tools.ideplugin.eclipse;
 import com.google.inject.binder.AnnotatedBindingBuilder;
 import com.google.inject.tools.Messenger;
 import com.google.inject.tools.ProgressHandler;
+import com.google.inject.tools.ideplugin.CustomContextDefinitionSource;
 import com.google.inject.tools.ideplugin.GotoCodeLocationHandler;
 import com.google.inject.tools.ideplugin.GotoFileHandler;
 import com.google.inject.tools.ideplugin.GuicePluginModule;
@@ -91,5 +92,11 @@ public class EclipsePluginModule extends GuicePluginModule {
   @Override
   protected void bindProgressHandler(AnnotatedBindingBuilder<ProgressHandler> bindProgressHandler) {
     bindProgressHandler.to(EclipseProgressHandler.class);
+  }
+
+  @Override
+  protected void bindCustomContextDefinitionSource(
+      AnnotatedBindingBuilder<CustomContextDefinitionSource> bindCustomContextDefinitionSource) {
+    bindCustomContextDefinitionSource.to(EclipseModulesListener.class).asEagerSingleton();
   }
 }

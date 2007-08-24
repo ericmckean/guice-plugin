@@ -54,24 +54,11 @@ public class GuicePluginConfigureAction implements IEditorActionDelegate, IObjec
   }
   public void setActivePart(IAction action, IWorkbenchPart targetPart) {}
   public void selectionChanged(IAction action, ISelection selection) {}
-
-  //TODO: move this to non-eclipse land, same for similar in other places
-  private class NonUIThread extends Thread {
-    private final ICompilationUnit cu;
-    public NonUIThread(ICompilationUnit cu) {
-      this.cu = cu;
-    }
-    @Override
-    public void run() {
-      JavaManager project = new EclipseJavaProject(cu.getJavaProject());
-      ModuleManager moduleManager = projectManager.getModuleManager(project);
-      moduleSelectionView.show(project);
-    }
-  }
   
   public void run(IAction action) {
     ICompilationUnit cu = JavaPlugin.getDefault().getWorkingCopyManager().getWorkingCopy(((CompilationUnitEditor)editor).getEditorInput());
-    Thread nonUIThread = new NonUIThread(cu);
-    nonUIThread.start();
+    JavaManager project = new EclipseJavaProject(cu.getJavaProject());
+    ModuleManager moduleManager = projectManager.getModuleManager(project);
+    moduleSelectionView.show(project);
   }
 }

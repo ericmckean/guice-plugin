@@ -29,6 +29,7 @@ public interface ProgressHandler {
     public void cancel();
     public void complete();
     public boolean isDone();
+    public void waitFor() throws InterruptedException;
   }
   
   /**
@@ -50,4 +51,6 @@ public interface ProgressHandler {
    * @param backgroundAutomatically true if the progress should be backgrounded initially
    */
   public void go(String label, boolean backgroundAutomatically);
+  
+  public void waitForStart() throws InterruptedException;
 }

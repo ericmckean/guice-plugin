@@ -70,7 +70,9 @@ public class ModuleManagerTest extends TestCase {
         .useCodeRunner(new FakeCodeRunner()));
     
     ModuleManager moduleManager = injector.getInstance(ModuleManagerFactory.class).create(project);
-    moduleManager.updateModules(true);
+    ((ModuleManagerImpl)moduleManager).waitForInitThread();
+    moduleManager.findNewContexts(true, true);
+    moduleManager.updateModules(true, true);
     moduleManager.addModuleContext(workingModuleContext, true);
     assertTrue(moduleManager.getModuleContexts().contains(workingModuleContext));
     assertTrue(moduleManager.getModuleContexts().size() == 1);
@@ -112,7 +114,8 @@ public class ModuleManagerTest extends TestCase {
         .useCodeRunner(new FakeCodeRunner()));
     
     ModuleManager moduleManager = injector.getInstance(ModuleManagerFactory.class).create(project);
-    moduleManager.updateModules(true);
+    ((ModuleManagerImpl)moduleManager).waitForInitThread();
+    moduleManager.updateModules(true, true);
     moduleManager.addModule(workingModule, false);
     assertTrue(moduleManager.getModules().contains(workingModule));
     assertTrue(moduleManager.getModules().size() == 1);
@@ -150,8 +153,8 @@ public class ModuleManagerTest extends TestCase {
     
     ModuleManager moduleManager = injector.getInstance(ModuleManagerFactory.class).create(project);
     ((ModuleManagerImpl)moduleManager).waitForInitThread();
-    moduleManager.findNewContexts(true);
-    moduleManager.updateModules(true);
+    moduleManager.findNewContexts(true, true);
+    moduleManager.updateModules(true, true);
     assertTrue(moduleManager.getModules().size() == 1);
     ModuleRepresentation module = moduleManager.getModules().iterator().next();
     assertTrue(module.getName().equals(WorkingModule.class.getName()));
@@ -183,8 +186,8 @@ public class ModuleManagerTest extends TestCase {
     
     ModuleManager moduleManager = injector.getInstance(ModuleManagerFactory.class).create(project);
     ((ModuleManagerImpl)moduleManager).waitForInitThread();
-    moduleManager.findNewContexts(true);
-    moduleManager.updateModules(true);
+    moduleManager.findNewContexts(true, true);
+    moduleManager.updateModules(true, true);
     assertTrue(moduleManager.getModules().size() == 1);
     ModuleRepresentation module = moduleManager.getModules().iterator().next();
     assertTrue(module.getName().equals(WorkingModule.class.getName()));

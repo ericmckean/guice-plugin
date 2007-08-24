@@ -90,6 +90,7 @@ public abstract class GuicePluginModule extends AbstractModule {
     bindResultsHandler(bind(ResultsHandler.class));
     bindResultsView(bind(ResultsView.class));
     bindModuleSelectionView(bind(ModuleSelectionView.class));
+    bindCustomContextDefinitionSource(bind(CustomContextDefinitionSource.class));
   }
   
   protected void bindProjectManager(AnnotatedBindingBuilder<ProjectManager> bindProjectManager) {
@@ -135,4 +136,6 @@ public abstract class GuicePluginModule extends AbstractModule {
    * Bind the {@link ProgressHandler} implementation.
    */
   protected abstract void bindProgressHandler(AnnotatedBindingBuilder<ProgressHandler> bindProgressHandler);
+  
+  protected abstract void bindCustomContextDefinitionSource(AnnotatedBindingBuilder<CustomContextDefinitionSource> bindCustomContextDefinitionSource);
 }

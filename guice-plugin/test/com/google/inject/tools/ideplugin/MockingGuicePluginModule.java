@@ -134,6 +134,11 @@ public class MockingGuicePluginModule extends GuicePluginModule {
     else bindToMockInstance(builder, ProgressHandler.class);
   }
   
+  @Override
+  protected void bindCustomContextDefinitionSource(AnnotatedBindingBuilder<CustomContextDefinitionSource> bindCustomContextDefinitionSource) {
+    bindToMockInstance(bindCustomContextDefinitionSource, CustomContextDefinitionSource.class);
+  }
+  
   @SuppressWarnings({"unchecked"})
   protected <T> void bindToMockInstance(AnnotatedBindingBuilder<T> builder, Class<T> theClass) {
     builder.toInstance(new ProxyMock<T>(theClass).getInstance());

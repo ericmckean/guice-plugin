@@ -132,23 +132,7 @@ public interface ModuleManager {
    * @param waitFor true if the current thread should wait for the update
    * @return true if the update succeeded (false if the user canceled the operation)
    */
-  public boolean updateModules(boolean waitFor);
-  
-  /**
-   * (Re)run the modules by marking them all as dirty and then updating.
-   * 
-   * @param waitFor true if the current thread should wait for the update
-   * @return true if the update succeeded (false on user cancel)
-   */
-  public boolean rerunModules(boolean waitFor);
-  
-  /**
-   * (Re)run the modules in user to find any new context options.
-   * 
-   * @param waitFor true if the current thread should wait for the update
-   * @return true if the operation succeeded (false if the user canceled it)
-   */
-  public boolean findNewContexts(boolean waitFor);
+  public boolean updateModules(boolean waitFor, boolean backgroundAutomatically);
   
   /**
    * Wait for the manager to clean the modules in the current project.
@@ -156,6 +140,36 @@ public interface ModuleManager {
    * @return true if the update succeeded (false if the user cancelled the operation)
    */
   public boolean updateModules();
+  
+  public interface PostUpdater {
+    public void execute(boolean success);
+  }
+  
+  public void updateModules(PostUpdater postUpdater, boolean backgroundAutomatically);
+  
+  /**
+   * (Re)run the modules by marking them all as dirty and then updating.
+   * 
+   * @param waitFor true if the current thread should wait for the update
+   * @return true if the update succeeded (false on user cancel)
+   */
+  public boolean rerunModules(boolean waitFor, boolean backgroundAutomatically);
+  
+  public boolean rerunModules();
+  
+  public void rerunModules(PostUpdater postUpdater, boolean backgroundAutomatically);
+  
+  /**
+   * (Re)run the modules in user to find any new context options.
+   * 
+   * @param waitFor true if the current thread should wait for the update
+   * @return true if the operation succeeded (false if the user canceled it)
+   */
+  public boolean findNewContexts(boolean waitFor, boolean backgroundAutomatically);
+  
+  public boolean findNewContexts();
+  
+  public void findNewContexts(PostUpdater postUpdater, boolean backgroundAutomatically);
   
   /**
    * Tell the module manager to run modules automatically as needed.
@@ -180,5 +194,11 @@ public interface ModuleManager {
   /**
    * Deactivate a module context.
    */
-  public void deactivateModuleContext(ModuleContextRepresentation moduleContext); 
+  public void deactivateModuleContext(ModuleContextRepresentation moduleContext);
+  
+  public void addCustomContext(String contextName);
+  
+  public void removeCustomContext(String contextName);
+  
+  public void customContextChanged(String contextName);
 }

@@ -35,7 +35,9 @@ import com.google.inject.tools.snippets.CodeSnippetResult;
  */
 public class CodeRunnerTest extends TestCase implements CodeRunner.CodeRunListener {
   //TODO: dirty dirty dirty hack
-  private static final String CLASSPATH = "/Users/d/Documents/workspace/Guice Plugin/bin";
+  private static final String CLASSPATH_LAPTOP = "/Users/d/Documents/workspace/Guice Plugin/bin";
+  private static final String CLASSPATH_DESKTOP = "/usr/local/google/home/dcreutz/workspaces/Guice Plugin/bin";
+  private static final String CLASSPATH = CLASSPATH_LAPTOP + ":" + CLASSPATH_DESKTOP;
   
   private boolean hitDone = false;
   private boolean hitResult = false;
@@ -72,6 +74,17 @@ public class CodeRunnerTest extends TestCase implements CodeRunner.CodeRunListen
     runner.run("", false);
     runner.waitFor();
     assertTrue(hitResult);
+    assertTrue(hitDone);
+  }
+  
+  public void testCodeRunnerFlurry() throws Exception {
+    CodeRunner runner = new CodeRunnerImpl(new MockJavaProject());
+    runner.addListener(this);
+    for (int i=0; i<20; i++) {
+      runner.queue(new TestRunnable(runner, i<10 ? 2 : 3));
+    }
+    runner.run("",false);
+    runner.waitFor();
     assertTrue(hitDone);
   }
   
