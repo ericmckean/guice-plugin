@@ -8,8 +8,9 @@ import java.util.List;
 
 public class RunCustomModuleContextSnippet extends CodeRunner.Runnable {
   private final CustomModuleContextRepresentation moduleContext;
-  
-  public RunCustomModuleContextSnippet(CodeRunner codeRunner, CustomModuleContextRepresentation moduleContext) {
+
+  public RunCustomModuleContextSnippet(CodeRunner codeRunner,
+      CustomModuleContextRepresentation moduleContext) {
     super(codeRunner);
     this.moduleContext = moduleContext;
   }
@@ -18,12 +19,12 @@ public class RunCustomModuleContextSnippet extends CodeRunner.Runnable {
   public String label() {
     return "Running module context " + moduleContext.getName();
   }
-  
+
   @Override
   protected String getFullyQualifiedSnippetClass() {
     return ModuleContextSnippet.class.getName();
   }
-  
+
   @Override
   protected List<? extends Object> getSnippetArguments() {
     final List<Object> args = new ArrayList<Object>();

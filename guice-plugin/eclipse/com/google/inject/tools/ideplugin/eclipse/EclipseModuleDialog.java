@@ -1,17 +1,17 @@
 /**
  * Copyright (C) 2007 Google Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package com.google.inject.tools.ideplugin.eclipse;
@@ -51,7 +51,7 @@ import com.google.inject.tools.module.ModuleContextRepresentation.ModuleInstance
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public class EclipseModuleDialog extends FormDialog {	
+public class EclipseModuleDialog extends FormDialog {
   private final ModuleManager moduleManager;
   private Set<ModuleContextRepresentation> moduleContexts;
   private Set<ModuleContextRepresentation> activeModuleContexts;
@@ -91,13 +91,14 @@ public class EclipseModuleDialog extends FormDialog {
     } else {
       createUserContexts(scrolledForm.getBody());
       createPremadeContexts(scrolledForm.getBody());
-      makeCheckbox(parent, activateByDefault, "Find and activate new modules automatically", "")
-        .addSelectionListener(activateByDefaultListener);
+      makeCheckbox(parent, activateByDefault,
+          "Find and activate new modules automatically", "")
+          .addSelectionListener(activateByDefaultListener);
     }
     scrolledForm.pack();
     scrolledForm.reflow(true);
   }
-  
+
   private static class NewContextDialog extends FormDialog {
     private final ModuleManager moduleManager;
     private Text classNameText = null;
@@ -106,10 +107,12 @@ public class EclipseModuleDialog extends FormDialog {
     private String classNameTextValue;
     private String methodNameTextValue;
     private String titleTextValue;
+
     public NewContextDialog(Shell parent, ModuleManager moduleManager) {
       super(parent);
       this.moduleManager = moduleManager;
     }
+
     @Override
     public void createFormContent(IManagedForm form) {
       FormToolkit toolkit = form.getToolkit();
@@ -120,7 +123,8 @@ public class EclipseModuleDialog extends FormDialog {
       body.setLayout(layout);
       toolkit.createLabel(body, "Context Name");
       titleText = toolkit.createText(body, "", SWT.BORDER);
-      titleText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1));
+      titleText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true, 1,
+          1));
       titleText.addModifyListener(new ModifyListener() {
         public void modifyText(ModifyEvent e) {
           titleTextValue = titleText.getText();
@@ -128,7 +132,8 @@ public class EclipseModuleDialog extends FormDialog {
       });
       toolkit.createLabel(body, "Fully Qualified Class Name");
       classNameText = toolkit.createText(body, "", SWT.BORDER);
-      classNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1));
+      classNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+          true, 1, 1));
       classNameText.addModifyListener(new ModifyListener() {
         public void modifyText(ModifyEvent e) {
           classNameTextValue = classNameText.getText();
@@ -136,20 +141,24 @@ public class EclipseModuleDialog extends FormDialog {
       });
       toolkit.createLabel(body, "Method Name");
       methodNameText = toolkit.createText(body, "", SWT.BORDER);
-      methodNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1));
+      methodNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+          true, 1, 1));
       methodNameText.addModifyListener(new ModifyListener() {
         public void modifyText(ModifyEvent e) {
           methodNameTextValue = methodNameText.getText();
         }
       });
     }
+
     public void saveSettings() {
       String title = titleTextValue;
       String classToUse = classNameTextValue;
       String methodToUse = methodNameTextValue;
-      ModuleContextRepresentation context = new CustomModuleContextRepresentation(title, classToUse, methodToUse);
+      ModuleContextRepresentation context =
+          new CustomModuleContextRepresentation(title, classToUse, methodToUse);
       moduleManager.addModuleContext(context, true);
     }
+
     public static void display(Shell parent, ModuleManager moduleManager) {
       NewContextDialog dialog = new NewContextDialog(parent, moduleManager);
       dialog.create();
@@ -168,7 +177,8 @@ public class EclipseModuleDialog extends FormDialog {
 
   private void createUserContexts(Composite parent) {
     customCheckboxListeners = new HashSet<CheckboxListener>();
-    Section section = toolkit.createSection(parent, Section.EXPANDED | Section.TITLE_BAR);
+    Section section =
+        toolkit.createSection(parent, Section.EXPANDED | Section.TITLE_BAR);
     section.setText("Your Module Contexts");
 
     ScrolledForm insideScrolledForm = toolkit.createScrolledForm(section);
@@ -185,17 +195,24 @@ public class EclipseModuleDialog extends FormDialog {
         EclipseModuleDialog.this.close();
         NewContextDialog.display(shell, moduleManager);
       }
-      public void linkEntered(HyperlinkEvent e) {}
-      public void linkExited(HyperlinkEvent e) {}
+
+      public void linkEntered(HyperlinkEvent e) {
+      }
+
+      public void linkExited(HyperlinkEvent e) {
+      }
     });
 
     userCheckboxes = new HashSet<Button>();
     for (ModuleContextRepresentation moduleContext : moduleContexts) {
       if (moduleContext instanceof CustomModuleContextRepresentation) {
-        CheckboxListener listener = 
-          new CheckboxListener(moduleContext, activeModuleContexts.contains(moduleContext));
+        CheckboxListener listener =
+            new CheckboxListener(moduleContext, activeModuleContexts
+                .contains(moduleContext));
         String tooltip = moduleContext.getLongName();
-        Button checkbox = makeCheckbox(body, activeModuleContexts.contains(moduleContext), moduleContext.getShortName(), tooltip);
+        Button checkbox =
+            makeCheckbox(body, activeModuleContexts.contains(moduleContext),
+                moduleContext.getShortName(), tooltip);
         checkbox.addSelectionListener(listener);
         userCheckboxes.add(checkbox);
         customCheckboxListeners.add(listener);
@@ -212,7 +229,8 @@ public class EclipseModuleDialog extends FormDialog {
 
   private void createPremadeContexts(Composite parent) {
     checkboxListeners = new HashSet<CheckboxListener>();
-    Section section = toolkit.createSection(parent, Section.EXPANDED | Section.TITLE_BAR);
+    Section section =
+        toolkit.createSection(parent, Section.EXPANDED | Section.TITLE_BAR);
     section.setText("Autogenerated Module Contexts");
 
     ScrolledForm insideScrolledForm = toolkit.createScrolledForm(section);
@@ -223,7 +241,7 @@ public class EclipseModuleDialog extends FormDialog {
     GridLayout layout = new GridLayout();
     layout.numColumns = 1;
     body.setLayout(layout);
-    
+
     makeHyperlink(body, "Scan for new contexts", new IHyperlinkListener() {
       public void linkActivated(HyperlinkEvent e) {
         EclipseModuleDialog.this.close();
@@ -237,10 +255,14 @@ public class EclipseModuleDialog extends FormDialog {
           }
         }, false);
       }
-      public void linkEntered(HyperlinkEvent e) {}
-      public void linkExited(HyperlinkEvent e) {}
+
+      public void linkEntered(HyperlinkEvent e) {
+      }
+
+      public void linkExited(HyperlinkEvent e) {
+      }
     });
-    
+
     boolean hasAutoModuleContexts = false;
     for (ModuleContextRepresentation moduleContext : moduleContexts) {
       if (!(moduleContext instanceof CustomModuleContextRepresentation)) {
@@ -260,8 +282,12 @@ public class EclipseModuleDialog extends FormDialog {
             listener.setState(true);
           }
         }
-        public void linkEntered(HyperlinkEvent e) {}
-        public void linkExited(HyperlinkEvent e) {}
+
+        public void linkEntered(HyperlinkEvent e) {
+        }
+
+        public void linkExited(HyperlinkEvent e) {
+        }
       });
       makeHyperlink(body, "Deactivate all", new IHyperlinkListener() {
         public void linkActivated(HyperlinkEvent e) {
@@ -272,8 +298,12 @@ public class EclipseModuleDialog extends FormDialog {
             listener.setState(false);
           }
         }
-        public void linkEntered(HyperlinkEvent e) {}
-        public void linkExited(HyperlinkEvent e) {}
+
+        public void linkEntered(HyperlinkEvent e) {
+        }
+
+        public void linkExited(HyperlinkEvent e) {
+        }
       });
 
       checkboxes = new HashSet<Button>();
@@ -281,16 +311,21 @@ public class EclipseModuleDialog extends FormDialog {
         if (!(moduleContext instanceof CustomModuleContextRepresentation)) {
           StringBuilder text = new StringBuilder();
           text.append("Guice.createInjector(");
-          int count=0;
+          int count = 0;
           for (ModuleInstanceRepresentation module : moduleContext.getModules()) {
             text.append(module.getCreationString());
             count++;
-            if (count < moduleContext.getModules().size()) text.append(", ");
+            if (count < moduleContext.getModules().size()) {
+              text.append(", ");
+            }
           }
           text.append(");");
-          CheckboxListener listener = 
-            new CheckboxListener(moduleContext, activeModuleContexts.contains(moduleContext));
-          Button checkbox = makeCheckbox(body, activeModuleContexts.contains(moduleContext), shorten(moduleContext.getName()), text.toString());
+          CheckboxListener listener =
+              new CheckboxListener(moduleContext, activeModuleContexts
+                  .contains(moduleContext));
+          Button checkbox =
+              makeCheckbox(body, activeModuleContexts.contains(moduleContext),
+                  shorten(moduleContext.getName()), text.toString());
           checkbox.addSelectionListener(listener);
           checkboxes.add(checkbox);
           checkboxListeners.add(listener);
@@ -305,21 +340,23 @@ public class EclipseModuleDialog extends FormDialog {
   }
 
   private static String shorten(String className) {
-    return className.substring(className.lastIndexOf(".")+1);
+    return className.substring(className.lastIndexOf(".") + 1);
   }
 
   private Label makeText(Composite parent, int style, String text) {
     return toolkit.createLabel(parent, text, style);
   }
 
-  private Button makeCheckbox(Composite parent, boolean selected, String text, String tooltip) {
+  private Button makeCheckbox(Composite parent, boolean selected, String text,
+      String tooltip) {
     Button button = toolkit.createButton(parent, text, SWT.CHECK);
     button.setSelection(selected);
     button.setToolTipText(tooltip);
     return button;
   }
 
-  private Hyperlink makeHyperlink(Composite parent, String text, IHyperlinkListener listener) {
+  private Hyperlink makeHyperlink(Composite parent, String text,
+      IHyperlinkListener listener) {
     Hyperlink link = toolkit.createHyperlink(parent, text, SWT.NONE);
     link.addHyperlinkListener(listener);
     return link;
@@ -335,20 +372,26 @@ public class EclipseModuleDialog extends FormDialog {
   private class CheckboxListener extends SelectionAdapter {
     private final ModuleContextRepresentation moduleContext;
     private boolean state;
-    public CheckboxListener(ModuleContextRepresentation moduleContext, boolean state) {
+
+    public CheckboxListener(ModuleContextRepresentation moduleContext,
+        boolean state) {
       this.moduleContext = moduleContext;
       this.state = state;
     }
+
     @Override
     public void widgetSelected(SelectionEvent event) {
       state = !state;
     }
+
     public ModuleContextRepresentation getModuleContext() {
       return moduleContext;
     }
+
     public void setState(boolean state) {
       this.state = state;
     }
+
     public boolean getState() {
       return state;
     }

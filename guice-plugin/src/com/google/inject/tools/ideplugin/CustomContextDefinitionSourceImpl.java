@@ -8,10 +8,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class CustomContextDefinitionSourceImpl implements CustomContextDefinitionSource {
+public class CustomContextDefinitionSourceImpl implements
+    CustomContextDefinitionSource {
   private final Set<CustomContextDefinitionListener> listeners;
   private final Messenger messenger;
-  
+
   @Inject
   public CustomContextDefinitionSourceImpl(Messenger messenger) {
     this.messenger = messenger;
@@ -22,33 +23,39 @@ public class CustomContextDefinitionSourceImpl implements CustomContextDefinitio
     listeners.add(listener);
   }
 
-  public synchronized void removeListener(CustomContextDefinitionListener listener) {
+  public synchronized void removeListener(
+      CustomContextDefinitionListener listener) {
     listeners.remove(listener);
   }
-  
+
   protected void hadProblem(Throwable exception) {
     messenger.logException("Modules Listener error", exception);
   }
-  
-  protected void contextDefinitionChanged(JavaManager javaManager, String contextDefinitionName) {
+
+  protected void contextDefinitionChanged(JavaManager javaManager,
+      String contextDefinitionName) {
     for (CustomContextDefinitionListener listener : listeners) {
-      listener.contextDefinitionChanged(this, javaManager, contextDefinitionName);
+      listener.contextDefinitionChanged(this, javaManager,
+          contextDefinitionName);
     }
   }
-  
-  protected void contextDefinitionRemoved(JavaManager javaManager, String contextDefinitionName) {
+
+  protected void contextDefinitionRemoved(JavaManager javaManager,
+      String contextDefinitionName) {
     for (CustomContextDefinitionListener listener : listeners) {
-      listener.contextDefinitionRemoved(this, javaManager, contextDefinitionName);
+      listener.contextDefinitionRemoved(this, javaManager,
+          contextDefinitionName);
     }
   }
-  
-  protected void contextDefinitionAdded(JavaManager javaManager, String contextDefinitionName) {
+
+  protected void contextDefinitionAdded(JavaManager javaManager,
+      String contextDefinitionName) {
     for (CustomContextDefinitionListener listener : listeners) {
       listener.contextDefinitionAdded(this, javaManager, contextDefinitionName);
     }
   }
-  
+
   public Set<String> getContexts(JavaManager javaManager) {
-    return Collections.<String>emptySet();
+    return Collections.<String> emptySet();
   }
 }

@@ -1,20 +1,20 @@
 /**
  * Copyright (C) 2007 Google Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 
-package com.google.inject.tools.ideplugin ;
+package com.google.inject.tools.ideplugin;
 
 import junit.framework.TestCase;
 import java.util.Collections;
@@ -30,11 +30,11 @@ import com.google.inject.tools.snippets.CodeProblem;
 
 /**
  * Unit test the {@link CodeLocationsResults} object.
- *
+ * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class CodeLocationsResultsTest extends TestCase {
-  
+
   /**
    * Test that the CodeResults object correctly builds node trees.
    */
@@ -42,7 +42,7 @@ public class CodeLocationsResultsTest extends TestCase {
     final CodeLocationsResults results = createValidCodeLocationsResults();
     assertTrue(results.getRoot().equals(expectedResultForValidLocation()));
   }
-  
+
   /**
    * Creating a {@link CodeLocationsResults} with one valid module and code
    * location and one broken module and corresponding problems.
@@ -52,59 +52,67 @@ public class CodeLocationsResultsTest extends TestCase {
     assertTrue(results.getRoot().equals(expectedResultForBothLocations()));
     assertFalse(results.getRoot().equals(expectedResultForValidLocation()));
   }
-  
+
   private CodeLocationsResults createValidCodeLocationsResults() {
     CodeLocation validLocation =
-      new BindingCodeLocation(null, "com.google.inject.tools.ideplugin.JavaElement",
-          "com.google.inject.tools.ideplugin.test.MockJavaElement",
-          "Valid Module Context",
-          "MockGuicePlugin.java", 145,
-          Collections.<CodeProblem>emptySet());
-    CodeLocationsResults results = new CodeLocationsResults("Test Results",null);
+        new BindingCodeLocation(null,
+            "com.google.inject.tools.ideplugin.JavaElement",
+            "com.google.inject.tools.ideplugin.test.MockJavaElement",
+            "Valid Module Context", "MockGuicePlugin.java", 145, Collections
+                .<CodeProblem> emptySet());
+    CodeLocationsResults results =
+        new CodeLocationsResults("Test Results", null);
     results.put("Valid Module Context", validLocation);
     return results;
   }
-  
+
   private CodeLocationsResults createBrokenCodeLocationsResults() {
     CodeLocation validLocation =
-      new BindingCodeLocation(null, "com.google.inject.tools.ideplugin.JavaElement",
-          "com.google.inject.tools.ideplugin.test.MockJavaElement",
-          "Valid Module Context",
-          "MockGuicePlugin.java", 145,
-          Collections.<CodeProblem>emptySet());
-    
+        new BindingCodeLocation(null,
+            "com.google.inject.tools.ideplugin.JavaElement",
+            "com.google.inject.tools.ideplugin.test.MockJavaElement",
+            "Valid Module Context", "MockGuicePlugin.java", 145, Collections
+                .<CodeProblem> emptySet());
+
     CodeLocation problemsLocation =
-      new BindingCodeLocation(null, "com.google.inject.tools.ideplugin.JavaElement",
-          (String)null,
-          "Broken Module Context",
-          (String)null, 0,
-          makeProblemSet("BrokenModule"));
-    
-    CodeLocationsResults results = new CodeLocationsResults("Test Results",null);
+        new BindingCodeLocation(null,
+            "com.google.inject.tools.ideplugin.JavaElement", (String) null,
+            "Broken Module Context", (String) null, 0,
+            makeProblemSet("BrokenModule"));
+
+    CodeLocationsResults results =
+        new CodeLocationsResults("Test Results", null);
     results.put("Valid Module Context", validLocation);
     results.put("Broken Module Context", problemsLocation);
     return results;
   }
-  
+
   private Set<? extends CodeProblem> makeProblemSet(String module) {
-    return Collections.singleton(new CodeProblem.CreationProblem(module,new FakeCreationException()));
+    return Collections.singleton(new CodeProblem.CreationProblem(module,
+        new FakeCreationException()));
   }
-  
+
   private Results.Node expectedResultForValidLocation() {
-    Results.Node root = new Node("Test Results",null);
-    Results.Node module = new Node("in Valid Module Context",null);
-    module.addChild(new Node("JavaElement is bound to MockJavaElement at MockGuicePlugin.java:145",null));
+    Results.Node root = new Node("Test Results", null);
+    Results.Node module = new Node("in Valid Module Context", null);
+    module.addChild(new Node(
+        "JavaElement is bound to MockJavaElement at MockGuicePlugin.java:145",
+        null));
     root.addChild(module);
     return root;
   }
+
   private Results.Node expectedResultForBothLocations() {
-    Results.Node root = new Node("Test Results",null);
-    Results.Node module = new Node("in Valid Module Context",null);
-    module.addChild(new Node("JavaElement is bound to MockJavaElement at MockGuicePlugin.java:145",null));
-    Results.Node module2 = new Node("in Broken Module Context",null);
-    Results.Node problems = new Node("Problems",null);
+    Results.Node root = new Node("Test Results", null);
+    Results.Node module = new Node("in Valid Module Context", null);
+    module.addChild(new Node(
+        "JavaElement is bound to MockJavaElement at MockGuicePlugin.java:145",
+        null));
+    Results.Node module2 = new Node("in Broken Module Context", null);
+    Results.Node problems = new Node("Problems", null);
     module2.addChild(problems);
-    problems.addChild(new ProblemNode(new CodeProblem.CreationProblem("BrokenModule", new FakeCreationException())));
+    problems.addChild(new ProblemNode(new CodeProblem.CreationProblem(
+        "BrokenModule", new FakeCreationException())));
     root.addChild(module2);
     root.addChild(module);
     return root;
