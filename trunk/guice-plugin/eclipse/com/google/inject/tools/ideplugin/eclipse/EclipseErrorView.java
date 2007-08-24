@@ -84,7 +84,7 @@ public class EclipseErrorView extends ViewPart {
   public void displayError(String message) {
     String dateString = new SimpleDateFormat("dd/MM HH:mm:ss").format(new Date());
     String msg = "[" + dateString + "]   " + message;
-    toolkit.createLabel(form.getBody(), msg);
+    toolkit.createFormText(form.getBody(), true).setText(msg, false, true);
     form.reflow(true);
     try {
       this.getViewSite().getWorkbenchWindow().getActivePage().showView("com.google.inject.tools.ideplugin.eclipse.EclipseErrorView");

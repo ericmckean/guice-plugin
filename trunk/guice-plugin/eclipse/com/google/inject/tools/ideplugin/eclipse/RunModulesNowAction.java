@@ -47,9 +47,9 @@ public class RunModulesNowAction implements IEditorActionDelegate, IObjectAction
   }
   public void setActivePart(IAction action, IWorkbenchPart targetPart) {}
   public void selectionChanged(IAction action, ISelection selection) {}
-
+  
   public void run(IAction action) {
     ICompilationUnit cu = JavaPlugin.getDefault().getWorkingCopyManager().getWorkingCopy(((CompilationUnitEditor)editor).getEditorInput());
-    projectManager.getModuleManager(new EclipseJavaProject(cu.getJavaProject())).rerunModules(false);
+    projectManager.getModuleManager(new EclipseJavaProject(cu.getJavaProject())).rerunModules(false, false);
   }
 }

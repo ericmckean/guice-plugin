@@ -23,7 +23,6 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
-
 import com.google.inject.Inject;
 import com.google.inject.tools.JavaManager;
 import com.google.inject.tools.Messenger;
@@ -42,7 +41,7 @@ public class CodeRunnerImpl implements CodeRunner {
   private final JavaManager project;
   private final Map<Runnable,RunnableProgressStep> progressSteps;
   private boolean cancelled;
-  
+
   public CodeRunnerImpl(JavaManager project) {
     this.progressHandler = new NullProgressHandler();
     this.messenger = new NullMessenger();
@@ -51,7 +50,7 @@ public class CodeRunnerImpl implements CodeRunner {
     progressSteps = new HashMap<Runnable,RunnableProgressStep>();
     cancelled = false;
   }
-  
+
   @Inject
   public CodeRunnerImpl(JavaManager project, ProgressHandler progressHandler, Messenger messenger) {
     if (messenger != null) {
@@ -69,18 +68,21 @@ public class CodeRunnerImpl implements CodeRunner {
     progressSteps = new HashMap<Runnable,RunnableProgressStep>();
     cancelled = false;
   }
-  
+
   /**
    * An implementation of {@link ProgressHandler} that does nothing to
    * display the progress.
    */
   protected class NullProgressHandler implements ProgressHandler {
     private final List<ProgressStep> steps = new ArrayList<ProgressStep>();
-    
+
     public void go(String label, boolean backgroundAutomatically) {
       for (ProgressStep step : steps) {
         step.run();
       }
+    }
+    
+    public void waitForStart() {
     }
 
     public boolean isCancelled() {
@@ -91,7 +93,7 @@ public class CodeRunnerImpl implements CodeRunner {
       steps.add(step);
     }
   }
-  
+
   /**
    * An implementation of {@link Messenger} that does nothing.
    */
@@ -100,7 +102,7 @@ public class CodeRunnerImpl implements CodeRunner {
     public void logException(String label, Throwable throwable) {}
     public void logMessage(String message) {}
   }
-  
+
   /**
    * (non-Javadoc)
    * @see com.google.inject.tools.code.CodeRunner#addListener(com.google.inject.tools.code.CodeRunner.CodeRunListener)
@@ -108,7 +110,7 @@ public class CodeRunnerImpl implements CodeRunner {
   public void addListener(CodeRunListener listener) {
     listeners.add(listener);
   }
-  
+
   /**
    * (non-Javadoc)
    * @see com.google.inject.tools.code.CodeRunner#queue(com.google.inject.tools.code.CodeRunner.Runnable)
@@ -118,24 +120,24 @@ public class CodeRunnerImpl implements CodeRunner {
     progressSteps.put(runnable, step);
     progressHandler.step(step);
   }
-  
+
   private void notifyDone() {
     for (CodeRunListener listener : listeners) {
       listener.acceptDone();
     }
   }
-  
+
   protected void notifyCancelled() {
     for (CodeRunListener listener : listeners) {
       listener.acceptUserCancelled();
     }
   }
-  
+
   /**
    * (non-Javadoc)
    * @see com.google.inject.tools.code.CodeRunner#notifyResult(com.google.inject.tools.code.CodeRunner.Runnable, com.google.inject.tools.snippets.CodeSnippetResult)
    */
-  public void notifyResult(Runnable runnable,CodeSnippetResult result) {
+  public synchronized void notifyResult(Runnable runnable,CodeSnippetResult result) {
     for (CodeRunListener listener : listeners) {
       listener.acceptCodeRunResult(result);
     }
@@ -145,15 +147,14 @@ public class CodeRunnerImpl implements CodeRunner {
     }
     if (done) notifyDone();
   }
-  
+
   private class RunnableProgressStep implements ProgressHandler.ProgressStep {
     private final Runnable runnable;
     private final CodeRunThread runThread;
-    private boolean done;
+    private volatile boolean done;
     public RunnableProgressStep(Runnable runnable) {
       this.runnable = runnable;
       String classpath = "";
-      done = false;
       List<String> cmd = new ArrayList<String>();
       try {
         //TODO: fix : to work with any OS
@@ -177,29 +178,23 @@ public class CodeRunnerImpl implements CodeRunner {
     }
     public void kill() {
       runThread.destroyProcess();
-      done = true;
     }
     public void cancel() {
       kill();
       CodeRunnerImpl.this.cancelled = true;
-    }
-    public void markDone() {
       done = true;
+    }
+    public void complete() {
+      done = true;
+    }
+    public void waitFor() throws InterruptedException {
+      runThread.join();
     }
     public boolean isDone() {
       return done;
     }
-    public void complete() {
-      //do nothing, the runnable already has this covered
-    }
-    public void waitFor() throws InterruptedException {
-      if (done) return;
-      if (runThread.isAlive()) runThread.join();
-      Thread.sleep(100);
-      waitFor();
-    }
   }
-  
+
   /**
    * (non-Javadoc)
    * @see com.google.inject.tools.code.CodeRunner#run(java.lang.String, boolean)
@@ -208,7 +203,7 @@ public class CodeRunnerImpl implements CodeRunner {
     cancelled = false;
     progressHandler.go(label, backgroundAutomatically);
   }
-  
+
   /**
    * (non-Javadoc)
    * @see com.google.inject.tools.code.CodeRunner#run(java.lang.String)
@@ -216,43 +211,46 @@ public class CodeRunnerImpl implements CodeRunner {
   public void run(String label) {
     run(label, true);
   }
-  
+
   protected class CodeRunThread extends Thread {
     private final List<String> cmd;
     private final Runnable runnable;
     private Process process;
     private boolean killed;
-    
-    public CodeRunThread(Runnable runnable,List<String> cmd) {
+
+    public CodeRunThread(Runnable runnable, List<String> cmd) {
       this.cmd = cmd;
       this.runnable = runnable;
       killed = false;
     }
-    
+
     public void destroyProcess() {
       killed = true;
       process.destroy();
       process = null;
     }
-    
+
     @Override
     public void run() {
-      try {
-        process = new ProcessBuilder(cmd).start();
-        process.waitFor();
-        CodeRunnerImpl.this.progressSteps.get(runnable).markDone();
-        if (!killed) {
-          runnable.gotErrorOutput(process.getErrorStream());
-          runnable.gotOutput(new ObjectInputStream(process.getInputStream()));
+      synchronized (this) {
+        try {
+          process = new ProcessBuilder(cmd).start();
+          process.waitFor();
+          if (!killed) {
+            runnable.gotErrorOutput(process.getErrorStream());
+            runnable.gotOutput(new ObjectInputStream(process.getInputStream()));
+          }
+        } catch (Exception exception) {
+          runnable.caughtException(exception);
         }
-      } catch (Exception exception) {
-        CodeRunnerImpl.this.progressSteps.get(runnable).markDone();
-        runnable.caughtException(exception);
       }
-      CodeRunnerImpl.this.progressSteps.get(runnable).markDone();
     }
   }
   
+  public void notifyDone(Runnable runnable) {
+    progressSteps.get(runnable).complete();
+  }
+
   /**
    * (non-Javadoc)
    * @see com.google.inject.tools.code.CodeRunner#kill()
@@ -263,7 +261,7 @@ public class CodeRunnerImpl implements CodeRunner {
     }
     progressSteps.clear();
   }
-  
+
   /**
    * (non-Javadoc)
    * @see com.google.inject.tools.code.CodeRunner#kill(com.google.inject.tools.code.CodeRunner.Runnable)
@@ -271,25 +269,36 @@ public class CodeRunnerImpl implements CodeRunner {
   public void kill(Runnable runnable) {
     progressSteps.get(runnable).kill();
   }
-  
+
   /**
    * (non-Javadoc)
    * @see com.google.inject.tools.code.CodeRunner#waitFor()
    */
   public void waitFor() throws InterruptedException {
-    for (RunnableProgressStep step : progressSteps.values()) {
+    progressHandler.waitForStart();
+    for (RunnableProgressStep step : getProgressSteps()) {
       if (!step.isDone()) step.waitFor();
     }
   }
-  
+
+  private synchronized Set<RunnableProgressStep> getProgressSteps() {
+    return new HashSet<RunnableProgressStep>(progressSteps.values());
+  }
+
   /**
    * (non-Javadoc)
    * @see com.google.inject.tools.code.CodeRunner#waitFor(com.google.inject.tools.code.CodeRunner.Runnable)
    */
   public void waitFor(Runnable runnable) throws InterruptedException {
-    progressSteps.get(runnable).waitFor();
+    RunnableProgressStep step = null;
+    synchronized (this) {
+      step = progressSteps.get(runnable);
+    }
+    if (step!=null) {
+      step.waitFor();
+    }
   }
-  
+
   /**
    * (non-Javadoc)
    * @see com.google.inject.tools.code.CodeRunner#isDone()
@@ -300,7 +309,7 @@ public class CodeRunnerImpl implements CodeRunner {
     }
     return true;
   }
-  
+
   /**
    * (non-Javadoc)
    * @see com.google.inject.tools.code.CodeRunner#isDone(com.google.inject.tools.code.CodeRunner.Runnable)
@@ -308,11 +317,11 @@ public class CodeRunnerImpl implements CodeRunner {
   public boolean isDone(Runnable runnable) {
     return progressSteps.get(runnable).isDone();
   }
-  
+
   public boolean isCancelled() {
     return cancelled;
   }
-  
+
   public Messenger getMessenger() {
     return messenger;
   }

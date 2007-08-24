@@ -34,6 +34,7 @@ import com.google.inject.tools.ProgressHandler;
 public class EclipseProgressHandler implements ProgressHandler {
   private final Messenger messenger;
   private final List<ProgressStep> steps;
+  private Job job;
   
   @Inject
   public EclipseProgressHandler(Messenger messenger) {
@@ -62,10 +63,13 @@ public class EclipseProgressHandler implements ProgressHandler {
    * @see com.google.inject.tools.ProgressHandler#go(java.lang.String, boolean)
    */
   public void go(String label, boolean backgroundAutomatically) {
-    Job job = new ProgressHandlerJob(label);
-    //Job job = new LongJob();
+    job = new ProgressHandlerJob(label);
     job.setUser(!backgroundAutomatically);
     job.schedule();
+  }
+  
+  public void waitForStart() throws InterruptedException {
+    job.join();
   }
   
   private class ProgressHandlerJob extends Job {
@@ -85,6 +89,7 @@ public class EclipseProgressHandler implements ProgressHandler {
           step.run();
           while (!monitor.isCanceled() && !step.isDone()) {
             try {
+              //TODO: there has to be a better way
               Thread.sleep(100);
             } catch (InterruptedException exception) {
               EclipseProgressHandler.this.messenger.logException("Job interrupted", exception);

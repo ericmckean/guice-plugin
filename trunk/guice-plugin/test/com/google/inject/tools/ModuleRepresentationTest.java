@@ -84,6 +84,8 @@ public class ModuleRepresentationTest extends TestCase {
     public void waitFor(Runnable runnable) {
     }
     
+    public void notifyDone(Runnable runnable) {}
+    
     public void notifyResult(Runnable runnable, CodeSnippetResult result) {
       listener.acceptCodeRunResult(result);
     }

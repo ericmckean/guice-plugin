@@ -102,6 +102,10 @@ public class ModuleContextRepresentationImpl implements ModuleContextRepresentat
   public void acceptCodeRunResult(CodeSnippetResult result) {
     if (result instanceof ModuleContextSnippet.ModuleContextResult) {
       ModuleContextSnippet.ModuleContextResult contextResult = (ModuleContextSnippet.ModuleContextResult)result;
+      if (contextResult.getName() == null) {
+        System.out.println(contextResult.getModules().size());
+        System.out.println(contextResult.getModules().iterator().next());
+      } else
       if (contextResult.getName().equals(this.getName())) {
         this.bindings = contextResult.getBindings();
         this.problems = contextResult.getProblems();
