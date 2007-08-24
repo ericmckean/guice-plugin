@@ -19,6 +19,7 @@ package com.google.inject.tools.snippets;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -266,7 +267,7 @@ public class ModuleContextSnippet extends CodeSnippet {
             Class<?> aClass = Class.forName(arguments.next());
             aClass.asSubclass(Module.class);
             Class<? extends Module> moduleClass =
-                (Class<? extends Module>) aClass;
+              (Class<? extends Module>) aClass;
             int numArgs = Integer.valueOf(arguments.next());
             List<Class<?>> argTypes = new ArrayList<Class<?>>();
             List<String> argValues = new ArrayList<String>();
@@ -286,18 +287,23 @@ public class ModuleContextSnippet extends CodeSnippet {
       } else {
         Class<?> classToUse = Class.forName(arguments.next());
         Method methodToCall =
-            classToUse.getMethod(arguments.next(), (Class[]) null);
-        Object result =
-            methodToCall.invoke(classToUse.newInstance(), (Object[]) null);
+          classToUse.getMethod(arguments.next(), (Class[]) null);
+        Object result;
+        if (Modifier.isStatic(methodToCall.getModifiers())) {
+          result = methodToCall.invoke(null, (Object[])null);
+        } else {
+          result = methodToCall.invoke(classToUse.newInstance(), 
+              (Object[]) null);
+        }
         Iterable<com.google.inject.Module> moduleInstances =
-            (Iterable<com.google.inject.Module>) result;
+          (Iterable<com.google.inject.Module>) result;
         snippet = new ModuleContextSnippet(moduleInstances, contextName);
       }
     } catch (Throwable t) {
       if (snippet == null) {
         snippet =
-            new ModuleContextSnippet(new HashSet<ModuleRepresentation>(),
-                contextName);
+          new ModuleContextSnippet(new HashSet<ModuleRepresentation>(),
+              contextName);
         snippet.addProblems(Collections.singleton(new CodeProblem(contextName,
             t)));
       }
