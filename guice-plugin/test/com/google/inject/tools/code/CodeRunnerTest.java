@@ -14,8 +14,9 @@
  * the License.
  */
 
-package com.google.inject.tools;
+package com.google.inject.tools.code;
 
+import com.google.inject.tools.JavaManager;
 import com.google.inject.tools.Fakes.TestSnippet;
 import com.google.inject.tools.code.CodeRunner;
 import com.google.inject.tools.code.CodeRunnerImpl;

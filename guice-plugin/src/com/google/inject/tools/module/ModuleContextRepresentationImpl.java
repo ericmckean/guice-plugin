@@ -22,16 +22,18 @@ import java.util.Set;
 import com.google.inject.tools.code.CodeRunner;
 import com.google.inject.tools.code.RunModuleContextSnippet;
 import com.google.inject.tools.snippets.BindingCodeLocation;
+import com.google.inject.tools.snippets.CodeLocation;
 import com.google.inject.tools.snippets.CodeProblem;
 import com.google.inject.tools.snippets.CodeSnippetResult;
 import com.google.inject.tools.snippets.ModuleContextSnippet;
+import com.google.inject.tools.snippets.BindingCodeLocation.NoBindingLocation;
 
 /**
  * Standard implementation of the {@link ModuleContextRepresentation}.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public class ModuleContextRepresentationImpl implements
+class ModuleContextRepresentationImpl implements
     ModuleContextRepresentation, CodeRunner.CodeRunListener {
   private final String title;
   protected String longName;
@@ -66,8 +68,12 @@ public class ModuleContextRepresentationImpl implements
    * 
    * @see com.google.inject.tools.ideplugin.module.ModuleContextRepresentation#findLocation(java.lang.String)
    */
-  public BindingCodeLocation findLocation(String theClass) {
-    return bindings.get(theClass);
+  public CodeLocation findLocation(String theClass) {
+    if (bindings.get(theClass) != null) {
+      return bindings.get(theClass);
+    } else {
+      return new NoBindingLocation(theClass);
+    }
   }
 
   /*

@@ -14,8 +14,9 @@
  * the License.
  */
 
-package com.google.inject.tools;
+package com.google.inject.tools.module;
 
+import com.google.inject.tools.Messenger;
 import com.google.inject.tools.SampleModuleScenario.WorkingModule;
 import com.google.inject.tools.code.CodeRunner;
 import com.google.inject.tools.module.ModuleRepresentation;

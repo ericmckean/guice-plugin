@@ -29,7 +29,7 @@ import com.google.inject.tools.snippets.ModuleSnippet.DefaultConstructorRepresen
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public class ModuleRepresentationImpl implements ModuleRepresentation,
+class ModuleRepresentationImpl implements ModuleRepresentation,
     CodeRunner.CodeRunListener {
   private String name;
   private ConstructorRepresentation constructor;

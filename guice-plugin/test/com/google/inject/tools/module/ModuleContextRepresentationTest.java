@@ -14,14 +14,18 @@
  * the License.
  */
 
-package com.google.inject.tools;
+package com.google.inject.tools.module;
 
 import com.google.inject.Binding;
 import com.google.inject.Key;
 import com.google.inject.Provider;
+import com.google.inject.tools.Messenger;
+import com.google.inject.tools.SampleModuleScenario;
 import com.google.inject.tools.code.CodeRunner;
 import com.google.inject.tools.module.ModuleContextRepresentation;
 import com.google.inject.tools.module.ModuleContextRepresentationImpl;
+import com.google.inject.tools.snippets.BindingCodeLocation;
+import com.google.inject.tools.snippets.CodeLocation;
 import com.google.inject.tools.snippets.CodeProblem;
 import com.google.inject.tools.snippets.CodeSnippetResult;
 import com.google.inject.tools.snippets.ModuleContextSnippet;
@@ -47,10 +51,12 @@ public class ModuleContextRepresentationTest extends TestCase {
     codeRunner.waitFor();
     assertFalse(moduleContext.isDirty());
     assertTrue(moduleContext.getName().equals("Working Module Context"));
-    assertTrue(moduleContext.findLocation(
-        SampleModuleScenario.MockInjectedInterface.class.getName()).bindTo()
+    CodeLocation codeLocation = moduleContext.findLocation(
+        SampleModuleScenario.MockInjectedInterface.class.getName());
+    assertTrue(codeLocation instanceof BindingCodeLocation);
+    BindingCodeLocation bindingLocation = (BindingCodeLocation)codeLocation;
+    assertTrue(bindingLocation.bindTo()
         .equals(SampleModuleScenario.MockInjectedInterfaceImpl.class.getName()));
-    // TODO: rest of stuff
   }
 
   public class SimulatedCodeRunner implements CodeRunner {

@@ -14,10 +14,11 @@
  * the License.
  */
 
-package com.google.inject.tools;
+package com.google.inject.tools.module;
 
 import junit.framework.TestCase;
 
+import com.google.inject.tools.SampleModuleScenario;
 import com.google.inject.tools.SampleModuleScenario.BrokenModule;
 import com.google.inject.tools.SampleModuleScenario.MockInjectedInterface;
 import com.google.inject.tools.SampleModuleScenario.MockInjectedInterface2;
