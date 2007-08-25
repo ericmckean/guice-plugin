@@ -20,11 +20,6 @@ import junit.framework.TestCase;
 
 import com.google.inject.TypeLiteral;
 import com.google.inject.name.Named;
-import com.google.inject.tools.module.ModuleContextRepresentation;
-import com.google.inject.tools.snippets.BindingCodeLocation;
-import com.google.inject.tools.snippets.CodeProblem;
-import com.google.inject.tools.snippets.ModuleContextSnippet;
-import com.google.inject.tools.snippets.ModuleContextSnippet.ModuleContextResult.KeyRepresentation;
 import com.google.inject.tools.suite.SampleModuleScenario.BlueService;
 import com.google.inject.tools.suite.SampleModuleScenario.BrokenModule;
 import com.google.inject.tools.suite.SampleModuleScenario.CreditCard;
@@ -41,6 +36,11 @@ import com.google.inject.tools.suite.SampleModuleScenario.RedService;
 import com.google.inject.tools.suite.SampleModuleScenario.Service;
 import com.google.inject.tools.suite.SampleModuleScenario.WorkingModule;
 import com.google.inject.tools.suite.SampleModuleScenario.WorkingModule2;
+import com.google.inject.tools.suite.module.ModuleContextRepresentation;
+import com.google.inject.tools.suite.snippets.BindingCodeLocation;
+import com.google.inject.tools.suite.snippets.CodeProblem;
+import com.google.inject.tools.suite.snippets.ModuleContextSnippet;
+import com.google.inject.tools.suite.snippets.ModuleContextSnippet.ModuleContextResult.KeyRepresentation;
 
 import java.io.ObjectInputStream;
 import java.io.OutputStream;
@@ -119,7 +119,7 @@ public class ModuleContextSnippetTest extends TestCase {
 
   /**
    * Test that constructing a broken module context causes a
-   * {@link com.google.inject.tools.snippets.CodeProblem.CreationProblem}.
+   * {@link com.google.inject.tools.suite.snippets.CodeProblem.CreationProblem}.
    */
   public void testConstructBrokenModuleContext() throws Exception {
     String[] args = new String[4];

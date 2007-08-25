@@ -16,8 +16,9 @@
 
 package com.google.inject.tools.suite;
 
-import com.google.inject.tools.snippets.CodeProblem;
-import com.google.inject.tools.snippets.ModuleSnippet;
+import com.google.inject.tools.suite.snippets.CodeProblem;
+import com.google.inject.tools.suite.snippets.ModuleSnippet;
+
 import junit.framework.TestCase;
 
 import java.io.ObjectInputStream;

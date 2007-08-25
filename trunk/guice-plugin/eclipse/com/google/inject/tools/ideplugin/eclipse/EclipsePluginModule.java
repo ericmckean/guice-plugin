@@ -24,9 +24,9 @@ import com.google.inject.tools.ideplugin.GuicePluginModule;
 import com.google.inject.tools.ideplugin.GuiceToolsModuleImpl;
 import com.google.inject.tools.ideplugin.results.ResultsView;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
-import com.google.inject.tools.module.ModulesSource;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProgressHandler;
+import com.google.inject.tools.suite.module.ModulesSource;
 
 /**
  * The module binding Eclipse implementations to interfaces.

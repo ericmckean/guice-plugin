@@ -18,11 +18,11 @@ package com.google.inject.tools.suite;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.binder.AnnotatedBindingBuilder;
-import com.google.inject.tools.code.CodeRunner;
-import com.google.inject.tools.code.CodeRunnerFactoryImpl;
-import com.google.inject.tools.module.ModuleManager;
-import com.google.inject.tools.module.ModuleManagerFactoryImpl;
-import com.google.inject.tools.module.ModulesSource;
+import com.google.inject.tools.suite.code.CodeRunner;
+import com.google.inject.tools.suite.code.CodeRunnerFactoryImpl;
+import com.google.inject.tools.suite.module.ModuleManager;
+import com.google.inject.tools.suite.module.ModuleManagerFactoryImpl;
+import com.google.inject.tools.suite.module.ModulesSource;
 
 /**
  * The guice module controlling the tools suite.
@@ -88,7 +88,7 @@ public abstract class GuiceToolsModule extends AbstractModule {
       AnnotatedBindingBuilder<ProblemsHandler> bindProblemsHandler);
 
   /**
-   * Bind the {@link com.google.inject.tools.module.ModulesSource}
+   * Bind the {@link com.google.inject.tools.suite.module.ModulesSource}
    * implementation.
    */
   protected abstract void bindModulesListener(

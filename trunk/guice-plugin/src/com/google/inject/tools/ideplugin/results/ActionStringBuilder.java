@@ -17,14 +17,14 @@
 package com.google.inject.tools.ideplugin.results;
 
 import com.google.inject.tools.ideplugin.ActionsHandler;
-import com.google.inject.tools.module.ClassNameUtility;
-import com.google.inject.tools.snippets.BindingCodeLocation;
-import com.google.inject.tools.snippets.CodeLocation;
-import com.google.inject.tools.snippets.CodeProblem;
-import com.google.inject.tools.snippets.BindingCodeLocation.NoBindingLocation;
-import com.google.inject.tools.snippets.CodeProblem.BindingProblem;
-import com.google.inject.tools.snippets.CodeProblem.InvalidModuleContextProblem;
-import com.google.inject.tools.snippets.CodeProblem.InvalidModuleProblem;
+import com.google.inject.tools.suite.module.ClassNameUtility;
+import com.google.inject.tools.suite.snippets.BindingCodeLocation;
+import com.google.inject.tools.suite.snippets.CodeLocation;
+import com.google.inject.tools.suite.snippets.CodeProblem;
+import com.google.inject.tools.suite.snippets.BindingCodeLocation.NoBindingLocation;
+import com.google.inject.tools.suite.snippets.CodeProblem.BindingProblem;
+import com.google.inject.tools.suite.snippets.CodeProblem.InvalidModuleContextProblem;
+import com.google.inject.tools.suite.snippets.CodeProblem.InvalidModuleProblem;
 
 import java.util.ArrayList;
 import java.util.List;

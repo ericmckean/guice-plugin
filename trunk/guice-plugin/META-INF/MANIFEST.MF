@@ -21,7 +21,7 @@ Export-Package: com.google.inject.tools.ideplugin,
  com.google.inject.tools.ideplugin.eclipse,
  com.google.inject.tools.ideplugin.problem,
  com.google.inject.tools.ideplugin.results,
- com.google.inject.tools.module
+ com.google.inject.tools.suite.module
 Bundle-Vendor: com.google.inject.tools.ideplugin
 Bundle-ClassPath: src/,
  .,

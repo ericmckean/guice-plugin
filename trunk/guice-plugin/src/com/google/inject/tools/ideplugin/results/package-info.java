@@ -30,7 +30,7 @@
  * <p>
  * Results to user's queries are stored as
  * {@link com.google.inject.tools.ideplugin.results.Results} objects which
- * usually consist of {@link com.google.inject.tools.snippets.CodeLocation}
+ * usually consist of {@link com.google.inject.tools.suite.snippets.CodeLocation}
  * objects on a per module context basis.
  */
 

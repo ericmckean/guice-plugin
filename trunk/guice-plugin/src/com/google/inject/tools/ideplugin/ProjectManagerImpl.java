@@ -19,10 +19,10 @@ package com.google.inject.tools.ideplugin;
 import com.google.inject.Inject;
 import com.google.inject.tools.ideplugin.CustomContextDefinitionSource.CustomContextDefinitionListener;
 import com.google.inject.tools.ideplugin.module.ModulesListener;
-import com.google.inject.tools.module.ModuleManager;
-import com.google.inject.tools.module.ModulesSource;
 import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.GuiceToolsModule.ModuleManagerFactory;
+import com.google.inject.tools.suite.module.ModuleManager;
+import com.google.inject.tools.suite.module.ModulesSource;
 
 import java.util.HashMap;
 import java.util.Map;

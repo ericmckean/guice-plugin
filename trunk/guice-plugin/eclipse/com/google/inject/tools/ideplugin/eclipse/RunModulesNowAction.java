@@ -35,7 +35,7 @@ import com.google.inject.tools.ideplugin.ProjectManager;
  */
 @SuppressWarnings("restriction")
 // TODO: remove internal class use if possible
-class RunModulesNowAction implements IEditorActionDelegate,
+public class RunModulesNowAction implements IEditorActionDelegate,
     IObjectActionDelegate {
   private final ProjectManager projectManager;
   private IEditorPart editor;

@@ -32,7 +32,7 @@ import com.google.inject.tools.ideplugin.GuicePlugin;
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-class BindingsObjectAction implements IObjectActionDelegate {
+public class BindingsObjectAction implements IObjectActionDelegate {
   private IWorkbenchPart part;
   private GuicePlugin guicePlugin;
 

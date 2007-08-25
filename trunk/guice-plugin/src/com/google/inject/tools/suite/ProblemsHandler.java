@@ -18,7 +18,7 @@ package com.google.inject.tools.suite;
 
 import java.util.Set;
 
-import com.google.inject.tools.snippets.CodeProblem;
+import com.google.inject.tools.suite.snippets.CodeProblem;
 
 /**
  * Notify the user in realtime of problems with their guice code by code assist

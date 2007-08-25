@@ -40,11 +40,12 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
-import com.google.inject.tools.module.ClassNameUtility;
-import com.google.inject.tools.module.CustomModuleContextRepresentation;
-import com.google.inject.tools.module.ModuleContextRepresentation;
-import com.google.inject.tools.module.ModuleManager;
-import com.google.inject.tools.module.ModuleContextRepresentation.ModuleInstanceRepresentation;
+
+import com.google.inject.tools.suite.module.ClassNameUtility;
+import com.google.inject.tools.suite.module.CustomModuleContextRepresentation;
+import com.google.inject.tools.suite.module.ModuleContextRepresentation;
+import com.google.inject.tools.suite.module.ModuleManager;
+import com.google.inject.tools.suite.module.ModuleContextRepresentation.ModuleInstanceRepresentation;
 
 /**
  * Eclipse dialog allowing selection of module contexts.

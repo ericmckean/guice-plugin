@@ -20,9 +20,9 @@ package com.google.inject.tools.ideplugin.problem;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.tools.snippets.CodeProblem;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProblemsHandler;
+import com.google.inject.tools.suite.snippets.CodeProblem;
 
 import java.util.Set;
 

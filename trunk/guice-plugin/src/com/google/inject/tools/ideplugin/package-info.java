@@ -29,7 +29,7 @@
  * <p>
  * The basic objects in our plugin are:
  * <dl>
- * <dt>{@link com.google.inject.tools.module.ModuleManager}
+ * <dt>{@link com.google.inject.tools.suite.module.ModuleManager}
  * <dd>manages the modules in the user's code
  * <dt>{@link com.google.inject.tools.suite.ProblemsHandler}
  * <dd>notifies the user of guice related problems in the code
@@ -37,8 +37,8 @@
  * <dd>manages results of user queries such as finding bindings
  * <dt>{@link com.google.inject.tools.ideplugin.bindings.BindingsEngine}
  * <dd>performs the actual lookup of bindings in the code
- * <dt>{@link com.google.inject.tools.code.CodeRunner}
- * <dd>runs {@link com.google.inject.tools.snippets.CodeSnippet}s in user
+ * <dt>{@link com.google.inject.tools.suite.code.CodeRunner}
+ * <dd>runs {@link com.google.inject.tools.suite.snippets.CodeSnippet}s in user
  * space to resolve bindings
  * <dt>{@link com.google.inject.tools.ideplugin.ProjectManager}
  * <dd>manages projects in the IDE
@@ -47,7 +47,7 @@
  * <p>
  * Key objects which must be created in IDE specific manner are:
  * <dl>
- * <dt>{@link com.google.inject.tools.module.ModulesSource}
+ * <dt>{@link com.google.inject.tools.suite.module.ModulesSource}
  * <dd>listen for changes in the user's code involving modules
  * <dt>{@link com.google.inject.tools.ideplugin.module.ModuleSelectionView}
  * <dd>allow the user to configure what modules the plugin runs

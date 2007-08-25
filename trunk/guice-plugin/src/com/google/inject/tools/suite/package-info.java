@@ -25,7 +25,7 @@
  * To use the tools suite, simply extend the
  * {@link com.google.inject.tools.suite.GuiceToolsModule} to a concrete set of
  * bindings and then use guice to inject a
- * {@link com.google.inject.tools.module.ModuleManager} in your code.
+ * {@link com.google.inject.tools.suite.module.ModuleManager} in your code.
  * 
  * <p>
  * The {@link com.google.inject.tools.suite.JavaManager},
@@ -37,14 +37,14 @@
  * <p>
  * The basic objects in our tool suite are:
  * <dl>
- * <dt>{@link com.google.inject.tools.module.ModuleManager}
+ * <dt>{@link com.google.inject.tools.suite.module.ModuleManager}
  * <dd>manages the modules in the user's code
- * <dt>{@link com.google.inject.tools.module.ModulesSource}
+ * <dt>{@link com.google.inject.tools.suite.module.ModulesSource}
  * <dd>notify the manager of changes in modules
  * <dt>{@link com.google.inject.tools.suite.ProblemsHandler}
  * <dd>notifies the user of guice related problems in the code
- * <dt>{@link com.google.inject.tools.code.CodeRunner}
- * <dd>runs {@link com.google.inject.tools.snippets.CodeSnippet}s in user
+ * <dt>{@link com.google.inject.tools.suite.code.CodeRunner}
+ * <dd>runs {@link com.google.inject.tools.suite.snippets.CodeSnippet}s in user
  * space to resolve bindings
  * </dl>
  * 

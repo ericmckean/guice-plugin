@@ -44,7 +44,7 @@ import com.google.inject.tools.suite.Messenger;
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-class EclipseResultsView extends ViewPart implements ResultsView {
+public class EclipseResultsView extends ViewPart implements ResultsView {
   private FormToolkit toolkit;
   private ScrolledForm form;
   private Composite parent;
