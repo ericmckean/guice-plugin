@@ -16,7 +16,7 @@
 
 package com.google.inject.tools.module;
 
-import com.google.inject.tools.JavaManager;
+import com.google.inject.tools.suite.JavaManager;
 
 import java.util.Set;
 
@@ -32,10 +32,11 @@ import java.util.Set;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public interface ModuleManager {
+  /**
+   * An exception thrown if the ModuleManager is accessed before it has
+   * a {@link JavaManager} attached.
+   */
   public static class NoJavaManagerException extends RuntimeException {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 5092824035153637390L;
     private final ModuleManager moduleManager;
 
@@ -64,6 +65,10 @@ public interface ModuleManager {
     }
 
     public String getSnippetsClasspath() throws Exception {
+      return null;
+    }
+    
+    public String getClasspathDelimiter() {
       return null;
     }
   }
@@ -175,17 +180,27 @@ public interface ModuleManager {
   public boolean updateModules(boolean waitFor, boolean backgroundAutomatically);
 
   /**
-   * Wait for the manager to clean the modules in the current project.
+   * Wait for the manager to clean the modules.
    * 
    * @return true if the update succeeded (false if the user cancelled the
    *         operation)
    */
   public boolean updateModules();
 
+  /**
+   * A piece of code to run after an update has completed.
+   */
   public interface PostUpdater {
     public void execute(boolean success);
   }
 
+  /**
+   * Clean the modules and then execute the given code.
+   * 
+   * @param postUpdater the code to execute on completion
+   * @param backgroundAutomatically true if the process should run in the
+   * background
+   */
   public void updateModules(PostUpdater postUpdater,
       boolean backgroundAutomatically);
 
@@ -197,13 +212,25 @@ public interface ModuleManager {
    */
   public boolean rerunModules(boolean waitFor, boolean backgroundAutomatically);
 
+  /**
+   * Wait for the manager to (re)run all the modules.
+   * 
+   * @return true if the rerun succeeded (false if the user cancelled)
+   */
   public boolean rerunModules();
 
+  /**
+   * (Re)run the modules and then execute the given code.
+   * 
+   * @param postUpdater the code to execute on completion
+   * @param backgroundAutomatically true if the process should run in the
+   * background
+   */
   public void rerunModules(PostUpdater postUpdater,
       boolean backgroundAutomatically);
 
   /**
-   * (Re)run the modules in user to find any new context options.
+   * (Re)run the modules in user code to find any new context options.
    * 
    * @param waitFor true if the current thread should wait for the update
    * @return true if the operation succeeded (false if the user canceled it)
@@ -211,8 +238,16 @@ public interface ModuleManager {
   public boolean findNewContexts(boolean waitFor,
       boolean backgroundAutomatically);
 
+  /**
+   * Wait for the manager to (re)run modules in user code to find new contexts.
+   * 
+   * @return true if the operation succeeded
+   */
   public boolean findNewContexts();
 
+  /**
+   * (Re)run the modules in user code and then execute the given code.
+   */
   public void findNewContexts(PostUpdater postUpdater,
       boolean backgroundAutomatically);
 
@@ -241,11 +276,23 @@ public interface ModuleManager {
    */
   public void deactivateModuleContext(ModuleContextRepresentation moduleContext);
 
+  /**
+   * Notify the manager that the user has added a custom context.
+   */
   public void addCustomContext(String contextName);
 
+  /**
+   * Notify the manager that the user has removed a custom context.
+   */
   public void removeCustomContext(String contextName);
 
+  /**
+   * Notify the manager that a custom context has changed.
+   */
   public void customContextChanged(String contextName);
   
+  /**
+   * Tell the calling thread to wait for the manager to initialize.
+   */
   public void waitForInitialization() throws InterruptedException;
 }

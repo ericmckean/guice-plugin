@@ -17,24 +17,22 @@
 package com.google.inject.tools.module;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import com.google.inject.tools.JavaManager;
-import com.google.inject.tools.Messenger;
-import com.google.inject.tools.ProblemsHandler;
-import com.google.inject.tools.GuiceToolsModule.CodeRunnerFactory;
 import com.google.inject.tools.code.CodeRunner;
 import com.google.inject.tools.module.ModuleContextRepresentation.ModuleInstanceRepresentation;
 import com.google.inject.tools.snippets.CodeSnippetResult;
+import com.google.inject.tools.suite.JavaManager;
+import com.google.inject.tools.suite.Messenger;
+import com.google.inject.tools.suite.ProblemsHandler;
+import com.google.inject.tools.suite.GuiceToolsModule.CodeRunnerFactory;
 
 import java.util.HashSet;
 import java.util.Set;
 
 /**
- * The standard implementation of the ModuleManager.
+ * {@inheritDoc ModuleManager}
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-@Singleton
 class ModuleManagerImpl implements ModuleManager,
     CodeRunner.CodeRunListener {
   private final ModulesSource modulesListener;
@@ -51,8 +49,7 @@ class ModuleManagerImpl implements ModuleManager,
   private final InitThread initThread;
 
   /**
-   * Create a ModuleManagerImpl. This should be done by injection as a
-   * singleton.
+   * Create a ModuleManagerImpl. This should be done by injection.
    */
   @Inject
   public ModuleManagerImpl(ModulesSource modulesListener,
@@ -148,12 +145,6 @@ class ModuleManagerImpl implements ModuleManager,
     }
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.module.ModuleManager#addModule(com.google.inject.tools.module.ModuleRepresentation,
-   *      boolean)
-   */
   public synchronized void addModule(ModuleRepresentation module,
       boolean createContext) throws NoJavaManagerException {
     if (javaManager != null) {
@@ -172,22 +163,11 @@ class ModuleManagerImpl implements ModuleManager,
     }
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.module.ModuleManager#initModuleName(java.lang.String)
-   */
   public synchronized void initModuleName(String moduleName)
       throws NoJavaManagerException {
     initModule(moduleName);
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.module.ModuleManager#addModule(java.lang.String,
-   *      boolean)
-   */
   public synchronized void addModule(String moduleName, boolean createContext)
       throws NoJavaManagerException {
     if (javaManager != null) {
@@ -202,11 +182,6 @@ class ModuleManagerImpl implements ModuleManager,
     }
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.module.ModuleManager#removeModule(java.lang.String)
-   */
   public synchronized void removeModule(String moduleName)
       throws NoJavaManagerException {
     if (javaManager != null) {
@@ -222,11 +197,6 @@ class ModuleManagerImpl implements ModuleManager,
     }
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.module.ModuleManager#removeModule(com.google.inject.tools.module.ModuleRepresentation)
-   */
   public synchronized void removeModule(ModuleRepresentation module)
       throws NoJavaManagerException {
     if (javaManager != null) {
@@ -247,32 +217,16 @@ class ModuleManagerImpl implements ModuleManager,
     }
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.module.ModuleManager#clearModules()
-   */
   public synchronized void clearModules() {
     if (javaManager != null) {
       modules.clear();
     }
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.module.ModuleManager#getModules()
-   */
   public synchronized Set<ModuleRepresentation> getModules() {
     return modules != null ? new HashSet<ModuleRepresentation>(modules) : null;
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.module.ModuleManager#addModuleContext(com.google.inject.tools.module.ModuleContextRepresentation,
-   *      boolean)
-   */
   public synchronized void addModuleContext(
       ModuleContextRepresentation moduleContext, boolean active)
       throws NoJavaManagerException {
@@ -286,22 +240,12 @@ class ModuleManagerImpl implements ModuleManager,
     }
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.module.ModuleManager#clearModuleContexts()
-   */
   public synchronized void clearModuleContexts() {
     if (javaManager != null) {
       moduleContexts.clear();
     }
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.module.ModuleManager#getModuleContexts()
-   */
   public synchronized Set<ModuleContextRepresentation> getModuleContexts() {
     return moduleContexts != null ? new HashSet<ModuleContextRepresentation>(
         moduleContexts) : null;
@@ -532,56 +476,26 @@ class ModuleManagerImpl implements ModuleManager,
     return null;
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.code.CodeRunner.CodeRunListener#acceptCodeRunResult(com.google.inject.tools.snippets.CodeSnippetResult)
-   */
   public void acceptCodeRunResult(CodeSnippetResult result) {
     problemsHandler.foundProblems(result.getProblems());
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.code.CodeRunner.CodeRunListener#acceptUserCancelled()
-   */
   public void acceptUserCancelled() {
     // do nothing
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.code.CodeRunner.CodeRunListener#acceptDone()
-   */
   public void acceptDone() {
     // do nothing
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.module.ModuleManager#setRunAutomatically(boolean)
-   */
   public void setRunAutomatically(boolean run) {
     this.runAutomatically = run;
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.module.ModuleManager#activateModulesByDefault()
-   */
   public boolean activateModulesByDefault() {
     return activateByDefault;
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.module.ModuleManager#setActivateModulesByDefault(boolean)
-   */
   public void setActivateModulesByDefault(boolean activateByDefault) {
     this.activateByDefault = activateByDefault;
   }

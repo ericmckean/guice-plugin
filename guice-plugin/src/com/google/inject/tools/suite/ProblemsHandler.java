@@ -14,32 +14,24 @@
  * the License.
  */
 
-package com.google.inject.tools;
+package com.google.inject.tools.suite;
+
+import java.util.Set;
+
+import com.google.inject.tools.snippets.CodeProblem;
 
 /**
- * Represents a project in the user's code.
+ * Notify the user in realtime of problems with their guice code by code assist
+ * or other (nonblocking) means. These should respond concurrently to the
+ * existing flow, i.e. be nonblocking methods.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public interface JavaManager {
+public interface ProblemsHandler {
   /**
-   * Return the command line for running java.
+   * Handle a set of problems found with user's code.
    * 
-   * @throws Exception if the command line cannot be determined
+   * @param problem
    */
-  public String getJavaCommand() throws Exception;
-
-  /**
-   * Return the classpath entry for the precompiled snippets.jar file.
-   * 
-   * @throws Exception if the classpath cannot be determined
-   */
-  public String getSnippetsClasspath() throws Exception;
-
-  /**
-   * Return the classpath for the project.
-   * 
-   * @throws Exception if the classpath cannot be determined
-   */
-  public String getProjectClasspath() throws Exception;
+  public void foundProblems(Set<? extends CodeProblem> problem);
 }

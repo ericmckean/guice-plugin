@@ -16,7 +16,7 @@
 
 package com.google.inject.tools.ideplugin;
 
-import com.google.inject.tools.JavaManager;
+import com.google.inject.tools.suite.JavaManager;
 
 /**
  * Representation of a Java element. Likely just a wrapper around IDE specific

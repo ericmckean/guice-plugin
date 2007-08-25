@@ -17,8 +17,6 @@
 package com.google.inject.tools.ideplugin.eclipse;
 
 import com.google.inject.binder.AnnotatedBindingBuilder;
-import com.google.inject.tools.Messenger;
-import com.google.inject.tools.ProgressHandler;
 import com.google.inject.tools.ideplugin.CustomContextDefinitionSource;
 import com.google.inject.tools.ideplugin.GotoCodeLocationHandler;
 import com.google.inject.tools.ideplugin.GotoFileHandler;
@@ -27,30 +25,24 @@ import com.google.inject.tools.ideplugin.GuiceToolsModuleImpl;
 import com.google.inject.tools.ideplugin.results.ResultsView;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
 import com.google.inject.tools.module.ModulesSource;
+import com.google.inject.tools.suite.Messenger;
+import com.google.inject.tools.suite.ProgressHandler;
 
 /**
  * The module binding Eclipse implementations to interfaces.
  * 
+ * {@inheritDoc GuicePluginModule}
+ * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public class EclipsePluginModule extends GuicePluginModule {
+class EclipsePluginModule extends GuicePluginModule {
   public static class EclipseGuiceToolsModule extends GuiceToolsModuleImpl {
-    /**
-     * (non-Javadoc)
-     * 
-     * @see com.google.inject.tools.GuiceToolsModule#bindMessenger(com.google.inject.binder.AnnotatedBindingBuilder)
-     */
     @Override
     protected void bindMessenger(
         AnnotatedBindingBuilder<Messenger> bindMessenger) {
       bindMessenger.to(EclipseMessenger.class).asEagerSingleton();
     }
 
-    /**
-     * (non-Javadoc)
-     * 
-     * @see com.google.inject.tools.GuiceToolsModule#bindModulesListener(com.google.inject.binder.AnnotatedBindingBuilder)
-     */
     @Override
     protected void bindModulesListener(
         AnnotatedBindingBuilder<ModulesSource> bindModulesListener) {
@@ -65,11 +57,6 @@ public class EclipsePluginModule extends GuicePluginModule {
     super();
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindResultsView(com.google.inject.binder.AnnotatedBindingBuilder)
-   */
   @Override
   protected void bindResultsView(
       AnnotatedBindingBuilder<ResultsView> bindResultsView) {
@@ -77,11 +64,6 @@ public class EclipsePluginModule extends GuicePluginModule {
         .asEagerSingleton();
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.ideplugin.GuicePluginModule#bindModuleSelectionView(com.google.inject.binder.AnnotatedBindingBuilder)
-   */
   @Override
   protected void bindModuleSelectionView(
       AnnotatedBindingBuilder<ModuleSelectionView> bindModuleSelectionView) {

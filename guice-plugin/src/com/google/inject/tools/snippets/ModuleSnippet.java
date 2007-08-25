@@ -39,10 +39,8 @@ public class ModuleSnippet<T extends Module> extends CodeSnippet {
    * Representation of a constructor for a module.
    */
   public static class ConstructorRepresentation implements Serializable {
-    /**
-     * 
-     */
     private static final long serialVersionUID = -2088252187388131890L;
+    
     private final List<String> argumentTypes;
     private final Set<String> exceptionTypes;
 
@@ -168,19 +166,20 @@ public class ModuleSnippet<T extends Module> extends CodeSnippet {
     this.className = className;
     moduleClass = findClass(className);
     if (moduleClass != null) {
-      if (isModule(moduleClass)) {
+      Exception exception = isModule(moduleClass);
+      if (exception == null) {
         try {
           defaultConstructor = moduleClass.getConstructor((Class[]) null);
-        } catch (NoSuchMethodException exception) {
+        } catch (NoSuchMethodException e) {
           defaultConstructor = null;
         }
         try {
           setDefaultConstructor();
-        } catch (Exception exception) {
+        } catch (Exception e) {
           defaultConstructor = null;
         }
       } else {
-        problems.add(new CodeProblem.InvalidModuleProblem(className));
+        problems.add(new CodeProblem.InvalidModuleProblem(className,exception));
         defaultConstructor = null;
       }
     }
@@ -196,12 +195,12 @@ public class ModuleSnippet<T extends Module> extends CodeSnippet {
     }
   }
 
-  private boolean isModule(Class<?> aClass) {
+  private Exception isModule(Class<?> aClass) {
     try {
       aClass.asSubclass(Module.class);
-      return true;
+      return null;
     } catch (Exception e) {
-      return false;
+      return e;
     }
   }
 

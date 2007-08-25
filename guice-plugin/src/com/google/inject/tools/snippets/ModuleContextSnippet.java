@@ -17,6 +17,7 @@
 package com.google.inject.tools.snippets;
 
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -48,13 +49,42 @@ public class ModuleContextSnippet extends CodeSnippet {
    * about the context.
    */
   public static class ModuleContextResult extends CodeSnippetResult {
-    /**
-     * 
-     */
     private static final long serialVersionUID = -1832891974235767711L;
+    
     private final String name;
-    private final Map<String, BindingCodeLocation> bindings;
+    private final Map<KeyRepresentation, BindingCodeLocation> bindings;
     private final Set<String> modules;
+    
+    public static class KeyRepresentation implements Serializable {
+      private static final long serialVersionUID = -1832891974235767811L;
+      
+      public final String bindWhat;
+      public final String annotatedWith;
+      public KeyRepresentation(String bindWhat, String annotatedWith) {
+        this.bindWhat = bindWhat;
+        this.annotatedWith = annotatedWith;
+      }
+      @Override
+      public boolean equals(Object object) {
+        if (!(object instanceof KeyRepresentation)) return false;
+        KeyRepresentation key = (KeyRepresentation)object;
+        if (!bindWhat.equals(key.bindWhat)) return false;
+        return annotatedWith==null ? key.annotatedWith==null :
+          annotatedWith.equals(key.annotatedWith);
+      }
+      @Override
+      public int hashCode() {
+        return bindWhat.hashCode();
+      }
+      @Override
+      public String toString() {
+        if (annotatedWith == null) {
+          return "Key binding " + bindWhat;
+        } else {
+          return "Key binding " + bindWhat + " annotated with " + annotatedWith;
+        }
+      }
+    }
 
     public ModuleContextResult(String name,
         Set<ModuleRepresentation> moduleReps,
@@ -68,11 +98,18 @@ public class ModuleContextSnippet extends CodeSnippet {
           this.modules.add(module.getName());
         }
       }
-      this.bindings = new HashMap<String, BindingCodeLocation>();
+      this.bindings = new HashMap<KeyRepresentation, BindingCodeLocation>();
       if (moduleBindings != null) {
         for (Key<?> key : moduleBindings.keySet()) {
-          // TODO: type literals, int/Integer, etc.
           final String bindWhat = key.getTypeLiteral().toString();
+          String annotatedWith = null;
+          if (key.getAnnotation() != null) {
+            annotatedWith = key.getAnnotation().toString();
+          } else if (key.getAnnotationType() != null) {
+            annotatedWith = "@" + key.getAnnotationType().getName();
+          }
+          final KeyRepresentation keyRepresentation =
+            new KeyRepresentation(bindWhat, annotatedWith);
           String bindTo = null;
           String file = null;
           int location = -1;
@@ -80,16 +117,29 @@ public class ModuleContextSnippet extends CodeSnippet {
           Set<CodeProblem> locationProblems = new HashSet<CodeProblem>();
           BindingCodeLocation bindingCodeLocation;
           StackTraceElement source = null;
+          String bindingLocationDescription = null;
           if (binding == null) {
             locationProblems.add(new CodeProblem.NoBindingProblem(name, key
                 .getTypeLiteral().toString()));
           } else {
             try {
-              bindTo = binding.getProvider().get().getClass().getName();
-              // TODO: if not STE then treat as String
-              source = (StackTraceElement) binding.getSource();
-              file = source.getFileName();
-              location = source.getLineNumber();
+              //this is ugly but it will have to do until guice is updated
+              if (bindWhat.equals("int")) {
+                bindTo = binding.getProvider().get().toString();
+              } else if (bindWhat.equals("boolean")) {
+                bindTo = binding.getProvider().get().toString();
+              } else if (bindWhat.equals("char")) {
+                bindTo = binding.getProvider().get().toString();
+              } else {
+                bindTo = binding.getProvider().get().getClass().getName();
+              }
+              if (binding.getSource() instanceof StackTraceElement) {
+                source = (StackTraceElement) binding.getSource();
+                file = source.getFileName();
+                location = source.getLineNumber();
+              } else {
+                bindingLocationDescription = binding.getSource().toString();
+              }
             } catch (Throwable throwable) {
               locationProblems.add(new CodeProblem.BindingProblem(name, key
                   .getTypeLiteral().toString(), throwable));
@@ -97,8 +147,10 @@ public class ModuleContextSnippet extends CodeSnippet {
           }
           StackTraceElement[] stackTrace = new StackTraceElement[1];
           stackTrace[0] = source;
-          this.bindings.put(bindWhat, new BindingCodeLocation(stackTrace,
-              bindWhat, bindTo, name, file, location, locationProblems));
+          this.bindings.put(keyRepresentation, new BindingCodeLocation(stackTrace,
+              keyRepresentation.bindWhat, keyRepresentation.annotatedWith,
+              bindTo, name, file, location, 
+              bindingLocationDescription, locationProblems));
         }
       }
     }
@@ -111,7 +163,7 @@ public class ModuleContextSnippet extends CodeSnippet {
       return modules;
     }
 
-    public Map<String, BindingCodeLocation> getBindings() {
+    public Map<KeyRepresentation, BindingCodeLocation> getBindings() {
       return bindings;
     }
   }
@@ -139,7 +191,6 @@ public class ModuleContextSnippet extends CodeSnippet {
       int i = 0;
       for (Class<?> argType : argTypes) {
         argumentTypes[i] = argType;
-        // TODO: deal with arg values...
         i++;
       }
       return moduleClass.getConstructor(argumentTypes).newInstance(

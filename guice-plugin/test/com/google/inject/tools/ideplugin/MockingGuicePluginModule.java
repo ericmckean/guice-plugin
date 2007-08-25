@@ -17,11 +17,11 @@
 package com.google.inject.tools.ideplugin;
 
 import com.google.inject.binder.AnnotatedBindingBuilder;
-import com.google.inject.tools.ProgressHandler;
-import com.google.inject.tools.MockingGuiceToolsModule.ProxyMock;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
 import com.google.inject.tools.ideplugin.results.ResultsHandler;
 import com.google.inject.tools.ideplugin.results.ResultsView;
+import com.google.inject.tools.suite.ProgressHandler;
+import com.google.inject.tools.suite.MockingGuiceToolsModule.ProxyMock;
 
 /**
  * Implementation of the {@link GuicePluginModule} that injects mock objects.
@@ -44,9 +44,6 @@ public class MockingGuicePluginModule extends GuicePluginModule {
   public MockingGuicePluginModule() {
   }
 
-  /**
-   * Tell the module to use a real ResultsHandler.
-   */
   public MockingGuicePluginModule useRealResultsHandler() {
     useRealResultsHandler = true;
     return this;

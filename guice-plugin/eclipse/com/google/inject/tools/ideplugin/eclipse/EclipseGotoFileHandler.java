@@ -19,20 +19,15 @@ package com.google.inject.tools.ideplugin.eclipse;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.ui.JavaUI;
-import com.google.inject.tools.Messenger;
 import com.google.inject.tools.ideplugin.GotoFileHandler;
 import com.google.inject.tools.ideplugin.ProjectManager;
 import com.google.inject.tools.ideplugin.ActionsHandler.GotoFile;
+import com.google.inject.tools.suite.Messenger;
 import com.google.inject.Singleton;
 import com.google.inject.Inject;
 
-/**
- * {@inheritDoc}
- * 
- * @author Darren Creutz <dcreutz@gmail.com>
- */
 @Singleton
-public class EclipseGotoFileHandler implements GotoFileHandler {
+class EclipseGotoFileHandler implements GotoFileHandler {
   private final ProjectManager projectManager;
   private final Messenger messenger;
 

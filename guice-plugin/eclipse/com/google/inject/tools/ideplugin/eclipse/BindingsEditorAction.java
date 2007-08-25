@@ -27,6 +27,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorActionDelegate;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 
 /**
@@ -37,37 +38,26 @@ import org.eclipse.ui.IEditorPart;
  */
 @SuppressWarnings("restriction")
 // TODO: remove internal class use if possible
-public class BindingsEditorAction implements IEditorActionDelegate {
+class BindingsEditorAction implements IEditorActionDelegate {
   private IEditorPart editor;
   private GuicePlugin guicePlugin;
 
-  /**
-   * Create the action.
-   */
   public BindingsEditorAction() {
     super();
     guicePlugin = Activator.getGuicePlugin();
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see org.eclipse.ui.IEditorActionDelegate#setActiveEditor(org.eclipse.jface.action.IAction,
-   *      org.eclipse.ui.IEditorPart)
-   */
   public void setActiveEditor(IAction action, IEditorPart targetEditor) {
     this.editor = targetEditor;
   }
 
   /**
-   * (non-Javadoc)
-   * 
-   * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
+   * Eclipse callback to have us run the bindings engine.
    */
   public void run(IAction action) {
-    ICompilationUnit cu =
-        JavaPlugin.getDefault().getWorkingCopyManager().getWorkingCopy(
-            ((CompilationUnitEditor) editor).getEditorInput());
+    IEditorInput editorInput = ((CompilationUnitEditor)editor).getEditorInput();
+    ICompilationUnit cu = JavaPlugin.getDefault()
+        .getWorkingCopyManager().getWorkingCopy(editorInput);
     ITextSelection selection =
         (ITextSelection) editor.getSite().getSelectionProvider().getSelection();
     IJavaElement element = null;
@@ -89,12 +79,6 @@ public class BindingsEditorAction implements IEditorActionDelegate {
     }
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction,
-   *      org.eclipse.jface.viewers.ISelection)
-   */
   public void selectionChanged(IAction action, ISelection selection) {
   }
 }

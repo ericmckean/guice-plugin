@@ -18,14 +18,14 @@ package com.google.inject.tools.ideplugin;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.google.inject.tools.GuiceToolsModule;
-import com.google.inject.tools.JavaManager;
-import com.google.inject.tools.Messenger;
-import com.google.inject.tools.ProblemsHandler;
-import com.google.inject.tools.GuiceToolsModule.ModuleManagerFactory;
 import com.google.inject.tools.ideplugin.bindings.BindingsEngine;
 import com.google.inject.tools.ideplugin.results.ResultsHandler;
 import com.google.inject.tools.module.ModuleManager;
+import com.google.inject.tools.suite.GuiceToolsModule;
+import com.google.inject.tools.suite.JavaManager;
+import com.google.inject.tools.suite.Messenger;
+import com.google.inject.tools.suite.ProblemsHandler;
+import com.google.inject.tools.suite.GuiceToolsModule.ModuleManagerFactory;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
 
 /**
@@ -58,6 +58,9 @@ public abstract class GuicePlugin {
     return injector.getInstance(type);
   }
 
+  /**
+   * Return the {@link ProjectManager}.
+   */
   public ProjectManager getProjectManager() {
     return getInstance(ProjectManager.class);
   }

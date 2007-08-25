@@ -20,7 +20,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.inject.tools.JavaManager;
+import com.google.inject.tools.suite.JavaManager;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -36,9 +36,11 @@ import org.osgi.framework.Bundle;
 /**
  * Eclipse specific implementation of the {@link JavaManager}.
  * 
+ * {@inheritDoc JavaManager}
+ * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public class EclipseJavaProject implements JavaManager {
+class EclipseJavaProject implements JavaManager {
   private final IJavaProject project;
 
   public EclipseJavaProject(IJavaProject project) {
@@ -52,21 +54,11 @@ public class EclipseJavaProject implements JavaManager {
     return project;
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.JavaManager#getJavaCommand()
-   */
   public String getJavaCommand() throws Exception {
-    // TODO: fix this
+    // TODO: get java command correctly
     return "java";
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.JavaManager#getProjectClasspath()
-   */
   public String getProjectClasspath() throws Exception {
     final List<String> args = new ArrayList<String>();
     IClasspathEntry[] cp = new IClasspathEntry[0];
@@ -85,6 +77,11 @@ public class EclipseJavaProject implements JavaManager {
     }
     args2.append(args.get(args.size() - 1));
     return args2.toString();
+  }
+  
+  public String getClasspathDelimiter() {
+    //TODO: return correct classpath delimiter
+    return ":";
   }
 
   private String getProjectLocation(IJavaProject project)
@@ -127,20 +124,14 @@ public class EclipseJavaProject implements JavaManager {
               resourceLocation));
           break;
         case IClasspathEntry.CPE_VARIABLE:
-          // TODO: do we need to do something here?
           break;
         default:
-          // never happens
+          //never happens
       }
     }
     return args;
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.JavaManager#getSnippetsClasspath()
-   */
   public String getSnippetsClasspath() throws Exception {
     Bundle bundle = Platform.getBundle("GuicePlugin");
     URL url = bundle.getResource("/");

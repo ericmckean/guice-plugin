@@ -16,7 +16,7 @@
 
 package com.google.inject.tools.ideplugin;
 
-import com.google.inject.tools.AllTests;
+import com.google.inject.tools.suite.AllTests;
 
 import junit.framework.TestSuite;
 import junit.framework.Test;

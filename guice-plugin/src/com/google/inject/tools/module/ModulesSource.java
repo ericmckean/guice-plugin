@@ -16,7 +16,8 @@
 
 package com.google.inject.tools.module;
 
-import com.google.inject.tools.JavaManager;
+import com.google.inject.tools.suite.JavaManager;
+
 import java.util.Set;
 
 /**
@@ -28,12 +29,23 @@ import java.util.Set;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public interface ModulesSource {
+  /**
+   * Find and return all the modules available.
+   * This should be called just before addListener(this).
+   * 
+   * @param javaManager the java context to get the modules for
+   */
   public Set<String> getModules(JavaManager javaManager);
 
   public void addListener(ModulesSourceListener listener);
 
   public void removeListener(ModulesSourceListener listener);
 
+  /**
+   * Listener for changes in the modules available.
+   * 
+   * @author Darren Creutz <dcreutz@gmail.com>
+   */
   public interface ModulesSourceListener {
     void moduleChanged(ModulesSource source, JavaManager javaManager,
         String module);

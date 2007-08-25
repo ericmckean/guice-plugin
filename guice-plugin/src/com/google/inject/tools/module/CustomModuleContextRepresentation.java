@@ -21,6 +21,14 @@ import com.google.inject.tools.code.RunCustomModuleContextSnippet;
 import com.google.inject.tools.snippets.CodeSnippetResult;
 import com.google.inject.tools.snippets.ModuleContextSnippet;
 
+/**
+ * Represents a custom module context defined by the user.
+ * 
+ * A custom context is defined by a class name and a method to call
+ * that returns an iterable of {@link com.google.inject.Module}s.
+ * 
+ * @author Darren Creutz <dcreutz@gmail.com>
+ */
 public class CustomModuleContextRepresentation extends
     ModuleContextRepresentationImpl {
   private final String classToUse;
@@ -57,10 +65,16 @@ public class CustomModuleContextRepresentation extends
     }
   }
 
+  /**
+   * Return the name of the class to use.
+   */
   public String getClassToUse() {
     return classToUse;
   }
 
+  /**
+   * Return the name of the method to call.
+   */
   public String getMethodToCall() {
     return methodToCall;
   }

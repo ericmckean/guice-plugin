@@ -22,9 +22,9 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.util.List;
 import java.util.ArrayList;
-import com.google.inject.tools.Messenger;
 import com.google.inject.tools.snippets.CodeSnippet;
 import com.google.inject.tools.snippets.CodeSnippetResult;
+import com.google.inject.tools.suite.Messenger;
 
 /**
  * The CodeRunner runs {@link CodeSnippet} objects in a separate virtual machine

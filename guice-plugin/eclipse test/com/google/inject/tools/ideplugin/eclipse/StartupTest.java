@@ -19,11 +19,6 @@ package com.google.inject.tools.ideplugin.eclipse;
 import junit.framework.TestCase;
 import com.google.inject.Injector;
 import com.google.inject.Guice;
-import com.google.inject.tools.GuiceToolsModule;
-import com.google.inject.tools.Messenger;
-import com.google.inject.tools.ProblemsHandler;
-import com.google.inject.tools.ProgressHandler;
-import com.google.inject.tools.Fakes.FakeJavaManager;
 import com.google.inject.tools.ideplugin.Fakes.FakeJavaElement;
 import com.google.inject.tools.ideplugin.eclipse.EclipsePluginModule.EclipseGuiceToolsModule;
 import com.google.inject.tools.ideplugin.results.ResultsView;
@@ -33,6 +28,11 @@ import com.google.inject.tools.ideplugin.JavaElement;
 import com.google.inject.tools.ideplugin.ProjectManager;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
 import com.google.inject.tools.module.ModulesSource;
+import com.google.inject.tools.suite.GuiceToolsModule;
+import com.google.inject.tools.suite.Messenger;
+import com.google.inject.tools.suite.ProblemsHandler;
+import com.google.inject.tools.suite.ProgressHandler;
+import com.google.inject.tools.suite.Fakes.FakeJavaManager;
 
 /**
  * Test the activator and therefore the plugin object and the module for our

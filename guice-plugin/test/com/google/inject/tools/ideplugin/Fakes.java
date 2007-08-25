@@ -17,11 +17,11 @@
 package com.google.inject.tools.ideplugin;
 
 import com.google.inject.binder.AnnotatedBindingBuilder;
-import com.google.inject.tools.JavaManager;
-import com.google.inject.tools.ProblemsHandler;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
 import com.google.inject.tools.ideplugin.results.CodeLocationsResults;
 import com.google.inject.tools.ideplugin.results.ResultsView;
+import com.google.inject.tools.suite.JavaManager;
+import com.google.inject.tools.suite.ProblemsHandler;
 
 import org.easymock.EasyMock;
 
@@ -32,9 +32,6 @@ import org.easymock.EasyMock;
  */
 public class Fakes {
   public static class FakeCodeLocationsResults extends CodeLocationsResults {
-    /**
-     * Create the Mock object.
-     */
     public FakeCodeLocationsResults() {
       super("Mock Results", null);
     }
@@ -60,11 +57,6 @@ public class Fakes {
     private String name;
     private String className;
 
-    /**
-     * Create a mock Java element of the given type.
-     * 
-     * @param type the type
-     */
     public FakeJavaElement(Type type) {
       this.type = type;
       switch (type) {
@@ -83,11 +75,6 @@ public class Fakes {
       }
     }
 
-    /**
-     * (non-Javadoc)
-     * 
-     * @see com.google.inject.tools.ideplugin.JavaElement#getClassName()
-     */
     public String getClassName() {
       return className;
     }
@@ -96,29 +83,14 @@ public class Fakes {
       return null;
     }
 
-    /**
-     * (non-Javadoc)
-     * 
-     * @see com.google.inject.tools.ideplugin.JavaElement#getName()
-     */
     public String getName() {
       return name;
     }
 
-    /**
-     * (non-Javadoc)
-     * 
-     * @see com.google.inject.tools.ideplugin.JavaElement#getType()
-     */
     public Type getType() {
       return type;
     }
 
-    /**
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     @Override
     public boolean equals(Object object) {
       if (object instanceof JavaElement) {
@@ -135,23 +107,15 @@ public class Fakes {
       return 1;
     }
 
-    /**
-     * (non-Javadoc)
-     * 
-     * @see com.google.inject.tools.ideplugin.JavaElement#isInjectionPoint()
-     */
     public boolean isInjectionPoint() {
       return false;
     }
   }
 
   public static class MockingGuiceToolsModule extends
-      com.google.inject.tools.MockingGuiceToolsModule {
+      com.google.inject.tools.suite.MockingGuiceToolsModule {
     private boolean useRealProblemsHandler = false;
 
-    /**
-     * Tell the module to use a real ProblemsHandler.
-     */
     public MockingGuiceToolsModule useRealProblemsHandler() {
       useRealProblemsHandler = true;
       return this;

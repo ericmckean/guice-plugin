@@ -21,26 +21,18 @@ import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import com.google.inject.tools.Messenger;
 import com.google.inject.tools.ideplugin.GotoCodeLocationHandler;
 import com.google.inject.tools.ideplugin.ProjectManager;
 import com.google.inject.tools.ideplugin.ActionsHandler.GotoCodeLocation;
+import com.google.inject.tools.suite.Messenger;
 import com.google.inject.Singleton;
 import com.google.inject.Inject;
 
-/**
- * {@inheritDoc}
- * 
- * @author Darren Creutz <dcreutz@gmail.com>
- */
 @Singleton
-public class EclipseGotoCodeLocationHandler implements GotoCodeLocationHandler {
+class EclipseGotoCodeLocationHandler implements GotoCodeLocationHandler {
   private final ProjectManager projectManager;
   private final Messenger messenger;
 
-  /**
-   * Create the ActionsHandler. This should be injected as a singleton.
-   */
   @Inject
   public EclipseGotoCodeLocationHandler(ProjectManager projectManager,
       Messenger messenger) {

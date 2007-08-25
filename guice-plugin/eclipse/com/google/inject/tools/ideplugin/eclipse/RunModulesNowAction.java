@@ -22,6 +22,7 @@ import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorActionDelegate;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
@@ -34,7 +35,7 @@ import com.google.inject.tools.ideplugin.ProjectManager;
  */
 @SuppressWarnings("restriction")
 // TODO: remove internal class use if possible
-public class RunModulesNowAction implements IEditorActionDelegate,
+class RunModulesNowAction implements IEditorActionDelegate,
     IObjectActionDelegate {
   private final ProjectManager projectManager;
   private IEditorPart editor;
@@ -54,9 +55,9 @@ public class RunModulesNowAction implements IEditorActionDelegate,
   }
 
   public void run(IAction action) {
-    ICompilationUnit cu =
-        JavaPlugin.getDefault().getWorkingCopyManager().getWorkingCopy(
-            ((CompilationUnitEditor) editor).getEditorInput());
+    IEditorInput editorInput = ((CompilationUnitEditor) editor).getEditorInput();
+    ICompilationUnit cu = JavaPlugin.getDefault()
+        .getWorkingCopyManager().getWorkingCopy(editorInput);
     projectManager
         .getModuleManager(new EclipseJavaProject(cu.getJavaProject()))
         .rerunModules(false, false);

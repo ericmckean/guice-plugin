@@ -20,7 +20,7 @@ import com.google.inject.Singleton;
 import com.google.inject.Inject;
 
 /**
- * Standard implementation of the ResultsHandler.
+ * {@inheritDoc ResultsHandler}
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
@@ -36,11 +36,6 @@ public class ResultsHandlerImpl implements ResultsHandler {
     this.resultsView = resultsView;
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.ideplugin.results.ResultsHandler#displayLocationsResults(com.google.inject.tools.ideplugin.results.CodeLocationsResults)
-   */
   public void displayLocationsResults(CodeLocationsResults results) {
     resultsView.displayResults(results);
   }

@@ -25,7 +25,7 @@ import com.google.inject.tools.snippets.ModuleSnippet.ConstructorRepresentation;
 import com.google.inject.tools.snippets.ModuleSnippet.DefaultConstructorRepresentation;
 
 /**
- * Represents a single module in the module context.
+ * {@inheritDoc ModuleRepresentation}
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
@@ -50,56 +50,26 @@ class ModuleRepresentationImpl implements ModuleRepresentation,
     hasDefaultConstructor = false;
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.module.ModuleRepresentation#getConstructors()
-   */
   public Set<? extends ConstructorRepresentation> getConstructors() {
     return constructors;
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.module.ModuleRepresentation#hasDefaultConstructor()
-   */
   public boolean hasDefaultConstructor() {
     return hasDefaultConstructor;
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.module.ModuleRepresentation#getName()
-   */
   public String getName() {
     return name;
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.module.ModuleRepresentation#isDirty()
-   */
   public boolean isDirty() {
     return dirty;
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.module.ModuleRepresentation#makeDirty()
-   */
   public void makeDirty() {
     dirty = true;
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.module.ModuleRepresentation#clean(com.google.inject.tools.code.CodeRunner)
-   */
   public RunModuleSnippet clean(CodeRunner codeRunner) {
     codeRunner.addListener(this);
     RunModuleSnippet runnable = new RunModuleSnippet(codeRunner, this);
@@ -107,11 +77,6 @@ class ModuleRepresentationImpl implements ModuleRepresentation,
     return runnable;
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.code.CodeRunner.CodeRunListener#acceptCodeRunResult(com.google.inject.tools.snippets.CodeSnippetResult)
-   */
   public void acceptCodeRunResult(CodeSnippetResult result) {
     if (result instanceof ModuleSnippet.ModuleResult) {
       ModuleSnippet.ModuleResult moduleResult =
@@ -129,29 +94,14 @@ class ModuleRepresentationImpl implements ModuleRepresentation,
     }
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.code.CodeRunner.CodeRunListener#acceptUserCancelled()
-   */
   public void acceptUserCancelled() {
     // do nothing
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.code.CodeRunner.CodeRunListener#acceptDone()
-   */
   public void acceptDone() {
     // do nothing
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Object#toString()
-   */
   @Override
   public String toString() {
     return "Module Representation [" + constructor + "]";

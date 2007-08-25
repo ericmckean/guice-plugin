@@ -19,15 +19,21 @@ package com.google.inject.tools.module;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.binder.AnnotatedBindingBuilder;
-import com.google.inject.tools.JavaManager;
-import com.google.inject.tools.Messenger;
-import com.google.inject.tools.ProblemsHandler;
-import com.google.inject.tools.GuiceToolsModule.CodeRunnerFactory;
-import com.google.inject.tools.GuiceToolsModule.ModuleManagerFactory;
+import com.google.inject.tools.suite.JavaManager;
+import com.google.inject.tools.suite.Messenger;
+import com.google.inject.tools.suite.ProblemsHandler;
+import com.google.inject.tools.suite.GuiceToolsModule.CodeRunnerFactory;
+import com.google.inject.tools.suite.GuiceToolsModule.ModuleManagerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Factory to create {@link ModuleManager}s with preconstructed
+ * {@link JavaManager}s.
+ * 
+ * @author Darren Creutz <dcreutz@gmail.com>
+ */
 public class ModuleManagerFactoryImpl implements ModuleManagerFactory {
   private final Provider<ModulesSource> modulesSourceProvider;
   private final Provider<ProblemsHandler> problemsHandlerProvider;
@@ -48,6 +54,9 @@ public class ModuleManagerFactoryImpl implements ModuleManagerFactory {
     this.moduleManagerInstances = new HashMap<JavaManager, ModuleManager>();
   }
 
+  /**
+   * Create a ModuleManager.
+   */
   public ModuleManager create(JavaManager javaManager) {
     if (moduleManagerInstances.get(javaManager) == null) {
       moduleManagerInstances.put(javaManager, new ModuleManagerImpl(
@@ -58,6 +67,9 @@ public class ModuleManagerFactoryImpl implements ModuleManagerFactory {
     return moduleManagerInstances.get(javaManager);
   }
   
+  /**
+   * Bind ModuleManager to an implementation for use without a JavaManager.
+   */
   public static void bindModuleManager(
       AnnotatedBindingBuilder<ModuleManager> bindModuleManager) {
     bindModuleManager.to(ModuleManagerImpl.class);

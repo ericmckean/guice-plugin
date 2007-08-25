@@ -14,24 +14,19 @@
  * the License.
  */
 
-package com.google.inject.tools;
-
-import java.util.Set;
-
-import com.google.inject.tools.snippets.CodeProblem;
+package com.google.inject.tools.module;
 
 /**
- * Notify the user in realtime of problems with their guice code by code assist
- * or other (nonblocking) means. These should respond concurrently to the
- * existing flow, i.e. be nonblocking methods.
+ * Utility for manipulating class names.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public interface ProblemsHandler {
+public class ClassNameUtility {
   /**
-   * Handle a set of problems found with user's code.
-   * 
-   * @param problem
+   * Return the short form of this name, i.e. the last part.
    */
-  public void foundProblems(Set<? extends CodeProblem> problem);
+  public static String shorten(String className) {
+    String shortName = className.substring(className.lastIndexOf(".") + 1);
+    return className.charAt(0) == '@' ? "@" + shortName : shortName;
+  }
 }

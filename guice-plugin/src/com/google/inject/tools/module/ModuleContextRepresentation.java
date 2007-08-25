@@ -162,14 +162,21 @@ public interface ModuleContextRepresentation {
    * Find the location in code where a binding occurs in this module context.
    * 
    * @param theClass the class to find the binding for
+   * @param annotatedWith the annotation on this class to find bindings for
    * @return the location in code and/or problems finding the binding
    */
-  public CodeLocation findLocation(String theClass);
+  public CodeLocation findLocation(String theClass, String annotatedWith);
+  
+  /**
+   * Find the locations in code where bindings occur in this context.
+   * 
+   * @param theClass the class to find bindings for
+   * @return the locations in code and/or problems in finding bindings
+   */
+  public Set<CodeLocation> findLocations(String theClass);
 
   /**
    * Add the module with the given name to this context.
-   * 
-   * @param module the module
    */
   public ModuleContextRepresentation add(ModuleInstanceRepresentation module);
 
@@ -180,35 +187,31 @@ public interface ModuleContextRepresentation {
 
   /**
    * Remove the given module from this context.
-   * 
-   * @param module the module
    */
   public void removeModule(ModuleInstanceRepresentation module);
 
   /**
-   * Return the name of this representation.
-   * 
-   * @return the name
+   * Return the fully qualified name of this representation.
    */
   public String getName();
 
+  /**
+   * Return the long name of this representation (with a description)
+   */
   public String getLongName();
 
+  /**
+   * Return the short name of this representation.
+   */
   public String getShortName();
 
   /**
-   * Does this context have the given module in it?
-   * 
-   * @param module the module
-   * @return true if the module is in this context
+   * Return true if this context has the given module in it.
    */
   public boolean contains(ModuleInstanceRepresentation module);
 
   /**
-   * Does this context contain the module with this name?
-   * 
-   * @param moduleName the name of the module
-   * @return true if the module is in this context
+   * Return true if this context has the given module in it.
    */
   public boolean contains(String moduleName);
 
@@ -218,7 +221,7 @@ public interface ModuleContextRepresentation {
   public void markDirty();
 
   /**
-   * Is the module context dirty?
+   * Return true if the context is dirty.
    */
   public boolean isDirty();
 

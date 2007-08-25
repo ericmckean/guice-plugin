@@ -19,8 +19,6 @@ package com.google.inject.tools.module;
 import com.google.inject.Binding;
 import com.google.inject.Key;
 import com.google.inject.Provider;
-import com.google.inject.tools.Messenger;
-import com.google.inject.tools.SampleModuleScenario;
 import com.google.inject.tools.code.CodeRunner;
 import com.google.inject.tools.module.ModuleContextRepresentation;
 import com.google.inject.tools.module.ModuleContextRepresentationImpl;
@@ -29,6 +27,8 @@ import com.google.inject.tools.snippets.CodeLocation;
 import com.google.inject.tools.snippets.CodeProblem;
 import com.google.inject.tools.snippets.CodeSnippetResult;
 import com.google.inject.tools.snippets.ModuleContextSnippet;
+import com.google.inject.tools.suite.Messenger;
+import com.google.inject.tools.suite.SampleModuleScenario;
 
 import junit.framework.TestCase;
 
@@ -52,7 +52,7 @@ public class ModuleContextRepresentationTest extends TestCase {
     assertFalse(moduleContext.isDirty());
     assertTrue(moduleContext.getName().equals("Working Module Context"));
     CodeLocation codeLocation = moduleContext.findLocation(
-        SampleModuleScenario.MockInjectedInterface.class.getName());
+        SampleModuleScenario.MockInjectedInterface.class.getName(), null);
     assertTrue(codeLocation instanceof BindingCodeLocation);
     BindingCodeLocation bindingLocation = (BindingCodeLocation)codeLocation;
     assertTrue(bindingLocation.bindTo()
@@ -124,13 +124,13 @@ public class ModuleContextRepresentationTest extends TestCase {
     private ModuleContextSnippet.ModuleContextResult simulatedSnippetResult() {
       Map<Key<?>, Binding<?>> bindings = new HashMap<Key<?>, Binding<?>>();
       Binding<?> binding =
-          new MockBinding<com.google.inject.tools.SampleModuleScenario.MockInjectedInterface>(
-              com.google.inject.tools.SampleModuleScenario.MockInjectedInterface.class,
-              com.google.inject.tools.SampleModuleScenario.MockInjectedInterfaceImpl.class);
+          new MockBinding<com.google.inject.tools.suite.SampleModuleScenario.MockInjectedInterface>(
+              com.google.inject.tools.suite.SampleModuleScenario.MockInjectedInterface.class,
+              com.google.inject.tools.suite.SampleModuleScenario.MockInjectedInterfaceImpl.class);
       bindings
           .put(
               Key
-                  .get(com.google.inject.tools.SampleModuleScenario.MockInjectedInterface.class),
+                  .get(com.google.inject.tools.suite.SampleModuleScenario.MockInjectedInterface.class),
               binding);
       return new ModuleContextSnippet.ModuleContextResult(
           "Working Module Context", Collections

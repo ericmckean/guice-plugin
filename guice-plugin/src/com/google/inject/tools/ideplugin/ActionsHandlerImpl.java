@@ -19,6 +19,7 @@ package com.google.inject.tools.ideplugin;
 import com.google.inject.Inject;
 
 /**
+ * {@inheritDoc ActionsHandler}
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
