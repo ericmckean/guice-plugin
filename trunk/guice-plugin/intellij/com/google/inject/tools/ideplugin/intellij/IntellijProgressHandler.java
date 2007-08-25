@@ -35,7 +35,7 @@ public class IntellijProgressHandler implements ProgressHandler {
     
   }
   
-  public void waitFor() throws InterruptedException {
+  public void waitFor() {
     // TODO Auto-generated method stub
     
   }
