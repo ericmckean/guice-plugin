@@ -4,6 +4,7 @@
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="src" path="eclipse"/>
 	<classpathentry kind="src" path="eclipse test"/>
+	<classpathentry kind="src" path="intellij"/>
 	<classpathentry exported="true" kind="lib" path="lib/EasyMock/easymock.jar"/>
 	<classpathentry exported="true" kind="lib" path="bin/"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
