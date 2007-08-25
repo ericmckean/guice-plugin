@@ -67,4 +67,9 @@ public interface JavaElement {
    * Return true if the java element is injected at this location in code.
    */
   public boolean isInjectionPoint();
+  
+  /**
+   * Return the annotations on this element (if it is at an injection point).
+   */
+  public String getAnnotations();
 }

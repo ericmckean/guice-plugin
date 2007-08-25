@@ -82,13 +82,16 @@ public final class BindingsEngine {
       if (!moduleManager.updateModules(true, false)) {
         results.userCancelled();
       } else {
-        // TODO: if element.isInjectionPoint() ...
         if ((moduleManager.getActiveModuleContexts() != null)
             && (moduleManager.getActiveModuleContexts().size() > 0)) {
           for (ModuleContextRepresentation moduleContext : moduleManager
               .getActiveModuleContexts()) {
-            BindingLocator locater =
-              new BindingLocator(theClass, moduleContext);
+            BindingLocator locater;
+            if (element.isInjectionPoint()) {
+              locater = new BindingLocator(theClass, element.getAnnotations(), moduleContext);
+            } else {
+              locater = new BindingLocator(theClass, moduleContext);
+            }
             if (locater.getCodeLocations() != null) {
               for (CodeLocation codeLocation : locater.getCodeLocations()) {
                 problemsHandler.foundProblems(codeLocation.getProblems());

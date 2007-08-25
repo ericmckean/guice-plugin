@@ -157,6 +157,11 @@ class EclipseJavaElement implements JavaElement {
     //TODO: determine if is injection point and related annotations
     return false;
   }
+  
+  public String getAnnotations() {
+    //TODO: determine what annotations (if any) this element has
+    return null;
+  }
 
   @Override
   public int hashCode() {
