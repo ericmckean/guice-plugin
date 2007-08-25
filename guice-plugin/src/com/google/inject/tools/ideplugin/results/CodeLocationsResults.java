@@ -16,9 +16,9 @@
 
 package com.google.inject.tools.ideplugin.results;
 
-import com.google.inject.tools.module.ClassNameUtility;
-import com.google.inject.tools.snippets.CodeLocation;
-import com.google.inject.tools.snippets.CodeProblem;
+import com.google.inject.tools.suite.module.ClassNameUtility;
+import com.google.inject.tools.suite.snippets.CodeLocation;
+import com.google.inject.tools.suite.snippets.CodeProblem;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -111,7 +111,7 @@ public class CodeLocationsResults extends Results {
   }
 
   /**
-   * Add a {@link com.google.inject.tools.module.ModuleContextRepresentation} to
+   * Add a {@link com.google.inject.tools.suite.module.ModuleContextRepresentation} to
    * {@link CodeLocation} pairing to the results.
    * 
    * @param module the module context
@@ -130,7 +130,7 @@ public class CodeLocationsResults extends Results {
 
   /**
    * Return all the
-   * {@link com.google.inject.tools.module.ModuleContextRepresentation}s in the
+   * {@link com.google.inject.tools.suite.module.ModuleContextRepresentation}s in the
    * results.
    * 
    * @return the modules
@@ -141,7 +141,7 @@ public class CodeLocationsResults extends Results {
 
   /**
    * Return the {@link CodeLocation} in this results for the given
-   * {@link com.google.inject.tools.module.ModuleContextRepresentation}.
+   * {@link com.google.inject.tools.suite.module.ModuleContextRepresentation}.
    * 
    * @param module the module context
    * @return the code location

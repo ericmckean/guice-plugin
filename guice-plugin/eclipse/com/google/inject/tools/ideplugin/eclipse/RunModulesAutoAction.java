@@ -29,7 +29,7 @@ import com.google.inject.tools.ideplugin.ProjectManager;
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-class RunModulesAutoAction implements IEditorActionDelegate,
+public class RunModulesAutoAction implements IEditorActionDelegate,
     IObjectActionDelegate {
   private boolean state;
   private final ProjectManager projectManager;

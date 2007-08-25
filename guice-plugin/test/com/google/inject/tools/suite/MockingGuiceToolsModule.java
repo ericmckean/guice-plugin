@@ -21,13 +21,13 @@ import java.lang.reflect.Method;
 import org.easymock.EasyMock;
 import com.google.inject.Inject;
 import com.google.inject.binder.AnnotatedBindingBuilder;
-import com.google.inject.tools.code.CodeRunner;
-import com.google.inject.tools.module.ModuleManager;
-import com.google.inject.tools.module.ModulesSource;
 import com.google.inject.tools.suite.GuiceToolsModule;
 import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProblemsHandler;
+import com.google.inject.tools.suite.code.CodeRunner;
+import com.google.inject.tools.suite.module.ModuleManager;
+import com.google.inject.tools.suite.module.ModulesSource;
 
 /**
  * Implementation of the {@link GuiceToolsModule} that injects mock objects.

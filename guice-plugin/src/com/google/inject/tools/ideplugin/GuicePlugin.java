@@ -20,12 +20,12 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.tools.ideplugin.bindings.BindingsEngine;
 import com.google.inject.tools.ideplugin.results.ResultsHandler;
-import com.google.inject.tools.module.ModuleManager;
 import com.google.inject.tools.suite.GuiceToolsModule;
 import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProblemsHandler;
 import com.google.inject.tools.suite.GuiceToolsModule.ModuleManagerFactory;
+import com.google.inject.tools.suite.module.ModuleManager;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
 
 /**

@@ -18,10 +18,12 @@ package com.google.inject.tools.ideplugin.eclipse;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+
 import com.google.inject.Inject;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProgressHandler;
@@ -36,7 +38,7 @@ import com.google.inject.tools.suite.ProgressHandler;
 class EclipseProgressHandler implements ProgressHandler {
   private final Messenger messenger;
   private final List<ProgressStep> steps;
-  private Job job;
+  private ProgressHandlerJob job;
 
   @Inject
   public EclipseProgressHandler(Messenger messenger) {
@@ -58,13 +60,14 @@ class EclipseProgressHandler implements ProgressHandler {
     job.schedule();
   }
 
-  public void waitForStart() throws InterruptedException {
+  public void waitFor() throws InterruptedException {
     job.join();
   }
 
   private class ProgressHandlerJob extends Job {
     private final String label;
-
+    private volatile ProgressStep currentStep;
+    
     public ProgressHandlerJob(String label) {
       super(label);
       this.label = label;
@@ -73,35 +76,58 @@ class EclipseProgressHandler implements ProgressHandler {
     @Override
     protected IStatus run(IProgressMonitor monitor) {
       monitor.beginTask(label, steps.size());
+      spinOffCancelThread(monitor);
       for (ProgressStep step : steps) {
+        if (!monitor.isCanceled()) {
+          monitor.setTaskName(step.label());
+          currentStep = step;
+          step.run();
+          currentStep = null;
+          monitor.worked(1);
+        }
         if (monitor.isCanceled()) {
           step.cancel();
-        } else {
-          monitor.setTaskName(step.label());
-          step.run();
-          while (!monitor.isCanceled() && !step.isDone()) {
-            try {
-              //TODO: Thread.sleep cannot be necessary
-              Thread.sleep(100);
-            } catch (InterruptedException exception) {
-              EclipseProgressHandler.this.messenger.logException(
-                  "Job interrupted", exception);
-            }
-          }
-          if (monitor.isCanceled()) {
-            step.cancel();
-            monitor.done();
-          } else {
-            monitor.worked(1);
-            step.complete();
-          }
         }
+        step.complete();
       }
       monitor.done();
       if (monitor.isCanceled()) {
         return Status.CANCEL_STATUS;
       } else {
         return Status.OK_STATUS;
+      }
+    }
+
+    private void spinOffCancelThread(IProgressMonitor monitor) {
+      new CancelListener(monitor).start();
+    }
+    
+    private class CancelListener extends Thread {
+      private final IProgressMonitor monitor;
+      public CancelListener(IProgressMonitor monitor) {
+        this.monitor = monitor;
+      }
+      @Override
+      public void run() {
+        while (!monitor.isCanceled()) {
+          try {
+            //Thread.sleep should not be necessary
+            //but we need to check for cancel presses in a timely manner
+            //and our runnables launch user code so it may while(true)
+            //
+            //Eclipse should support sending interrupts to jobs but it doesn't
+            //so we have to fake it ourselves by polling
+            Thread.sleep(100);
+          } catch (InterruptedException exception) {
+            EclipseProgressHandler.this.messenger.logException(
+                "Job interrupted", exception);
+          }
+        }
+        if (monitor.isCanceled()) {
+          if (currentStep != null) {
+            currentStep.cancel();
+          }
+        }
       }
     }
   }

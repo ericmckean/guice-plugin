@@ -39,9 +39,9 @@ import com.google.inject.Singleton;
 import com.google.inject.Inject;
 import com.google.inject.tools.ideplugin.ProjectManager;
 import com.google.inject.tools.ideplugin.module.ModulesListener;
-import com.google.inject.tools.module.ModulesSource;
 import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.Messenger;
+import com.google.inject.tools.suite.module.ModulesSource;
 
 /**
  * Eclipse implementation of the {@link ModulesSource}.
@@ -301,7 +301,8 @@ class EclipseModulesListener extends ModulesListener {
         //TODO: deal with inner classes...
         IType type = cu.findPrimaryType();
         if (type != null) {
-          if (typeHierarchies.get(javaManager).contains(type)) {
+          if (typeHierarchies.get(javaManager) != null
+              && typeHierarchies.get(javaManager).contains(type)) {
             switch (delta.getKind()) {
               case IJavaElementDelta.ADDED:
                 EclipseModulesListener.this.moduleAdded(javaManager, type
@@ -319,7 +320,8 @@ class EclipseModulesListener extends ModulesListener {
                 // do nothing
             }
           }
-          if (contextTypeHierarchies.get(javaManager).contains(type)) {
+          if (contextTypeHierarchies.get(javaManager) != null
+              && contextTypeHierarchies.get(javaManager).contains(type)) {
             switch (delta.getKind()) {
               case IJavaElementDelta.ADDED:
                 EclipseModulesListener.this.contextAdded(javaManager, type

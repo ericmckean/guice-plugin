@@ -29,8 +29,8 @@ import org.eclipse.ui.IWorkbenchPart;
 
 import com.google.inject.tools.ideplugin.ProjectManager;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
-import com.google.inject.tools.module.ModuleManager;
 import com.google.inject.tools.suite.JavaManager;
+import com.google.inject.tools.suite.module.ModuleManager;
 
 /**
  * Responds to the user choosing configure from the Guice menu by opening the
@@ -40,7 +40,7 @@ import com.google.inject.tools.suite.JavaManager;
  */
 @SuppressWarnings("restriction")
 // TODO: remove internal class use if possible
-class GuicePluginConfigureAction implements IEditorActionDelegate,
+public class GuicePluginConfigureAction implements IEditorActionDelegate,
     IObjectActionDelegate {
   private final ModuleSelectionView moduleSelectionView;
   private final ProjectManager projectManager;

@@ -19,12 +19,12 @@ package com.google.inject.tools.ideplugin.bindings;
 import com.google.inject.tools.ideplugin.JavaElement;
 import com.google.inject.tools.ideplugin.results.CodeLocationsResults;
 import com.google.inject.tools.ideplugin.results.ResultsHandler;
-import com.google.inject.tools.module.ClassNameUtility;
-import com.google.inject.tools.module.ModuleContextRepresentation;
-import com.google.inject.tools.module.ModuleManager;
-import com.google.inject.tools.snippets.CodeLocation;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProblemsHandler;
+import com.google.inject.tools.suite.module.ClassNameUtility;
+import com.google.inject.tools.suite.module.ModuleContextRepresentation;
+import com.google.inject.tools.suite.module.ModuleManager;
+import com.google.inject.tools.suite.snippets.CodeLocation;
 
 /**
  * The BindingsEngine is the glue between the other objects; it is responsible

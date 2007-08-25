@@ -23,10 +23,10 @@ import com.google.inject.tools.ideplugin.results.CodeLocationsResults;
 import com.google.inject.tools.ideplugin.results.Results;
 import com.google.inject.tools.ideplugin.results.CodeLocationsResults.ProblemNode;
 import com.google.inject.tools.ideplugin.results.Results.Node;
-import com.google.inject.tools.snippets.BindingCodeLocation;
-import com.google.inject.tools.snippets.CodeLocation;
-import com.google.inject.tools.snippets.CodeProblem;
 import com.google.inject.tools.suite.Fakes.FakeCreationException;
+import com.google.inject.tools.suite.snippets.BindingCodeLocation;
+import com.google.inject.tools.suite.snippets.CodeLocation;
+import com.google.inject.tools.suite.snippets.CodeProblem;
 
 /**
  * Unit test the {@link CodeLocationsResults} object.

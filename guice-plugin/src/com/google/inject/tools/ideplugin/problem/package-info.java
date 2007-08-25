@@ -29,7 +29,7 @@
  * 
  * <p>
  * Problems are represented by the
- * {@link com.google.inject.tools.snippets.CodeProblem} class.
+ * {@link com.google.inject.tools.suite.snippets.CodeProblem} class.
  */
 
 package com.google.inject.tools.ideplugin.problem;

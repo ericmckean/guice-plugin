@@ -27,12 +27,12 @@ import com.google.inject.tools.ideplugin.ActionsHandler;
 import com.google.inject.tools.ideplugin.JavaElement;
 import com.google.inject.tools.ideplugin.ProjectManager;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
-import com.google.inject.tools.module.ModulesSource;
 import com.google.inject.tools.suite.GuiceToolsModule;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProblemsHandler;
 import com.google.inject.tools.suite.ProgressHandler;
 import com.google.inject.tools.suite.Fakes.FakeJavaManager;
+import com.google.inject.tools.suite.module.ModulesSource;
 
 /**
  * Test the activator and therefore the plugin object and the module for our

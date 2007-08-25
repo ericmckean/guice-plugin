@@ -32,7 +32,7 @@ import org.eclipse.ui.part.ViewPart;
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-class EclipseErrorView extends ViewPart {
+public class EclipseErrorView extends ViewPart {
   private FormToolkit toolkit;
   private ScrolledForm form;
   private Composite body;

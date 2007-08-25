@@ -17,10 +17,10 @@
 package com.google.inject.tools.suite;
 
 
-import com.google.inject.tools.code.CodeRunnerTest;
-import com.google.inject.tools.module.ModuleContextRepresentationTest;
-import com.google.inject.tools.module.ModuleManagerTest;
-import com.google.inject.tools.module.ModuleRepresentationTest;
+import com.google.inject.tools.suite.code.CodeRunnerTest;
+import com.google.inject.tools.suite.module.ModuleContextRepresentationTest;
+import com.google.inject.tools.suite.module.ModuleManagerTest;
+import com.google.inject.tools.suite.module.ModuleRepresentationTest;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;

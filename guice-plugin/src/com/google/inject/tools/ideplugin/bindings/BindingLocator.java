@@ -16,8 +16,8 @@
 
 package com.google.inject.tools.ideplugin.bindings;
 
-import com.google.inject.tools.module.ModuleContextRepresentation;
-import com.google.inject.tools.snippets.CodeLocation;
+import com.google.inject.tools.suite.module.ModuleContextRepresentation;
+import com.google.inject.tools.suite.snippets.CodeLocation;
 
 import java.util.Set;
 

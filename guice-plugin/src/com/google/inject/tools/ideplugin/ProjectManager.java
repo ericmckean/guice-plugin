@@ -16,8 +16,8 @@
 
 package com.google.inject.tools.ideplugin;
 
-import com.google.inject.tools.module.ModuleManager;
 import com.google.inject.tools.suite.JavaManager;
+import com.google.inject.tools.suite.module.ModuleManager;
 
 /**
  * Manages the set of open projects in the user's code.

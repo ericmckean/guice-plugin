@@ -18,12 +18,12 @@ package com.google.inject.tools.suite;
 
 import com.google.inject.CreationException;
 import com.google.inject.spi.Message;
-import com.google.inject.tools.code.CodeRunner;
-import com.google.inject.tools.snippets.CodeProblem;
-import com.google.inject.tools.snippets.CodeSnippet;
-import com.google.inject.tools.snippets.CodeSnippetResult;
 import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.Messenger;
+import com.google.inject.tools.suite.code.CodeRunner;
+import com.google.inject.tools.suite.snippets.CodeProblem;
+import com.google.inject.tools.suite.snippets.CodeSnippet;
+import com.google.inject.tools.suite.snippets.CodeSnippetResult;
 
 import java.util.Collections;
 import java.util.Set;
@@ -51,10 +51,10 @@ public class Fakes {
   }
 
   public static class TestSnippet extends CodeSnippet {
-    public TestSnippet(int secsToTake) {
+    public TestSnippet(int millisecsToTake) {
       super();
       try {
-        Thread.sleep(secsToTake * 1000);
+        Thread.sleep(millisecsToTake);
       } catch (Exception exception) {
         // do nothing
       }
@@ -80,13 +80,13 @@ public class Fakes {
     }
 
     public static void main(String[] args) {
-      int secsToTake;
+      int millisecsToTake;
       if (args.length > 0) {
-        secsToTake = Integer.valueOf(args[0]);
+        millisecsToTake = Integer.valueOf(args[0]);
       } else {
-        secsToTake = -1;
+        millisecsToTake = -1;
       }
-      new TestSnippet(secsToTake).printResult(System.out);
+      new TestSnippet(millisecsToTake).printResult(System.out);
     }
   }
 

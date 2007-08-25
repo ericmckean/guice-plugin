@@ -54,11 +54,6 @@ public interface ProgressHandler {
      * Return true if this step is done.
      */
     public boolean isDone();
-
-    /**
-     * Tell the calling thread to wait for this step to complete.
-     */
-    public void waitFor() throws InterruptedException;
   }
 
   /**
@@ -83,7 +78,7 @@ public interface ProgressHandler {
   public void go(String label, boolean backgroundAutomatically);
   
   /**
-   * Tell the calling thread to wait until the progress handler starts.
+   * Tell the calling thread to wait until the progress handler tasks complete.
    */
-  public void waitForStart() throws InterruptedException;
+  public void waitFor() throws InterruptedException;
 }

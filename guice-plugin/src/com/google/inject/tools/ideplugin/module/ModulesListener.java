@@ -20,12 +20,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
 import com.google.inject.Inject;
 import com.google.inject.tools.ideplugin.CustomContextDefinitionSource;
 import com.google.inject.tools.ideplugin.ProjectManager;
-import com.google.inject.tools.module.ModulesSource;
 import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.Messenger;
+import com.google.inject.tools.suite.module.ModulesSource;
 
 /**
  * Abstract implementation of the {@link ModulesSource} and

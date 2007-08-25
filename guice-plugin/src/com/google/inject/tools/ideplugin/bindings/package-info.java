@@ -25,7 +25,7 @@
  * {@link com.google.inject.tools.ideplugin.bindings.BindingLocator} which
  * actually uses guice to find the bindings and their locations in source code.
  * The results, which consist of
- * {@link com.google.inject.tools.snippets.BindingCodeLocation} objects are
+ * {@link com.google.inject.tools.suite.snippets.BindingCodeLocation} objects are
  * created as a
  * {@link com.google.inject.tools.ideplugin.results.CodeLocationsResults} object
  * which is then passed to the
