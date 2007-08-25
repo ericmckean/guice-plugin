@@ -19,6 +19,7 @@ package com.google.inject.tools.ideplugin.bindings;
 import com.google.inject.tools.suite.module.ModuleContextRepresentation;
 import com.google.inject.tools.suite.snippets.CodeLocation;
 
+import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -29,14 +30,34 @@ import java.util.Set;
  */
 public class BindingLocator {
   private final String theClass;
+  private final String annotatedWith;
   private final ModuleContextRepresentation moduleContext;
   private final Set<CodeLocation> locations;
 
+  /**
+   * Locate the bindings for the given class in the given context.
+   */
   public BindingLocator(String theClass,
+      ModuleContextRepresentation moduleContext) {
+    this(theClass, null, moduleContext);
+  }
+  
+  /**
+   * Locate the bindings for the given class with the given annotations in the given
+   * context.
+   */
+  public BindingLocator(String theClass,
+      String annotatedWith,
       ModuleContextRepresentation moduleContext) {
     this.theClass = theClass;
     this.moduleContext = moduleContext;
-    this.locations = moduleContext.findLocations(theClass);
+    this.annotatedWith = annotatedWith;
+    if (annotatedWith != null) {
+      this.locations = 
+        Collections.singleton(moduleContext.findLocation(theClass, annotatedWith));
+    } else {
+      this.locations = moduleContext.findLocations(theClass);
+    }
   }
 
   /**
@@ -44,6 +65,13 @@ public class BindingLocator {
    */
   public String getTheClass() {
     return theClass;
+  }
+  
+  /**
+   * Return the annotations on the class we are finding bindings for.
+   */
+  public String getAnnotations() {
+    return annotatedWith;
   }
 
   /**

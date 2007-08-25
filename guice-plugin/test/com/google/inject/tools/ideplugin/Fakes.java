@@ -110,6 +110,10 @@ public class Fakes {
     public boolean isInjectionPoint() {
       return false;
     }
+    
+    public String getAnnotations() {
+      return null;
+    }
   }
 
   public static class MockingGuiceToolsModule extends

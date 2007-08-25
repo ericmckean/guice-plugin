@@ -27,6 +27,7 @@ import junit.framework.TestCase;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,16 +38,24 @@ import java.util.List;
  */
 public class CodeRunnerTest extends TestCase implements
     CodeRunner.CodeRunListener {
-  // TODO: dirty dirty dirty hack
-  private static final String CLASSPATH_LAPTOP =
-      "/Users/d/Documents/workspace/Guice Plugin/bin";
-  private static final String CLASSPATH_DESKTOP =
-      "/usr/local/google/home/dcreutz/workspaces/Guice Plugin/bin";
-  private static final String CLASSPATH =
-      CLASSPATH_LAPTOP + ":" + CLASSPATH_DESKTOP;
+  private static final URL CODEURL = 
+    TestSnippet.class.getProtectionDomain().getCodeSource().getLocation();
 
   private boolean hitDone = false;
   private boolean hitResult = false;
+  private static String CLASSPATH;
+  
+  @Override
+  public void setUp() {
+    hitDone = false;
+    hitResult = false;
+    try {
+      String codeLocation = CODEURL.toURI().getPath();
+      CLASSPATH = codeLocation.substring(codeLocation.indexOf('/'));
+    } catch (Throwable t) {
+      CLASSPATH = null;
+    }
+  }
 
   public void testCodeRunnerSimple() throws Exception {
     CodeRunner runner = new CodeRunnerImpl(new MockJavaProject());

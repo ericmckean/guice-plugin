@@ -164,7 +164,7 @@ public interface ModuleContextRepresentation {
    * Find the location in code where a binding occurs in this module context.
    * 
    * @param theClass the class to find the binding for
-   * @param annotatedWith the annotation on this class to find bindings for
+   * @param annotatedWith the annotations on this class to find bindings for
    * @return the location in code and/or problems finding the binding
    */
   public CodeLocation findLocation(String theClass, String annotatedWith);

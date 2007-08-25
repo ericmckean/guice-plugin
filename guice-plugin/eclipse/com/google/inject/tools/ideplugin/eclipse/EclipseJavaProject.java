@@ -55,7 +55,7 @@ class EclipseJavaProject implements JavaManager {
   }
 
   public String getJavaCommand() throws Exception {
-    // TODO: get java command correctly
+    // TODO: get java command from project
     return "java";
   }
 
@@ -80,8 +80,7 @@ class EclipseJavaProject implements JavaManager {
   }
   
   public String getClasspathDelimiter() {
-    //TODO: return correct classpath delimiter
-    return ":";
+    return System.getProperty("path.separator");
   }
 
   private String getProjectLocation(IJavaProject project)
