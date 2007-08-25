@@ -17,12 +17,14 @@
 package com.google.inject.tools.ideplugin;
 
 import com.google.inject.binder.AnnotatedBindingBuilder;
-import com.google.inject.tools.GuiceToolsModule;
-import com.google.inject.tools.ProblemsHandler;
 import com.google.inject.tools.ideplugin.problem.ProblemsHandlerImpl;
+import com.google.inject.tools.suite.GuiceToolsModule;
+import com.google.inject.tools.suite.ProblemsHandler;
 
 /**
  * The abstract implementation of the tools module specific to the IDE plugin.
+ * 
+ * {@inheritDoc GuiceToolsModule}
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */

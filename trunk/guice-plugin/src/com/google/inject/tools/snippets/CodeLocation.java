@@ -17,7 +17,6 @@
 package com.google.inject.tools.snippets;
 
 import java.util.Set;
-import com.google.inject.tools.ideplugin.results.Results.Node.ActionString;
 
 /**
  * Represents a location in the user's code space.
@@ -27,23 +26,20 @@ import com.google.inject.tools.ideplugin.results.Results.Node.ActionString;
 public abstract class CodeLocation extends CodeSnippetResult {
   private final String file;
   private final int location;
+  private final String description;
   private final StackTraceElement[] stackTrace;
 
   /**
    * Create a new CodeLocation.
    */
   public CodeLocation(StackTraceElement[] stackTrace, String file,
-      int location, Set<? extends CodeProblem> problems) {
+      int location, String description, Set<? extends CodeProblem> problems) {
     super(problems);
     this.stackTrace = stackTrace;
     this.file = file;
     this.location = location;
+    this.description = description;
   }
-
-  /**
-   * Return the text to display when naming the code location for the user.
-   */
-  public abstract ActionString getDisplay();
 
   /**
    * Return the file where the code lives.
@@ -62,7 +58,17 @@ public abstract class CodeLocation extends CodeSnippetResult {
   public int location() {
     return location;
   }
+  
+  /**
+   * Return a description of this location (in case there is no file).
+   */
+  public String locationDescription() {
+    return description;
+  }
 
+  /**
+   * Return the stack trace to get this location.
+   */
   public StackTraceElement[] getStackTrace() {
     return stackTrace;
   }

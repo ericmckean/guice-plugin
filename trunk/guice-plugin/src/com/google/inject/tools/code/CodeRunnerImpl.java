@@ -24,13 +24,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
 import com.google.inject.Inject;
-import com.google.inject.tools.JavaManager;
-import com.google.inject.tools.Messenger;
-import com.google.inject.tools.ProgressHandler;
 import com.google.inject.tools.snippets.CodeSnippetResult;
+import com.google.inject.tools.suite.JavaManager;
+import com.google.inject.tools.suite.Messenger;
+import com.google.inject.tools.suite.ProgressHandler;
 
 /**
- * Standard implementation of the {@link CodeRunner}.
+ * {@inheritDoc CodeRunner}
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
@@ -109,20 +109,10 @@ class CodeRunnerImpl implements CodeRunner {
     }
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.code.CodeRunner#addListener(com.google.inject.tools.code.CodeRunner.CodeRunListener)
-   */
   public void addListener(CodeRunListener listener) {
     listeners.add(listener);
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.code.CodeRunner#queue(com.google.inject.tools.code.CodeRunner.Runnable)
-   */
   public void queue(Runnable runnable) {
     RunnableProgressStep step = new RunnableProgressStep(runnable);
     progressSteps.put(runnable, step);
@@ -141,12 +131,6 @@ class CodeRunnerImpl implements CodeRunner {
     }
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.code.CodeRunner#notifyResult(com.google.inject.tools.code.CodeRunner.Runnable,
-   *      com.google.inject.tools.snippets.CodeSnippetResult)
-   */
   public synchronized void notifyResult(Runnable runnable,
       CodeSnippetResult result) {
     for (CodeRunListener listener : listeners) {
@@ -173,9 +157,8 @@ class CodeRunnerImpl implements CodeRunner {
       String classpath = "";
       List<String> cmd = new ArrayList<String>();
       try {
-        // TODO: fix : to work with any OS
         classpath =
-            project.getSnippetsClasspath() + ":"
+            project.getSnippetsClasspath() + project.getClasspathDelimiter()
                 + project.getProjectClasspath();
         cmd.add(project.getJavaCommand());
         cmd.add("-classpath");
@@ -220,21 +203,11 @@ class CodeRunnerImpl implements CodeRunner {
     }
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.code.CodeRunner#run(java.lang.String, boolean)
-   */
   public void run(String label, boolean backgroundAutomatically) {
     cancelled = false;
     progressHandler.go(label, backgroundAutomatically);
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.code.CodeRunner#run(java.lang.String)
-   */
   public void run(String label) {
     run(label, true);
   }
@@ -278,11 +251,6 @@ class CodeRunnerImpl implements CodeRunner {
     progressSteps.get(runnable).complete();
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.code.CodeRunner#kill()
-   */
   public void kill() {
     for (RunnableProgressStep step : progressSteps.values()) {
       step.kill();
@@ -290,20 +258,10 @@ class CodeRunnerImpl implements CodeRunner {
     progressSteps.clear();
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.code.CodeRunner#kill(com.google.inject.tools.code.CodeRunner.Runnable)
-   */
   public void kill(Runnable runnable) {
     progressSteps.get(runnable).kill();
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.code.CodeRunner#waitFor()
-   */
   public void waitFor() throws InterruptedException {
     progressHandler.waitForStart();
     for (RunnableProgressStep step : getProgressSteps()) {
@@ -317,11 +275,6 @@ class CodeRunnerImpl implements CodeRunner {
     return new HashSet<RunnableProgressStep>(progressSteps.values());
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.code.CodeRunner#waitFor(com.google.inject.tools.code.CodeRunner.Runnable)
-   */
   public void waitFor(Runnable runnable) throws InterruptedException {
     RunnableProgressStep step = null;
     synchronized (this) {
@@ -332,11 +285,6 @@ class CodeRunnerImpl implements CodeRunner {
     }
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.code.CodeRunner#isDone()
-   */
   public boolean isDone() {
     for (RunnableProgressStep step : progressSteps.values()) {
       if (!step.isDone()) {
@@ -346,11 +294,6 @@ class CodeRunnerImpl implements CodeRunner {
     return true;
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.code.CodeRunner#isDone(com.google.inject.tools.code.CodeRunner.Runnable)
-   */
   public boolean isDone(Runnable runnable) {
     return progressSteps.get(runnable).isDone();
   }

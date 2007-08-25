@@ -19,7 +19,6 @@ package com.google.inject.tools.ideplugin;
 import junit.framework.TestCase;
 import java.util.Collections;
 import java.util.Set;
-import com.google.inject.tools.Fakes.FakeCreationException;
 import com.google.inject.tools.ideplugin.results.CodeLocationsResults;
 import com.google.inject.tools.ideplugin.results.Results;
 import com.google.inject.tools.ideplugin.results.CodeLocationsResults.ProblemNode;
@@ -27,6 +26,7 @@ import com.google.inject.tools.ideplugin.results.Results.Node;
 import com.google.inject.tools.snippets.BindingCodeLocation;
 import com.google.inject.tools.snippets.CodeLocation;
 import com.google.inject.tools.snippets.CodeProblem;
+import com.google.inject.tools.suite.Fakes.FakeCreationException;
 
 /**
  * Unit test the {@link CodeLocationsResults} object.
@@ -56,34 +56,35 @@ public class CodeLocationsResultsTest extends TestCase {
   private CodeLocationsResults createValidCodeLocationsResults() {
     CodeLocation validLocation =
         new BindingCodeLocation(null,
-            "com.google.inject.tools.ideplugin.JavaElement",
+            "com.google.inject.tools.ideplugin.JavaElement", null,
             "com.google.inject.tools.ideplugin.test.MockJavaElement",
-            "Valid Module Context", "MockGuicePlugin.java", 145, Collections
-                .<CodeProblem> emptySet());
+            "Valid Module Context", "MockGuicePlugin.java", 145, null,
+            Collections.<CodeProblem> emptySet());
     CodeLocationsResults results =
         new CodeLocationsResults("Test Results", null);
-    results.put("Valid Module Context", validLocation);
+    results.put("Valid Module Context", Collections.singleton(validLocation));
     return results;
   }
 
   private CodeLocationsResults createBrokenCodeLocationsResults() {
     CodeLocation validLocation =
         new BindingCodeLocation(null,
-            "com.google.inject.tools.ideplugin.JavaElement",
+            "com.google.inject.tools.ideplugin.JavaElement", (String) null,
             "com.google.inject.tools.ideplugin.test.MockJavaElement",
-            "Valid Module Context", "MockGuicePlugin.java", 145, Collections
-                .<CodeProblem> emptySet());
+            "Valid Module Context", "MockGuicePlugin.java", 145, null,
+            Collections.<CodeProblem> emptySet());
 
     CodeLocation problemsLocation =
         new BindingCodeLocation(null,
             "com.google.inject.tools.ideplugin.JavaElement", (String) null,
-            "Broken Module Context", (String) null, 0,
+            (String) null,
+            "Broken Module Context", (String) null, 0, null,
             makeProblemSet("BrokenModule"));
 
     CodeLocationsResults results =
         new CodeLocationsResults("Test Results", null);
-    results.put("Valid Module Context", validLocation);
-    results.put("Broken Module Context", problemsLocation);
+    results.put("Valid Module Context", Collections.singleton(validLocation));
+    results.put("Broken Module Context", Collections.singleton(problemsLocation));
     return results;
   }
 

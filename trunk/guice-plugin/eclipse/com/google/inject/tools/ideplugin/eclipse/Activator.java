@@ -16,8 +16,8 @@
 
 package com.google.inject.tools.ideplugin.eclipse;
 
-import com.google.inject.tools.GuiceToolsModule;
 import com.google.inject.tools.ideplugin.eclipse.EclipsePluginModule.EclipseGuiceToolsModule;
+import com.google.inject.tools.suite.GuiceToolsModule;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -32,12 +32,7 @@ import org.osgi.framework.BundleContext;
  */
 public class Activator extends AbstractUIPlugin {
   private static EclipseGuicePlugin guicePlugin;
-
-  /**
-   * The ID of our plugin.
-   */
   public static final String PLUGIN_ID = "Guice_Plugin";
-
   private static Activator plugin;
 
   /**
@@ -60,30 +55,17 @@ public class Activator extends AbstractUIPlugin {
     guicePlugin = new EclipseGuicePlugin(module, toolsModule);
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
-   */
   @Override
   public void start(BundleContext context) throws Exception {
     super.start(context);
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
-   */
   @Override
   public void stop(BundleContext context) throws Exception {
     plugin = null;
     super.stop(context);
   }
 
-  /**
-   * Returns the shared instance
-   */
   public static Activator getDefault() {
     return plugin;
   }

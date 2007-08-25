@@ -19,7 +19,7 @@
  * code.
  * 
  * <p>
- * The {@link com.google.inject.tools.ProblemsHandler} is responsible for
+ * The {@link com.google.inject.tools.suite.ProblemsHandler} is responsible for
  * notifying the user about problems in their code such as creation exceptions
  * and other guice configuration errors. The other parts of the plugin will
  * notify the handler when such problems are found. The

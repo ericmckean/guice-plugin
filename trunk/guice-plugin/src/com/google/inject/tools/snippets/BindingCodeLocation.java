@@ -18,8 +18,6 @@ package com.google.inject.tools.snippets;
 
 import java.util.Collections;
 import java.util.Set;
-import com.google.inject.tools.ideplugin.ActionsHandler;
-import com.google.inject.tools.ideplugin.results.Results.Node.ActionString;
 
 /**
  * Represents the location in code of where a binding occurs.
@@ -27,42 +25,37 @@ import com.google.inject.tools.ideplugin.results.Results.Node.ActionString;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class BindingCodeLocation extends CodeLocation {
-  /**
-   * 
-   */
   private static final long serialVersionUID = -5452265177177754745L;
 
+  /**
+   * Represents the lack of a binding.
+   */
   public static class NoBindingLocation extends CodeLocation {
-    /**
-     * 
-     */
     private static final long serialVersionUID = -5617466128980845643L;
-    private final ActionString display;
 
+    private final String theClass;
+    
     public NoBindingLocation(String theClass) {
-      super(new StackTraceElement[0], "", -1, Collections
+      super(new StackTraceElement[0], null, -1, "has no binding", Collections
           .<CodeProblem> emptySet());
-      display = new ActionString();
-      display.addText("No binding for", "");
-      display.addTextWithAction(shorten(theClass), new ActionsHandler.GotoFile(
-          theClass), "Goto source of " + theClass);
+      this.theClass = theClass;
     }
-
-    @Override
-    public ActionString getDisplay() {
-      return display;
+    
+    public String getTheClass() {
+      return theClass;
     }
   }
 
-
   private final String moduleContext;
   private final String bindWhat;
+  private final String annotatedWith;
   private final String bindTo;
 
   /**
    * Create a new BindingCodeLocation.
    * 
    * @param bindWhat the class to bind
+   * @param annotatedWith the annotation for this binding
    * @param bindTo what it is bound to
    * @param moduleContext the module context this binding happens in
    * @param file the file this happens in
@@ -71,38 +64,14 @@ public class BindingCodeLocation extends CodeLocation {
    *        binding
    */
   public BindingCodeLocation(StackTraceElement[] stackTrace, String bindWhat,
+      String annotatedWith,
       String bindTo, String moduleContext, String file, int location,
-      Set<? extends CodeProblem> problems) {
-    super(stackTrace, file, location, problems);
+      String locationDescription, Set<? extends CodeProblem> problems) {
+    super(stackTrace, file, location, locationDescription, problems);
     this.bindWhat = bindWhat;
+    this.annotatedWith = annotatedWith;
     this.bindTo = bindTo;
     this.moduleContext = moduleContext;
-  }
-
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.snippets.CodeLocation#getDisplay()
-   */
-  @Override
-  public ActionString getDisplay() {
-    ActionString text = new ActionString();
-    text.addTextWithAction(shorten(bindWhat), new ActionsHandler.GotoFile(
-        bindWhat), "Goto source of " + bindWhat);
-    text.addText(" is bound to ", null);
-    text.addTextWithAction(shorten(bindTo),
-        new ActionsHandler.GotoFile(bindTo), "Goto source of " + bindTo);
-    text.addText(" at ", null);
-    text
-        .addTextWithAction(file() + ":" + String.valueOf(location()),
-            new ActionsHandler.GotoCodeLocation(getStackTrace(), file(),
-                location()), "Goto binding location of " + bindWhat + " as "
-                + bindTo);
-    return text;
-  }
-
-  private static String shorten(String label) {
-    return label.substring(label.lastIndexOf(".") + 1);
   }
 
   /**
@@ -118,7 +87,17 @@ public class BindingCodeLocation extends CodeLocation {
   public String bindWhat() {
     return bindWhat;
   }
+  
+  /**
+   * Return the annotations with this binding (null if there are none).
+   */
+  public String annotatedWith() {
+    return annotatedWith;
+  }
 
+  /**
+   * Return what this binding binds to.
+   */
   public String bindTo() {
     return bindTo;
   }

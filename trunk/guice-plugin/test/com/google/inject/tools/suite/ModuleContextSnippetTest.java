@@ -14,23 +14,34 @@
  * the License.
  */
 
-package com.google.inject.tools.module;
+package com.google.inject.tools.suite;
 
 import junit.framework.TestCase;
 
-import com.google.inject.tools.SampleModuleScenario;
-import com.google.inject.tools.SampleModuleScenario.BrokenModule;
-import com.google.inject.tools.SampleModuleScenario.MockInjectedInterface;
-import com.google.inject.tools.SampleModuleScenario.MockInjectedInterface2;
-import com.google.inject.tools.SampleModuleScenario.MockInjectedInterface2Impl;
-import com.google.inject.tools.SampleModuleScenario.MockInjectedInterfaceImpl;
-import com.google.inject.tools.SampleModuleScenario.ModuleWithArguments;
-import com.google.inject.tools.SampleModuleScenario.WorkingModule;
-import com.google.inject.tools.SampleModuleScenario.WorkingModule2;
+import com.google.inject.TypeLiteral;
+import com.google.inject.name.Named;
 import com.google.inject.tools.module.ModuleContextRepresentation;
 import com.google.inject.tools.snippets.BindingCodeLocation;
 import com.google.inject.tools.snippets.CodeProblem;
 import com.google.inject.tools.snippets.ModuleContextSnippet;
+import com.google.inject.tools.snippets.ModuleContextSnippet.ModuleContextResult.KeyRepresentation;
+import com.google.inject.tools.suite.SampleModuleScenario.BlueService;
+import com.google.inject.tools.suite.SampleModuleScenario.BrokenModule;
+import com.google.inject.tools.suite.SampleModuleScenario.CreditCard;
+import com.google.inject.tools.suite.SampleModuleScenario.CreditCardPaymentService;
+import com.google.inject.tools.suite.SampleModuleScenario.MockInjectedInterface;
+import com.google.inject.tools.suite.SampleModuleScenario.MockInjectedInterface2;
+import com.google.inject.tools.suite.SampleModuleScenario.MockInjectedInterface2Impl;
+import com.google.inject.tools.suite.SampleModuleScenario.MockInjectedInterfaceImpl;
+import com.google.inject.tools.suite.SampleModuleScenario.ModuleWithArguments;
+import com.google.inject.tools.suite.SampleModuleScenario.One;
+import com.google.inject.tools.suite.SampleModuleScenario.PaymentService;
+import com.google.inject.tools.suite.SampleModuleScenario.Red;
+import com.google.inject.tools.suite.SampleModuleScenario.RedService;
+import com.google.inject.tools.suite.SampleModuleScenario.Service;
+import com.google.inject.tools.suite.SampleModuleScenario.WorkingModule;
+import com.google.inject.tools.suite.SampleModuleScenario.WorkingModule2;
+
 import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
@@ -90,7 +101,8 @@ public class ModuleContextSnippetTest extends TestCase {
     assertTrue(result.getProblems().isEmpty());
     assertNotNull(result.getBindings());
     BindingCodeLocation location =
-        result.getBindings().get(MockInjectedInterface.class.getName());
+        result.getBindings().get(new KeyRepresentation(
+            MockInjectedInterface.class.getName(), null));
     assertNotNull(location);
     assertTrue(location.bindTo().equals(
         MockInjectedInterfaceImpl.class.getName()));
@@ -98,10 +110,10 @@ public class ModuleContextSnippetTest extends TestCase {
     assertTrue(location.location() == WorkingModuleBindLocation);
   }
 
-  private static final int WorkingModuleBindLocation = 42;
+  private static final int WorkingModuleBindLocation = 44;
   private static final String WorkingModuleBindFile =
       "SampleModuleScenario.java";
-  private static final int WorkingModuleBindLocation2 = 77;
+  private static final int WorkingModuleBindLocation2 = 79;
   private static final String WorkingModuleBindFile2 =
       "SampleModuleScenario.java";
 
@@ -157,14 +169,16 @@ public class ModuleContextSnippetTest extends TestCase {
     assertTrue(result.getProblems().isEmpty());
     assertNotNull(result.getBindings());
     BindingCodeLocation location =
-        result.getBindings().get(MockInjectedInterface.class.getName());
+        result.getBindings().get(new KeyRepresentation(
+            MockInjectedInterface.class.getName(), null));
     assertNotNull(location);
     assertTrue(location.bindTo().equals(
         MockInjectedInterfaceImpl.class.getName()));
     assertTrue(location.file().equals(WorkingModuleBindFile));
     assertTrue(location.location() == WorkingModuleBindLocation);
     BindingCodeLocation location2 =
-        result.getBindings().get(MockInjectedInterface2.class.getName());
+        result.getBindings().get(new KeyRepresentation(
+            MockInjectedInterface2.class.getName(), null));
     assertNotNull(location);
     assertTrue(location2.bindTo().equals(
         MockInjectedInterface2Impl.class.getName()));
@@ -185,7 +199,8 @@ public class ModuleContextSnippetTest extends TestCase {
     assertTrue(result.getProblems().isEmpty());
     assertNotNull(result.getBindings());
     BindingCodeLocation location =
-        result.getBindings().get(MockInjectedInterface.class.getName());
+        result.getBindings().get(new KeyRepresentation(
+            MockInjectedInterface.class.getName(), null));
     assertNotNull(location);
     assertTrue(location.bindTo().equals(
         MockInjectedInterfaceImpl.class.getName()));
@@ -206,12 +221,32 @@ public class ModuleContextSnippetTest extends TestCase {
     assertTrue(result.getProblems().isEmpty());
     assertNotNull(result.getBindings());
     BindingCodeLocation location =
-        result.getBindings().get(MockInjectedInterface.class.getName());
+        result.getBindings().get(new KeyRepresentation(
+            MockInjectedInterface.class.getName(), null));
     assertNotNull(location);
     assertTrue(location.bindTo().equals(
         MockInjectedInterfaceImpl.class.getName()));
     assertTrue(location.file().equals(WorkingModuleBindFile));
     assertTrue(location.location() == WorkingModuleBindLocation);
+  }
+  
+  public void testNamedBindingCodeLocation() throws Exception {
+    String[] args = new String[4];
+    args[0] = "Working Module Context";
+    args[1] = "1";
+    args[2] = WorkingModule.class.getName();
+    args[3] = "0";
+    Object obj = runASnippet(args);
+    assertTrue(obj instanceof ModuleContextSnippet.ModuleContextResult);
+    ModuleContextSnippet.ModuleContextResult result =
+      (ModuleContextSnippet.ModuleContextResult) obj;
+    assertTrue(result.getProblems().isEmpty());
+    assertNotNull(result.getBindings());
+    BindingCodeLocation location =
+        result.getBindings().get(new KeyRepresentation(
+            Service.class.getName(), "@" + Named.class.getName() + "(value=blue)"));
+    assertNotNull(location);
+    assertTrue(location.bindTo().equals(BlueService.class.getName()));
   }
   
   public void testAnnotatedBindingCodeLocation() throws Exception {
@@ -226,6 +261,50 @@ public class ModuleContextSnippetTest extends TestCase {
       (ModuleContextSnippet.ModuleContextResult) obj;
     assertTrue(result.getProblems().isEmpty());
     assertNotNull(result.getBindings());
-    //TODO: finish this test
+    BindingCodeLocation location =
+        result.getBindings().get(new KeyRepresentation(
+            Service.class.getName(), "@" + Red.class.getName()));
+    assertNotNull(location);
+    assertTrue(location.bindTo().equals(RedService.class.getName()));
+  }
+  
+  public void testBindAnnotatedConstant() throws Exception {
+    String[] args = new String[4];
+    args[0] = "Working Module Context";
+    args[1] = "1";
+    args[2] = WorkingModule.class.getName();
+    args[3] = "0";
+    Object obj = runASnippet(args);
+    assertTrue(obj instanceof ModuleContextSnippet.ModuleContextResult);
+    ModuleContextSnippet.ModuleContextResult result =
+      (ModuleContextSnippet.ModuleContextResult) obj;
+    assertTrue(result.getProblems().isEmpty());
+    assertNotNull(result.getBindings());
+    BindingCodeLocation location =
+        result.getBindings().get(new KeyRepresentation(
+            "int", "@" + One.class.getName()));
+    assertNotNull(location);
+    assertTrue(location.bindTo().equals(String.valueOf(1)));
+  }
+  
+  public void testBindTypeLiteral() throws Exception {
+    String[] args = new String[4];
+    args[0] = "Working Module Context";
+    args[1] = "1";
+    args[2] = WorkingModule.class.getName();
+    args[3] = "0";
+    Object obj = runASnippet(args);
+    assertTrue(obj instanceof ModuleContextSnippet.ModuleContextResult);
+    ModuleContextSnippet.ModuleContextResult result =
+      (ModuleContextSnippet.ModuleContextResult) obj;
+    assertTrue(result.getProblems().isEmpty());
+    assertNotNull(result.getBindings());
+    TypeLiteral<PaymentService<CreditCard>> creditCardPaymentService =
+        new TypeLiteral<PaymentService<CreditCard>>() {};
+    BindingCodeLocation location =
+        result.getBindings().get(new KeyRepresentation(
+            creditCardPaymentService.toString(), null));
+    assertNotNull(location);
+    assertTrue(location.bindTo().equals(CreditCardPaymentService.class.getName()));
   }
 }

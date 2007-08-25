@@ -16,11 +16,10 @@
 
 package com.google.inject.tools.ideplugin.results;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
 import com.google.inject.tools.ideplugin.ActionsHandler;
+import com.google.inject.tools.ideplugin.results.ActionStringBuilder.ActionString;
 
 /**
  * Represents a set of results to be displayed by the {@link ResultsHandler}.
@@ -36,108 +35,6 @@ public class Results {
    * responsible.
    */
   public static class Node {
-    /**
-     * An ActionStringElement is a piece of text with an Action associated to
-     * it.
-     */
-    public static class ActionStringElement {
-      private final String label;
-      private final ActionsHandler.Action action;
-      private final String tooltip;
-
-      public ActionStringElement(String label, ActionsHandler.Action action,
-          String tooltip) {
-        this.label = label;
-        this.action = action;
-        this.tooltip = tooltip;
-      }
-
-      public ActionStringElement(String label) {
-        this(label, new ActionsHandler.NullAction(), null);
-      }
-
-      public ActionStringElement(String label, String tooltip) {
-        this(label, new ActionsHandler.NullAction(), tooltip);
-      }
-
-      public String label() {
-        return label;
-      }
-
-      public ActionsHandler.Action action() {
-        return action;
-      }
-
-      public String tooltip() {
-        return tooltip;
-      }
-
-      @Override
-      public boolean equals(Object object) {
-        if (!(object instanceof ActionStringElement)) {
-          return false;
-        }
-        ActionStringElement element = (ActionStringElement) object;
-        return label.equals(element.label()) && action.equals(element.action());
-      }
-
-      @Override
-      public int hashCode() {
-        return label.hashCode();
-      }
-
-      @Override
-      public String toString() {
-        return label;
-      }
-    }
-
-    /**
-     * An ActionString is a list of {@link ActionStringElement}s.
-     */
-    public static class ActionString {
-      private final List<ActionStringElement> elements;
-
-      public ActionString() {
-        elements = new ArrayList<ActionStringElement>();
-      }
-
-      public void addText(String text, String tooltip) {
-        elements.add(new ActionStringElement(text, tooltip));
-      }
-
-      public void addTextWithAction(String text, ActionsHandler.Action action,
-          String tooltip) {
-        elements.add(new ActionStringElement(text, action, tooltip));
-      }
-
-      public List<ActionStringElement> elements() {
-        return elements;
-      }
-
-      @Override
-      public String toString() {
-        final StringBuilder string = new StringBuilder();
-        for (ActionStringElement element : elements) {
-          string.append(element.label());
-        }
-        return string.toString();
-      }
-
-      @Override
-      public boolean equals(Object object) {
-        if (!(object instanceof ActionString)) {
-          return false;
-        }
-        return elements.equals(((ActionString) object).elements());
-      }
-
-      @Override
-      public int hashCode() {
-        return elements.hashCode();
-      }
-    }
-
     protected final ActionString text;
     protected final Set<Node> children;
 

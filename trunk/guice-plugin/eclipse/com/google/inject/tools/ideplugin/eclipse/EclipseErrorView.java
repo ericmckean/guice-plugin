@@ -18,30 +18,24 @@ package com.google.inject.tools.ideplugin.eclipse;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.part.ViewPart;
 
 /**
  * Displays error output from the Guice plugin that is logged to the
- * {@link com.google.inject.tools.Messenger}.
+ * {@link com.google.inject.tools.suite.Messenger}.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public class EclipseErrorView extends ViewPart {
-  private Action clearAction;
+class EclipseErrorView extends ViewPart {
   private FormToolkit toolkit;
   private ScrolledForm form;
-  private Composite parent;
+  private Composite body;
 
   /**
    * The constructor. This will be called by Eclipse internally.
@@ -55,71 +49,12 @@ public class EclipseErrorView extends ViewPart {
    */
   @Override
   public void createPartControl(Composite parent) {
-    this.parent = parent;
     toolkit = new FormToolkit(parent.getDisplay());
-    clear();
-  }
-
-  private void showMessage(String message) {
-    MessageDialog.openInformation(new Shell(), "Guice Errors", message);
-  }
-
-  /**
-   * (non-Javadoc)
-   * 
-   * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
-   */
-  @Override
-  public void setFocus() {
-    if (form != null) {
-      form.setFocus();
-    }
-  }
-
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.ideplugin.results.ResultsView#displayResults(com.google.inject.tools.ideplugin.results.Results)
-   */
-  public void displayError(String message) {
-    String dateString =
-        new SimpleDateFormat("dd/MM HH:mm:ss").format(new Date());
-    String msg = "[" + dateString + "]   " + message;
-    toolkit.createFormText(form.getBody(), true).setText(msg, false, true);
-    form.reflow(true);
-    try {
-      this.getViewSite().getWorkbenchWindow().getActivePage().showView(
-          "com.google.inject.tools.ideplugin.eclipse.EclipseErrorView");
-    } catch (Exception e) {
-      this.showMessage(e.toString());
-    }
-  }
-
-  private void createMenu() {
-    clearAction = new Action("Clear...") {
-      @Override
-      public void run() {
-        clear();
-      }
-    };
-    clearAction.setEnabled(true);
-    MenuManager mgr = new MenuManager();
-    mgr.addMenuListener(new IMenuListener() {
-      public void menuAboutToShow(IMenuManager mgr) {
-        mgr.add(clearAction);
-      }
-    });
-    Menu menu = mgr.createContextMenu(form);
-  }
-
-  protected void clear() {
-    if (form != null) {
-      form.dispose();
-      form = null;
-    }
     form = toolkit.createScrolledForm(parent);
     form.setExpandHorizontal(true);
     form.setExpandVertical(true);
+    form.getBody().setLayout(new FillLayout());
+    body = toolkit.createComposite(form.getBody());
     GridLayout layout = new GridLayout();
     layout.marginHeight = 3;
     layout.marginBottom = 0;
@@ -129,9 +64,26 @@ public class EclipseErrorView extends ViewPart {
     layout.marginWidth = 0;
     layout.horizontalSpacing = 0;
     layout.verticalSpacing = 2;
-    form.getBody().setLayout(layout);
+    body.setLayout(layout);
     form.setText("Guice Error Log");
-    createMenu();
+    form.pack();
+    form.reflow(true);
+  }
+
+  @Override
+  public void setFocus() {
+    if (form != null) {
+      form.setFocus();
+    }
+  }
+
+  public void displayError(String message) {
+    String dateString =
+        new SimpleDateFormat("dd/MM HH:mm:ss").format(new Date());
+    String msg = "[" + dateString + "]   " + message;
+    FormText formText = toolkit.createFormText(body, true);
+    formText.setText(msg, false, true);
+    formText.setFocus();
     form.reflow(true);
   }
 }

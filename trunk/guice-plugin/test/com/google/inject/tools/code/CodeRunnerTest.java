@@ -16,11 +16,11 @@
 
 package com.google.inject.tools.code;
 
-import com.google.inject.tools.JavaManager;
-import com.google.inject.tools.Fakes.TestSnippet;
 import com.google.inject.tools.code.CodeRunner;
 import com.google.inject.tools.code.CodeRunnerImpl;
 import com.google.inject.tools.snippets.CodeSnippetResult;
+import com.google.inject.tools.suite.JavaManager;
+import com.google.inject.tools.suite.Fakes.TestSnippet;
 
 import junit.framework.TestCase;
 
@@ -120,6 +120,10 @@ public class CodeRunnerTest extends TestCase implements
 
     public String getSnippetsClasspath() throws Exception {
       return "";
+    }
+    
+    public String getClasspathDelimiter() {
+      return ":";
     }
   }
 

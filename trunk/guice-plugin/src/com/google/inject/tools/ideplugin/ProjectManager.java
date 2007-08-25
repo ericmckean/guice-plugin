@@ -16,8 +16,8 @@
 
 package com.google.inject.tools.ideplugin;
 
-import com.google.inject.tools.JavaManager;
 import com.google.inject.tools.module.ModuleManager;
+import com.google.inject.tools.suite.JavaManager;
 
 /**
  * Manages the set of open projects in the user's code.
@@ -25,13 +25,28 @@ import com.google.inject.tools.module.ModuleManager;
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public interface ProjectManager {
+  /**
+   * Notify the ProjectManager that the given project has been opened.
+   */
   public void projectOpened(JavaManager javaManager);
 
+  /**
+   * Notify the ProjectManager that the given project has been closed.
+   */
   public void projectClosed(JavaManager javaManager);
 
+  /**
+   * Return the {@link ModuleManager} for the given project.
+   */
   public ModuleManager getModuleManager(JavaManager javaManager);
 
+  /**
+   * Return the {@link ModuleManager} for the current project.
+   */
   public ModuleManager getModuleManager();
 
+  /**
+   * Return the current (last accessed) project.
+   */
   public JavaManager getCurrentProject();
 }

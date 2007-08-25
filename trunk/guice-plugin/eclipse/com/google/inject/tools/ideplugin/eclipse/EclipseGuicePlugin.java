@@ -19,20 +19,23 @@ package com.google.inject.tools.ideplugin.eclipse;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.tools.GuiceToolsModule;
-import com.google.inject.tools.JavaManager;
-import com.google.inject.tools.Messenger;
 import com.google.inject.tools.ideplugin.GuicePlugin;
 import com.google.inject.tools.ideplugin.ProjectManager;
 import com.google.inject.tools.ideplugin.results.ResultsView;
 import com.google.inject.tools.ideplugin.results.Results;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
+import com.google.inject.tools.suite.GuiceToolsModule;
+import com.google.inject.tools.suite.JavaManager;
+import com.google.inject.tools.suite.Messenger;
 
 /**
  * Eclipse implementation of the GuicePlugin.
+ * 
+ * {@inheritDoc GuicePlugin}
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
@@ -48,11 +51,10 @@ public class EclipseGuicePlugin extends GuicePlugin {
 
     public void run() {
       try {
-        IViewPart viewPart =
-            PlatformUI.getWorkbench().getWorkbenchWindows()[0]
-                .getActivePage()
-                .showView(
-                    "com.google.inject.tools.ideplugin.eclipse.EclipseResultsView");
+        IWorkbenchPage activePage = PlatformUI.getWorkbench()
+            .getWorkbenchWindows()[0].getActivePage();
+        IViewPart viewPart = activePage.showView(
+            "com.google.inject.tools.ideplugin.eclipse.EclipseResultsView");
         ((EclipseResultsView) viewPart).displayResults(results);
       } catch (Throwable e) {
         messenger.logException("Error loading ResultsView", e);

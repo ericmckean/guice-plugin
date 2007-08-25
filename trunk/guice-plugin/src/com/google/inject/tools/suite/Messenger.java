@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.google.inject.tools;
+package com.google.inject.tools.suite;
 
 /**
  * Responsible for displaying messages to the user in dialog box format.

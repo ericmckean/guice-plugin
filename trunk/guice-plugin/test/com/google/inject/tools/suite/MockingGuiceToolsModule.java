@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.google.inject.tools;
+package com.google.inject.tools.suite;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -24,9 +24,15 @@ import com.google.inject.binder.AnnotatedBindingBuilder;
 import com.google.inject.tools.code.CodeRunner;
 import com.google.inject.tools.module.ModuleManager;
 import com.google.inject.tools.module.ModulesSource;
+import com.google.inject.tools.suite.GuiceToolsModule;
+import com.google.inject.tools.suite.JavaManager;
+import com.google.inject.tools.suite.Messenger;
+import com.google.inject.tools.suite.ProblemsHandler;
 
 /**
  * Implementation of the {@link GuiceToolsModule} that injects mock objects.
+ * 
+ * {@inheritDoc GuiceToolsModule}
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
@@ -39,9 +45,6 @@ public class MockingGuiceToolsModule extends GuiceToolsModule {
   private ProblemsHandler problemsHandler = null;
   private ModulesSource modulesListener = null;
 
-  /**
-   * Tell the module to use a real ModuleManager.
-   */
   public MockingGuiceToolsModule useRealModuleManager() {
     useRealModuleManager = true;
     return this;
@@ -160,10 +163,8 @@ public class MockingGuiceToolsModule extends GuiceToolsModule {
   }
 
   public static class ProxyException extends RuntimeException {
-    /**
-     * 
-     */
     private static final long serialVersionUID = -7983728368389046669L;
+    
     private final Object proxy;
     private final Method method;
 

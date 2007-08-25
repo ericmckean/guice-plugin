@@ -16,7 +16,7 @@
 
 package com.google.inject.tools.ideplugin.module;
 
-import com.google.inject.tools.JavaManager;
+import com.google.inject.tools.suite.JavaManager;
 
 /**
  * Interface for IDE specific objects presenting the module choices to the user.

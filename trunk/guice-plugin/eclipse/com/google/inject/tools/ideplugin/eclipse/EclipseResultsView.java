@@ -18,10 +18,9 @@ package com.google.inject.tools.ideplugin.eclipse;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
@@ -29,27 +28,33 @@ import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
+
 import com.google.inject.tools.ideplugin.results.Results;
 import com.google.inject.tools.ideplugin.results.ResultsView;
-import com.google.inject.tools.ideplugin.results.Results.Node.ActionString;
-import com.google.inject.tools.ideplugin.results.Results.Node.ActionStringElement;
+import com.google.inject.tools.ideplugin.results.ActionStringBuilder.ActionString;
+import com.google.inject.tools.ideplugin.results.ActionStringBuilder.ActionStringElement;
 import com.google.inject.tools.ideplugin.ActionsHandler;
+import com.google.inject.tools.suite.Messenger;
 
 /**
  * The Eclipse implementation of the {@link ResultsView}, a view for displaying
  * results and error messages (a view is a tab in the lower panel).
  * 
+ * {@inheritDoc ResultsView}
+ * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public class EclipseResultsView extends ViewPart implements ResultsView {
+class EclipseResultsView extends ViewPart implements ResultsView {
   private FormToolkit toolkit;
   private ScrolledForm form;
   private Composite parent;
+  private Messenger messenger;
 
   /**
    * The constructor. This will be called by Eclipse internally.
    */
   public EclipseResultsView() {
+    messenger = Activator.getGuicePlugin().getMessenger();
   }
 
   private ActionsHandler getActionsHandler() {
@@ -85,8 +90,8 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
     }
   }
 
-  private void makeFormFromNode(int depth, Results.Node node) {
-    Form nodeForm = toolkit.createForm(form.getBody());
+  private void makeFormFromNode(Composite body, int depth, Results.Node node) {
+    Form nodeForm = toolkit.createForm(body);
     Composite nodeFormBody = nodeForm.getBody();
     GridLayout layout = new GridLayout();
     layout.marginHeight = 0;
@@ -115,7 +120,7 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
       }
     }
     for (Results.Node child : node.children()) {
-      makeFormFromNode(depth + 1, child);
+      makeFormFromNode(body, depth + 1, child);
     }
     nodeForm.pack();
   }
@@ -128,6 +133,8 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
     form = toolkit.createScrolledForm(parent);
     form.setExpandHorizontal(true);
     form.setExpandVertical(true);
+    form.getBody().setLayout(new FillLayout());
+    Composite body = toolkit.createComposite(form.getBody());
     GridLayout layout = new GridLayout();
     layout.marginHeight = 0;
     layout.marginBottom = 0;
@@ -137,26 +144,18 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
     layout.marginWidth = 0;
     layout.horizontalSpacing = 0;
     layout.verticalSpacing = 0;
-    form.getBody().setLayout(layout);
+    body.setLayout(layout);
     Results.Node root = results.getRoot();
     form.setText(root.getTextString());
     this.setTitleToolTip(root.getTextString());
     for (Results.Node child : root.children()) {
-      makeFormFromNode(1, child);
+      makeFormFromNode(body, 1, child);
     }
+    body.pack();
     form.pack();
     form.reflow(true);
   }
 
-  private void showMessage(String message) {
-    MessageDialog.openInformation(new Shell(), "Guice View", message);
-  }
-
-  /**
-   * (non-Javadoc)
-   * 
-   * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
-   */
   @Override
   public void setFocus() {
     if (form != null) {
@@ -164,18 +163,13 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
     }
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.ideplugin.results.ResultsView#displayResults(com.google.inject.tools.ideplugin.results.Results)
-   */
   public void displayResults(Results results) {
     this.useResults(results);
     try {
       this.getViewSite().getWorkbenchWindow().getActivePage().showView(
           "com.google.inject.tools.ideplugin.eclipse.EclipseResultsView");
     } catch (Exception e) {
-      this.showMessage(e.toString());
+      messenger.logException("Error with results view", e);
     }
   }
 }

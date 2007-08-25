@@ -20,15 +20,15 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.binder.AnnotatedBindingBuilder;
-import com.google.inject.tools.JavaManager;
-import com.google.inject.tools.Messenger;
-import com.google.inject.tools.ProblemsHandler;
-import com.google.inject.tools.ProgressHandler;
 import com.google.inject.tools.ideplugin.bindings.BindingsEngine;
 import com.google.inject.tools.ideplugin.results.ResultsHandler;
 import com.google.inject.tools.ideplugin.results.ResultsHandlerImpl;
 import com.google.inject.tools.ideplugin.results.ResultsView;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
+import com.google.inject.tools.suite.JavaManager;
+import com.google.inject.tools.suite.Messenger;
+import com.google.inject.tools.suite.ProblemsHandler;
+import com.google.inject.tools.suite.ProgressHandler;
 
 /**
  * Abstract module for the plugin's dependency injection. IDE specific
@@ -74,11 +74,6 @@ public abstract class GuicePluginModule extends AbstractModule {
     }
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.AbstractModule#configure()
-   */
   @Override
   protected void configure() {
     bindProjectManager(bind(ProjectManager.class));
@@ -137,9 +132,15 @@ public abstract class GuicePluginModule extends AbstractModule {
     bindActionsHandler.to(ActionsHandlerImpl.class).asEagerSingleton();
   }
 
+  /**
+   * Bind the {@link GotoCodeLocationHandler} implementation.
+   */
   protected abstract void bindGotoCodeLocationHandler(
       AnnotatedBindingBuilder<GotoCodeLocationHandler> bindGotoCodeLocationHandler);
 
+  /**
+   * Bind the {@link GotoFileHandler} implementation.
+   */
   protected abstract void bindGotoFileHandler(
       AnnotatedBindingBuilder<GotoFileHandler> bindGotoFileHandler);
 
@@ -149,6 +150,9 @@ public abstract class GuicePluginModule extends AbstractModule {
   protected abstract void bindProgressHandler(
       AnnotatedBindingBuilder<ProgressHandler> bindProgressHandler);
 
+  /**
+   * Bind the {@link CustomContextDefinitionSource} implementation.
+   */
   protected abstract void bindCustomContextDefinitionSource(
       AnnotatedBindingBuilder<CustomContextDefinitionSource> bindCustomContextDefinitionSource);
 }

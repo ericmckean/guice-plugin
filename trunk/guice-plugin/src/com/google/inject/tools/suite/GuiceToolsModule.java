@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.google.inject.tools;
+package com.google.inject.tools.suite;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.binder.AnnotatedBindingBuilder;

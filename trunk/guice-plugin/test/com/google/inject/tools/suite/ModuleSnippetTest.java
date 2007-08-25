@@ -14,11 +14,16 @@
  * the License.
  */
 
-package com.google.inject.tools;
+package com.google.inject.tools.suite;
 
 import com.google.inject.tools.snippets.CodeProblem;
 import com.google.inject.tools.snippets.ModuleSnippet;
 import junit.framework.TestCase;
+
+import java.io.ObjectInputStream;
+import java.io.OutputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 
 /**
  * Unit test the ModuleContextRepresentation object.
@@ -63,5 +68,38 @@ public class ModuleSnippetTest extends TestCase {
             SampleModuleScenario.ModuleWithArguments.class.getName());
     assertFalse(module.hasDefaultConstructor());
     assertTrue(module.getConstructors().size() == 1);
+  }
+  
+  public void testAnonymousModule() throws Exception {
+    String[] args = new String[1];
+    args[0] = SampleModuleScenario.class.getName() + "$1";
+    Object obj = runASnippet(args);
+    assertTrue(obj instanceof ModuleSnippet.ModuleResult);
+    ModuleSnippet.ModuleResult result = (ModuleSnippet.ModuleResult)obj;
+    assertTrue(result.getProblems().isEmpty());
+  }
+  
+  private Object runASnippet(String[] args) throws Exception {
+    PipedInputStream is = new PipedInputStream();
+    Object obj = null;
+    PipedOutputStream os = new PipedOutputStream(is);
+    new ThreadWithStream(os, args).start();
+    ObjectInputStream ois = new ObjectInputStream(is);
+    return ois.readObject();
+  }
+  
+  private class ThreadWithStream extends Thread {
+    private final OutputStream stream;
+    private final String[] args;
+
+    public ThreadWithStream(OutputStream stream, String[] args) {
+      this.stream = stream;
+      this.args = args;
+    }
+
+    @Override
+    public void run() {
+      ModuleSnippet.runSnippet(stream, args);
+    }
   }
 }

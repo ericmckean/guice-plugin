@@ -20,14 +20,14 @@ package com.google.inject.tools.ideplugin.problem;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.tools.Messenger;
-import com.google.inject.tools.ProblemsHandler;
 import com.google.inject.tools.snippets.CodeProblem;
+import com.google.inject.tools.suite.Messenger;
+import com.google.inject.tools.suite.ProblemsHandler;
 
 import java.util.Set;
 
 /**
- * Standard implementation of the ProblemsHandler for the IDE plugin.
+ * {@inheritDoc ProblemsHandler}
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
@@ -50,11 +50,6 @@ public class ProblemsHandlerImpl implements ProblemsHandler {
     messenger.logMessage("Problem found: " + problem.toString());
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.ideplugin.problem.ProblemsHandler#foundProblems(java.util.Set)
-   */
   public void foundProblems(Set<? extends CodeProblem> problems) {
     if (problems != null) {
       for (CodeProblem problem : problems) {

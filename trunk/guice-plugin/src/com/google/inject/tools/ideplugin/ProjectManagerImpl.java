@@ -17,18 +17,18 @@
 package com.google.inject.tools.ideplugin;
 
 import com.google.inject.Inject;
-import com.google.inject.tools.JavaManager;
-import com.google.inject.tools.GuiceToolsModule.ModuleManagerFactory;
 import com.google.inject.tools.ideplugin.CustomContextDefinitionSource.CustomContextDefinitionListener;
 import com.google.inject.tools.ideplugin.module.ModulesListener;
 import com.google.inject.tools.module.ModuleManager;
 import com.google.inject.tools.module.ModulesSource;
+import com.google.inject.tools.suite.JavaManager;
+import com.google.inject.tools.suite.GuiceToolsModule.ModuleManagerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * {@inheritDoc}
+ * {@inheritDoc ProjectManager}
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
@@ -82,9 +82,6 @@ class ProjectManagerImpl implements ProjectManager,
     }
   }
 
-  // TODO: somehow need to wait for this to finish before allowing user to do
-  // stuff
-
   public void moduleAdded(ModulesSource source, JavaManager javaManager,
       String module) {
     if (moduleManagers.get(javaManager) == null) {
@@ -131,6 +128,7 @@ class ProjectManagerImpl implements ProjectManager,
 
   public void projectOpened(JavaManager javaManager) {
     createModuleManager(javaManager);
+    //TODO: load settings...
   }
 
   public void projectClosed(JavaManager javaManager) {

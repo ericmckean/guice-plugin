@@ -18,31 +18,23 @@ package com.google.inject.tools.snippets;
 
 import java.io.Serializable;
 import com.google.inject.CreationException;
-import com.google.inject.tools.ideplugin.ActionsHandler;
-import com.google.inject.tools.ideplugin.results.Results.Node.ActionString;
 
 /**
  * Represents a problem found involving the user's guice code, such as a
  * CreationException. These are passed to the
- * {@link com.google.inject.tools.ProblemsHandler} for realtime notification to
+ * {@link com.google.inject.tools.suite.ProblemsHandler} for realtime notification to
  * the user as well as passed along with {@link CodeLocation}s for display as
  * results.
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 public class CodeProblem implements Serializable {
-  /**
-   * 
-   */
   private static final long serialVersionUID = 705475501616525997L;
 
   /**
    * Represents a problem in code that a class referenced is not useable.
    */
   public static class BadClassProblem extends CodeProblem {
-    /**
-     * 
-     */
     private static final long serialVersionUID = -3559774157409055807L;
 
     public BadClassProblem(String className, Throwable exception) {
@@ -54,9 +46,6 @@ public class CodeProblem implements Serializable {
    * Represents a CreationException problem.
    */
   public static class CreationProblem extends CodeProblem {
-    /**
-     * 
-     */
     private static final long serialVersionUID = -6772555370411150975L;
 
     /**
@@ -74,9 +63,6 @@ public class CodeProblem implements Serializable {
    * Represents a problem with the binding of the class being injected.
    */
   public static class BindingProblem extends CodeProblem {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1294747496483052122L;
     protected final String theClass;
 
@@ -99,41 +85,17 @@ public class CodeProblem implements Serializable {
       return theClass;
     }
 
-    /**
-     * (non-Javadoc)
-     * 
-     * @see com.google.inject.tools.snippets.CodeProblem#toString()
-     */
     @Override
     public String toString() {
       return "Guice Code Problem: " + theClass
           + " has a binding problem in Module " + moduleContext;
     }
-
-    @Override
-    public ActionString getDisplay() {
-      ActionString text = new ActionString();
-      text.addText("Guice Code Problem: ", null);
-      text.addTextWithAction(shorten(theClass), new ActionsHandler.GotoFile(
-          theClass), "Goto source of " + theClass);
-      text.addText(" has a binding problem in ", null);
-      text.addText("Module Context: ", null);
-      text.addText(moduleContext, null);
-      return text;
-    }
-  }
-
-  private static String shorten(String label) {
-    return label.substring(label.lastIndexOf(".") + 1);
   }
 
   /**
    * Represents an OutOfScopeException during injection.
    */
   public static class OutOfScopeProblem extends BindingProblem {
-    /**
-     * 
-     */
     private static final long serialVersionUID = -6379018610283668354L;
 
     /**
@@ -152,9 +114,6 @@ public class CodeProblem implements Serializable {
    * Represents that no binding is defined for the class being injected.
    */
   public static class NoBindingProblem extends BindingProblem {
-    /**
-     * 
-     */
     private static final long serialVersionUID = -7729016255763104996L;
 
     /**
@@ -167,26 +126,10 @@ public class CodeProblem implements Serializable {
       super(module, theClass, null);
     }
 
-    /**
-     * (non-Javadoc)
-     * 
-     * @see com.google.inject.tools.snippets.CodeProblem#toString()
-     */
     @Override
     public String toString() {
       return "Guice Code Problem: " + theClass + " has no binding in Module "
           + moduleContext;
-    }
-
-    @Override
-    public ActionString getDisplay() {
-      ActionString text = new ActionString();
-      text.addText("Guice Code Problem: ", null);
-      text.addTextWithAction(shorten(theClass), new ActionsHandler.GotoFile(
-          theClass), "Goto source of " + theClass);
-      text.addText("has no binding in Module ", null);
-      text.addText(moduleContext, null);
-      return text;
     }
   }
 
@@ -194,26 +137,22 @@ public class CodeProblem implements Serializable {
    * A code problem that a module specified is invalid.
    */
   public static class InvalidModuleProblem extends CodeProblem {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 6736927371638083376L;
 
     public InvalidModuleProblem(String moduleName) {
       super(moduleName, null);
     }
-
-    @Override
-    public String toString() {
-      return "Invalid Module: " + moduleContext;
+    
+    public InvalidModuleProblem(String moduleName, Exception exception) {
+      super(moduleName, exception);
     }
 
     @Override
-    public ActionString getDisplay() {
-      ActionString text = new ActionString();
-      text.addText("Invalid Module: ", null);
-      text.addText(moduleContext, null);
-      return text;
+    public String toString() {
+      if (message != null) {
+        return "Invalid Module: " + moduleContext + " ... " + message;
+      }
+      return "Invalid Module: " + moduleContext;
     }
   }
 
@@ -221,9 +160,6 @@ public class CodeProblem implements Serializable {
    * Represents a problem that the module context is invalid.
    */
   public static class InvalidModuleContextProblem extends CodeProblem {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 5163120162492886783L;
 
     /**
@@ -235,21 +171,9 @@ public class CodeProblem implements Serializable {
       super(module, null);
     }
 
-    /**
-     * (non-Javadoc)
-     * 
-     * @see com.google.inject.tools.snippets.CodeProblem#toString()
-     */
     @Override
     public String toString() {
       return "Guice Module Context is invalid: " + moduleContext;
-    }
-
-    @Override
-    public ActionString getDisplay() {
-      ActionString text = new ActionString();
-      text.addText("Guice Module Context is invalid: " + moduleContext, null);
-      return text;
     }
   }
 
@@ -274,9 +198,6 @@ public class CodeProblem implements Serializable {
     }
   }
 
-  /**
-   * Return the problem as a String.
-   */
   @Override
   public String toString() {
     return "Guice Code Problem: " + message;
@@ -301,16 +222,5 @@ public class CodeProblem implements Serializable {
    */
   public StackTraceElement[] getStackTrace() {
     return stacktrace;
-  }
-
-  /**
-   * Return text describing the problem in the form of
-   * {@link com.google.inject.tools.ideplugin.results.Results.Node.ActionString}s.
-   */
-  public ActionString getDisplay() {
-    ActionString text = new ActionString();
-    text.addText("Guice Code Problem: ", null);
-    text.addText(message, null);
-    return text;
   }
 }

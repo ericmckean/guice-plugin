@@ -22,14 +22,15 @@ import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorActionDelegate;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
-import com.google.inject.tools.JavaManager;
 import com.google.inject.tools.ideplugin.ProjectManager;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
 import com.google.inject.tools.module.ModuleManager;
+import com.google.inject.tools.suite.JavaManager;
 
 /**
  * Responds to the user choosing configure from the Guice menu by opening the
@@ -39,7 +40,7 @@ import com.google.inject.tools.module.ModuleManager;
  */
 @SuppressWarnings("restriction")
 // TODO: remove internal class use if possible
-public class GuicePluginConfigureAction implements IEditorActionDelegate,
+class GuicePluginConfigureAction implements IEditorActionDelegate,
     IObjectActionDelegate {
   private final ModuleSelectionView moduleSelectionView;
   private final ProjectManager projectManager;
@@ -62,9 +63,9 @@ public class GuicePluginConfigureAction implements IEditorActionDelegate,
   }
 
   public void run(IAction action) {
-    ICompilationUnit cu =
-        JavaPlugin.getDefault().getWorkingCopyManager().getWorkingCopy(
-            ((CompilationUnitEditor) editor).getEditorInput());
+    IEditorInput editorInput = ((CompilationUnitEditor) editor).getEditorInput();
+    ICompilationUnit cu = JavaPlugin.getDefault()
+        .getWorkingCopyManager().getWorkingCopy(editorInput);
     JavaManager project = new EclipseJavaProject(cu.getJavaProject());
     ModuleManager moduleManager = projectManager.getModuleManager(project);
     moduleSelectionView.show(project);

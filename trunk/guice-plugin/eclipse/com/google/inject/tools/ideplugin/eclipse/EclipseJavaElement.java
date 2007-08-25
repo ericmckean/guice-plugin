@@ -25,16 +25,18 @@ import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.Signature;
 
-import com.google.inject.tools.JavaManager;
 import com.google.inject.tools.ideplugin.JavaElement;
+import com.google.inject.tools.suite.JavaManager;
 
 /**
  * Eclipse implementation of {@link JavaElement}. Basically a wrapper around
  * {@link org.eclipse.jdt.core.IJavaElement}.
  * 
+ * {@inheritDoc JavaElement}
+ * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public class EclipseJavaElement implements JavaElement {
+class EclipseJavaElement implements JavaElement {
   private final IJavaElement element;
   private final Type type;
   private final String name;
@@ -109,11 +111,6 @@ public class EclipseJavaElement implements JavaElement {
     return element.getElementName();
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Object#toString()
-   */
   @Override
   public String toString() {
     return element.toString();
@@ -123,56 +120,26 @@ public class EclipseJavaElement implements JavaElement {
     return signature != null ? Signature.toString(signature) : null;
   }
 
-  /**
-   * Return the {@link IJavaElement} underlying this element.
-   * 
-   * @return the IJavaElement
-   */
   public IJavaElement getIJavaElement() {
     return element;
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.ideplugin.JavaElement#getName()
-   */
   public String getName() {
     return name;
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.ideplugin.JavaElement#getClassName()
-   */
   public String getClassName() {
     return className;
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.ideplugin.JavaElement#getJavaProject()
-   */
   public JavaManager getJavaProject() {
     return javaProject;
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.ideplugin.JavaElement#getType()
-   */
   public Type getType() {
     return type;
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Object#equals(java.lang.Object)
-   */
   @Override
   public boolean equals(Object object) {
     if (object instanceof JavaElement) {
@@ -186,13 +153,8 @@ public class EclipseJavaElement implements JavaElement {
     }
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.ideplugin.JavaElement#isInjectionPoint()
-   */
   public boolean isInjectionPoint() {
-    // TODO: this
+    //TODO: determine if is injection point and related annotations
     return false;
   }
 

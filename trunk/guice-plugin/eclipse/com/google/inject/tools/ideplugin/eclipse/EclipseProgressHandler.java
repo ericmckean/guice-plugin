@@ -23,15 +23,17 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import com.google.inject.Inject;
-import com.google.inject.tools.Messenger;
-import com.google.inject.tools.ProgressHandler;
+import com.google.inject.tools.suite.Messenger;
+import com.google.inject.tools.suite.ProgressHandler;
 
 /**
  * Eclipse implementation of the {@link ProgressHandler}.
  * 
+ * {@inheritDoc ProgressHandler}
+ * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public class EclipseProgressHandler implements ProgressHandler {
+class EclipseProgressHandler implements ProgressHandler {
   private final Messenger messenger;
   private final List<ProgressStep> steps;
   private Job job;
@@ -42,29 +44,14 @@ public class EclipseProgressHandler implements ProgressHandler {
     this.steps = new ArrayList<ProgressStep>();
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.ProgressHandler#isCancelled()
-   */
   public boolean isCancelled() {
     return false;
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.ProgressHandler#step(com.google.inject.tools.ProgressHandler.ProgressStep)
-   */
   public void step(ProgressStep step) {
     steps.add(step);
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.ProgressHandler#go(java.lang.String, boolean)
-   */
   public void go(String label, boolean backgroundAutomatically) {
     job = new ProgressHandlerJob(label);
     job.setUser(!backgroundAutomatically);
@@ -94,7 +81,7 @@ public class EclipseProgressHandler implements ProgressHandler {
           step.run();
           while (!monitor.isCanceled() && !step.isDone()) {
             try {
-              // TODO: there has to be a better way
+              //TODO: Thread.sleep cannot be necessary
               Thread.sleep(100);
             } catch (InterruptedException exception) {
               EclipseProgressHandler.this.messenger.logException(

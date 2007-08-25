@@ -14,12 +14,11 @@
  * the License.
  */
 
-package com.google.inject.tools;
+package com.google.inject.tools.suite;
 
 
 import com.google.inject.tools.code.CodeRunnerTest;
 import com.google.inject.tools.module.ModuleContextRepresentationTest;
-import com.google.inject.tools.module.ModuleContextSnippetTest;
 import com.google.inject.tools.module.ModuleManagerTest;
 import com.google.inject.tools.module.ModuleRepresentationTest;
 

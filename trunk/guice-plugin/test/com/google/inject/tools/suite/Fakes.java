@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.google.inject.tools;
+package com.google.inject.tools.suite;
 
 import com.google.inject.CreationException;
 import com.google.inject.spi.Message;
@@ -22,6 +22,8 @@ import com.google.inject.tools.code.CodeRunner;
 import com.google.inject.tools.snippets.CodeProblem;
 import com.google.inject.tools.snippets.CodeSnippet;
 import com.google.inject.tools.snippets.CodeSnippetResult;
+import com.google.inject.tools.suite.JavaManager;
+import com.google.inject.tools.suite.Messenger;
 
 import java.util.Collections;
 import java.util.Set;
@@ -33,25 +35,15 @@ import java.util.Set;
  */
 public class Fakes {
   public static class FakeCreationException extends CreationException {
-    /**
-     * Automatically generated serial version UID.
-     */
     private static final long serialVersionUID = -6889671178292449161L;
+    
     private static Set<Message> messages =
         Collections.singleton(new Message("Mock Guice Message."));
 
-    /**
-     * Create the Mock object.
-     */
     public FakeCreationException() {
       super(messages);
     }
 
-    /**
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Throwable#toString()
-     */
     @Override
     public String toString() {
       return "Mock Creation Exception.";
@@ -69,10 +61,8 @@ public class Fakes {
     }
 
     public static class TestSnippetResult extends CodeSnippetResult {
-      /**
-       * 
-       */
       private static final long serialVersionUID = 7098318823969460583L;
+      
       private final String blah = "blah";
 
       public TestSnippetResult() {
@@ -158,6 +148,10 @@ public class Fakes {
     }
 
     public String getSnippetsClasspath() throws Exception {
+      return null;
+    }
+    
+    public String getClasspathDelimiter() {
       return null;
     }
   }

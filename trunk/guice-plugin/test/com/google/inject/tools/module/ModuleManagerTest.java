@@ -18,12 +18,6 @@ package com.google.inject.tools.module;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.google.inject.tools.JavaManager;
-import com.google.inject.tools.MockingGuiceToolsModule;
-import com.google.inject.tools.Fakes.FakeCodeRunner;
-import com.google.inject.tools.Fakes.FakeJavaManager;
-import com.google.inject.tools.GuiceToolsModule.ModuleManagerFactory;
-import com.google.inject.tools.SampleModuleScenario.WorkingModule;
 import com.google.inject.tools.module.ModuleContextRepresentation;
 import com.google.inject.tools.module.ModuleContextRepresentationImpl;
 import com.google.inject.tools.module.ModuleManager;
@@ -31,6 +25,12 @@ import com.google.inject.tools.module.ModuleRepresentation;
 import com.google.inject.tools.module.ModuleRepresentationImpl;
 import com.google.inject.tools.module.ModulesSource;
 import com.google.inject.tools.module.ModuleContextRepresentation.ModuleInstanceRepresentation;
+import com.google.inject.tools.suite.JavaManager;
+import com.google.inject.tools.suite.MockingGuiceToolsModule;
+import com.google.inject.tools.suite.Fakes.FakeCodeRunner;
+import com.google.inject.tools.suite.Fakes.FakeJavaManager;
+import com.google.inject.tools.suite.GuiceToolsModule.ModuleManagerFactory;
+import com.google.inject.tools.suite.SampleModuleScenario.WorkingModule;
 
 import junit.framework.TestCase;
 

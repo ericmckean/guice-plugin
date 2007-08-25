@@ -21,17 +21,20 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 
-import com.google.inject.tools.Messenger;
+import com.google.inject.tools.suite.Messenger;
 
 /**
  * Eclipse implementation of the Messenger object.
  * 
+ * {@inheritDoc Messenger}
+ * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 @Singleton
-public class EclipseMessenger implements Messenger {
+class EclipseMessenger implements Messenger {
   private Shell shell;
 
   private class MessageDisplayer implements Runnable {
@@ -58,11 +61,11 @@ public class EclipseMessenger implements Messenger {
 
     public void run() {
       try {
-        IViewPart viewPart =
-            PlatformUI.getWorkbench().getWorkbenchWindows()[0]
-                .getActivePage()
-                .showView(
-                    "com.google.inject.tools.ideplugin.eclipse.EclipseErrorView");
+        IWorkbenchPage activePage = PlatformUI.getWorkbench()
+            .getWorkbenchWindows()[0].getActivePage();
+        IViewPart viewPart = activePage.showView(
+            "com.google.inject.tools.ideplugin.eclipse.EclipseErrorView",
+            null, IWorkbenchPage.VIEW_CREATE);
         ((EclipseErrorView) viewPart).displayError(message);
       } catch (java.lang.IllegalStateException e) {
         // means we are running in testing mode
@@ -73,16 +76,15 @@ public class EclipseMessenger implements Messenger {
     }
   }
 
-  /**
-   * (non-Javadoc)
-   * 
-   * @see com.google.inject.tools.Messenger#display(java.lang.String)
-   */
   public void display(String message) {
     try {
       Display.getDefault().syncExec(new MessageDisplayer(message));
     } catch (java.lang.UnsatisfiedLinkError error) {
       // means we are running in testing mode
+    } catch (Throwable t) {
+      System.out.println("Problem displaying dialog messages..... "
+          + t.toString());
+      System.out.println("  meant to diplay: " + message);
     }
   }
 
@@ -91,9 +93,9 @@ public class EclipseMessenger implements Messenger {
       Display.getDefault().syncExec(new ErrorLogDisplayer(message));
     } catch (java.lang.UnsatisfiedLinkError error) {
       // means we are running in testing mode
-    } catch (Exception e) {
+    } catch (Throwable t) {
       System.out.println("Problem displaying error messages..... "
-          + e.toString());
+          + t.toString());
       System.out.println("  meant to diplay: " + message);
     }
   }

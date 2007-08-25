@@ -16,8 +16,6 @@
 
 package com.google.inject.tools.module;
 
-import com.google.inject.tools.Messenger;
-import com.google.inject.tools.SampleModuleScenario.WorkingModule;
 import com.google.inject.tools.code.CodeRunner;
 import com.google.inject.tools.module.ModuleRepresentation;
 import com.google.inject.tools.module.ModuleRepresentationImpl;
@@ -25,6 +23,8 @@ import com.google.inject.tools.snippets.CodeProblem;
 import com.google.inject.tools.snippets.CodeSnippetResult;
 import com.google.inject.tools.snippets.ModuleSnippet;
 import com.google.inject.tools.snippets.ModuleSnippet.DefaultConstructorRepresentation;
+import com.google.inject.tools.suite.Messenger;
+import com.google.inject.tools.suite.SampleModuleScenario.WorkingModule;
 
 import junit.framework.TestCase;
 

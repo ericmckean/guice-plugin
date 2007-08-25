@@ -19,6 +19,8 @@ package com.google.inject.tools.ideplugin.bindings;
 import com.google.inject.tools.module.ModuleContextRepresentation;
 import com.google.inject.tools.snippets.CodeLocation;
 
+import java.util.Set;
+
 /**
  * The BindingLocater performs the actual determination of what an interface is
  * bound to in a given module and where in the source code that happens.
@@ -28,13 +30,13 @@ import com.google.inject.tools.snippets.CodeLocation;
 public class BindingLocator {
   private final String theClass;
   private final ModuleContextRepresentation moduleContext;
-  private final CodeLocation location;
+  private final Set<CodeLocation> locations;
 
   public BindingLocator(String theClass,
       ModuleContextRepresentation moduleContext) {
     this.theClass = theClass;
     this.moduleContext = moduleContext;
-    this.location = moduleContext.findLocation(theClass);
+    this.locations = moduleContext.findLocations(theClass);
   }
 
   /**
@@ -52,10 +54,10 @@ public class BindingLocator {
   }
 
   /**
-   * Return the code location where the binding happens (and/or problems finding
-   * it).
+   * Return the code locations where the binding happens (and/or problems 
+   * finding it).
    */
-  public CodeLocation getCodeLocation() {
-    return location;
+  public Set<CodeLocation> getCodeLocations() {
+    return locations;
   }
 }

@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.google.inject.tools;
+package com.google.inject.tools.suite;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -22,10 +22,12 @@ import java.util.Collections;
 import java.util.Set;
 import com.google.inject.AbstractModule;
 import com.google.inject.BindingAnnotation;
+import com.google.inject.Inject;
 import com.google.inject.Module;
 import com.google.inject.Provider;
 import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
+import com.google.inject.name.Named;
 
 /**
  * Sample modules, interfaces and implementations for testing purposes.
@@ -42,9 +44,9 @@ public class SampleModuleScenario {
       bind(MockInjectedInterface.class).to(MockInjectedInterfaceImpl.class);
       bind(Service.class).annotatedWith(Names.named("blue")).to(
           BlueService.class);
-      bind(Service.class).annotatedWith(Names.named("red")).to(
+      bind(Service.class).annotatedWith(Red.class).to(
           RedService.class);
-      bindConstant().annotatedWith(ServerHost.class).to(1);
+      bindConstant().annotatedWith(One.class).to(1);
       bind(new TypeLiteral<PaymentService<CreditCard>>() {}).to(
           CreditCardPaymentService.class);
       bind(ProvidedService.class).toProvider(new Provider<ProvidedService>() {
@@ -121,9 +123,29 @@ public class SampleModuleScenario {
 
   @BindingAnnotation
   @Retention(RetentionPolicy.RUNTIME)
-  public @interface ServerHost {
+  public @interface Red {
+  }
+  @BindingAnnotation
+  @Retention(RetentionPolicy.RUNTIME)
+  public @interface One {
   }
   
   public interface ProvidedService {
+  }
+  
+  
+  @Inject
+  public SampleModuleScenario(MockInjectedInterface mockInjectedInterface,
+      @Named("blue") Service blueService,
+      @Named("red") Service redService,
+      @One int one,
+      PaymentService<CreditCard> creditCardPaymentService,
+      ProvidedService providedService) {
+    Module module = new AbstractModule() {
+      @Override
+      public void configure() {
+        bind(MockInjectedInterface.class).to(MockInjectedInterfaceImpl.class);
+      }
+    };
   }
 }

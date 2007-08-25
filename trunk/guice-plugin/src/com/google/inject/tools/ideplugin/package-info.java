@@ -31,7 +31,7 @@
  * <dl>
  * <dt>{@link com.google.inject.tools.module.ModuleManager}
  * <dd>manages the modules in the user's code
- * <dt>{@link com.google.inject.tools.ProblemsHandler}
+ * <dt>{@link com.google.inject.tools.suite.ProblemsHandler}
  * <dd>notifies the user of guice related problems in the code
  * <dt>{@link com.google.inject.tools.ideplugin.results.ResultsHandler}
  * <dd>manages results of user queries such as finding bindings
@@ -40,6 +40,8 @@
  * <dt>{@link com.google.inject.tools.code.CodeRunner}
  * <dd>runs {@link com.google.inject.tools.snippets.CodeSnippet}s in user
  * space to resolve bindings
+ * <dt>{@link com.google.inject.tools.ideplugin.ProjectManager}
+ * <dd>manages projects in the IDE
  * </dl>
  * 
  * <p>

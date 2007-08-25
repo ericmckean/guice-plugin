@@ -16,13 +16,15 @@
 
 package com.google.inject.tools.ideplugin.bindings;
 
-import com.google.inject.tools.Messenger;
-import com.google.inject.tools.ProblemsHandler;
 import com.google.inject.tools.ideplugin.JavaElement;
 import com.google.inject.tools.ideplugin.results.CodeLocationsResults;
 import com.google.inject.tools.ideplugin.results.ResultsHandler;
+import com.google.inject.tools.module.ClassNameUtility;
 import com.google.inject.tools.module.ModuleContextRepresentation;
 import com.google.inject.tools.module.ModuleManager;
+import com.google.inject.tools.snippets.CodeLocation;
+import com.google.inject.tools.suite.Messenger;
+import com.google.inject.tools.suite.ProblemsHandler;
 
 /**
  * The BindingsEngine is the glue between the other objects; it is responsible
@@ -49,8 +51,8 @@ public final class BindingsEngine {
       ProblemsHandler problemsHandler, ResultsHandler resultsHandler,
       Messenger messenger, JavaElement element) {
     Thread engineThread =
-        new BindingsEngineThread(moduleManager, problemsHandler,
-            resultsHandler, messenger, element);
+      new BindingsEngineThread(moduleManager, problemsHandler,
+          resultsHandler, messenger, element);
     engineThread.start();
   }
 
@@ -75,8 +77,8 @@ public final class BindingsEngine {
     public void run() {
       final String theClass = element.getClassName();
       final CodeLocationsResults results =
-          new CodeLocationsResults("Bindings for "
-              + CodeLocationsResults.shorten(theClass), theClass);
+        new CodeLocationsResults("Bindings for "
+            + ClassNameUtility.shorten(theClass), theClass);
       if (!moduleManager.updateModules(true, false)) {
         results.userCancelled();
       } else {
@@ -86,12 +88,13 @@ public final class BindingsEngine {
           for (ModuleContextRepresentation moduleContext : moduleManager
               .getActiveModuleContexts()) {
             BindingLocator locater =
-                new BindingLocator(theClass, moduleContext);
-            if (locater.getCodeLocation() != null) {
-              problemsHandler.foundProblems(locater.getCodeLocation()
-                  .getProblems());
-              results.put(locater.getModuleContext().getName(), locater
-                  .getCodeLocation());
+              new BindingLocator(theClass, moduleContext);
+            if (locater.getCodeLocations() != null) {
+              for (CodeLocation codeLocation : locater.getCodeLocations()) {
+                problemsHandler.foundProblems(codeLocation.getProblems());
+              }
+              results.put(locater.getModuleContext().getName(),
+                  locater.getCodeLocations());
             }
           }
           if (!results.keySet().isEmpty()) {

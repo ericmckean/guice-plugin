@@ -16,6 +16,7 @@
 
 package com.google.inject.tools.ideplugin.results;
 
+import com.google.inject.tools.module.ClassNameUtility;
 import com.google.inject.tools.snippets.CodeLocation;
 import com.google.inject.tools.snippets.CodeProblem;
 
@@ -45,10 +46,10 @@ public class CodeLocationsResults extends Results {
      * @param location the {@link CodeLocation}
      */
     public CodeLocationNode(String name, CodeLocation location) {
-      super("in " + shorten(name), "Results for " + name);
+      super("in " + ClassNameUtility.shorten(name), "Results for " + name);
       this.location = location;
       if (location.file() != null) {
-        addChild(new Node(location.getDisplay()));
+        addChild(new Node(ActionStringBuilder.getDisplayString(location)));
       }
       if (!location.getProblems().isEmpty()) {
         Node node = new Node("Problems", null);
@@ -81,7 +82,7 @@ public class CodeLocationsResults extends Results {
      * @param problem the problem
      */
     public ProblemNode(CodeProblem problem) {
-      super(problem.getDisplay());
+      super(ActionStringBuilder.getDisplayString(problem));
       this.problem = problem;
     }
 
@@ -95,7 +96,7 @@ public class CodeLocationsResults extends Results {
     }
   }
 
-  private final Map<String, CodeLocation> map;
+  private final Map<String, Set<CodeLocation>> map;
 
   /**
    * Create a new CodeLocationsResults object with the given title.
@@ -106,7 +107,7 @@ public class CodeLocationsResults extends Results {
    */
   public CodeLocationsResults(String title, String tooltip) {
     super(title, tooltip);
-    map = new HashMap<String, CodeLocation>();
+    map = new HashMap<String, Set<CodeLocation>>();
   }
 
   /**
@@ -114,11 +115,17 @@ public class CodeLocationsResults extends Results {
    * {@link CodeLocation} pairing to the results.
    * 
    * @param module the module context
-   * @param location the code location
+   * @param locations the code locations
    */
-  public synchronized void put(String module, CodeLocation location) {
-    map.put(module, location);
-    getRoot().addChild(new CodeLocationNode(module, location));
+  public synchronized void put(String module, Set<CodeLocation> locations) {
+    if (map.get(module) != null) {
+      map.get(module).addAll(locations);
+    } else {
+      map.put(module, locations);
+    }
+    for (CodeLocation location : locations) {
+      getRoot().addChild(new CodeLocationNode(module, location));
+    }
   }
 
   /**
@@ -139,7 +146,7 @@ public class CodeLocationsResults extends Results {
    * @param module the module context
    * @return the code location
    */
-  public synchronized CodeLocation get(String module) {
+  public synchronized Set<CodeLocation> get(String module) {
     return map.get(module);
   }
 
@@ -152,12 +159,5 @@ public class CodeLocationsResults extends Results {
     }
     result.append("}");
     return result.toString();
-  }
-
-  /**
-   * Shorten a class name to its simple name.
-   */
-  public static String shorten(String label) {
-    return label.substring(label.lastIndexOf(".") + 1);
   }
 }

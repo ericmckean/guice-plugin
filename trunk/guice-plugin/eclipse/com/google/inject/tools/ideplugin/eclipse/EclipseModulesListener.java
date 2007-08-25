@@ -37,19 +37,21 @@ import org.eclipse.jdt.core.ITypeHierarchyChangedListener;
 import org.eclipse.jdt.core.JavaCore;
 import com.google.inject.Singleton;
 import com.google.inject.Inject;
-import com.google.inject.tools.JavaManager;
-import com.google.inject.tools.Messenger;
 import com.google.inject.tools.ideplugin.ProjectManager;
 import com.google.inject.tools.ideplugin.module.ModulesListener;
 import com.google.inject.tools.module.ModulesSource;
+import com.google.inject.tools.suite.JavaManager;
+import com.google.inject.tools.suite.Messenger;
 
 /**
- * Eclipse implementation of the {@link ModulesSource}. anInterface
+ * Eclipse implementation of the {@link ModulesSource}.
+ * 
+ * {@inheritDoc ModulesListener}
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
 @Singleton
-public class EclipseModulesListener extends ModulesListener {
+class EclipseModulesListener extends ModulesListener {
   private final Map<EclipseJavaProject, ITypeHierarchy> typeHierarchies;
   private final Map<EclipseJavaProject, MyTypeHierarchyChangedListener> typeHierarchyListeners;
   private final Map<EclipseJavaProject, IType> types;
@@ -296,7 +298,7 @@ public class EclipseModulesListener extends ModulesListener {
         IJavaProject project = element.getJavaProject();
         EclipseJavaProject javaManager = new EclipseJavaProject(project);
         ICompilationUnit cu = (ICompilationUnit) element;
-        // TODO: deal with inner classes...
+        //TODO: deal with inner classes...
         IType type = cu.findPrimaryType();
         if (type != null) {
           if (typeHierarchies.get(javaManager).contains(type)) {

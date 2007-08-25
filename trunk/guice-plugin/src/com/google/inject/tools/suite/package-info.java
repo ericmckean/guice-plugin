@@ -23,14 +23,14 @@
  * 
  * <p>
  * To use the tools suite, simply extend the
- * {@link com.google.inject.tools.GuiceToolsModule} to a concrete set of
+ * {@link com.google.inject.tools.suite.GuiceToolsModule} to a concrete set of
  * bindings and then use guice to inject a
  * {@link com.google.inject.tools.module.ModuleManager} in your code.
  * 
  * <p>
- * The {@link com.google.inject.tools.JavaManager},
- * {@link com.google.inject.tools.ProblemsHandler} and
- * {@link com.google.inject.tools.Messenger} must also be implemented and bound
+ * The {@link com.google.inject.tools.suite.JavaManager},
+ * {@link com.google.inject.tools.suite.ProblemsHandler} and
+ * {@link com.google.inject.tools.suite.Messenger} must also be implemented and bound
  * in a subclass of {@link GuiceToolsModule} that should be used for the
  * injections.
  * 
@@ -41,7 +41,7 @@
  * <dd>manages the modules in the user's code
  * <dt>{@link com.google.inject.tools.module.ModulesSource}
  * <dd>notify the manager of changes in modules
- * <dt>{@link com.google.inject.tools.ProblemsHandler}
+ * <dt>{@link com.google.inject.tools.suite.ProblemsHandler}
  * <dd>notifies the user of guice related problems in the code
  * <dt>{@link com.google.inject.tools.code.CodeRunner}
  * <dd>runs {@link com.google.inject.tools.snippets.CodeSnippet}s in user
@@ -53,4 +53,4 @@
  * that needs to be on the classpath provided by the JavaManager.
  */
 
-package com.google.inject.tools;
+package com.google.inject.tools.suite;

@@ -32,21 +32,15 @@ import com.google.inject.tools.ideplugin.GuicePlugin;
  * 
  * @author Darren Creutz <dcreutz@gmail.com>
  */
-public class BindingsObjectAction implements IObjectActionDelegate {
+class BindingsObjectAction implements IObjectActionDelegate {
   private IWorkbenchPart part;
   private GuicePlugin guicePlugin;
 
-  /**
-   * Create the action.
-   */
   public BindingsObjectAction() {
     super();
     guicePlugin = Activator.getGuicePlugin();
   }
 
-  /**
-   * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
-   */
   public void setActivePart(IAction action, IWorkbenchPart targetPart) {
     this.part = targetPart;
   }
@@ -55,9 +49,9 @@ public class BindingsObjectAction implements IObjectActionDelegate {
    * Eclipse callback to have us run the bindings engine.
    */
   public void run(IAction action) {
-    IJavaElement element =
-        (IJavaElement) ((IStructuredSelection) part.getSite()
-            .getSelectionProvider().getSelection()).getFirstElement();
+    IStructuredSelection selection = (IStructuredSelection) part.getSite()
+        .getSelectionProvider().getSelection();
+    IJavaElement element = (IJavaElement) selection.getFirstElement();
     ICompilationUnit cu =
         (ICompilationUnit) element.getAncestor(IJavaElement.COMPILATION_UNIT);
     guicePlugin.getBindingsEngine(new EclipseJavaElement(element, cu),
