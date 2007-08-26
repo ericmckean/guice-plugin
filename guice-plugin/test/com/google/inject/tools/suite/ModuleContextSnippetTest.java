@@ -50,7 +50,7 @@ import java.io.PipedOutputStream;
 /**
  * Unit test the {@link ModuleContextRepresentation} object.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class ModuleContextSnippetTest extends TestCase {
   public void testModuleContextSnippetModuleRepresentation() throws Exception {

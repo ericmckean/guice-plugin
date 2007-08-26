@@ -21,7 +21,7 @@ import com.google.inject.Inject;
 /**
  * {@inheritDoc ActionsHandler}
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 class ActionsHandlerImpl implements ActionsHandler {
   private final GotoCodeLocationHandler gotoCodeLocationHandler;

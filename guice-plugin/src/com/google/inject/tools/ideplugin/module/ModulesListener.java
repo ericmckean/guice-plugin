@@ -36,7 +36,7 @@ import com.google.inject.tools.suite.module.ModulesSource;
  * 
  * {@inheritDoc CustomContextDefinitionSource}
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public abstract class ModulesListener implements ModulesSource,
     CustomContextDefinitionSource {

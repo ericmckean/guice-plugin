@@ -26,7 +26,7 @@ import java.util.Set;
  * The BindingLocater performs the actual determination of what an interface is
  * bound to in a given module and where in the source code that happens.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class BindingLocator {
   private final String theClass;

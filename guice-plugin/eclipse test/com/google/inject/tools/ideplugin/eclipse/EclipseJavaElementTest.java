@@ -28,7 +28,7 @@ import com.google.inject.tools.ideplugin.JavaElement;
 /**
  * Test the Eclipse implementation of JavaElement.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class EclipseJavaElementTest extends TestCase {
   private EclipseJavaElement element;

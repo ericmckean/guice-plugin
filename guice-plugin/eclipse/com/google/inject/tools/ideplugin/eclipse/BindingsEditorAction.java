@@ -34,7 +34,7 @@ import org.eclipse.ui.IEditorPart;
  * The action to take when the user selects some text and chooses "Find
  * Bindings" from the right click menu.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 @SuppressWarnings("restriction")
 // TODO: remove internal class use if possible

@@ -37,7 +37,7 @@ import com.google.inject.tools.suite.Messenger;
  * 
  * {@inheritDoc GuicePlugin}
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class EclipseGuicePlugin extends GuicePlugin {
   private static class GetToUIThread implements Runnable {

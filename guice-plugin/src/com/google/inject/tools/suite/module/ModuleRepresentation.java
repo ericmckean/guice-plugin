@@ -27,7 +27,7 @@ import com.google.inject.tools.suite.snippets.ModuleSnippet.ConstructorRepresent
 /**
  * Representation of a module context in the user's code.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public interface ModuleRepresentation {
   /**

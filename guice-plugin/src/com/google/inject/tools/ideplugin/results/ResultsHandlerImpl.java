@@ -22,7 +22,7 @@ import com.google.inject.Inject;
 /**
  * {@inheritDoc ResultsHandler}
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 @Singleton
 public class ResultsHandlerImpl implements ResultsHandler {

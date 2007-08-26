@@ -36,7 +36,7 @@ import com.google.inject.tools.suite.module.ModuleManager;
  * Responds to the user choosing configure from the Guice menu by opening the
  * configure dialog.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 @SuppressWarnings("restriction")
 // TODO: remove internal class use if possible

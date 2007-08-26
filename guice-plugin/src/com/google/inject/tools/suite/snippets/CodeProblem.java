@@ -26,7 +26,7 @@ import com.google.inject.CreationException;
  * the user as well as passed along with {@link CodeLocation}s for display as
  * results.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class CodeProblem implements Serializable {
   private static final long serialVersionUID = 705475501616525997L;

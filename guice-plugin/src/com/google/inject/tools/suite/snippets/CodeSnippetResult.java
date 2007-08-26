@@ -24,7 +24,7 @@ import java.io.Serializable;
  * This must not involve any user code dependencies nor any outside the snippets
  * package.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public abstract class CodeSnippetResult implements Serializable {
   protected final Set<? extends CodeProblem> problems;

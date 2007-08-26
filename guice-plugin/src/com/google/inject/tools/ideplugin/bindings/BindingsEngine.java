@@ -31,7 +31,7 @@ import com.google.inject.tools.suite.snippets.CodeLocation;
  * for the top-level logic of the user asking the plugin to locate bindings of a
  * java expression.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public final class BindingsEngine {
   /**

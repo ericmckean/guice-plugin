@@ -16,22 +16,35 @@
 
 package com.google.inject.tools.suite;
 
-import java.util.Set;
-
-import com.google.inject.tools.suite.snippets.CodeProblem;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Notify the user in realtime of problems with their guice code by code assist
- * or other (nonblocking) means. These should respond concurrently to the
- * existing flow, i.e. be nonblocking methods.
+ * An implementation of {@link ProgressHandler} that does nothing to display
+ * the progress and blocks the calling thread while it runs.
+ * 
+ * {@inheritDoc ProgressHandler}
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-public interface ProblemsHandler {
-  /**
-   * Handle a set of problems found with user's code.
-   * 
-   * @param problem
-   */
-  public void foundProblems(Set<? extends CodeProblem> problem);
+public class BlockingProgressHandler implements ProgressHandler {
+  private final List<ProgressStep> steps = new ArrayList<ProgressStep>();
+
+  public void go(String label, boolean backgroundAutomatically) {
+    for (ProgressStep step : steps) {
+      step.run();
+      step.complete();
+    }
+  }
+
+  public void waitFor() {
+  }
+
+  public boolean isCancelled() {
+    return false;
+  }
+
+  public void step(ProgressStep step) {
+    steps.add(step);
+  }
 }

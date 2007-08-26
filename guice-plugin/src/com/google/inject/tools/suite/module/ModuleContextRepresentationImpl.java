@@ -35,7 +35,7 @@ import com.google.inject.tools.suite.snippets.ModuleContextSnippet.ModuleContext
 /**
  * {@inheritDoc ModuleContextRepresentation}
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 class ModuleContextRepresentationImpl implements
     ModuleContextRepresentation, CodeRunner.CodeRunListener {

@@ -22,7 +22,7 @@ import java.util.Set;
 /**
  * Represents the location in code of where a binding occurs.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class BindingCodeLocation extends CodeLocation {
   private static final long serialVersionUID = -5452265177177754745L;

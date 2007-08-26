@@ -23,7 +23,7 @@ import com.google.inject.tools.suite.JavaManager;
  * representations, for instance EclipseJavaElement is a wrapper around
  * Eclipse's IJavaElement.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public interface JavaElement {
   /**

@@ -42,7 +42,7 @@ import com.google.inject.tools.suite.Messenger;
  * 
  * {@inheritDoc ResultsView}
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class EclipseResultsView extends ViewPart implements ResultsView {
   private FormToolkit toolkit;

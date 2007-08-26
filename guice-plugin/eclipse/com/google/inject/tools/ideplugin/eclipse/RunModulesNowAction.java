@@ -31,7 +31,7 @@ import com.google.inject.tools.ideplugin.ProjectManager;
 /**
  * Menu action to run the modules now.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 @SuppressWarnings("restriction")
 // TODO: remove internal class use if possible

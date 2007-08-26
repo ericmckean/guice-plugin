@@ -19,7 +19,7 @@ package com.google.inject.tools.suite;
 /**
  * Represents a project in the user's code.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public interface JavaManager {
   /**

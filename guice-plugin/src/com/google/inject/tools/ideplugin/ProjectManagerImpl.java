@@ -30,7 +30,7 @@ import java.util.Map;
 /**
  * {@inheritDoc ProjectManager}
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 class ProjectManagerImpl implements ProjectManager,
     ModulesSource.ModulesSourceListener, CustomContextDefinitionListener {

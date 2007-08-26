@@ -26,7 +26,7 @@ import com.google.inject.tools.suite.JavaManager;
  * {@link com.google.inject.tools.suite.module.ModuleContextRepresentation} objects
  * and passing them to the manager.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public interface ModuleSelectionView {
   public void show(JavaManager project);

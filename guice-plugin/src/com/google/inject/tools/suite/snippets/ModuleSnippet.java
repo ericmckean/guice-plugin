@@ -32,7 +32,7 @@ import java.util.ArrayList;
  * A code snippet for running a module to find its constructor information and
  * validity.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class ModuleSnippet<T extends Module> extends CodeSnippet {
   /**

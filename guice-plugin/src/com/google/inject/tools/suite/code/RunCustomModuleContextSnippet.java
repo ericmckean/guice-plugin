@@ -28,7 +28,7 @@ import java.util.List;
  * userspace for a custom module context 
  * ({@link com.google.inject.tools.suite.module.CustomModuleContextRepresentation}).
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class RunCustomModuleContextSnippet extends CodeRunner.Runnable {
   private final CustomModuleContextRepresentation moduleContext;

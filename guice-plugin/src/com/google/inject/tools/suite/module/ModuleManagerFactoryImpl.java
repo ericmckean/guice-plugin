@@ -35,7 +35,7 @@ import java.util.Map;
  * Factory to create {@link ModuleManager}s with preconstructed
  * {@link JavaManager}s.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class ModuleManagerFactoryImpl implements ModuleManagerFactory {
   private final Provider<ModulesSource> modulesSourceProvider;

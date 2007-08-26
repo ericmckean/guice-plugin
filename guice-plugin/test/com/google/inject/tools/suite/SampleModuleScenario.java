@@ -35,7 +35,7 @@ import com.google.inject.name.Named;
  * NOTE: modifying this file will break the tests, you must also update the line
  * numbers of the bindings.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class SampleModuleScenario {
   public static class WorkingModule extends AbstractModule {

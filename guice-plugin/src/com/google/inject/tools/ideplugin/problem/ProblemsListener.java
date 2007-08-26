@@ -21,7 +21,7 @@ package com.google.inject.tools.ideplugin.problem;
  * and notifying the {@link com.google.inject.tools.suite.ProblemsHandler} of any
  * problems with their code. This requires IDE specific implementations.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public interface ProblemsListener {
   // TODO: Phase II: do this

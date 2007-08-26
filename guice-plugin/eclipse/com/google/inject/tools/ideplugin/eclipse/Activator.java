@@ -28,7 +28,7 @@ import org.osgi.framework.BundleContext;
  * {@link com.google.inject.tools.ideplugin.GuicePlugin} here to inject our
  * dependencies.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class Activator extends AbstractUIPlugin {
   private static EclipseGuicePlugin guicePlugin;

@@ -19,7 +19,7 @@ package com.google.inject.tools.suite;
 /**
  * Responsible for displaying messages to the user in dialog box format.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public interface Messenger {
   /**

@@ -25,7 +25,7 @@ import com.google.inject.tools.ideplugin.results.ActionStringBuilder.ActionStrin
  * Represents a set of results to be displayed by the {@link ResultsHandler}.
  * Builds a tree structure of the results for display purposes.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class Results {
   /**

@@ -28,7 +28,7 @@ import com.google.inject.tools.suite.JavaManager;
  * 
  * {@inheritDoc GuicePlugin}
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class IntellijGuicePlugin extends GuicePlugin {
   /**

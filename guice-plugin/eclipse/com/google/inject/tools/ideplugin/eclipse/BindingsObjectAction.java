@@ -30,7 +30,7 @@ import com.google.inject.tools.ideplugin.GuicePlugin;
  * The action to take when the user selects an object in the tree view (Outline)
  * and selects "Find Bindings" from the right click menu.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class BindingsObjectAction implements IObjectActionDelegate {
   private IWorkbenchPart part;

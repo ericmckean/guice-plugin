@@ -31,7 +31,7 @@ import com.google.inject.tools.suite.snippets.CodeProblem;
 /**
  * Unit test the {@link CodeLocationsResults} object.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class CodeLocationsResultsTest extends TestCase {
 

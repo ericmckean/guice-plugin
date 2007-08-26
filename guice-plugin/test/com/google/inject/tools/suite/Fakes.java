@@ -31,7 +31,7 @@ import java.util.Set;
 /**
  * Fake objects for use in testing.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class Fakes {
   public static class FakeCreationException extends CreationException {

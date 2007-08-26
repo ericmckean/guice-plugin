@@ -29,7 +29,7 @@ import java.util.Set;
 /**
  * {@inheritDoc ProblemsHandler}
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 @Singleton
 public class ProblemsHandlerImpl implements ProblemsHandler {

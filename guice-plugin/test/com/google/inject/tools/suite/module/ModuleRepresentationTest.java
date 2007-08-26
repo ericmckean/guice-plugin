@@ -33,7 +33,7 @@ import java.util.Collections;
 /**
  * Unit test the {@link ModuleRepresentationImpl}.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class ModuleRepresentationTest extends TestCase {
   public void testModuleRepresentation() throws Exception {

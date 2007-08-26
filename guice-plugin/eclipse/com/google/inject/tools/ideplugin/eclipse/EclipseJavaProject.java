@@ -38,7 +38,7 @@ import org.osgi.framework.Bundle;
  * 
  * {@inheritDoc JavaManager}
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 class EclipseJavaProject implements JavaManager {
   private final IJavaProject project;

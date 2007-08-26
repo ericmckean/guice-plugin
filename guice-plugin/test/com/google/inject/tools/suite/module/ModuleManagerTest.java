@@ -43,7 +43,7 @@ import java.util.Set;
 /**
  * Unit test the ModuleManager implementation.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class ModuleManagerTest extends TestCase {
   /**

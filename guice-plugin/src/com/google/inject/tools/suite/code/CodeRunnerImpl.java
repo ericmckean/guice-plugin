@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 import com.google.inject.Inject;
+import com.google.inject.tools.suite.BlockingProgressHandler;
 import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProgressHandler;
@@ -33,7 +34,7 @@ import com.google.inject.tools.suite.snippets.CodeSnippetResult;
 /**
  * {@inheritDoc CodeRunner}
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 class CodeRunnerImpl implements CodeRunner {
   private final ProgressHandler progressHandler;
@@ -64,32 +65,6 @@ class CodeRunnerImpl implements CodeRunner {
     listeners = new HashSet<CodeRunListener>();
     progressSteps = new HashMap<Runnable, RunnableProgressStep>();
     cancelled = false;
-  }
-
-  /**
-   * An implementation of {@link ProgressHandler} that does nothing to display
-   * the progress and blocks the calling thread while it runs.
-   */
-  public static class BlockingProgressHandler implements ProgressHandler {
-    private final List<ProgressStep> steps = new ArrayList<ProgressStep>();
-
-    public void go(String label, boolean backgroundAutomatically) {
-      for (ProgressStep step : steps) {
-        step.run();
-        step.complete();
-      }
-    }
-
-    public void waitFor() {
-    }
-
-    public boolean isCancelled() {
-      return false;
-    }
-
-    public void step(ProgressStep step) {
-      steps.add(step);
-    }
   }
 
   /**

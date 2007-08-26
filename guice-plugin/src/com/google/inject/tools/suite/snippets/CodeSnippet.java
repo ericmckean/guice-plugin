@@ -31,7 +31,7 @@ import java.io.IOException;
  * {@link com.google.inject.tools.suite.snippets.CodeSnippetResult} for itself to
  * System.out.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public abstract class CodeSnippet {
   protected Set<CodeProblem> problems;

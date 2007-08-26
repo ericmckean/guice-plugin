@@ -21,7 +21,7 @@ import com.google.inject.tools.ideplugin.ActionsHandler.GotoFile;
 /**
  * Perform {@link GotoFile} actions.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public interface GotoFileHandler {
   public void run(GotoFile action);

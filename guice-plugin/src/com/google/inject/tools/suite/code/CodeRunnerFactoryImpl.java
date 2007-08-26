@@ -28,7 +28,7 @@ import com.google.inject.tools.suite.GuiceToolsModule.CodeRunnerFactory;
  * Standard implementation of a {@link CodeRunner} factory allowing creation
  * of CodeRunners from {@link JavaManager}s.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class CodeRunnerFactoryImpl implements CodeRunnerFactory {
   private final Provider<ProgressHandler> progressHandlerProvider;

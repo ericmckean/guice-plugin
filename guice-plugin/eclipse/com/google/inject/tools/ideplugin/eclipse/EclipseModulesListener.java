@@ -48,7 +48,7 @@ import com.google.inject.tools.suite.module.ModulesSource;
  * 
  * {@inheritDoc ModulesListener}
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 @Singleton
 class EclipseModulesListener extends ModulesListener {

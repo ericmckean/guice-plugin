@@ -34,7 +34,7 @@ import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
  * various objects the plugin needs. This object can be thought of as a wrapper
  * for the {@link Injector}.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public abstract class GuicePlugin {
   private final Injector injector;

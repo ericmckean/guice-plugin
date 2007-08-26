@@ -26,7 +26,7 @@ import com.google.inject.Module;
  * The guice plugin will automatically load module contexts that are
  * defined by implementing this interface.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public interface GuiceIDEPluginContextDefinition {
   /**
