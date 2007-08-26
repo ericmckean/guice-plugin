@@ -32,7 +32,7 @@ import com.google.inject.tools.suite.snippets.CodeSnippetResult;
  * 
  * Every {@link Runnable} will be run its in own thread.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public interface CodeRunner {
   /**

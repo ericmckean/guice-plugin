@@ -28,14 +28,14 @@ import com.google.inject.tools.suite.snippets.CodeProblem;
 /**
  * Representation of a module context in the user's code.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public interface ModuleContextRepresentation {
   /**
    * Representation of an instance of a {@link com.google.inject.Module} in the
    * user's code, including which constructor to use and how to use it.
    * 
-   * @author Darren Creutz <dcreutz@gmail.com>
+   * @author Darren Creutz (dcreutz@gmail.com)
    */
   public class ModuleInstanceRepresentation {
     private static class Argument {

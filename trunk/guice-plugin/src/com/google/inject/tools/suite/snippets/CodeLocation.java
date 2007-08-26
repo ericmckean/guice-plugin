@@ -21,7 +21,7 @@ import java.util.Set;
 /**
  * Represents a location in the user's code space.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public abstract class CodeLocation extends CodeSnippetResult {
   private final String file;

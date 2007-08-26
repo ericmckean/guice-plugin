@@ -27,7 +27,7 @@ import com.google.inject.tools.ideplugin.ProjectManager;
 /**
  * Menu action to run modules automatically or not.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class RunModulesAutoAction implements IEditorActionDelegate,
     IObjectActionDelegate {

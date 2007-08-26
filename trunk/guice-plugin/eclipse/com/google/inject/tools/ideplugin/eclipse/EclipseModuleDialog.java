@@ -50,7 +50,7 @@ import com.google.inject.tools.suite.module.ModuleContextRepresentation.ModuleIn
 /**
  * Eclipse dialog allowing selection of module contexts.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 class EclipseModuleDialog extends FormDialog {
   private final ModuleManager moduleManager;

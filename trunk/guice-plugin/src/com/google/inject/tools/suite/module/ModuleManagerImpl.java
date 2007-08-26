@@ -38,7 +38,7 @@ import java.util.Set;
 /**
  * {@inheritDoc ModuleManager}
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 class ModuleManagerImpl implements ModuleManager,
     CodeRunner.CodeRunListener {

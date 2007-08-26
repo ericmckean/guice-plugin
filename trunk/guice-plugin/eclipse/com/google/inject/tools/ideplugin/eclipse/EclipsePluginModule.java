@@ -33,7 +33,7 @@ import com.google.inject.tools.suite.module.ModulesSource;
  * 
  * {@inheritDoc GuicePluginModule}
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 class EclipsePluginModule extends GuicePluginModule {
   public static class EclipseGuiceToolsModule extends GuiceToolsModuleImpl {

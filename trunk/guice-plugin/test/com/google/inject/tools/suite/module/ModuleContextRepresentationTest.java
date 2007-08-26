@@ -39,7 +39,7 @@ import java.util.Map;
 /**
  * Unit test the {@link ModuleContextRepresentationImpl}.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class ModuleContextRepresentationTest extends TestCase {
   public void testModuleContextRepresentation() throws Exception {

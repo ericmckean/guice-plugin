@@ -28,7 +28,7 @@ import com.google.inject.tools.suite.snippets.ModuleContextSnippet;
  * A custom context is defined by a class name and a method to call
  * that returns an iterable of {@link com.google.inject.Module}s.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class CustomModuleContextRepresentation extends
     ModuleContextRepresentationImpl {

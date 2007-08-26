@@ -34,7 +34,7 @@ import com.google.inject.tools.suite.module.ModulesSource;
  * 
  * {@inheritDoc GuiceToolsModule}
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class MockingGuiceToolsModule extends GuiceToolsModule {
   private boolean useRealModuleManager = false;

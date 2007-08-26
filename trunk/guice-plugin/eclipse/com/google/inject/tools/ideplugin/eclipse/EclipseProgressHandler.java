@@ -33,7 +33,7 @@ import com.google.inject.tools.suite.ProgressHandler;
  * 
  * {@inheritDoc ProgressHandler}
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 class EclipseProgressHandler implements ProgressHandler {
   private final Messenger messenger;

@@ -28,7 +28,7 @@ import junit.framework.TestSuite;
 /**
  * Test suite of all the tests for the guice plugin that are not IDE specific.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class AllTests {
   public static Test suite() {

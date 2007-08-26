@@ -30,7 +30,7 @@ import org.eclipse.ui.part.ViewPart;
  * Displays error output from the Guice plugin that is logged to the
  * {@link com.google.inject.tools.suite.Messenger}.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class EclipseErrorView extends ViewPart {
   private FormToolkit toolkit;

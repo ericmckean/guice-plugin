@@ -25,7 +25,7 @@ import junit.framework.TestSuite;
 /**
  * Run all the tests for the Eclipse version of the plugin.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class EclipseAllTests extends TestCase {
   public static Test suite() {

@@ -29,7 +29,7 @@ import java.io.PipedOutputStream;
 /**
  * Unit test the ModuleContextRepresentation object.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class ModuleSnippetTest extends TestCase {
   /**

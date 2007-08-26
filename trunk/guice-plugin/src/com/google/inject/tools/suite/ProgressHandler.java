@@ -21,13 +21,13 @@ package com.google.inject.tools.suite;
  * indicator to the user during long operations. It should allow the user to
  * cancel the operation.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public interface ProgressHandler {
   /**
    * Represents a single step in a task managed by a progress bar.
    * 
-   * @author Darren Creutz <dcreutz@gmail.com>
+   * @author Darren Creutz (dcreutz@gmail.com)
    */
   public interface ProgressStep {
     /**

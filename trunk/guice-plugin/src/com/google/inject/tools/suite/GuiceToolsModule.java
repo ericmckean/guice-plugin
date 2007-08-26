@@ -35,7 +35,7 @@ import com.google.inject.tools.suite.module.ModulesSource;
  *   bindFoo.to(FooImpl.class);
  * }</code>
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public abstract class GuiceToolsModule extends AbstractModule {
   /**

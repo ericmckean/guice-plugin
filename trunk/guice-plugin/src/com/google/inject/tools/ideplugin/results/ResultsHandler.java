@@ -22,7 +22,7 @@ import com.google.inject.tools.ideplugin.bindings.BindingsEngine;
  * Responsible for displaying results of user queries when notified by the
  * various engines, i.e. the BindingsEngine {@link BindingsEngine}.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public interface ResultsHandler {
   /**

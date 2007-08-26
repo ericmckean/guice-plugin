@@ -34,7 +34,7 @@ import java.util.List;
 /**
  * Unit test the {@link CodeRunner}.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class CodeRunnerTest extends TestCase implements
     CodeRunner.CodeRunListener {

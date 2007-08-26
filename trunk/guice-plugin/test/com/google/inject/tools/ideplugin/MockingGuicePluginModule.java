@@ -26,7 +26,7 @@ import com.google.inject.tools.suite.MockingGuiceToolsModule.ProxyMock;
 /**
  * Implementation of the {@link GuicePluginModule} that injects mock objects.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class MockingGuicePluginModule extends GuicePluginModule {
   private boolean useRealResultsHandler = false;

@@ -24,7 +24,7 @@ import java.util.Set;
  * The source for finding custom module contexts defined by the user
  * ({@link com.google.inject.tools.suite.module.CustomModuleContextRepresentation}).
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public interface CustomContextDefinitionSource {
   /**

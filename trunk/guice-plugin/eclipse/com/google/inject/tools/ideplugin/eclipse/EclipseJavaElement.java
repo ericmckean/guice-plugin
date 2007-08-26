@@ -34,7 +34,7 @@ import com.google.inject.tools.suite.JavaManager;
  * 
  * {@inheritDoc JavaElement}
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 class EclipseJavaElement implements JavaElement {
   private final IJavaElement element;

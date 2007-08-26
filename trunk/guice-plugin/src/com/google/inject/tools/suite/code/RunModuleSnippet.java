@@ -26,7 +26,7 @@ import java.util.ArrayList;
  * A {@link CodeRunner.Runnable} that can be used by the {@link CodeRunner} to
  * run a {@link com.google.inject.tools.suite.snippets.ModuleSnippet} in userspace.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class RunModuleSnippet extends CodeRunner.Runnable {
   private final ModuleRepresentation module;

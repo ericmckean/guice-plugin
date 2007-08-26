@@ -29,7 +29,7 @@ import java.util.Set;
  * bindings of something. Builds a tree structure of the results for display
  * purposes.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class CodeLocationsResults extends Results {
   /**

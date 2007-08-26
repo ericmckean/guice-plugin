@@ -21,7 +21,7 @@ package com.google.inject.tools.ideplugin.eclipse;
  * {@link com.google.inject.tools.ideplugin.eclipse.EclipseJavaElement}
  * functions correctly.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class TestVariableClass {
 

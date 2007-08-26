@@ -32,7 +32,7 @@ import java.util.List;
 /**
  * Resolve {@link CodeLocation}s in {@link ActionString} form.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class ActionStringBuilder {
   /**

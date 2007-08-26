@@ -22,7 +22,7 @@ import com.google.inject.tools.suite.module.ModuleManager;
 /**
  * Manages the set of open projects in the user's code.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public interface ProjectManager {
   /**

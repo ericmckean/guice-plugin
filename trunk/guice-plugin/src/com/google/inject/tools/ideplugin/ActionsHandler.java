@@ -22,7 +22,7 @@ package com.google.inject.tools.ideplugin;
  * 
  * IDE specific implementations implement the Actions defined in this interface.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public interface ActionsHandler {
   /**

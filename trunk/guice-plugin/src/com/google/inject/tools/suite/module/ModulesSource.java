@@ -28,7 +28,7 @@ import java.util.Set;
  * notify the ModuleManager when changes occur by creating
  * {@link ModuleRepresentation} objects and passing them to the manager.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public interface ModulesSource {
   /**
@@ -46,7 +46,7 @@ public interface ModulesSource {
   /**
    * Listener for changes in the modules available.
    * 
-   * @author Darren Creutz <dcreutz@gmail.com>
+   * @author Darren Creutz (dcreutz@gmail.com)
    */
   public interface ModulesSourceListener {
     void moduleChanged(ModulesSource source, JavaManager javaManager,

@@ -29,7 +29,7 @@ import com.google.inject.tools.suite.snippets.ModuleSnippet.DefaultConstructorRe
 /**
  * {@inheritDoc ModuleRepresentation}
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 class ModuleRepresentationImpl implements ModuleRepresentation,
     CodeRunner.CodeRunListener {

@@ -27,7 +27,7 @@ import java.util.Set;
 /**
  * {@inheritDoc CustomContextDefinitionSource}
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 class CustomContextDefinitionSourceImpl implements
     CustomContextDefinitionSource {

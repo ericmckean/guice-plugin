@@ -19,7 +19,7 @@ package com.google.inject.tools.suite.module;
 /**
  * Utility for manipulating class names.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class ClassNameUtility {
   /**

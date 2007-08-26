@@ -41,7 +41,7 @@ import com.google.inject.Module;
  * context information and finds all its bindings and any problems with creating
  * the injector.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class ModuleContextSnippet extends CodeSnippet {
   /**

@@ -33,7 +33,7 @@ import java.util.Set;
  * getActiveModuleContexts() and use the resulting objects to find information
  * about guice modules.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public interface ModuleManager {
   /**
@@ -57,7 +57,7 @@ public interface ModuleManager {
   /**
    * A {@link JavaManager} implementation that does nothing.
    * 
-   * @author Darren Creutz <dcreutz@gmail.com>
+   * @author Darren Creutz (dcreutz@gmail.com)
    */
   public static class NullJavaManager implements JavaManager {
     public String getJavaCommand() throws Exception {

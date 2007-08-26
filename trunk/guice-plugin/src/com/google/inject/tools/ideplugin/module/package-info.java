@@ -14,15 +14,13 @@
  * the License.
  */
 
-package com.google.inject.tools.ideplugin;
-
-import com.google.inject.tools.ideplugin.ActionsHandler.GotoCodeLocation;
-
 /**
- * Perform {@link GotoCodeLocation} actions.
+ * Module management objects specific to the IDE plugin tool.
  * 
- * @author Darren Creutz (dcreutz@gmail.com)
+ * <p>The {@link ModulesListener} is an abstract patial implementation of the
+ * {@link ModuleSource} for use with IDE plugins.  The {@link ModuleSelectionView}
+ * defines an IDE component allowing for the configuration bu the user of which
+ * module contexts to run.
  */
-public interface GotoCodeLocationHandler {
-  public void run(GotoCodeLocation action);
-}
+
+package com.google.inject.tools.ideplugin.module;

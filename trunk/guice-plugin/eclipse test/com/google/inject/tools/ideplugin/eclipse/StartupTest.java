@@ -40,7 +40,7 @@ import com.google.inject.tools.suite.module.ModulesSource;
  * an uncaught exception, we do not get notified instead Eclipse just runs
  * without the plugin.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class StartupTest extends TestCase {
   /**

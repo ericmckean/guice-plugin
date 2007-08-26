@@ -28,7 +28,7 @@ import java.util.ArrayList;
  * run a {@link com.google.inject.tools.suite.snippets.ModuleContextSnippet} in
  * userspace.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class RunModuleContextSnippet extends CodeRunner.Runnable {
   private final ModuleContextRepresentation moduleContext;

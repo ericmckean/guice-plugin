@@ -28,7 +28,7 @@ import org.easymock.EasyMock;
 /**
  * Fake objects for use in testing.
  * 
- * @author Darren Creutz <dcreutz@gmail.com>
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class Fakes {
   public static class FakeCodeLocationsResults extends CodeLocationsResults {
