@@ -36,7 +36,8 @@ public class Activator extends AbstractUIPlugin {
   private static Activator plugin;
 
   /**
-   * Create an activator and a GuicePlugin using the {@link EclipsePluginModule}.
+   * Create an activator and a GuicePlugin using the 
+   * {@link com.google.inject.tools.ideplugin.eclipse.EclipsePluginModule}.
    */
   public Activator() {
     plugin = this;

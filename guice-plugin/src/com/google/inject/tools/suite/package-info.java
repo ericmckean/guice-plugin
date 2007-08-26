@@ -31,8 +31,8 @@
  * The {@link com.google.inject.tools.suite.JavaManager},
  * {@link com.google.inject.tools.suite.ProblemsHandler} and
  * {@link com.google.inject.tools.suite.Messenger} must also be implemented and bound
- * in a subclass of {@link GuiceToolsModule} that should be used for the
- * injections.
+ * in a subclass of {@link com.google.inject.tools.suite.GuiceToolsModule} that should 
+ * be used for the injections.
  * 
  * <p>
  * The basic objects in our tool suite are:
