@@ -68,8 +68,9 @@ class EclipseJavaProject implements JavaManager {
     } catch (Exception e) {
       e.printStackTrace();
     }
-    args.add(getProjectLocation(project));
-    args.addAll(expandClasspath(cp));
+    args.add(getProjectOutputLocation(project));
+    args.addAll(expandClasspath(cp, getProjectName(project),
+        getProjectLocation(project)));
     final StringBuilder args2 = new StringBuilder();
     for (int i = 0; i < args.size() - 1; i++) {
       args2.append(args.get(i));
@@ -83,7 +84,7 @@ class EclipseJavaProject implements JavaManager {
     return System.getProperty("path.separator");
   }
 
-  private String getProjectLocation(IJavaProject project)
+  private String getProjectOutputLocation(IJavaProject project)
       throws JavaModelException {
     IResource resource = project.getResource();
     String resourceLocation = resource.getLocation().toOSString();
@@ -92,31 +93,56 @@ class EclipseJavaProject implements JavaManager {
     return projectLocation.replaceFirst(project.getProject().getName(),
         resourceLocation);
   }
+  
+  private String getProjectLocation(IJavaProject project) {
+    IResource resource = project.getResource();
+    String resourceLocation = resource.getLocation().toOSString();
+    return resourceLocation;
+  }
+  
+  private String getProjectName(IJavaProject project) {
+    return project.getProject().getName();
+  }
 
-  private List<String> expandClasspath(IClasspathEntry[] entries)
+  private List<String> expandClasspath(IClasspathEntry[] entries, 
+      String projectName, String projectLocation)
       throws Exception {
     final List<String> args = new ArrayList<String>();
+    IResource presource;
+    String resourceLocation;
+    String path;
     for (IClasspathEntry entry : entries) {
       switch (entry.getEntryKind()) {
         case IClasspathEntry.CPE_CONTAINER:
           IClasspathContainer container =
               JavaCore.getClasspathContainer(entry.getPath(), project);
-          args.addAll(expandClasspath(container.getClasspathEntries()));
+          args.addAll(expandClasspath(container.getClasspathEntries(),
+              projectName, projectLocation));
           break;
         case IClasspathEntry.CPE_SOURCE:
           IResource resource =
               ResourcesPlugin.getWorkspace().getRoot().findMember(
                   entry.getPath());
-          args.add(resource.getLocation().toOSString());
+          path = resource.getLocation().makeAbsolute().toOSString();
+          if (path.startsWith("/"+projectName)) {
+            args.add(path.replaceFirst("/"+projectName, projectLocation));
+          } else {
+            args.add(path);
+          }
           break;
         case IClasspathEntry.CPE_LIBRARY:
-          args.add(entry.getPath().makeAbsolute().toOSString());
+          path = entry.getPath().makeAbsolute().toOSString();
+          if (path.startsWith("/"+projectName)) {
+            args.add(path.replaceFirst("/"+projectName, projectLocation));
+          } else {
+            args.add(path);
+          }
           break;
         case IClasspathEntry.CPE_PROJECT:
-          IResource presource =
+          presource =
               ResourcesPlugin.getWorkspace().getRoot().findMember(
                   entry.getPath());
-          String resourceLocation = presource.getLocation().toOSString();
+          resourceLocation = presource.getLocation().toOSString();
           String outputLocation =
               entry.getOutputLocation().makeRelative().toOSString();
           args.add(outputLocation.replaceFirst(presource.getName(),

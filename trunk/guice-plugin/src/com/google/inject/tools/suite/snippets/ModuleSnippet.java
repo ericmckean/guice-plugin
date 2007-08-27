@@ -168,14 +168,18 @@ public class ModuleSnippet<T extends Module> extends CodeSnippet {
     if (moduleClass != null) {
       Exception exception = isModule(moduleClass);
       if (exception == null) {
-        try {
-          defaultConstructor = moduleClass.getConstructor((Class[]) null);
-        } catch (NoSuchMethodException e) {
-          defaultConstructor = null;
-        }
-        try {
-          setDefaultConstructor();
-        } catch (Exception e) {
+        if (isPublic(moduleClass)) {
+          try {
+            defaultConstructor = moduleClass.getConstructor((Class[]) null);
+          } catch (NoSuchMethodException e) {
+            defaultConstructor = null;
+          }
+          try {
+            setDefaultConstructor();
+          } catch (Exception e) {
+            defaultConstructor = null;
+          }
+        } else {
           defaultConstructor = null;
         }
       } else {
@@ -202,6 +206,11 @@ public class ModuleSnippet<T extends Module> extends CodeSnippet {
     } catch (Exception e) {
       return e;
     }
+  }
+  
+  private boolean isPublic(Class<?> aClass) {
+    //TODO: this
+    return true;
   }
 
   /**

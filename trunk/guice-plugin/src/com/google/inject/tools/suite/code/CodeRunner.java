@@ -187,10 +187,11 @@ public interface CodeRunner {
     /**
      * Pass the output from the run back to the Runnable in object form.
      * 
-     * @param stream the stdout from the run
+     * @param instream the stdout from the run
      */
-    public void gotOutput(ObjectInputStream stream) {
+    public void gotOutput(InputStream instream) {
       try {
+        final ObjectInputStream stream = new ObjectInputStream(instream);
         final Object output = stream.readObject();
         if (output instanceof CodeSnippetResult) {
           codeRunner.notifyDone(this);
