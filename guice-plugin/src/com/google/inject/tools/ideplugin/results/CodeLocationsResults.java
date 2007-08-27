@@ -48,9 +48,7 @@ public class CodeLocationsResults extends Results {
     public CodeLocationNode(String name, CodeLocation location) {
       super("in " + ClassNameUtility.shorten(name), "Results for " + name);
       this.location = location;
-      if (location.file() != null) {
-        addChild(new Node(ActionStringBuilder.getDisplayString(location)));
-      }
+      addChild(new Node(ActionStringBuilder.getDisplayString(location)));
       if (!location.getProblems().isEmpty()) {
         Node node = new Node("Problems", null);
         for (CodeProblem problem : location.getProblems()) {

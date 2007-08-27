@@ -23,7 +23,7 @@ import com.google.inject.Inject;
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-class ActionsHandlerImpl implements ActionsHandler {
+public class ActionsHandlerImpl implements ActionsHandler {
   private final GotoCodeLocationHandler gotoCodeLocationHandler;
   private final GotoFileHandler gotoFileHandler;
 

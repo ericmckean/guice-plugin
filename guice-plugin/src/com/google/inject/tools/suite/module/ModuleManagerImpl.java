@@ -95,9 +95,11 @@ class ModuleManagerImpl implements ModuleManager,
   private class InitThread extends Thread {
     @Override
     public void run() {
-      initModules();
-      initContexts();
-      initing = false;
+      synchronized (ModuleManagerImpl.this) {
+        initModules();
+        initContexts();
+        initing = false;
+      }
     }
   }
 

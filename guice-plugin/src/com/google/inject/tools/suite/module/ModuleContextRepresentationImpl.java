@@ -74,7 +74,7 @@ class ModuleContextRepresentationImpl implements
   
   public Set<CodeLocation> findLocations(String theClass) {
     Set<CodeLocation> locations = new HashSet<CodeLocation>();
-    if (!bindings.keySet().isEmpty()) {
+    if (bindings!=null && bindings.keySet()!=null && !bindings.keySet().isEmpty()) {
       for (KeyRepresentation key : bindings.keySet()) {
         if (key.bindWhat.equals(theClass)) {
           locations.add(bindings.get(key));

@@ -141,12 +141,12 @@ public class ActionStringBuilder {
    * Create an ActionString for a {@link CodeLocation}.
    */
   public static ActionString getDisplayString(CodeLocation location) {
-    if (location instanceof BindingCodeLocation) {
-      return new BindingCodeLocationActionString(
-          (BindingCodeLocation)location);
-    } else if (location instanceof NoBindingLocation) {
+    if (location instanceof NoBindingLocation) {
       return new NoBindingLocationActionString(
           (NoBindingLocation)location);
+    } else if (location instanceof BindingCodeLocation) {
+      return new BindingCodeLocationActionString(
+          (BindingCodeLocation)location);
     } else {
       throw new UnsupportedCodeLocationException(location);
     }
