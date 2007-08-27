@@ -78,7 +78,7 @@ public final class BindingsEngine {
       final String theClass = element.getClassName();
       final CodeLocationsResults results =
         new CodeLocationsResults("Bindings for "
-            + ClassNameUtility.shorten(theClass), theClass);
+            + ClassNameUtility.shorten(theClass) + "  (" + theClass + ")", theClass);
       if (!moduleManager.updateModules(true, false)) {
         results.userCancelled();
       } else {

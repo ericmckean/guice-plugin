@@ -146,7 +146,7 @@ public class CodeLocationsResults extends Results {
    * @param module the module context
    * @return the code location
    */
-  public synchronized Set<CodeLocation> get(String module) {
+  public synchronized Set<? extends CodeLocation> get(String module) {
     return map.get(module);
   }
 

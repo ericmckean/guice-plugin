@@ -81,9 +81,20 @@ class EclipseJavaElement implements JavaElement {
   }
 
   private String getType(IJavaElement element) {
-    IType type =
-        compilationUnit.getType(getClassNameFromSignature(findSignature()));
-    return type.getFullyQualifiedName();
+    try {
+      IType type = compilationUnit.getAllTypes()[0];
+      String resolvedSignature = TypeUtil.resolveTypeSignature(type, findSignature(), false);
+      String className = getClassNameFromResolvedSignature(resolvedSignature);
+      return className;
+    } catch (Exception e) {
+      return null;
+    }
+  }
+  
+  private String getClassNameFromResolvedSignature(String resolvedSignature) {
+    int start = resolvedSignature.indexOf('L');
+    int end = resolvedSignature.indexOf(';');
+    return resolvedSignature.substring(start+1, end);
   }
 
   private String findSignature() {
@@ -154,8 +165,12 @@ class EclipseJavaElement implements JavaElement {
   }
 
   public boolean isInjectionPoint() {
-    //TODO: determine if is injection point and related annotations
-    return false;
+    try {
+      //TODO: determine if is injection point and related annotations
+      return false;
+    } catch (Exception e) {
+      return false;
+    }
   }
   
   public String getAnnotations() {
