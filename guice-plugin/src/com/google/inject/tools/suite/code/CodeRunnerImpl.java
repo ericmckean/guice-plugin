@@ -16,7 +16,6 @@
 
 package com.google.inject.tools.suite.code;
 
-import java.io.ObjectInputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -165,7 +164,7 @@ class CodeRunnerImpl implements CodeRunner {
           process.waitFor();
           if (!killed) {
             runnable.gotErrorOutput(process.getErrorStream());
-            runnable.gotOutput(new ObjectInputStream(process.getInputStream()));
+            runnable.gotOutput(process.getInputStream());
           }
         } catch (Exception exception) {
           runnable.caughtException(exception);

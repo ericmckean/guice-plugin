@@ -35,7 +35,7 @@ import com.google.inject.tools.suite.module.ModulesSource;
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-class EclipsePluginModule extends GuicePluginModule {
+public class EclipsePluginModule extends GuicePluginModule {
   public static class EclipseGuiceToolsModule extends GuiceToolsModuleImpl {
     @Override
     protected void bindMessenger(
