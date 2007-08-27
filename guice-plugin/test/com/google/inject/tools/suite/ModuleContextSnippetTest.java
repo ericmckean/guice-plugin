@@ -20,6 +20,7 @@ import junit.framework.TestCase;
 
 import com.google.inject.TypeLiteral;
 import com.google.inject.name.Named;
+import com.google.inject.tools.ideplugin.eclipse.GuicePluginToolsHelper;
 import com.google.inject.tools.suite.SampleModuleScenario.BlueService;
 import com.google.inject.tools.suite.SampleModuleScenario.BrokenModule;
 import com.google.inject.tools.suite.SampleModuleScenario.CreditCard;
@@ -53,6 +54,21 @@ import java.io.PipedOutputStream;
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class ModuleContextSnippetTest extends TestCase {
+  public void testMyPluginHelper() throws Exception {
+    String[] args = new String[4];
+    args[0] = "Custom Context";
+    args[1] = String.valueOf(-1);
+    args[2] = GuicePluginToolsHelper.class.getName();
+    args[3] = "getModuleContextDefinition";
+    Object obj = runASnippet(args);
+    assertTrue(obj instanceof ModuleContextSnippet.ModuleContextResult);
+    ModuleContextSnippet.ModuleContextResult result =
+        (ModuleContextSnippet.ModuleContextResult) obj;
+    assertTrue(result.getName().equals("Custom Context"));
+    assertTrue(result.getProblems().isEmpty());
+    assertNotNull(result.getBindings());
+  }
+  
   public void testModuleContextSnippetModuleRepresentation() throws Exception {
     ModuleContextSnippet.ModuleRepresentation module =
         new ModuleContextSnippet.ModuleRepresentation(WorkingModule.class,
@@ -110,10 +126,10 @@ public class ModuleContextSnippetTest extends TestCase {
     assertTrue(location.location() == WorkingModuleBindLocation);
   }
 
-  private static final int WorkingModuleBindLocation = 44;
+  private static final int WorkingModuleBindLocation = 46;
   private static final String WorkingModuleBindFile =
       "SampleModuleScenario.java";
-  private static final int WorkingModuleBindLocation2 = 79;
+  private static final int WorkingModuleBindLocation2 = 81;
   private static final String WorkingModuleBindFile2 =
       "SampleModuleScenario.java";
 
@@ -306,5 +322,28 @@ public class ModuleContextSnippetTest extends TestCase {
             creditCardPaymentService.toString(), null));
     assertNotNull(location);
     assertTrue(location.bindTo().equals(CreditCardPaymentService.class.getName()));
+  }
+  
+  public void testGuiceIDEContextDef() throws Exception {
+    String[] args = new String[4];
+    args[0] = "Custom Context";
+    args[1] = String.valueOf(-1);
+    args[2] = SampleModuleScenario.Helper.class.getName();
+    args[3] = "getModuleContextDefinition";
+    Object obj = runASnippet(args);
+    assertTrue(obj instanceof ModuleContextSnippet.ModuleContextResult);
+    ModuleContextSnippet.ModuleContextResult result =
+        (ModuleContextSnippet.ModuleContextResult) obj;
+    assertTrue(result.getName().equals("Custom Context"));
+    assertTrue(result.getProblems().isEmpty());
+    assertNotNull(result.getBindings());
+    BindingCodeLocation location =
+        result.getBindings().get(new KeyRepresentation(
+            MockInjectedInterface.class.getName(), null));
+    assertNotNull(location);
+    assertTrue(location.bindTo().equals(
+        MockInjectedInterfaceImpl.class.getName()));
+    assertTrue(location.file().equals(WorkingModuleBindFile));
+    assertTrue(location.location() == WorkingModuleBindLocation);
   }
 }
