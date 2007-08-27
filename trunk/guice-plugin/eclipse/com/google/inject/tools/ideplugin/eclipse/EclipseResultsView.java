@@ -131,8 +131,6 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
       form = null;
     }
     form = toolkit.createScrolledForm(parent);
-    form.setExpandHorizontal(true);
-    form.setExpandVertical(true);
     form.getBody().setLayout(new FillLayout());
     Composite body = toolkit.createComposite(form.getBody());
     GridLayout layout = new GridLayout();

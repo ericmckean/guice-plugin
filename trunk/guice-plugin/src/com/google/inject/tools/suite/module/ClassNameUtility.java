@@ -26,7 +26,15 @@ public class ClassNameUtility {
    * Return the short form of this name, i.e. the last part.
    */
   public static String shorten(String className) {
-    String shortName = className.substring(className.lastIndexOf(".") + 1);
+    int lastDot = className.lastIndexOf(".");
+    int lastDollar = className.lastIndexOf("$");
+    int last = max(lastDot,lastDollar);
+    String shortName = className.substring(last + 1);
     return className.charAt(0) == '@' ? "@" + shortName : shortName;
+  }
+  
+  public static int max(int a, int b) {
+    if (a < b) return b;
+    else return a;
   }
 }

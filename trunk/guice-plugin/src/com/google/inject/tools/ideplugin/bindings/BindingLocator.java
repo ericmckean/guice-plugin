@@ -18,6 +18,7 @@ package com.google.inject.tools.ideplugin.bindings;
 
 import com.google.inject.tools.suite.module.ModuleContextRepresentation;
 import com.google.inject.tools.suite.snippets.CodeLocation;
+import com.google.inject.tools.suite.snippets.BindingCodeLocation.NoBindingLocation;
 
 import java.util.Collections;
 import java.util.Set;
@@ -53,10 +54,19 @@ public class BindingLocator {
     this.moduleContext = moduleContext;
     this.annotatedWith = annotatedWith;
     if (annotatedWith != null) {
-      this.locations = 
-        Collections.singleton(moduleContext.findLocation(theClass, annotatedWith));
+      CodeLocation location = moduleContext.findLocation(theClass, annotatedWith);
+      if (location != null) {
+        this.locations = Collections.singleton(location);
+      } else {
+        this.locations = Collections.singleton((CodeLocation)new NoBindingLocation(theClass));
+      }
     } else {
-      this.locations = moduleContext.findLocations(theClass);
+      Set<CodeLocation> locations = moduleContext.findLocations(theClass);
+      if (locations.isEmpty()) {
+        this.locations = Collections.singleton((CodeLocation)new NoBindingLocation(theClass));
+      } else {
+        this.locations = locations;
+      }
     }
   }
 
