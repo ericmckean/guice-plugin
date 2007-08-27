@@ -14,7 +14,6 @@
  * the License.
  */
 
-
 package com.google.inject.tools.ideplugin.eclipse;
 
 import com.google.inject.Module;

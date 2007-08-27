@@ -295,6 +295,7 @@ public class ModuleContextSnippet extends CodeSnippet {
   // then args[2] is the name of a class with a default constructor
   // and args[3] is the name of a method in that class that takes no arguments
   // and returns an iterable of modules Iterable<com.google.inject.Module>
+  // and args[4] is an optional method that returns an injector
   public static void main(String[] args) {
     runSnippet(System.out, args);
   }

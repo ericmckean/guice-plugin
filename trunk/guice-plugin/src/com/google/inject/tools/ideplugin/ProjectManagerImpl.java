@@ -17,6 +17,7 @@
 package com.google.inject.tools.ideplugin;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.google.inject.tools.ideplugin.CustomContextDefinitionSource.CustomContextDefinitionListener;
 import com.google.inject.tools.ideplugin.module.ModulesListener;
 import com.google.inject.tools.suite.JavaManager;
@@ -32,7 +33,8 @@ import java.util.Map;
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-class ProjectManagerImpl implements ProjectManager,
+@Singleton
+public class ProjectManagerImpl implements ProjectManager,
     ModulesSource.ModulesSourceListener, CustomContextDefinitionListener {
   private final Map<JavaManager, ModuleManager> moduleManagers;
   private final ModuleManagerFactory moduleManagerFactory;
