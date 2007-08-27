@@ -58,12 +58,14 @@ public class BindingLocator {
       if (location != null) {
         this.locations = Collections.singleton(location);
       } else {
-        this.locations = Collections.singleton((CodeLocation)new NoBindingLocation(theClass));
+        this.locations = 
+          Collections.singleton((CodeLocation)new NoBindingLocation(theClass));
       }
     } else {
       Set<CodeLocation> locations = moduleContext.findLocations(theClass);
       if (locations.isEmpty()) {
-        this.locations = Collections.singleton((CodeLocation)new NoBindingLocation(theClass));
+        this.locations = 
+          Collections.singleton((CodeLocation)new NoBindingLocation(theClass));
       } else {
         this.locations = locations;
       }

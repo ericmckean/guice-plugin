@@ -22,11 +22,12 @@
  * configuration options.
  * 
  * <p>The {@link EclipseGuicePlugin} is a concrete implementation of a
- * {@link GuicePlugin} that is the core object of the IDE plugin.  The
- * {@link EclipsePluginModule} (and its inner submodule the
- * {@link EclipsePluginModule$EclipseGuiceToolsModule}) are concrete
- * implementations of the {@link GuicePluginModule} and {@link GuiceToolsModule}
- * that bind the Eclipse pieces.
+ * {@link com.google.inject.tools.ideplugin.GuicePlugin} that is the core object
+ * of the IDE plugin.  The {@link EclipsePluginModule} (and its inner submodule
+ * the {@link EclipsePluginModule.EclipseGuiceToolsModule}) are concrete
+ * implementations of the {@link com.google.inject.tools.ideplugin.GuicePluginModule} 
+ * and {@link com.google.inject.tools.suite.GuiceToolsModule} that bind the 
+ * Eclipse pieces.
  */
 
 package com.google.inject.tools.ideplugin.eclipse;

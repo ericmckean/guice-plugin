@@ -78,7 +78,8 @@ public final class BindingsEngine {
       final String theClass = element.getClassName();
       final CodeLocationsResults results =
         new CodeLocationsResults("Bindings for "
-            + ClassNameUtility.shorten(theClass) + "  (" + theClass + ")", theClass);
+            + ClassNameUtility.shorten(theClass) + "  (" + theClass + ")",
+            theClass);
       if (!moduleManager.updateModules(true, false)) {
         results.userCancelled();
       } else {
@@ -88,7 +89,8 @@ public final class BindingsEngine {
               .getActiveModuleContexts()) {
             BindingLocator locater;
             if (element.isInjectionPoint()) {
-              locater = new BindingLocator(theClass, element.getAnnotations(), moduleContext);
+              locater = new BindingLocator(theClass, element.getAnnotations(),
+                  moduleContext);
             } else {
               locater = new BindingLocator(theClass, moduleContext);
             }

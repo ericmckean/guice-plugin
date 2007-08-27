@@ -18,9 +18,9 @@
  * Module management objects specific to the IDE plugin tool.
  * 
  * <p>The {@link ModulesListener} is an abstract patial implementation of the
- * {@link ModuleSource} for use with IDE plugins.  The {@link ModuleSelectionView}
- * defines an IDE component allowing for the configuration bu the user of which
- * module contexts to run.
+ * {@link com.google.inject.tools.suite.module.ModulesSource} for use with IDE 
+ * plugins.  The {@link ModuleSelectionView} defines an IDE component allowing 
+ * for the configuration bu the user of which module contexts to run.
  */
 
 package com.google.inject.tools.ideplugin.module;

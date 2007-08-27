@@ -83,7 +83,8 @@ class EclipseJavaElement implements JavaElement {
   private String getType(IJavaElement element) {
     try {
       IType type = compilationUnit.getAllTypes()[0];
-      String resolvedSignature = TypeUtil.resolveTypeSignature(type, findSignature(), false);
+      String resolvedSignature = 
+        TypeUtil.resolveTypeSignature(type, findSignature(), false);
       String className = getClassNameFromResolvedSignature(resolvedSignature);
       return className;
     } catch (Exception e) {
