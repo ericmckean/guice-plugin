@@ -19,6 +19,7 @@ package com.google.inject.tools.suite;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import com.google.inject.AbstractModule;
 import com.google.inject.BindingAnnotation;
@@ -28,6 +29,7 @@ import com.google.inject.Provider;
 import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
 import com.google.inject.name.Named;
+import com.google.inject.tools.ideplugin.GuiceIDEPluginContextDefinition;
 
 /**
  * Sample modules, interfaces and implementations for testing purposes.
@@ -131,6 +133,16 @@ public class SampleModuleScenario {
   }
   
   public interface ProvidedService {
+  }
+  
+  
+  public static class Helper implements GuiceIDEPluginContextDefinition {
+    public Iterable<Module> getModuleContextDefinition() {
+      Set<Module> modules = new HashSet<Module>();
+      modules.add(new WorkingModule());
+      modules.add(new WorkingModule2());
+      return modules;
+    }
   }
   
   

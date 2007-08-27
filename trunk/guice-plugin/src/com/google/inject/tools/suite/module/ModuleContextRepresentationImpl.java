@@ -74,9 +74,11 @@ class ModuleContextRepresentationImpl implements
   
   public Set<CodeLocation> findLocations(String theClass) {
     Set<CodeLocation> locations = new HashSet<CodeLocation>();
-    for (KeyRepresentation key : bindings.keySet()) {
-      if (key.bindWhat.equals(theClass)) {
-        locations.add(bindings.get(key));
+    if (!bindings.keySet().isEmpty()) {
+      for (KeyRepresentation key : bindings.keySet()) {
+        if (key.bindWhat.equals(theClass)) {
+          locations.add(bindings.get(key));
+        }
       }
     }
     if (locations.isEmpty()) {
@@ -105,7 +107,7 @@ class ModuleContextRepresentationImpl implements
     if (result instanceof ModuleContextSnippet.ModuleContextResult) {
       ModuleContextSnippet.ModuleContextResult contextResult =
           (ModuleContextSnippet.ModuleContextResult) result;
-      if (contextResult.getName().equals(this.getName())) {
+      if (getName().equals(contextResult.getName())) {
         this.bindings = contextResult.getBindings();
         this.problems = contextResult.getProblems();
         dirty = false;
