@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Guice Plugin
 Bundle-SymbolicName: GuicePlugin;singleton:=true
-Bundle-Version: 0.1.0
+Bundle-Version: 0.1.1
 Bundle-Activator: com.google.inject.tools.ideplugin.eclipse.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -14,7 +14,85 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.forms,
  org.eclipse.ui.editors
 Eclipse-LazyStart: true
-Export-Package: com.google.inject,
+Export-Package: com.google.inject;
+  uses:="com.google.inject.spi,
+   com.google.inject.cglib.proxy,
+   com.google.inject.binder,
+   org.aopalliance.intercept,
+   com.google.inject.matcher,
+   new com.google.inject,
+   com.google.inject.util,
+   com.google.inject.cglib.reflect",
+ com.google.inject.asm,
+ com.google.inject.asm.signature,
+ com.google.inject.binder;uses:="com.google.inject",
+ com.google.inject.cglib.asm,
+ com.google.inject.cglib.asm.signature,
+ com.google.inject.cglib.beans;uses:="com.google.inject.cglib.core,com.google.inject.cglib.asm",
+ com.google.inject.cglib.core;uses:="com.google.inject.cglib.asm",
+ com.google.inject.cglib.proxy;uses:="com.google.inject.cglib.core,com.google.inject.cglib.asm",
+ com.google.inject.cglib.reflect;uses:="com.google.inject.cglib.core,com.google.inject.cglib.asm",
+ com.google.inject.cglib.transform;
+  uses:="org.apache.tools.ant.types,
+   org.apache.tools.ant,
+   com.google.inject.cglib.core,
+   com.google.inject.cglib.asm",
+ com.google.inject.cglib.transform.impl;uses:="com.google.inject.cglib.transform,com.google.inject.cglib.core,com.google.inject.cglib.asm",
+ com.google.inject.cglib.util;uses:="com.google.inject.cglib.core,com.google.inject.cglib.asm",
+ com.google.inject.jndi;uses:="javax.naming,com.google.inject",
+ com.google.inject.matcher,
+ com.google.inject.name;uses:="com.google.inject.spi,com.google.inject",
+ com.google.inject.spi,
+ com.google.inject.tools.ideplugin;
+  uses:="com.google.inject.tools.ideplugin.results,
+   com.google.inject.tools.ideplugin.module,
+   com.google.inject.binder,
+   com.google.inject.tools.suite,
+   junit.framework",
+ com.google.inject.tools.ideplugin.bindings;
+  uses:="com.google.inject.tools.ideplugin.results,
+   com.google.inject.tools.suite,
+   com.google.inject.tools.ideplugin,
+   com.google.inject.tools.suite.module",
+ com.google.inject.tools.ideplugin.eclipse;uses:="junit.framework,com.google.inject.tools.ideplugin",
+ com.google.inject.tools.ideplugin.intellij;
+  uses:="com.google.inject.tools.ideplugin.results,
+   com.google.inject.tools.ideplugin.module,
+   com.google.inject.binder,
+   com.google.inject.tools.suite,
+   com.google.inject.tools.ideplugin",
+ com.google.inject.tools.ideplugin.module;uses:="com.google.inject.tools.suite,com.google.inject.tools.ideplugin,com.google.inject.tools.suite.module",
+ com.google.inject.tools.ideplugin.problem;uses:="com.google.inject.tools.suite",
+ com.google.inject.tools.ideplugin.results;uses:="com.google.inject.tools.ideplugin,com.google.inject.tools.suite.snippets",
+ com.google.inject.tools.jmx;uses:="javax.management,com.google.inject",
+ com.google.inject.tools.suite;
+  uses:="com.google.inject.binder,
+   com.google.inject,
+   com.google.inject.tools.ideplugin,
+   junit.framework,
+   com.google.inject.tools.suite.code,
+   com.google.inject.tools.suite.module,
+   com.google.inject.tools.suite.snippets",
+ com.google.inject.tools.suite.code;uses:="com.google.inject.tools.suite,junit.framework,com.google.inject.tools.suite.snippets",
+ com.google.inject.tools.suite.module;
+  uses:="com.google.inject.tools.suite,
+   com.google.inject,
+   junit.framework,
+   com.google.inject.tools.suite.code,
+   com.google.inject.tools.suite.snippets",
+ com.google.inject.tools.suite.snippets;uses:="com.google.inject",
+ com.google.inject.util;uses:="com.google.inject.cglib.core,new com.google.inject.util,com.google.inject.cglib.reflect",
+ org.easymock;uses:="org.easymock.internal",
+ org.easymock.internal;x-internal:=true,
+ org.easymock.internal.matchers;x-internal:=true
+Bundle-Vendor: com.google.inject.tools.ideplugin
+Bundle-ClassPath: src/,
+ .,
+ eclipse/,
+ bin/,
+ lib/EasyMock/easymock.jar,
+ lib/Guice/guice-1.0.jar
+Import-Package: com.google.inject,
  com.google.inject.asm,
  com.google.inject.asm.signature,
  com.google.inject.binder,
@@ -44,14 +122,7 @@ Export-Package: com.google.inject,
  com.google.inject.tools.suite.module,
  com.google.inject.tools.suite.snippets,
  com.google.inject.util,
+ junit.framework;version="3.8.2",
  org.easymock,
- org.easymock.internal;x-internal:=true,
- org.easymock.internal.matchers;x-internal:=true
-Bundle-Vendor: com.google.inject.tools.ideplugin
-Bundle-ClassPath: src/,
- .,
- eclipse/,
- bin/,
- lib/EasyMock/easymock.jar,
- lib/Guice/guice-1.0.jar
-Import-Package: junit.framework;version="3.8.2"
+ org.easymock.internal,
+ org.easymock.internal.matchers
