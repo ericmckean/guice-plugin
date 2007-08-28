@@ -218,7 +218,7 @@
    </license>
 
    <url>
-      <update label="Sardion" url="http://www2.sardion.com:8080/eclipse-update-site"/>
+      <update label="Guice Plugin Site" url="http://guice-plugin.googlecode.com/svn/trunk/eclipse-update-site/"/>
    </url>
 
    <plugin
