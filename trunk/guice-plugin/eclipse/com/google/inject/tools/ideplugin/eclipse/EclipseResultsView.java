@@ -20,8 +20,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.SWT;
+import org.eclipse.ui.forms.ManagedForm;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
 import org.eclipse.ui.forms.widgets.Form;
@@ -45,9 +47,8 @@ import com.google.inject.tools.suite.Messenger;
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class EclipseResultsView extends ViewPart implements ResultsView {
-  private FormToolkit toolkit;
-  private ScrolledForm form;
-  private Composite parent;
+  private ManagedForm managedForm;
+  private Composite body;
   private Messenger messenger;
 
   /**
@@ -68,8 +69,17 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
    */
   @Override
   public void createPartControl(Composite parent) {
-    this.parent = parent;
-    toolkit = new FormToolkit(parent.getDisplay());
+    createManagedForm(parent);
+  }
+  
+  private void createManagedForm(Composite parent) {
+    managedForm = new ManagedForm(parent);
+    managedForm.getForm().setExpandHorizontal(true);
+    managedForm.getForm().setExpandVertical(true);
+    managedForm.getForm().getBody().setLayout(new FillLayout());
+    managedForm.getForm().setText("Guice Results");
+    managedForm.getForm().pack();
+    managedForm.getForm().reflow(true);
   }
 
   private class HyperlinkListener implements IHyperlinkListener {
@@ -90,7 +100,8 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
     }
   }
 
-  private void makeFormFromNode(Composite body, int depth, Results.Node node) {
+  private void makeFormFromNode(FormToolkit toolkit, Composite body,
+      int depth, Results.Node node) {
     Form nodeForm = toolkit.createForm(body);
     Composite nodeFormBody = nodeForm.getBody();
     GridLayout layout = new GridLayout();
@@ -111,28 +122,30 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
         Label label = toolkit.createLabel(nodeFormBody, element.label());
         label.setToolTipText(element.tooltip());
         label.setEnabled(true);
+        label.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, true, 1, 1));
       } else {
         Hyperlink link =
             toolkit.createHyperlink(nodeFormBody, element.label(), SWT.WRAP);
         link.addHyperlinkListener(new HyperlinkListener(element.action()));
         link.setToolTipText(element.tooltip());
         link.setEnabled(true);
+        link.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, true, 1, 1));
       }
     }
     for (Results.Node child : node.children()) {
-      makeFormFromNode(body, depth + 1, child);
+      makeFormFromNode(toolkit, body, depth + 1, child);
     }
     nodeForm.pack();
   }
 
   public void useResults(Results results) {
-    if (form != null) {
-      form.dispose();
-      form = null;
+    if (body != null) {
+      body.dispose();
     }
-    form = toolkit.createScrolledForm(parent);
-    form.getBody().setLayout(new FillLayout());
-    Composite body = toolkit.createComposite(form.getBody());
+    
+    FormToolkit toolkit = managedForm.getToolkit();
+    ScrolledForm form = managedForm.getForm();
+    body = toolkit.createComposite(form.getBody());
     GridLayout layout = new GridLayout();
     layout.marginHeight = 0;
     layout.marginBottom = 0;
@@ -147,17 +160,15 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
     form.setText(root.getTextString());
     this.setTitleToolTip(root.getTextString());
     for (Results.Node child : root.children()) {
-      makeFormFromNode(body, 1, child);
+      makeFormFromNode(toolkit, body, 1, child);
     }
-    body.pack();
-    form.pack();
     form.reflow(true);
   }
 
   @Override
   public void setFocus() {
-    if (form != null) {
-      form.setFocus();
+    if (managedForm != null) {
+      managedForm.getForm().setFocus();
     }
   }
 

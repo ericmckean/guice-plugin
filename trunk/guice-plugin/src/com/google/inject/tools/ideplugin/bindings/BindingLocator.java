@@ -18,6 +18,7 @@ package com.google.inject.tools.ideplugin.bindings;
 
 import com.google.inject.tools.suite.module.ModuleContextRepresentation;
 import com.google.inject.tools.suite.snippets.CodeLocation;
+import com.google.inject.tools.suite.snippets.CodeProblem;
 import com.google.inject.tools.suite.snippets.BindingCodeLocation.NoBindingLocation;
 
 import java.util.Collections;
@@ -34,6 +35,7 @@ public class BindingLocator {
   private final String annotatedWith;
   private final ModuleContextRepresentation moduleContext;
   private final Set<CodeLocation> locations;
+  private final Set<? extends CodeProblem> problems;
 
   /**
    * Locate the bindings for the given class in the given context.
@@ -70,6 +72,7 @@ public class BindingLocator {
         this.locations = locations;
       }
     }
+    this.problems = moduleContext.getProblems();
   }
 
   /**
@@ -99,5 +102,12 @@ public class BindingLocator {
    */
   public Set<CodeLocation> getCodeLocations() {
     return locations;
+  }
+  
+  /**
+   * Return the problems associated with this binding.
+   */
+  public Set<? extends CodeProblem> getProblems() {
+    return problems;
   }
 }

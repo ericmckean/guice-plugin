@@ -105,11 +105,13 @@ public class EclipseMessenger implements Messenger {
   }
 
   public void logException(String label, Throwable exception) {
-    log(label + ": " + exception.toString());
+    StringBuilder message = new StringBuilder();
+    message.append(label + ": " + exception.toString() + "\n");
     if (exception.getStackTrace() != null) {
       for (StackTraceElement element : exception.getStackTrace()) {
-        log("  " + element);
+        message.append("  " + element + "\n");
       }
     }
+    log(message.toString());
   }
 }

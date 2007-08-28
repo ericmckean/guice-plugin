@@ -33,24 +33,31 @@ import java.util.Set;
  */
 public class CodeLocationsResults extends Results {
   /**
+   * A node that denotes a new module.
+   */
+  public static class ModuleNode extends Node {
+    public ModuleNode(String name) {
+      super("in " + ClassNameUtility.shorten(name), "Results for " + name);
+    }
+  }
+  
+  /**
    * A node in the tree that holds a {@link CodeLocation}.
    */
   public static class CodeLocationNode extends Node {
     private final CodeLocation location;
-
+    
     /**
      * Create a CodeLocationNode. Its children will be the actual location and
      * nodes for each {@link CodeProblem} involved.
      * 
-     * @param name the display name of the node
      * @param location the {@link CodeLocation}
      */
-    public CodeLocationNode(String name, CodeLocation location) {
-      super("in " + ClassNameUtility.shorten(name), "Results for " + name);
+    public CodeLocationNode(CodeLocation location) {
+      super(ActionStringBuilder.getDisplayString(location));
       this.location = location;
-      addChild(new Node(ActionStringBuilder.getDisplayString(location)));
       if (!location.getProblems().isEmpty()) {
-        Node node = new Node("Problems", null);
+        Node node = new ProblemsNode();
         for (CodeProblem problem : location.getProblems()) {
           node.addChild(new ProblemNode(problem));
         }
@@ -65,6 +72,15 @@ public class CodeLocationsResults extends Results {
      */
     public CodeLocation getLocation() {
       return location;
+    }
+  }
+  
+  /**
+   * A node that says Problems.
+   */
+  public static class ProblemsNode extends Node {
+    public ProblemsNode() {
+      super("Problems", null);
     }
   }
 
@@ -115,14 +131,24 @@ public class CodeLocationsResults extends Results {
    * @param module the module context
    * @param locations the code locations
    */
-  public synchronized void put(String module, Set<CodeLocation> locations) {
+  public synchronized void put(String module, Set<CodeLocation> locations, 
+      Set<? extends CodeProblem> problems) {
     if (map.get(module) != null) {
       map.get(module).addAll(locations);
     } else {
       map.put(module, locations);
     }
+    ModuleNode node = new ModuleNode(module);
+    getRoot().addChild(node);
     for (CodeLocation location : locations) {
-      getRoot().addChild(new CodeLocationNode(module, location));
+      node.addChild(new CodeLocationNode(location));
+    }
+    if (!problems.isEmpty()) {
+      ProblemsNode problemsNode = new ProblemsNode();
+      node.addChild(problemsNode);
+      for (CodeProblem problem : problems) {
+        problemsNode.addChild(new ProblemNode(problem));
+      }
     }
   }
 

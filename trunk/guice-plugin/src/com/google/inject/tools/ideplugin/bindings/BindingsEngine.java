@@ -99,7 +99,7 @@ public final class BindingsEngine {
                 problemsHandler.foundProblems(codeLocation.getProblems());
               }
               results.put(locater.getModuleContext().getName(),
-                  locater.getCodeLocations());
+                  locater.getCodeLocations(), locater.getProblems());
             }
           }
           if (!results.keySet().isEmpty()) {

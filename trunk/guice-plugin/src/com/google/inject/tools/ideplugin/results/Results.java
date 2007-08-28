@@ -16,8 +16,8 @@
 
 package com.google.inject.tools.ideplugin.results;
 
-import java.util.Set;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import com.google.inject.tools.ideplugin.ActionsHandler;
 import com.google.inject.tools.ideplugin.results.ActionStringBuilder.ActionString;
 
@@ -36,7 +36,7 @@ public class Results {
    */
   public static class Node {
     protected final ActionString text;
-    protected final Set<Node> children;
+    protected final List<Node> children;
 
     /**
      * Create a new Node.
@@ -45,19 +45,19 @@ public class Results {
      */
     public Node(ActionString text) {
       this.text = text;
-      this.children = new HashSet<Node>();
+      this.children = new ArrayList<Node>();
     }
 
     public Node(String label, String tooltip) {
       this.text = new ActionString();
       this.text.addText(label, tooltip);
-      this.children = new HashSet<Node>();
+      this.children = new ArrayList<Node>();
     }
 
     public Node(String label, ActionsHandler.Action action, String tooltip) {
       this.text = new ActionString();
       this.text.addTextWithAction(label, action, tooltip);
-      this.children = new HashSet<Node>();
+      this.children = new ArrayList<Node>();
     }
 
     /**
@@ -84,7 +84,7 @@ public class Results {
     /**
      * Return the children of this node.
      */
-    public Set<Node> children() {
+    public List<Node> children() {
       return children;
     }
 
