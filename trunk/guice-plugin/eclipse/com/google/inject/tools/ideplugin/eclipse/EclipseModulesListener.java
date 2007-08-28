@@ -51,7 +51,7 @@ import com.google.inject.tools.suite.module.ModulesSource;
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 @Singleton
-class EclipseModulesListener extends ModulesListener {
+public class EclipseModulesListener extends ModulesListener {
   private final Map<EclipseJavaProject, ITypeHierarchy> typeHierarchies;
   private final Map<EclipseJavaProject, MyTypeHierarchyChangedListener> typeHierarchyListeners;
   private final Map<EclipseJavaProject, IType> types;
@@ -194,9 +194,6 @@ class EclipseModulesListener extends ModulesListener {
   }
 
   public static class NotEclipseJavaProjectException extends RuntimeException {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 5868250037957080902L;
     private final JavaManager javaManager;
 

@@ -40,7 +40,7 @@ import java.util.Set;
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-class ModuleManagerImpl implements ModuleManager,
+public class ModuleManagerImpl implements ModuleManager,
     CodeRunner.CodeRunListener {
   private final ModulesSource modulesListener;
   private final ProblemsHandler problemsHandler;

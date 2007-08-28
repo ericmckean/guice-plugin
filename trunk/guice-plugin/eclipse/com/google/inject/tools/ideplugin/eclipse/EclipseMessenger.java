@@ -34,7 +34,7 @@ import com.google.inject.tools.suite.Messenger;
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 @Singleton
-class EclipseMessenger implements Messenger {
+public class EclipseMessenger implements Messenger {
   private Shell shell;
 
   private class MessageDisplayer implements Runnable {

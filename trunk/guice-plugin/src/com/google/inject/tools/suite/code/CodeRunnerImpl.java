@@ -35,7 +35,7 @@ import com.google.inject.tools.suite.snippets.CodeSnippetResult;
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-class CodeRunnerImpl implements CodeRunner {
+public class CodeRunnerImpl implements CodeRunner {
   private final ProgressHandler progressHandler;
   private final Messenger messenger;
   private final Set<CodeRunListener> listeners;

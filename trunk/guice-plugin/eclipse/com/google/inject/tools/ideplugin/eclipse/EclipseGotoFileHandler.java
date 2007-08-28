@@ -16,7 +16,6 @@
 
 package com.google.inject.tools.ideplugin.eclipse;
 
-import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.ui.JavaUI;
 import com.google.inject.tools.ideplugin.GotoFileHandler;
@@ -27,7 +26,7 @@ import com.google.inject.Singleton;
 import com.google.inject.Inject;
 
 @Singleton
-class EclipseGotoFileHandler implements GotoFileHandler {
+public class EclipseGotoFileHandler implements GotoFileHandler {
   private final ProjectManager projectManager;
   private final Messenger messenger;
 
@@ -40,11 +39,11 @@ class EclipseGotoFileHandler implements GotoFileHandler {
 
   public void run(GotoFile action) {
     try {
+      String fixedName = action.getClassname().replace('$', '.');
       IType type =
           ((EclipseJavaProject) projectManager.getCurrentProject())
-              .getIJavaProject().findType(action.getClassname());
-      ICompilationUnit cu = type.getCompilationUnit();
-      JavaUI.openInEditor(cu);
+              .getIJavaProject().findType(fixedName);
+      JavaUI.openInEditor(type);
     } catch (Exception exception) {
       messenger.logException("GotoFile Action Exception", exception);
     }

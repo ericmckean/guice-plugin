@@ -35,7 +35,7 @@ import com.google.inject.tools.suite.ProgressHandler;
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-class EclipseProgressHandler implements ProgressHandler {
+public class EclipseProgressHandler implements ProgressHandler {
   private final Messenger messenger;
   private final List<ProgressStep> steps;
   private ProgressHandlerJob job;

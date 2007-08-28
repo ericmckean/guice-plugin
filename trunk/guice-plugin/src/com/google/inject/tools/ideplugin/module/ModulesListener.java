@@ -159,7 +159,7 @@ public abstract class ModulesListener implements ModulesSource,
   }
 
   protected void hadProblem(Throwable exception) {
-    messenger.logException("Modules Listener error", exception);
+    //messenger.logException("Modules Listener error", exception);
   }
 
   public void addListener(ModulesSourceListener listener) {
