@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <description url="http://www2.sardion.com:8080/eclipse-update-site/">
-      Sardion Update Site
+   <description url="http://guice-plugin.googlecode.com/svn/trunk/eclipse-update-site/">
+      Guice Plugin Site
    </description>
    <feature url="features/GuicePlugin_0.1.1.jar" id="GuicePlugin" version="0.1.1">
       <category name="Guice"/>
