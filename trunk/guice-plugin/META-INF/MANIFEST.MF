@@ -54,3 +54,4 @@ Bundle-ClassPath: src/,
  bin/,
  lib/EasyMock/easymock.jar,
  lib/Guice/guice-1.0.jar
+Import-Package: junit.framework;version="3.8.2"
