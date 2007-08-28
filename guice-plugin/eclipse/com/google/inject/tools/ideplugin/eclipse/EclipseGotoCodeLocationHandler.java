@@ -29,7 +29,7 @@ import com.google.inject.Singleton;
 import com.google.inject.Inject;
 
 @Singleton
-class EclipseGotoCodeLocationHandler implements GotoCodeLocationHandler {
+public class EclipseGotoCodeLocationHandler implements GotoCodeLocationHandler {
   private final ProjectManager projectManager;
   private final Messenger messenger;
 
@@ -44,18 +44,22 @@ class EclipseGotoCodeLocationHandler implements GotoCodeLocationHandler {
     try {
       EclipseJavaProject project =
           (EclipseJavaProject) projectManager.getCurrentProject();
+      String fixedName = action.getStackTraceElement().getClassName().replace('$', '.');
       IType type =
-          project.getIJavaProject().findType(
-              action.getStackTraceElement().getClassName());
+        project.getIJavaProject().findType(fixedName);
       ICompilationUnit cu = type.getCompilationUnit();
-      ITextEditor editor = ((ITextEditor) JavaUI.openInEditor(cu));
-      int offset =
+      if (cu == null) {
+        JavaUI.openInEditor(type);
+      } else {
+        ITextEditor editor = ((ITextEditor) JavaUI.openInEditor(cu));
+        int offset =
           editor.getDocumentProvider().getDocument(editor.getEditorInput())
-              .getLineOffset(action.location() - 1);
-      int length =
+          .getLineOffset(action.location() - 1);
+        int length =
           editor.getDocumentProvider().getDocument(editor.getEditorInput())
-              .getLineLength(action.location() - 1);
-      editor.selectAndReveal(offset, length);
+          .getLineLength(action.location() - 1);
+        editor.selectAndReveal(offset, length);
+      }
     } catch (Exception exception) {
       messenger.logException("GotoCodeLocation Action Exception", exception);
     }

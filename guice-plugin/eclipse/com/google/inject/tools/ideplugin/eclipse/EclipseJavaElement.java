@@ -36,7 +36,7 @@ import com.google.inject.tools.suite.JavaManager;
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-class EclipseJavaElement implements JavaElement {
+public class EclipseJavaElement implements JavaElement {
   private final IJavaElement element;
   private final Type type;
   private final String name;
