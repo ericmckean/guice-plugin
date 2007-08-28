@@ -3,7 +3,7 @@
    <description url="http://www2.sardion.com:8080/eclipse-update-site/">
       Sardion Update Site
    </description>
-   <feature url="features/GuicePlugin_0.1.0.jar" id="GuicePlugin" version="0.1.0">
+   <feature url="features/GuicePlugin_0.1.1.jar" id="GuicePlugin" version="0.1.1">
       <category name="Guice"/>
    </feature>
    <category-def name="Guice" label="Guice"/>
