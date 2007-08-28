@@ -18,13 +18,30 @@ package com.google.inject.tools.ideplugin.eclipse;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.GridLayout;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.ITextOperationTarget;
+import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.jface.text.TextViewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.forms.widgets.FormText;
-import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.ScrolledForm;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.console.actions.ClearOutputAction;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.texteditor.IUpdate;
 
 /**
  * Displays error output from the Guice plugin that is logged to the
@@ -33,9 +50,8 @@ import org.eclipse.ui.part.ViewPart;
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class EclipseErrorView extends ViewPart {
-  private FormToolkit toolkit;
-  private ScrolledForm form;
-  private Composite body;
+  private IDocument document;
+  private ITextViewer viewer;
 
   /**
    * The constructor. This will be called by Eclipse internally.
@@ -49,41 +65,120 @@ public class EclipseErrorView extends ViewPart {
    */
   @Override
   public void createPartControl(Composite parent) {
-    toolkit = new FormToolkit(parent.getDisplay());
-    form = toolkit.createScrolledForm(parent);
-    form.setExpandHorizontal(true);
-    form.setExpandVertical(true);
-    form.getBody().setLayout(new FillLayout());
-    body = toolkit.createComposite(form.getBody());
-    GridLayout layout = new GridLayout();
-    layout.marginHeight = 3;
-    layout.marginBottom = 0;
-    layout.marginLeft = 7;
-    layout.marginRight = 0;
-    layout.marginTop = 0;
-    layout.marginWidth = 0;
-    layout.horizontalSpacing = 0;
-    layout.verticalSpacing = 2;
-    body.setLayout(layout);
-    form.setText("Guice Error Log");
-    form.pack();
-    form.reflow(true);
+    viewer = new TextViewer(parent, SWT.H_SCROLL | SWT.V_SCROLL);
+    
+    viewer.setEditable(false);
+    document = new Document();
+    viewer.setDocument(document);
+    document.set("Guice Error Log");
+    viewer.activatePlugins();
+    
+    createActions();
+    initializeToolBar();
+
+    MenuManager menuMgr = new MenuManager("#PopUp"); //$NON-NLS-1$
+    menuMgr.setRemoveAllWhenShown(true);
+    menuMgr.addMenuListener(new IMenuListener() {
+      public void menuAboutToShow(IMenuManager mgr) {
+        fillContextMenu(mgr);
+      }
+    });
+    Menu menu = menuMgr.createContextMenu(viewer.getTextWidget());
+    viewer.getTextWidget().setMenu(menu);
+    getSite().registerContextMenu(menuMgr, viewer.getSelectionProvider());
+  }
+
+  private Map<String, IAction> fGlobalActions = new HashMap<String, IAction>();
+  private IAction fClearDisplayAction;
+
+  protected void fillContextMenu(IMenuManager menu) {
+    if (viewer.getDocument() == null) {
+      return;
+    }
+    menu.add(new Separator());
+    menu.add(fGlobalActions.get(ActionFactory.CUT.getId()));
+    menu.add(fGlobalActions.get(ActionFactory.COPY.getId()));
+    menu.add(fGlobalActions.get(ActionFactory.SELECT_ALL.getId()));
+    menu.add(fClearDisplayAction);
+  }
+
+  protected void createActions() {
+
+    fClearDisplayAction= new ClearOutputAction(viewer);
+
+    IActionBars actionBars = getViewSite().getActionBars();
+
+    IAction action= new DisplayViewAction(this, ITextOperationTarget.CUT);
+    action.setText("Cut"); //$NON-NLS-1$
+    setGlobalAction(actionBars, ActionFactory.CUT.getId(), action);
+
+    action= new DisplayViewAction(this, ITextOperationTarget.COPY);
+    action.setText("Copy"); //$NON-NLS-1$
+    setGlobalAction(actionBars, ActionFactory.COPY.getId(), action);
+
+
+    action= new DisplayViewAction(this, ITextOperationTarget.SELECT_ALL);
+    action.setText("Select All"); //$NON-NLS-1$
+    setGlobalAction(actionBars, ActionFactory.SELECT_ALL.getId(), action);
+
+  }
+
+  protected void setGlobalAction(IActionBars actionBars, String actionID, IAction action) {
+    fGlobalActions.put(actionID, action);
+    actionBars.setGlobalActionHandler(actionID, action);
+  }
+
+  private void initializeToolBar() {
+    IToolBarManager tbm = getViewSite().getActionBars().getToolBarManager();
+    tbm.add(fClearDisplayAction);
+    getViewSite().getActionBars().updateActionBars();
+  }
+
+  public class DisplayViewAction extends Action implements IUpdate {
+    private int fOperationCode= -1;
+    private ITextOperationTarget fOperationTarget;
+    private IAdaptable fTargetProvider;
+
+
+    public DisplayViewAction(ITextOperationTarget target, int operationCode) {
+      super();
+      fOperationTarget= target;
+      fOperationCode= operationCode;
+      update();
+    }
+
+    public DisplayViewAction(IAdaptable targetProvider, int operationCode) {
+      super();
+      fTargetProvider= targetProvider;
+      fOperationCode= operationCode;
+      update();
+    }
+
+    @Override
+    public void run() {
+      if (fOperationCode != -1 && fOperationTarget != null)
+        fOperationTarget.doOperation(fOperationCode);
+    }
+
+
+    public void update() {
+      if (fOperationTarget == null && fTargetProvider != null && fOperationCode != -1){
+        fOperationTarget= (ITextOperationTarget) fTargetProvider.getAdapter(ITextOperationTarget.class);
+      }
+
+      boolean isEnabled= (fOperationTarget != null && fOperationTarget.canDoOperation(fOperationCode));
+      setEnabled(isEnabled);
+    }
   }
 
   @Override
   public void setFocus() {
-    if (form != null) {
-      form.setFocus();
-    }
   }
 
   public void displayError(String message) {
     String dateString =
-        new SimpleDateFormat("dd/MM HH:mm:ss").format(new Date());
+      new SimpleDateFormat("dd/MM HH:mm:ss").format(new Date());
     String msg = "[" + dateString + "]   " + message;
-    FormText formText = toolkit.createFormText(body, true);
-    formText.setText(msg, false, true);
-    formText.setFocus();
-    form.reflow(true);
+    document.set(document.get() + msg);
   }
 }

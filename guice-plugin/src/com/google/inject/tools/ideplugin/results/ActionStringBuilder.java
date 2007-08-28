@@ -167,7 +167,7 @@ public class ActionStringBuilder {
     public NoBindingLocationActionString(NoBindingLocation location) {
       super();
       String theClass = location.getTheClass();
-      addText("No binding for", "");
+      addText("No binding for ", null);
       addTextWithAction(ClassNameUtility.shorten(theClass), new ActionsHandler.GotoFile(
         theClass), "Goto source of " + theClass);
     }

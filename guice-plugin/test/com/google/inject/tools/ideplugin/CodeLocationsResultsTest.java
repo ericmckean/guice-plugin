@@ -62,7 +62,8 @@ public class CodeLocationsResultsTest extends TestCase {
             Collections.<CodeProblem> emptySet());
     CodeLocationsResults results =
         new CodeLocationsResults("Test Results", null);
-    results.put("Valid Module Context", Collections.singleton(validLocation));
+    results.put("Valid Module Context", Collections.singleton(validLocation), 
+        Collections.<CodeProblem>emptySet());
     return results;
   }
 
@@ -83,8 +84,10 @@ public class CodeLocationsResultsTest extends TestCase {
 
     CodeLocationsResults results =
         new CodeLocationsResults("Test Results", null);
-    results.put("Valid Module Context", Collections.singleton(validLocation));
-    results.put("Broken Module Context", Collections.singleton(problemsLocation));
+    results.put("Valid Module Context", Collections.singleton(validLocation),
+        Collections.<CodeProblem>emptySet());
+    results.put("Broken Module Context", Collections.singleton(problemsLocation),
+        Collections.<CodeProblem>emptySet());
     return results;
   }
 
