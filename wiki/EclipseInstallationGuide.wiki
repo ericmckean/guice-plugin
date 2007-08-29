@@ -1,6 +1,6 @@
 #summary How to install the guice plugin in Eclipse.
 
-== *Prealpha* Release ==
+== *Alpha* Release ==
 
 This is an alpha release of the plugin.  Please update often.
 
@@ -24,7 +24,6 @@ The install site is
   # Click *Finish*
   # After the download is complete, click *Install*
   # When prompted, restart Eclipse by saying *Yes*
-
 
 
 
