@@ -36,7 +36,7 @@ import com.google.inject.tools.suite.module.ModulesSource;
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 class IntellijPluginModule extends GuicePluginModule {
-  public static class IntellijGuiceToolsModule extends GuiceToolsModuleImpl {
+  static class IntellijGuiceToolsModule extends GuiceToolsModuleImpl {
     @Override
     protected void bindMessenger(
         AnnotatedBindingBuilder<Messenger> bindMessenger) {

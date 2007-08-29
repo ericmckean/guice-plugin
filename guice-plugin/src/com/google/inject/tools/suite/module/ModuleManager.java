@@ -284,6 +284,15 @@ public interface ModuleManager {
    * Notify the manager that the user has added a custom context.
    */
   public void addCustomContext(String contextName);
+  
+  /**
+   * Add a custom context to the module manager.
+   * 
+   * @param name the context name
+   * @param classToUse the class in user code to use
+   * @param methodToCall the method of that class that returns the modules
+   */
+  public void addCustomContext(String name, String classToUse, String methodToCall);
 
   /**
    * Notify the manager that the user has removed a custom context.

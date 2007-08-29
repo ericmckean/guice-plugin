@@ -49,7 +49,7 @@ import com.google.inject.tools.suite.module.ModulesSource;
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 @Singleton
-public class EclipseContextDefinitionListener extends CustomContextDefinitionSourceImpl {
+class EclipseContextDefinitionListener extends CustomContextDefinitionSourceImpl {
   private final Map<EclipseJavaProject, ITypeHierarchy> contextTypeHierarchies;
   private final Map<EclipseJavaProject, MyContextTypeHierarchyChangedListener> contextTypeHierarchyListeners;
   private final Map<EclipseJavaProject, IType> contextTypes;
@@ -132,7 +132,7 @@ public class EclipseContextDefinitionListener extends CustomContextDefinitionSou
         }
       }
     } catch (Throwable throwable) {
-      hadProblem(throwable);
+      //hadProblem(throwable);
     }
   }
 

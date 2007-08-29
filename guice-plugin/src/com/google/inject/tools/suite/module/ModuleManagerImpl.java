@@ -22,7 +22,6 @@ import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProblemsHandler;
 import com.google.inject.tools.suite.GuiceToolsModule.CodeRunnerFactory;
 import com.google.inject.tools.suite.code.CodeRunner;
-import com.google.inject.tools.suite.module.CustomModuleContextRepresentation;
 import com.google.inject.tools.suite.module.ModuleContextRepresentation;
 import com.google.inject.tools.suite.module.ModuleContextRepresentationImpl;
 import com.google.inject.tools.suite.module.ModuleManager;
@@ -531,8 +530,13 @@ public class ModuleManagerImpl implements ModuleManager,
   }
 
   public void addCustomContext(String contextName) {
-    addModuleContext(new CustomModuleContextRepresentation(contextName,
+    addModuleContext(new CustomModuleContextRepresentationImpl(contextName,
         contextName, "getModuleContextDefinition"), true);
+  }
+  
+  public void addCustomContext(String name, String classToUse, String methodToCall) {
+    addModuleContext(new CustomModuleContextRepresentationImpl(name,
+        classToUse, methodToCall), true);
   }
 
   public void removeCustomContext(String contextName) {

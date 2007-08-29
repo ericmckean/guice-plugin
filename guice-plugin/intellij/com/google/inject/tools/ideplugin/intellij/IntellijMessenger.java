@@ -18,7 +18,7 @@ package com.google.inject.tools.ideplugin.intellij;
 
 import com.google.inject.tools.suite.Messenger;
 
-public class IntellijMessenger implements Messenger {
+class IntellijMessenger implements Messenger {
   
   public void display(String message) {
     // TODO Auto-generated method stub
