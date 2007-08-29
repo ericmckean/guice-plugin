@@ -249,6 +249,8 @@ public class ModuleContextSnippet extends CodeSnippet {
       isValid = true;
     } catch (CreationException exception) {
       problems.add(new CodeProblem.CreationProblem(getName(), exception));
+    } catch (Throwable throwable) {
+      problems.add(new CodeProblem(getName(), throwable));
     }
     if (isValid) {
       bindings = injector.getBindings();

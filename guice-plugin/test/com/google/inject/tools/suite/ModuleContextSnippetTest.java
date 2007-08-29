@@ -20,7 +20,6 @@ import junit.framework.TestCase;
 
 import com.google.inject.TypeLiteral;
 import com.google.inject.name.Named;
-import com.google.inject.tools.ideplugin.eclipse.GuicePluginToolsHelper;
 import com.google.inject.tools.suite.SampleModuleScenario.BlueService;
 import com.google.inject.tools.suite.SampleModuleScenario.BrokenModule;
 import com.google.inject.tools.suite.SampleModuleScenario.CreditCard;
@@ -54,28 +53,6 @@ import java.io.PipedOutputStream;
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class ModuleContextSnippetTest extends TestCase {
-  public void testMyPluginHelper() throws Exception {
-    String[] args = new String[4];
-    args[0] = "Custom Context";
-    args[1] = String.valueOf(-1);
-    args[2] = GuicePluginToolsHelper.class.getName();
-    args[3] = "getModuleContextDefinition";
-    Object obj = runASnippet(args);
-    assertTrue(obj instanceof ModuleContextSnippet.ModuleContextResult);
-    ModuleContextSnippet.ModuleContextResult result =
-        (ModuleContextSnippet.ModuleContextResult) obj;
-    assertTrue(result.getName().equals("Custom Context"));
-    assertTrue(result.getProblems().isEmpty());
-    assertNotNull(result.getBindings());
-  }
-  
-  public void testModuleContextSnippetModuleRepresentation() throws Exception {
-    ModuleContextSnippet.ModuleRepresentation module =
-        new ModuleContextSnippet.ModuleRepresentation(WorkingModule.class,
-            null, null);
-    assertNotNull(module.getInstance());
-  }
-
   private class ThreadWithStream extends Thread {
     private final OutputStream stream;
     private final String[] args;
@@ -98,6 +75,13 @@ public class ModuleContextSnippetTest extends TestCase {
     new ThreadWithStream(os, args).start();
     ObjectInputStream ois = new ObjectInputStream(is);
     return ois.readObject();
+  }
+  
+  public void testModuleContextSnippetModuleRepresentation() throws Exception {
+    ModuleContextSnippet.ModuleRepresentation module =
+        new ModuleContextSnippet.ModuleRepresentation(WorkingModule.class,
+            null, null);
+    assertNotNull(module.getInstance());
   }
 
   /**

@@ -26,6 +26,7 @@ public class ClassNameUtility {
    * Return the short form of this name, i.e. the last part.
    */
   public static String shorten(String className) {
+    if (className == null) return null;
     int lastDot = className.lastIndexOf(".");
     int lastDollar = className.lastIndexOf("$");
     int last = max(lastDot,lastDollar);

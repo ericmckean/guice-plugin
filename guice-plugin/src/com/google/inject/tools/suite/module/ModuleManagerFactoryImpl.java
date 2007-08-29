@@ -65,7 +65,7 @@ public class ModuleManagerFactoryImpl implements ModuleManagerFactory {
       moduleManagerInstances.put(javaManager, new ModuleManagerImpl(
           modulesSourceProvider.get(), problemsHandlerProvider.get(),
           messengerProvider.get(), javaManager, codeRunnerFactoryProvider
-          .get()));
+          .get(), false));
     }
     return moduleManagerInstances.get(javaManager);
   }

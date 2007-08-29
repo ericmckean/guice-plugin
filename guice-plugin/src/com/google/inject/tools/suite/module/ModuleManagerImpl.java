@@ -62,6 +62,14 @@ public class ModuleManagerImpl implements ModuleManager,
   public ModuleManagerImpl(ModulesSource modulesListener,
       ProblemsHandler problemsHandler, Messenger messenger,
       JavaManager javaManager, CodeRunnerFactory codeRunnerFactory) {
+    this(modulesListener, problemsHandler, messenger, javaManager,
+        codeRunnerFactory, true);
+  }
+  
+  public ModuleManagerImpl(ModulesSource modulesListener,
+      ProblemsHandler problemsHandler, Messenger messenger,
+      JavaManager javaManager, CodeRunnerFactory codeRunnerFactory,
+      boolean waitOnInit) {
     this.modulesListener = modulesListener;
     this.problemsHandler = problemsHandler;
     this.codeRunnerFactory = codeRunnerFactory;
@@ -77,7 +85,6 @@ public class ModuleManagerImpl implements ModuleManager,
 
     this.runAutomatically = false;
     this.activateByDefault = false;
-    boolean waitOnInit = false;
 
     if (waitOnInit) {
       initThread = null;

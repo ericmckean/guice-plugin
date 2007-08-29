@@ -152,13 +152,24 @@ public class EclipseModulesListener extends ModulesListener {
       initialize2((EclipseJavaProject) javaManager);
     }
   }
+  
+  public void refresh(JavaManager javaManager) {
+    if (types.get(javaManager) == null
+        || typeHierarchies.get(javaManager) == null
+        || contextTypes.get(javaManager) == null 
+        || contextTypeHierarchies.get(javaManager) == null) {
+      if (javaManager instanceof EclipseJavaProject) {
+        initialize2((EclipseJavaProject) javaManager);
+      }
+    }
+  }
 
   protected void initialize2(EclipseJavaProject javaManager) {
     try {
       IType moduleType =
           javaManager.getIJavaProject().findType(
               com.google.inject.Module.class.getName());
-      if (moduleType != null) {
+      if (moduleType != null && moduleType.getJavaProject().equals(javaManager.getIJavaProject())) {
         types.put(javaManager, moduleType);
         typeHierarchies.put(javaManager, types.get(javaManager)
             .newTypeHierarchy(null));
@@ -176,7 +187,7 @@ public class EclipseModulesListener extends ModulesListener {
               .findType(
                   com.google.inject.tools.ideplugin.GuiceIDEPluginContextDefinition.class
                       .getName());
-      if (contextType != null) {
+      if (contextType != null && contextType.getJavaProject().equals(javaManager.getIJavaProject())) {
         contextTypes.put(javaManager, contextType);
         contextTypeHierarchies.put(javaManager, contextTypes.get(javaManager)
             .newTypeHierarchy(null));

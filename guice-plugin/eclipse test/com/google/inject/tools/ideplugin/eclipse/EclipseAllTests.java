@@ -33,7 +33,6 @@ public class EclipseAllTests extends TestCase {
 
     suite.addTest(AllNonIDESpecificTests.suite());
 
-    suite.addTestSuite(EclipseJavaElementTest.class);
     suite.addTestSuite(StartupTest.class);
 
     return suite;

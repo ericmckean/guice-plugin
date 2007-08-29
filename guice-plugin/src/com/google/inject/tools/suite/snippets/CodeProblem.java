@@ -57,6 +57,12 @@ public class CodeProblem implements Serializable {
     public CreationProblem(String module, CreationException exception) {
       super(module, exception);
     }
+    
+    @Override
+    public String toString() {
+      return "Guice Code Problem: " + moduleContext
+        + " creation problem: " + message;
+    }
   }
 
   /**
@@ -200,7 +206,11 @@ public class CodeProblem implements Serializable {
 
   @Override
   public String toString() {
-    return "Guice Code Problem: " + message;
+    if (moduleContext != null) {
+      return "Guice Code Problem: in " + moduleContext + " -- " + message;
+    } else {
+      return "Guice Code Problem: " + message;
+    }
   }
 
   /**

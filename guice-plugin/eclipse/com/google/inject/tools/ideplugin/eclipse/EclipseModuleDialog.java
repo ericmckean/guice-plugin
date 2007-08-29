@@ -64,9 +64,9 @@ class EclipseModuleDialog extends FormDialog {
     super(parent);
     this.shell = parent;
     this.moduleManager = moduleManager;
-    this.moduleContexts = moduleManager.getModuleContexts();
-    this.activeModuleContexts = moduleManager.getActiveModuleContexts();
-    this.activateByDefault = moduleManager.activateModulesByDefault();
+    moduleContexts = moduleManager.getModuleContexts();
+    activeModuleContexts = moduleManager.getActiveModuleContexts();
+    activateByDefault = moduleManager.activateModulesByDefault();
   }
 
   public static void display(Shell parent, ModuleManager moduleManager) {

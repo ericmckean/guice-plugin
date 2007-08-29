@@ -52,4 +52,9 @@ public interface CustomContextDefinitionSource {
    * @param javaManager the java context to find custom module contexts for
    */
   public Set<String> getContexts(JavaManager javaManager);
+  
+  /**
+   * Called by the client when a possible refresh is needed.
+   */
+  public void refresh(JavaManager javaManager);
 }
