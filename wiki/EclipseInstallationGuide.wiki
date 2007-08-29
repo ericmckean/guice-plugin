@@ -15,11 +15,11 @@ The install site is
   # Enter *Guice Plugin* for the Name
   # Enter *http://guice-plugin.googlecode.com/svn/trunk/eclipse-update-site/ *for the URL
   # Click *OK* and then *Finish*
-  # Check the *Guice Plugin* box and hit *Next*
-  # Accept the license agreement
-  # After the download is complete, choose *Install All*
-
-
+  # Check the *Guice Plugin* box and hit *Finish*
+  # Click the *I accept the terms in the license agreement* button (after being sure that you do) and click *Next*
+  # Click *Finish*
+  # After the download is complete, click *Install*
+  # When prompted, restart Eclipse by saying *Yes*
 
 
 
