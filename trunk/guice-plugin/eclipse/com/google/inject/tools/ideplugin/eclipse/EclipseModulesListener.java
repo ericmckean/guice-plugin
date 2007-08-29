@@ -37,7 +37,6 @@ import org.eclipse.jdt.core.ITypeHierarchyChangedListener;
 import org.eclipse.jdt.core.JavaCore;
 import com.google.inject.Singleton;
 import com.google.inject.Inject;
-import com.google.inject.tools.ideplugin.ProjectManager;
 import com.google.inject.tools.ideplugin.module.ModulesListener;
 import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.Messenger;
@@ -60,9 +59,8 @@ class EclipseModulesListener extends ModulesListener {
    * Create an EclipseModulesListener. This should be injected.
    */
   @Inject
-  public EclipseModulesListener(ProjectManager projectManager,
-      Messenger messenger) {
-    super(projectManager, messenger);
+  public EclipseModulesListener(Messenger messenger) {
+    super(messenger);
     typeHierarchies = new HashMap<EclipseJavaProject, ITypeHierarchy>();
     typeHierarchyListeners =
         new HashMap<EclipseJavaProject, MyTypeHierarchyChangedListener>();
@@ -203,10 +201,10 @@ class EclipseModulesListener extends ModulesListener {
             new EclipseJavaProject((IJavaProject) event.getDelta().getElement());
         switch (event.getDelta().getKind()) {
           case IJavaElementDelta.F_CLOSED:
-            projectManager.projectClosed(javaManager);
+            javaManagerRemoved(javaManager);
             break;
           case IJavaElementDelta.F_OPENED:
-            projectManager.projectOpened(javaManager);
+            javaManagerAdded(javaManager);
             break;
           default:
             // do nothing

@@ -23,7 +23,6 @@ import java.util.Set;
 
 import com.google.inject.Inject;
 import com.google.inject.tools.ideplugin.CustomContextDefinitionSource;
-import com.google.inject.tools.ideplugin.ProjectManager;
 import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.module.ModulesSource;
@@ -40,13 +39,11 @@ import com.google.inject.tools.suite.module.ModulesSource;
  */
 public abstract class ModulesListener implements ModulesSource {
   protected final Messenger messenger;
-  protected final ProjectManager projectManager;
   private final Set<ModulesSourceListener> listeners;
   private final Map<JavaManager, Set<String>> modules;
 
   @Inject
-  public ModulesListener(ProjectManager projectManager, Messenger messenger) {
-    this.projectManager = projectManager;
+  public ModulesListener(Messenger messenger) {
     this.messenger = messenger;
     this.listeners = new HashSet<ModulesSourceListener>();
     this.modules = new HashMap<JavaManager, Set<String>>();
@@ -132,6 +129,18 @@ public abstract class ModulesListener implements ModulesSource {
   protected void moduleAdded(JavaManager javaManager, String moduleName) {
     for (ModulesSourceListener listener : listeners) {
       listener.moduleAdded(this, javaManager, moduleName);
+    }
+  }
+  
+  protected void javaManagerAdded(JavaManager javaManager) {
+    for (ModulesSourceListener listener : listeners) {
+      listener.javaManagerAdded(this, javaManager);
+    }
+  }
+  
+  protected void javaManagerRemoved(JavaManager javaManager) {
+    for (ModulesSourceListener listener : listeners) {
+      listener.javaManagerRemoved(this, javaManager);
     }
   }
 }
