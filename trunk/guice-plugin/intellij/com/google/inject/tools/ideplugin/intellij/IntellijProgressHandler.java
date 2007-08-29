@@ -18,7 +18,7 @@ package com.google.inject.tools.ideplugin.intellij;
 
 import com.google.inject.tools.suite.ProgressHandler;
 
-public class IntellijProgressHandler implements ProgressHandler {
+class IntellijProgressHandler implements ProgressHandler {
   
   public void go(String label, boolean backgroundAutomatically) {
     // TODO Auto-generated method stub

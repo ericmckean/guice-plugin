@@ -155,9 +155,7 @@ class EclipseModuleDialog extends FormDialog {
       String title = titleTextValue;
       String classToUse = classNameTextValue;
       String methodToUse = methodNameTextValue;
-      ModuleContextRepresentation context =
-          new CustomModuleContextRepresentation(title, classToUse, methodToUse);
-      moduleManager.addModuleContext(context, true);
+      moduleManager.addCustomContext(title, classToUse, methodToUse);
     }
 
     public static void display(Shell parent, ModuleManager moduleManager) {

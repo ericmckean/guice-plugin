@@ -34,7 +34,7 @@ import java.util.Map;
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 @Singleton
-public class ProjectManagerImpl implements ProjectManager,
+class ProjectManagerImpl implements ProjectManager,
     ModulesSource.ModulesSourceListener, CustomContextDefinitionListener {
   private final Map<JavaManager, ModuleManager> moduleManagers;
   private final ModuleManagerFactory moduleManagerFactory;

@@ -29,7 +29,7 @@ import com.google.inject.Singleton;
 import com.google.inject.Inject;
 
 @Singleton
-public class EclipseGotoCodeLocationHandler implements GotoCodeLocationHandler {
+class EclipseGotoCodeLocationHandler implements GotoCodeLocationHandler {
   private final ProjectManager projectManager;
   private final Messenger messenger;
 

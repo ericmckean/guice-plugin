@@ -19,7 +19,7 @@ package com.google.inject.tools.ideplugin.intellij;
 import com.google.inject.tools.ideplugin.GotoCodeLocationHandler;
 import com.google.inject.tools.ideplugin.ActionsHandler.GotoCodeLocation;
 
-public class IntellijGotoCodeLocationHandler implements GotoCodeLocationHandler {
+class IntellijGotoCodeLocationHandler implements GotoCodeLocationHandler {
   
   public void run(GotoCodeLocation action) {
     // TODO Auto-generated method stub

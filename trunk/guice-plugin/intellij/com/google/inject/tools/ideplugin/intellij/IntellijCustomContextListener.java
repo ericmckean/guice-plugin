@@ -24,7 +24,7 @@ import com.google.inject.tools.ideplugin.ProjectManager;
 import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.Messenger;
 
-public class IntellijCustomContextListener extends
+class IntellijCustomContextListener extends
     CustomContextDefinitionSourceImpl {
   @Inject
   public IntellijCustomContextListener(ProjectManager projectManager,

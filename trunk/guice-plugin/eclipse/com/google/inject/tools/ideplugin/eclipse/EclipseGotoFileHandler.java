@@ -26,7 +26,7 @@ import com.google.inject.Singleton;
 import com.google.inject.Inject;
 
 @Singleton
-public class EclipseGotoFileHandler implements GotoFileHandler {
+class EclipseGotoFileHandler implements GotoFileHandler {
   private final ProjectManager projectManager;
   private final Messenger messenger;
 

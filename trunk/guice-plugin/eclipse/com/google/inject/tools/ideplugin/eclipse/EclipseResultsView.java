@@ -100,7 +100,7 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
     }
   }
 
-  private void makeFormFromNode(FormToolkit toolkit, Composite body,
+  private Form makeFormFromNode(FormToolkit toolkit, Composite body,
       int depth, Results.Node node) {
     Form nodeForm = toolkit.createForm(body);
     Composite nodeFormBody = nodeForm.getBody();
@@ -133,9 +133,12 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
       }
     }
     for (Results.Node child : node.children()) {
-      makeFormFromNode(toolkit, body, depth + 1, child);
+      Form subform = makeFormFromNode(toolkit, body, depth + 1, child);
+      subform.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, true, 
+          node.getText().elements().size(), 1));
     }
     nodeForm.pack();
+    return nodeForm;
   }
 
   public void useResults(Results results) {
@@ -154,7 +157,7 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
     layout.marginTop = 0;
     layout.marginWidth = 0;
     layout.horizontalSpacing = 0;
-    layout.verticalSpacing = 0;
+    layout.verticalSpacing = 3;
     body.setLayout(layout);
     Results.Node root = results.getRoot();
     form.setText(root.getTextString());
@@ -162,6 +165,8 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
     for (Results.Node child : root.children()) {
       makeFormFromNode(toolkit, body, 1, child);
     }
+    body.pack();
+    form.pack();
     form.reflow(true);
   }
 

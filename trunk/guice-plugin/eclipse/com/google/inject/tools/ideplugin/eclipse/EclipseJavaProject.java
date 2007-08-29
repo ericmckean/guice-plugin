@@ -40,7 +40,7 @@ import org.osgi.framework.Bundle;
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-public class EclipseJavaProject implements JavaManager {
+class EclipseJavaProject implements JavaManager {
   private final IJavaProject project;
 
   public EclipseJavaProject(IJavaProject project) {

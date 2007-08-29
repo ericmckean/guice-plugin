@@ -70,7 +70,7 @@ public class EclipseErrorView extends ViewPart {
     viewer.setEditable(false);
     document = new Document();
     viewer.setDocument(document);
-    document.set("Guice Error Log");
+    document.set("Guice Error Log\n");
     viewer.activatePlugins();
     
     createActions();

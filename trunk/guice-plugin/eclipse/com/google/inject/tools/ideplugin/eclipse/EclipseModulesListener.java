@@ -51,7 +51,7 @@ import com.google.inject.tools.suite.module.ModulesSource;
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 @Singleton
-public class EclipseModulesListener extends ModulesListener {
+class EclipseModulesListener extends ModulesListener {
   private final Map<EclipseJavaProject, ITypeHierarchy> typeHierarchies;
   private final Map<EclipseJavaProject, MyTypeHierarchyChangedListener> typeHierarchyListeners;
   private final Map<EclipseJavaProject, IType> types;
@@ -147,7 +147,7 @@ public class EclipseModulesListener extends ModulesListener {
         }
       }
     } catch (Throwable throwable) {
-      hadProblem(throwable);
+      //hadProblem(throwable);
     }
   }
 

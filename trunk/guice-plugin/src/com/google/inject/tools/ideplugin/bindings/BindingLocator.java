@@ -30,7 +30,7 @@ import java.util.Set;
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-public class BindingLocator {
+class BindingLocator {
   private final String theClass;
   private final String annotatedWith;
   private final ModuleContextRepresentation moduleContext;

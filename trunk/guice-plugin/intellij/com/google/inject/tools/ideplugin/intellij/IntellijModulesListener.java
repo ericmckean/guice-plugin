@@ -24,7 +24,7 @@ import com.google.inject.tools.ideplugin.module.ModulesListener;
 import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.Messenger;
 
-public class IntellijModulesListener extends ModulesListener {
+class IntellijModulesListener extends ModulesListener {
   @Inject
   public IntellijModulesListener(ProjectManager projectManager, Messenger messenger) {
     super(projectManager, messenger);
