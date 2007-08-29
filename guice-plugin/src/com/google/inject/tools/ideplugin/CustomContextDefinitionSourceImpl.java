@@ -20,8 +20,9 @@ import com.google.inject.Inject;
 import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.Messenger;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -29,15 +30,68 @@ import java.util.Set;
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-class CustomContextDefinitionSourceImpl implements
+public abstract class CustomContextDefinitionSourceImpl implements
     CustomContextDefinitionSource {
   private final Set<CustomContextDefinitionListener> listeners;
-  private final Messenger messenger;
+  protected final Messenger messenger;
+  protected final ProjectManager projectManager;
+  private final Map<JavaManager, Set<String>> contexts;
 
   @Inject
-  public CustomContextDefinitionSourceImpl(Messenger messenger) {
+  public CustomContextDefinitionSourceImpl(ProjectManager projectManager,
+      Messenger messenger) {
+    this.projectManager = projectManager;
     this.messenger = messenger;
     this.listeners = new HashSet<CustomContextDefinitionListener>();
+    this.contexts = new HashMap<JavaManager, Set<String>>();
+  }
+  
+  /**
+   * Locate custom contexts.
+   */
+  protected abstract Set<String> locateContexts(JavaManager javaManager)
+      throws Throwable;
+  
+  public Set<String> getContexts(JavaManager javaManager) {
+    if (contexts.get(javaManager) == null) {
+      initialize(javaManager);
+    }
+    try {
+      keepContextsByName(javaManager, locateContexts(javaManager));
+    } catch (Throwable throwable) {
+      hadProblem(throwable);
+    }
+    return new HashSet<String>(contexts.get(javaManager));
+  }
+
+  protected synchronized void keepContextsByName(JavaManager javaManager,
+      Set<String> contextNames) {
+    Set<String> newContexts = new HashSet<String>(contextNames);
+    Set<String> removeContexts = new HashSet<String>();
+    for (String context : contexts.get(javaManager)) {
+      boolean keep = false;
+      for (String name : contextNames) {
+        if (name.equals(context)) {
+          keep = true;
+          newContexts.remove(name);
+        }
+      }
+      if (!keep) {
+        removeContexts.add(context);
+      }
+    }
+    for (String context : removeContexts) {
+      contexts.get(javaManager).remove(context);
+    }
+    for (String context : newContexts) {
+      contexts.get(javaManager).add(context);
+    }
+  }
+  
+  protected void initialize(JavaManager javaManager) {
+    if (contexts.get(javaManager) == null) {
+      contexts.put(javaManager, new HashSet<String>());
+    }
   }
 
   public synchronized void addListener(CustomContextDefinitionListener listener) {
@@ -74,13 +128,5 @@ class CustomContextDefinitionSourceImpl implements
     for (CustomContextDefinitionListener listener : listeners) {
       listener.contextDefinitionAdded(this, javaManager, contextDefinitionName);
     }
-  }
-
-  public Set<String> getContexts(JavaManager javaManager) {
-    return Collections.<String> emptySet();
-  }
-  
-  public void refresh(JavaManager javaManager) {
-    
   }
 }

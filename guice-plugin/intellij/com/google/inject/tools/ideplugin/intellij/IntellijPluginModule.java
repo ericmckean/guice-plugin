@@ -94,7 +94,7 @@ class IntellijPluginModule extends GuicePluginModule {
   @Override
   protected void bindCustomContextDefinitionSource(
       AnnotatedBindingBuilder<CustomContextDefinitionSource> bindCustomContextDefinitionSource) {
-    bindCustomContextDefinitionSource.to(IntellijModulesListener.class)
+    bindCustomContextDefinitionSource.to(IntellijCustomContextListener.class)
         .asEagerSingleton();
   }
 }

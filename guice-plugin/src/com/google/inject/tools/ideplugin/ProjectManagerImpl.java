@@ -137,7 +137,8 @@ public class ProjectManagerImpl implements ProjectManager,
   }
 
   public ModuleManager getModuleManager(JavaManager javaManager) {
-    if (!initThreads.get(javaManager).isDone()) {
+    if (initThreads.get(javaManager) != null
+        && !initThreads.get(javaManager).isDone()) {
       try {
         initThreads.get(javaManager).join();
       } catch (InterruptedException e) {}

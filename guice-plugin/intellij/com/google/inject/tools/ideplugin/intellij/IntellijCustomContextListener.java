@@ -19,30 +19,29 @@ package com.google.inject.tools.ideplugin.intellij;
 import java.util.Set;
 
 import com.google.inject.Inject;
+import com.google.inject.tools.ideplugin.CustomContextDefinitionSourceImpl;
 import com.google.inject.tools.ideplugin.ProjectManager;
-import com.google.inject.tools.ideplugin.module.ModulesListener;
 import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.Messenger;
 
-public class IntellijModulesListener extends ModulesListener {
+public class IntellijCustomContextListener extends
+    CustomContextDefinitionSourceImpl {
   @Inject
-  public IntellijModulesListener(ProjectManager projectManager, Messenger messenger) {
+  public IntellijCustomContextListener(ProjectManager projectManager,
+      Messenger messenger) {
     super(projectManager, messenger);
   }
   
   @Override
-  public Set<JavaManager> getOpenProjects() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-  
-  @Override
-  protected Set<String> locateModules(JavaManager javaManager) throws Throwable {
+  protected Set<String> locateContexts(JavaManager javaManager)
+      throws Throwable {
     // TODO Auto-generated method stub
     return null;
   }
   
   public void refresh(JavaManager javaManager) {
-    // TODO
+    // TODO Auto-generated method stub
+    
   }
+  
 }
