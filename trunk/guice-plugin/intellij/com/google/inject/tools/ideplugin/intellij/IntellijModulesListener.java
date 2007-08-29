@@ -51,4 +51,7 @@ public class IntellijModulesListener extends ModulesListener implements
     return null;
   }
   
+  public void refresh(JavaManager javaManager) {
+    // TODO
+  }
 }

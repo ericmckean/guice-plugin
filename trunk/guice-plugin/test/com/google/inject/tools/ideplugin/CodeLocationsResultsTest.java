@@ -80,14 +80,14 @@ public class CodeLocationsResultsTest extends TestCase {
             "com.google.inject.tools.ideplugin.JavaElement", (String) null,
             (String) null,
             "Broken Module Context", (String) null, 0, null,
-            makeProblemSet("BrokenModule"));
+            Collections.<CodeProblem> emptySet());
 
     CodeLocationsResults results =
         new CodeLocationsResults("Test Results", null);
     results.put("Valid Module Context", Collections.singleton(validLocation),
         Collections.<CodeProblem>emptySet());
     results.put("Broken Module Context", Collections.singleton(problemsLocation),
-        Collections.<CodeProblem>emptySet());
+        makeProblemSet("BrokenModule"));
     return results;
   }
 
@@ -113,12 +113,13 @@ public class CodeLocationsResultsTest extends TestCase {
         "JavaElement is bound to MockJavaElement at MockGuicePlugin.java:145",
         null));
     Results.Node module2 = new Node("in Broken Module Context", null);
+    module2.addChild(new Node("JavaElement is bound to null", null));
     Results.Node problems = new Node("Problems", null);
     module2.addChild(problems);
     problems.addChild(new ProblemNode(new CodeProblem.CreationProblem(
         "BrokenModule", new FakeCreationException())));
-    root.addChild(module2);
     root.addChild(module);
+    root.addChild(module2);
     return root;
   }
 }

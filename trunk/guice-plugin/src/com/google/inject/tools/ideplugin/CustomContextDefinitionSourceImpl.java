@@ -79,4 +79,8 @@ class CustomContextDefinitionSourceImpl implements
   public Set<String> getContexts(JavaManager javaManager) {
     return Collections.<String> emptySet();
   }
+  
+  public void refresh(JavaManager javaManager) {
+    
+  }
 }

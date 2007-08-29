@@ -38,23 +38,32 @@ public class ProjectManagerImpl implements ProjectManager,
     ModulesSource.ModulesSourceListener, CustomContextDefinitionListener {
   private final Map<JavaManager, ModuleManager> moduleManagers;
   private final ModuleManagerFactory moduleManagerFactory;
+  private final ModulesSource modulesSource;
+  private final CustomContextDefinitionSource customContextDefinitionSource;
   private JavaManager currentProject;
+  private final Map<JavaManager, CustomContextsThread> initThreads;
 
   @Inject
   public ProjectManagerImpl(ModuleManagerFactory moduleManagerFactory,
       ModulesSource modulesSource,
       CustomContextDefinitionSource customContextDefinitionSource) {
     this.moduleManagerFactory = moduleManagerFactory;
+    this.modulesSource = modulesSource;
+    this.customContextDefinitionSource = customContextDefinitionSource;
     customContextDefinitionSource.addListener(this);
     this.moduleManagers = new HashMap<JavaManager, ModuleManager>();
     currentProject = null;
     modulesSource.addListener(this);
+    initThreads = new HashMap<JavaManager, CustomContextsThread>();
     if (modulesSource instanceof ModulesListener) { // which it should be
       for (JavaManager project : ((ModulesListener) modulesSource)
           .getOpenProjects()) {
         createModuleManager(project);
-        new CustomContextsThread(moduleManagers.get(project),
-            customContextDefinitionSource, project).start();
+        CustomContextsThread initThread = 
+            new CustomContextsThread(moduleManagers.get(project),
+                customContextDefinitionSource, project);
+        initThreads.put(project, initThread);
+        initThread.start();
       }
     }
   }
@@ -63,10 +72,12 @@ public class ProjectManagerImpl implements ProjectManager,
     private final ModuleManager moduleManager;
     private final CustomContextDefinitionSource customContextDefinitionSource;
     private final JavaManager project;
+    private volatile boolean done;
 
     public CustomContextsThread(ModuleManager moduleManager,
         CustomContextDefinitionSource customContextDefinitionSource,
         JavaManager project) {
+      done = false;
       this.moduleManager = moduleManager;
       this.customContextDefinitionSource = customContextDefinitionSource;
       this.project = project;
@@ -81,6 +92,11 @@ public class ProjectManagerImpl implements ProjectManager,
           moduleManager.addCustomContext(customContextName);
         }
       } catch (InterruptedException e) {}
+      done = true;
+    }
+    
+    public boolean isDone() {
+      return done;
     }
   }
 
@@ -121,6 +137,13 @@ public class ProjectManagerImpl implements ProjectManager,
   }
 
   public ModuleManager getModuleManager(JavaManager javaManager) {
+    if (!initThreads.get(javaManager).isDone()) {
+      try {
+        initThreads.get(javaManager).join();
+      } catch (InterruptedException e) {}
+    }
+    modulesSource.refresh(javaManager);
+    customContextDefinitionSource.refresh(javaManager);
     return createModuleManager(javaManager);
   }
 

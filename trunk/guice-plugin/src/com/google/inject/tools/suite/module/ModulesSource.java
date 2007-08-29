@@ -38,6 +38,8 @@ public interface ModulesSource {
    * @param javaManager the java context to get the modules for
    */
   public Set<String> getModules(JavaManager javaManager);
+  
+  public void refresh(JavaManager javaManager);
 
   public void addListener(ModulesSourceListener listener);
 
