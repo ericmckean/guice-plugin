@@ -22,8 +22,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jdt.core.ElementChangedEvent;
 import org.eclipse.jdt.core.Flags;
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -37,8 +35,8 @@ import org.eclipse.jdt.core.ITypeHierarchyChangedListener;
 import org.eclipse.jdt.core.JavaCore;
 import com.google.inject.Singleton;
 import com.google.inject.Inject;
+import com.google.inject.tools.ideplugin.CustomContextDefinitionSourceImpl;
 import com.google.inject.tools.ideplugin.ProjectManager;
-import com.google.inject.tools.ideplugin.module.ModulesListener;
 import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.module.ModulesSource;
@@ -51,63 +49,46 @@ import com.google.inject.tools.suite.module.ModulesSource;
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 @Singleton
-public class EclipseModulesListener extends ModulesListener {
-  private final Map<EclipseJavaProject, ITypeHierarchy> typeHierarchies;
-  private final Map<EclipseJavaProject, MyTypeHierarchyChangedListener> typeHierarchyListeners;
-  private final Map<EclipseJavaProject, IType> types;
+public class EclipseContextDefinitionListener extends CustomContextDefinitionSourceImpl {
+  private final Map<EclipseJavaProject, ITypeHierarchy> contextTypeHierarchies;
+  private final Map<EclipseJavaProject, MyContextTypeHierarchyChangedListener> contextTypeHierarchyListeners;
+  private final Map<EclipseJavaProject, IType> contextTypes;
 
   /**
    * Create an EclipseModulesListener. This should be injected.
    */
   @Inject
-  public EclipseModulesListener(ProjectManager projectManager,
+  public EclipseContextDefinitionListener(ProjectManager projectManager,
       Messenger messenger) {
     super(projectManager, messenger);
-    typeHierarchies = new HashMap<EclipseJavaProject, ITypeHierarchy>();
-    typeHierarchyListeners =
-        new HashMap<EclipseJavaProject, MyTypeHierarchyChangedListener>();
-    types = new HashMap<EclipseJavaProject, IType>();
+    contextTypeHierarchies = new HashMap<EclipseJavaProject, ITypeHierarchy>();
+    contextTypeHierarchyListeners =
+        new HashMap<EclipseJavaProject, MyContextTypeHierarchyChangedListener>();
+    contextTypes = new HashMap<EclipseJavaProject, IType>();
     JavaCore.addElementChangedListener(new ModuleElementChangedListener(),
         ElementChangedEvent.POST_CHANGE);
   }
 
-  @Override
-  public Set<JavaManager> getOpenProjects() {
-    Set<JavaManager> projects = new HashSet<JavaManager>();
-    try {
-      if (ResourcesPlugin.getWorkspace() != null) {
-        for (IProject project : ResourcesPlugin.getWorkspace().getRoot()
-            .getProjects()) {
-          IJavaProject javaProject = JavaCore.create(project);
-          projects.add(new EclipseJavaProject(javaProject));
-        }
-      }
-    } catch (IllegalStateException exception) {
-      // workspace is not open
-      // means we are in testing mode
-    }
-    return projects;
-  }
-
-  private class MyTypeHierarchyChangedListener implements
+  private class MyContextTypeHierarchyChangedListener implements
       ITypeHierarchyChangedListener {
     private final EclipseJavaProject javaManager;
 
-    public MyTypeHierarchyChangedListener(EclipseJavaProject javaManager) {
+    public MyContextTypeHierarchyChangedListener(EclipseJavaProject javaManager) {
       this.javaManager = javaManager;
     }
 
     public void typeHierarchyChanged(ITypeHierarchy typeHierarchy) {
-      EclipseModulesListener.this.setTypeHierarchy(javaManager, typeHierarchy);
+      EclipseContextDefinitionListener.this.setContextTypeHierarchy(javaManager,
+          typeHierarchy);
       typeHierarchy.addTypeHierarchyChangedListener(this);
     }
   }
 
-  private void setTypeHierarchy(EclipseJavaProject javaManager,
+  private void setContextTypeHierarchy(EclipseJavaProject javaManager,
       ITypeHierarchy typeHierarchy) {
-    typeHierarchies.put(javaManager, typeHierarchy);
+    contextTypeHierarchies.put(javaManager, typeHierarchy);
     try {
-      keepModulesByName(javaManager, locateModules(javaManager));
+      keepContextsByName(javaManager, locateContexts(javaManager));
     } catch (Throwable throwable) {
       hadProblem(throwable);
     }
@@ -122,8 +103,8 @@ public class EclipseModulesListener extends ModulesListener {
   }
   
   public void refresh(JavaManager javaManager) {
-    if (types.get(javaManager) == null
-        || typeHierarchies.get(javaManager) == null) {
+    if (contextTypes.get(javaManager) == null 
+        || contextTypeHierarchies.get(javaManager) == null) {
       if (javaManager instanceof EclipseJavaProject) {
         initialize2((EclipseJavaProject) javaManager);
       }
@@ -132,18 +113,22 @@ public class EclipseModulesListener extends ModulesListener {
 
   protected void initialize2(EclipseJavaProject javaManager) {
     try {
-      IType moduleType =
-          javaManager.getIJavaProject().findType(
-              com.google.inject.Module.class.getName());
-      if (moduleType != null && moduleType.getJavaProject().equals(javaManager.getIJavaProject())) {
-        types.put(javaManager, moduleType);
-        typeHierarchies.put(javaManager, types.get(javaManager)
+      IType contextType =
+          javaManager
+              .getIJavaProject()
+              .findType(
+                  com.google.inject.tools.ideplugin.GuiceIDEPluginContextDefinition.class
+                      .getName());
+      if (contextType != null && contextType.getJavaProject().equals(javaManager.getIJavaProject())) {
+        contextTypes.put(javaManager, contextType);
+        contextTypeHierarchies.put(javaManager, contextTypes.get(javaManager)
             .newTypeHierarchy(null));
-        typeHierarchyListeners.put(javaManager,
-            new MyTypeHierarchyChangedListener(javaManager));
-        if (typeHierarchies.get(javaManager) != null) {
-          typeHierarchies.get(javaManager).addTypeHierarchyChangedListener(
-              typeHierarchyListeners.get(javaManager));
+        contextTypeHierarchyListeners.put(javaManager,
+            new MyContextTypeHierarchyChangedListener(javaManager));
+        if (contextTypeHierarchies.get(javaManager) != null) {
+          contextTypeHierarchies.get(javaManager)
+              .addTypeHierarchyChangedListener(
+                  contextTypeHierarchyListeners.get(javaManager));
         }
       }
     } catch (Throwable throwable) {
@@ -166,30 +151,31 @@ public class EclipseModulesListener extends ModulesListener {
   }
 
   @Override
-  protected Set<String> locateModules(JavaManager javaManager) throws Throwable {
+  protected Set<String> locateContexts(JavaManager javaManager)
+      throws Throwable {
     if (javaManager instanceof EclipseJavaProject) {
-      return locateModules((EclipseJavaProject) javaManager);
+      return locateContexts((EclipseJavaProject) javaManager);
     } else {
       throw new NotEclipseJavaProjectException(javaManager);
     }
   }
 
-  protected Set<String> locateModules(EclipseJavaProject javaManager)
+  protected Set<String> locateContexts(EclipseJavaProject javaManager)
       throws Throwable {
-    if (javaManager != null && typeHierarchies.get(javaManager) != null) {
-      final Set<String> moduleNames = new HashSet<String>();
-      typeHierarchies.get(javaManager).refresh(null);
+    if (javaManager != null && contextTypeHierarchies.get(javaManager) != null) {
+      final Set<String> contextNames = new HashSet<String>();
+      contextTypeHierarchies.get(javaManager).refresh(null);
       IType[] subclasses =
-          typeHierarchies.get(javaManager).getAllSubtypes(
-              types.get(javaManager));
+          contextTypeHierarchies.get(javaManager).getAllSubtypes(
+              contextTypes.get(javaManager));
       for (IType subclass : subclasses) {
         if (subclass.isClass()) {
           if (!Flags.isAbstract(subclass.getFlags())) {
-            moduleNames.add(subclass.getFullyQualifiedName());
+            contextNames.add(subclass.getFullyQualifiedName());
           }
         }
       }
-      return moduleNames;
+      return contextNames;
     } else {
       return Collections.<String> emptySet();
     }
@@ -225,19 +211,19 @@ public class EclipseModulesListener extends ModulesListener {
         //TODO: deal with inner classes...
         IType type = cu.findPrimaryType();
         if (type != null) {
-          if (typeHierarchies.get(javaManager) != null
-              && typeHierarchies.get(javaManager).contains(type)) {
+          if (contextTypeHierarchies.get(javaManager) != null
+              && contextTypeHierarchies.get(javaManager).contains(type)) {
             switch (delta.getKind()) {
               case IJavaElementDelta.ADDED:
-                EclipseModulesListener.this.moduleAdded(javaManager, type
+                EclipseContextDefinitionListener.this.contextDefinitionAdded(javaManager, type
                     .getFullyQualifiedName());
                 break;
               case IJavaElementDelta.CHANGED:
-                EclipseModulesListener.this.moduleChanged(javaManager, type
+                EclipseContextDefinitionListener.this.contextDefinitionChanged(javaManager, type
                     .getFullyQualifiedName());
                 break;
               case IJavaElementDelta.REMOVED:
-                EclipseModulesListener.this.moduleRemoved(javaManager, type
+                EclipseContextDefinitionListener.this.contextDefinitionRemoved(javaManager, type
                     .getFullyQualifiedName());
                 break;
               default:

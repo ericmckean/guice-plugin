@@ -38,26 +38,18 @@ import com.google.inject.tools.suite.module.ModulesSource;
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-public abstract class ModulesListener implements ModulesSource,
-    CustomContextDefinitionSource {
+public abstract class ModulesListener implements ModulesSource {
   protected final Messenger messenger;
   protected final ProjectManager projectManager;
   private final Set<ModulesSourceListener> listeners;
   private final Map<JavaManager, Set<String>> modules;
-  private final Set<CustomContextDefinitionListener> contextListeners;
-  private final Map<JavaManager, Set<String>> contexts;
 
-  /**
-   * Create an EclipseModulesListener. This should be injected.
-   */
   @Inject
   public ModulesListener(ProjectManager projectManager, Messenger messenger) {
     this.projectManager = projectManager;
     this.messenger = messenger;
     this.listeners = new HashSet<ModulesSourceListener>();
     this.modules = new HashMap<JavaManager, Set<String>>();
-    this.contextListeners = new HashSet<CustomContextDefinitionListener>();
-    this.contexts = new HashMap<JavaManager, Set<String>>();
   }
 
   /**
@@ -69,12 +61,6 @@ public abstract class ModulesListener implements ModulesSource,
    * Locate the modules.
    */
   protected abstract Set<String> locateModules(JavaManager javaManager)
-      throws Throwable;
-
-  /**
-   * Locate custom contexts.
-   */
-  protected abstract Set<String> locateContexts(JavaManager javaManager)
       throws Throwable;
 
   public Set<String> getModules(JavaManager javaManager) {
@@ -113,48 +99,9 @@ public abstract class ModulesListener implements ModulesSource,
     }
   }
 
-  public Set<String> getContexts(JavaManager javaManager) {
-    if (contexts.get(javaManager) == null) {
-      initialize(javaManager);
-    }
-    try {
-      keepContextsByName(javaManager, locateContexts(javaManager));
-    } catch (Throwable throwable) {
-      hadProblem(throwable);
-    }
-    return new HashSet<String>(contexts.get(javaManager));
-  }
-
-  protected synchronized void keepContextsByName(JavaManager javaManager,
-      Set<String> contextNames) {
-    Set<String> newContexts = new HashSet<String>(contextNames);
-    Set<String> removeContexts = new HashSet<String>();
-    for (String context : contexts.get(javaManager)) {
-      boolean keep = false;
-      for (String name : contextNames) {
-        if (name.equals(context)) {
-          keep = true;
-          newContexts.remove(name);
-        }
-      }
-      if (!keep) {
-        removeContexts.add(context);
-      }
-    }
-    for (String context : removeContexts) {
-      contexts.get(javaManager).remove(context);
-    }
-    for (String context : newContexts) {
-      contexts.get(javaManager).add(context);
-    }
-  }
-
   protected void initialize(JavaManager javaManager) {
     if (modules.get(javaManager) == null) {
       modules.put(javaManager, new HashSet<String>());
-    }
-    if (contexts.get(javaManager) == null) {
-      contexts.put(javaManager, new HashSet<String>());
     }
   }
 
@@ -168,14 +115,6 @@ public abstract class ModulesListener implements ModulesSource,
 
   public void removeListener(ModulesSourceListener listener) {
     listeners.remove(listener);
-  }
-
-  public void addListener(CustomContextDefinitionListener listener) {
-    contextListeners.add(listener);
-  }
-
-  public void removeListener(CustomContextDefinitionListener listener) {
-    contextListeners.remove(listener);
   }
 
   protected void moduleChanged(JavaManager javaManager, String moduleName) {
@@ -193,24 +132,6 @@ public abstract class ModulesListener implements ModulesSource,
   protected void moduleAdded(JavaManager javaManager, String moduleName) {
     for (ModulesSourceListener listener : listeners) {
       listener.moduleAdded(this, javaManager, moduleName);
-    }
-  }
-
-  protected void contextChanged(JavaManager javaManager, String contextName) {
-    for (CustomContextDefinitionListener listener : contextListeners) {
-      listener.contextDefinitionChanged(this, javaManager, contextName);
-    }
-  }
-
-  protected void contextRemoved(JavaManager javaManager, String contextName) {
-    for (CustomContextDefinitionListener listener : contextListeners) {
-      listener.contextDefinitionRemoved(this, javaManager, contextName);
-    }
-  }
-
-  protected void contextAdded(JavaManager javaManager, String contextName) {
-    for (CustomContextDefinitionListener listener : contextListeners) {
-      listener.contextDefinitionAdded(this, javaManager, contextName);
     }
   }
 }
