@@ -1,13 +1,17 @@
 #summary How to install the guice plugin in Eclipse.
 
-== Overview ==
+== *Prealpha* Release ==
+
+This is an alpha release of the plugin.  Please update often.
+
+== Installation Overview ==
 
 The Eclipse plugin is installed like any other Eclipse plugin: from an install site.
 The install site is 
   http://guice-plugin.googlecode.com/svn/trunk/eclipse-update-site/
 
 
-=== Step by Step ===
+=== Step by Step Guice ===
 
   # In Eclipse, choose from the *Help Menu* the *Software Updates / Find and Install* item.
   # Choose *Search for new features to install* and click *Next*
@@ -20,10 +24,6 @@ The install site is
   # Click *Finish*
   # After the download is complete, click *Install*
   # When prompted, restart Eclipse by saying *Yes*
-
-
-
-
 
 
 
