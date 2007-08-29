@@ -18,7 +18,8 @@ package com.google.inject.tools.suite;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import org.easymock.EasyMock;
+import java.lang.reflect.Proxy;
+
 import com.google.inject.Inject;
 import com.google.inject.binder.AnnotatedBindingBuilder;
 import com.google.inject.tools.suite.GuiceToolsModule;
@@ -189,9 +190,18 @@ public class MockingGuiceToolsModule extends GuiceToolsModule {
 
     @SuppressWarnings( {"unchecked"})
     public T getInstance() {
-      // return (T)Proxy.newProxyInstance(theClass.getClassLoader(),
-      // theClass.getInterfaces(), this);
-      return EasyMock.createMock(theClass);
+      Class<?>[] interfaces;
+      if (theClass.isInterface()) {
+        interfaces = new Class<?>[theClass.getInterfaces().length+1];
+        interfaces[0] = theClass;
+        for (int i=0; i<theClass.getInterfaces().length; i++) {
+          interfaces[i+1] = theClass.getInterfaces()[i];
+        }
+      } else {
+        interfaces = theClass.getInterfaces();
+      }
+      return (T)Proxy.newProxyInstance(theClass.getClassLoader(),
+          interfaces, this);
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) {

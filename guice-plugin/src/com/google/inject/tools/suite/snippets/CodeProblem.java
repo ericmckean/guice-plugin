@@ -71,17 +71,19 @@ public class CodeProblem implements Serializable {
   public static class BindingProblem extends CodeProblem {
     private static final long serialVersionUID = 1294747496483052122L;
     protected final String theClass;
+    protected final Throwable exception;
 
     /**
      * Create a BindingProblem.
      * 
      * @param module the module context
-     * @param exception the underlyng exception
+     * @param exception the underlying exception
      * @param theClass the class being injected
      */
     public BindingProblem(String module, String theClass, Throwable exception) {
       super(module, exception);
       this.theClass = theClass;
+      this.exception = exception;
     }
 
     /**
@@ -89,6 +91,13 @@ public class CodeProblem implements Serializable {
      */
     public String getTheClass() {
       return theClass;
+    }
+    
+    /**
+     * Return the underlying exception (if it exists).
+     */
+    public Throwable getException() {
+      return exception;
     }
 
     @Override

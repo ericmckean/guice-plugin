@@ -151,15 +151,25 @@ class ProjectManagerImpl implements ProjectManager,
   public ModuleManager getModuleManager() {
     return createModuleManager(currentProject);
   }
-
+  
   public void projectOpened(JavaManager javaManager) {
     createModuleManager(javaManager);
     //TODO: load settings...
   }
-
+  
   public void projectClosed(JavaManager javaManager) {
     // TODO: save settings...
     moduleManagers.remove(javaManager);
+  }
+
+  public void javaManagerAdded(ModulesSource modulesSource, 
+      JavaManager javaManager) {
+    projectOpened(javaManager);
+  }
+
+  public void javaManagerRemoved(ModulesSource modulesSource, 
+      JavaManager javaManager) {
+    projectClosed(javaManager);
   }
 
   public JavaManager getCurrentProject() {

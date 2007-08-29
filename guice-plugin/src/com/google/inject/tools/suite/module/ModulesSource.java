@@ -59,5 +59,9 @@ public interface ModulesSource {
 
     void moduleRemoved(ModulesSource source, JavaManager javaManager,
         String module);
+    
+    void javaManagerAdded(ModulesSource source, JavaManager javaManager);
+    
+    void javaManagerRemoved(ModulesSource source, JavaManager javaManager);
   }
 }

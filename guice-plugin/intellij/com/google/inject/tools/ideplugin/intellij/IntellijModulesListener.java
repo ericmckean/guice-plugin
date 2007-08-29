@@ -19,15 +19,14 @@ package com.google.inject.tools.ideplugin.intellij;
 import java.util.Set;
 
 import com.google.inject.Inject;
-import com.google.inject.tools.ideplugin.ProjectManager;
 import com.google.inject.tools.ideplugin.module.ModulesListener;
 import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.Messenger;
 
 class IntellijModulesListener extends ModulesListener {
   @Inject
-  public IntellijModulesListener(ProjectManager projectManager, Messenger messenger) {
-    super(projectManager, messenger);
+  public IntellijModulesListener(Messenger messenger) {
+    super(messenger);
   }
   
   @Override
