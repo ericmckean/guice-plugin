@@ -54,8 +54,13 @@ public class BindingsObjectAction implements IObjectActionDelegate {
     IJavaElement element = (IJavaElement) selection.getFirstElement();
     ICompilationUnit cu =
         (ICompilationUnit) element.getAncestor(IJavaElement.COMPILATION_UNIT);
-    guicePlugin.getBindingsEngine(new EclipseJavaElement(element, cu),
-        new EclipseJavaProject(element.getJavaProject()));
+    EclipseJavaElement javaElement = new EclipseJavaElement(element, cu);
+    if (javaElement != null) {
+      guicePlugin.getBindingsEngine(javaElement,
+          new EclipseJavaProject(element.getJavaProject()));
+    } else {
+      guicePlugin.getMessenger().display("Selection does not have bindings");
+    }
   }
 
   /**
