@@ -39,7 +39,6 @@ import com.google.inject.tools.suite.module.ModuleManager;
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 @SuppressWarnings("restriction")
-// TODO: remove internal class use if possible
 public class GuicePluginConfigureAction implements IEditorActionDelegate,
     IObjectActionDelegate {
   private final ModuleSelectionView moduleSelectionView;

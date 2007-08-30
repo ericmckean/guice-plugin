@@ -37,7 +37,6 @@ import org.eclipse.ui.IEditorPart;
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 @SuppressWarnings("restriction")
-// TODO: remove internal class use if possible
 public class BindingsEditorAction implements IEditorActionDelegate {
   private IEditorPart editor;
   private GuicePlugin guicePlugin;
