@@ -1,0 +1,20 @@
+#summary Guice IDE Plugin User's Guice
+
+== User Interface ==
+
+=== The Context Menu ===
+
+=== The Results View ===
+
+=== The Configure Dialog ===
+
+=== The Errors View ===
+
+
+== Context Configuration ==
+
+=== Individual Modules as Contexts ===
+
+=== User Defined Contexts ===
+
+=== Custom Contexts ===
