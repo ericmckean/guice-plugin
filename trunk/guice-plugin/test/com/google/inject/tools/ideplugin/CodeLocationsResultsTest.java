@@ -58,6 +58,7 @@ public class CodeLocationsResultsTest extends TestCase {
         new BindingCodeLocation(null,
             "com.google.inject.tools.ideplugin.JavaElement", null,
             "com.google.inject.tools.ideplugin.test.MockJavaElement",
+            null, null,
             "Valid Module Context", "MockGuicePlugin.java", 145, null,
             Collections.<CodeProblem> emptySet());
     CodeLocationsResults results =
@@ -72,13 +73,14 @@ public class CodeLocationsResultsTest extends TestCase {
         new BindingCodeLocation(null,
             "com.google.inject.tools.ideplugin.JavaElement", (String) null,
             "com.google.inject.tools.ideplugin.test.MockJavaElement",
+            null, null,
             "Valid Module Context", "MockGuicePlugin.java", 145, null,
             Collections.<CodeProblem> emptySet());
 
     CodeLocation problemsLocation =
         new BindingCodeLocation(null,
             "com.google.inject.tools.ideplugin.JavaElement", (String) null,
-            (String) null,
+            (String) null, null, null,
             "Broken Module Context", (String) null, 0, null,
             Collections.<CodeProblem> emptySet());
 
@@ -113,7 +115,7 @@ public class CodeLocationsResultsTest extends TestCase {
         "JavaElement is bound to MockJavaElement at MockGuicePlugin.java:145",
         null));
     Results.Node module2 = new Node("in Broken Module Context", null);
-    module2.addChild(new Node("JavaElement is bound to null", null));
+    module2.addChild(new Node("JavaElement has an unresolvable binding", null));
     Results.Node problems = new Node("Problems", null);
     module2.addChild(problems);
     problems.addChild(new ProblemNode(new CodeProblem.CreationProblem(

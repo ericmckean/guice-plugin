@@ -131,6 +131,10 @@ public class CodeRunnerTest extends TestCase implements
       return "";
     }
     
+    public String getGuiceClasspath() throws Exception {
+      return "";
+    }
+    
     public String getClasspathDelimiter() {
       return ":";
     }

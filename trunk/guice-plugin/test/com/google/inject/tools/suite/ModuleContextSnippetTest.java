@@ -284,7 +284,7 @@ public class ModuleContextSnippetTest extends TestCase {
         result.getBindings().get(new KeyRepresentation(
             "int", "@" + One.class.getName()));
     assertNotNull(location);
-    assertTrue(location.bindTo().equals(String.valueOf(1)));
+    assertTrue(location.bindToInstance().equals(String.valueOf(1)));
   }
   
   public void testBindTypeLiteral() throws Exception {

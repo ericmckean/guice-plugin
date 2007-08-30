@@ -131,9 +131,11 @@ class CodeRunnerImpl implements CodeRunner {
       String classpath = "";
       cmd = new ArrayList<String>();
       try {
+        String guicePath = project.getGuiceClasspath()!=null ?
+            project.getGuiceClasspath() + project.getClasspathDelimiter() : "";
         classpath =
             project.getSnippetsClasspath() + project.getClasspathDelimiter()
-                + project.getProjectClasspath();
+                + guicePath + project.getProjectClasspath();
         cmd.add(project.getJavaCommand());
         cmd.add("-classpath");
         cmd.add(classpath);
