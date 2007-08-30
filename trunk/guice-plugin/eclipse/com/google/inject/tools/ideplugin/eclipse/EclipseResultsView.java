@@ -166,7 +166,6 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
       makeFormFromNode(toolkit, body, 1, child);
     }
     body.pack();
-    form.pack();
     form.reflow(true);
   }
 
