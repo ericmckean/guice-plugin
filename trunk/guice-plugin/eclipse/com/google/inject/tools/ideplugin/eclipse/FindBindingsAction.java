@@ -24,6 +24,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorInput;
@@ -73,14 +74,28 @@ public class FindBindingsAction implements IWorkbenchWindowActionDelegate {
         element = null;
       }
     }
+    EclipseJavaElement javaElement = null;
     if (element != null) {
       ICompilationUnit cu = 
         (ICompilationUnit)element.getAncestor(IJavaElement.COMPILATION_UNIT);
-      guicePlugin.getBindingsEngine(new EclipseJavaElement(element, cu),
+      javaElement = new EclipseJavaElement(element, cu);
+    }
+    if (javaElement != null && javaElement.getType() != null) {
+      guicePlugin.getBindingsEngine(javaElement,
           new EclipseJavaProject(element.getJavaProject()));
     } else {
-      guicePlugin.getMessenger().display(
-          "Selection is not a Java element: " + selection.getText());
+      if (part instanceof IEditorPart) {
+        IEditorPart editor = (IEditorPart)part;
+        IStatusLineManager statusManager = editor.getEditorSite().getActionBars().getStatusLineManager();
+        if (selection != null) {
+          statusManager.setMessage(
+              "Selection is not a Java element: " + selection.getText());
+        } else {
+          statusManager.setMessage("Selection is not a Java element.");
+        }
+      } else {
+        guicePlugin.getMessenger().display("Selection does not have bindings.");
+      }
     }
   }
 
