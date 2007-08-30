@@ -50,6 +50,8 @@ public class BindingCodeLocation extends CodeLocation {
   private final String bindWhat;
   private final String annotatedWith;
   private final String bindTo;
+  private final String bindToProvider;
+  private final String bindToInstance;
 
   /**
    * Create a new BindingCodeLocation.
@@ -65,12 +67,15 @@ public class BindingCodeLocation extends CodeLocation {
    */
   public BindingCodeLocation(StackTraceElement[] stackTrace, String bindWhat,
       String annotatedWith,
-      String bindTo, String moduleContext, String file, int location,
+      String bindTo, String bindToProvider, String bindToInstance,
+      String moduleContext, String file, int location,
       String locationDescription, Set<? extends CodeProblem> problems) {
     super(stackTrace, file, location, locationDescription, problems);
     this.bindWhat = bindWhat;
     this.annotatedWith = annotatedWith;
     this.bindTo = bindTo;
+    this.bindToInstance = bindToInstance;
+    this.bindToProvider = bindToProvider;
     this.moduleContext = moduleContext;
   }
 
@@ -100,5 +105,19 @@ public class BindingCodeLocation extends CodeLocation {
    */
   public String bindTo() {
     return bindTo;
+  }
+  
+  /**
+   * Return what provider this binding binds to.
+   */
+  public String bindToProvider() {
+    return bindToProvider;
+  }
+  
+  /**
+   * Return what instance this binding binds to.
+   */
+  public String bindToInstance() {
+    return bindToInstance;
   }
 }

@@ -163,6 +163,22 @@ class EclipseJavaProject implements JavaManager {
     url = FileLocator.toFileURL(url);
     return url.getFile();
   }
+  
+  public String getGuiceClasspath() throws Exception {
+    String guiceJar = getJarClasspath("lib/Guice/guice_1.0+dcreutz1.jar");
+    String aoPath = getJarClasspath("lib/Guice/aopalliance.jar");
+    String asmPath = getJarClasspath("lib/Guice/asm-2.2.3.jar");
+    String cglibPath = getJarClasspath("lib/Guice/cglib-2.2_beta1.jar");
+    return guiceJar + getClasspathDelimiter() + aoPath + getClasspathDelimiter()
+        + asmPath + getClasspathDelimiter() + cglibPath;
+  }
+  
+  private String getJarClasspath(String jarFile) throws Exception {
+    Bundle bundle = Platform.getBundle("GuicePlugin");
+    URL url = bundle.getEntry(jarFile);
+    url = FileLocator.toFileURL(url);
+    return url.getFile();
+  }
 
   @Override
   public boolean equals(Object object) {

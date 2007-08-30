@@ -67,6 +67,10 @@ public interface ModuleManager {
     public String getProjectClasspath() throws Exception {
       return null;
     }
+    
+    public String getGuiceClasspath() throws Exception {
+      return null;
+    }
 
     public String getSnippetsClasspath() throws Exception {
       return null;

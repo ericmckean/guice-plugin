@@ -100,11 +100,15 @@ public class ActionStringBuilder {
     public ActionString() {
       elements = new ArrayList<ActionStringElement>();
     }
+    
+    public void addText(String text) {
+      addText(text, null);
+    }
 
     public void addText(String text, String tooltip) {
       elements.add(new ActionStringElement(text, tooltip));
     }
-
+    
     public void addTextWithAction(String text, ActionsHandler.Action action,
         String tooltip) {
       elements.add(new ActionStringElement(text, action, tooltip));
@@ -167,7 +171,7 @@ public class ActionStringBuilder {
     public NoBindingLocationActionString(NoBindingLocation location) {
       super();
       String theClass = location.getTheClass();
-      addText("No binding for ", null);
+      addText("No binding for ");
       addTextWithAction(ClassNameUtility.shorten(theClass), new ActionsHandler.GotoFile(
         theClass), "Goto source of " + theClass);
     }
@@ -179,26 +183,42 @@ public class ActionStringBuilder {
       String bindWhat = location.bindWhat();
       String annotatedWith = location.annotatedWith();
       String bindTo = location.bindTo();
+      String bindToProvider = location.bindToProvider();
+      String bindToInstance = location.bindToInstance();
       String file = location.file();
       int line = location.location();
       addTextWithAction(ClassNameUtility.shorten(bindWhat), new ActionsHandler.GotoFile(
           bindWhat), "Goto source of " + bindWhat);
       if (annotatedWith != null) {
-        addText(" annotated with ", null);
+        addText(" annotated with ");
         addText(ClassNameUtility.shorten(annotatedWith), annotatedWith);
       }
-      addText(" is bound to ", null);
-      addTextWithAction(ClassNameUtility.shorten(bindTo),
-          new ActionsHandler.GotoFile(bindTo), "Goto source of " + bindTo);
+      if (bindToProvider != null) {
+        addText(" is bound to the provider ");
+        addTextWithAction(ClassNameUtility.shorten(bindToProvider),
+            new ActionsHandler.GotoFile(bindToProvider), "Goto source of " + bindToProvider);
+      } else if (bindTo != null) {
+        if (bindToInstance != null) {
+          addText(" is bound to the instance " + bindToInstance + " of ");
+        } else {
+          addText(" is bound to ");
+        }
+        addTextWithAction(ClassNameUtility.shorten(bindTo),
+            new ActionsHandler.GotoFile(bindTo), "Goto source of " + bindTo);
+      } else if (bindToInstance != null) {
+        addText(" is bound to the constant " + bindToInstance);
+      } else {
+        addText(" has an unresolvable binding");
+      }
       if (file != null) {
-        addText(" at ", null);
+        addText(" at ");
         addTextWithAction(file + ":" + String.valueOf(line),
             new ActionsHandler.GotoCodeLocation(location.getStackTrace(), file,
                 line), "Goto binding location of " + bindWhat + " as "
                 + bindTo);
       }
       if (location.locationDescription() != null) {
-        addText(" " + location.locationDescription(), null);
+        addText(" " + location.locationDescription());
       }
     }
   }
@@ -221,8 +241,8 @@ public class ActionStringBuilder {
   public static class CodeProblemActionString extends ActionString {
     public CodeProblemActionString(CodeProblem problem) {
       super();
-      addText("Guice Code Problem: ", null);
-      addText(problem.getMessage(), null);
+      addText("Guice Code Problem: ");
+      addText(problem.getMessage());
     }
   }
   
@@ -231,27 +251,27 @@ public class ActionStringBuilder {
       super(problem);
       String theClass = problem.getTheClass();
       String moduleContext = problem.getModuleContext();
-      addText("Guice Code Problem: ", null);
+      addText("Guice Code Problem: ");
       addTextWithAction(ClassNameUtility.shorten(theClass), new ActionsHandler.GotoFile(
           theClass), "Goto source of " + theClass);
-      addText(" has a binding problem in ", null);
-      addText("Module Context: ", null);
-      addText(moduleContext, null);
+      addText(" has a binding problem in ");
+      addText("Module Context: ");
+      addText(moduleContext);
     }
   }
   
   public static class InvalidModuleContextProblemActionString extends CodeProblemActionString {
     public InvalidModuleContextProblemActionString(InvalidModuleContextProblem problem) {
       super(problem);
-      addText("Guice Module Context is invalid: " + problem.getModuleContext(), null);
+      addText("Guice Module Context is invalid: " + problem.getModuleContext());
     }
   }
   
   public static class InvalidModuleProblemActionString extends CodeProblemActionString {
     public InvalidModuleProblemActionString(InvalidModuleProblem problem) {
       super(problem);
-      addText("Invalid Module: ", null);
-      addText(problem.getModuleContext(), null);
+      addText("Invalid Module: ");
+      addText(problem.getModuleContext());
     }
   }
 }

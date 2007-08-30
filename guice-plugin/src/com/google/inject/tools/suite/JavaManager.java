@@ -35,6 +35,14 @@ public interface JavaManager {
    * @throws Exception if the classpath cannot be determined
    */
   public String getSnippetsClasspath() throws Exception;
+  
+  /**
+   * Return the classpath entry for the guice .jar file to use.
+   * If null then the getProjectClasspath() result will be used.
+   * 
+   * @throws Exception if the classpath cannot be determined
+   */
+  public String getGuiceClasspath() throws Exception;
 
   /**
    * Return the classpath for the project.

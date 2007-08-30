@@ -17,7 +17,9 @@
 package com.google.inject.tools.suite.module;
 
 import com.google.inject.Binding;
+import com.google.inject.InternalMetaprovider;
 import com.google.inject.Key;
+import com.google.inject.Metaprovider;
 import com.google.inject.Provider;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.SampleModuleScenario;
@@ -155,6 +157,10 @@ public class ModuleContextRepresentationTest extends TestCase {
       public Provider<T> getProvider() {
         return new MockProvider<T>(bindTo);
       }
+      
+      public Metaprovider<T> getMetaprovider() {
+        return new Metaprovider<T>(new MockInternalMetaprovider<T>(bindTo));
+      }
 
       public Key<T> getKey() {
         return Key.get(bindWhat);
@@ -175,6 +181,26 @@ public class ModuleContextRepresentationTest extends TestCase {
             result = null;
           }
           return result;
+        }
+      }
+      
+      public class MockInternalMetaprovider<T> implements InternalMetaprovider<T> {
+        private final Class<? extends T> bindsTo;
+
+        public MockInternalMetaprovider(Class<? extends T> bindsTo) {
+          this.bindsTo = bindsTo;
+        }
+
+        public Class<? extends T> resolve() {
+          return bindsTo;
+        }
+        
+        public Class<? extends Provider<? extends T>> resolveProvider() {
+          return null;
+        }
+        
+        public T resolveInstance() {
+          return null;
         }
       }
     }

@@ -34,6 +34,7 @@ import com.google.inject.CreationException;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
+import com.google.inject.Metaprovider;
 import com.google.inject.Module;
 
 /**
@@ -111,6 +112,8 @@ public class ModuleContextSnippet extends CodeSnippet {
           final KeyRepresentation keyRepresentation =
             new KeyRepresentation(bindWhat, annotatedWith);
           String bindTo = null;
+          String bindToProvider = null;
+          String bindToInstance = null;
           String file = null;
           int location = -1;
           Binding<?> binding = moduleBindings.get(key);
@@ -123,15 +126,13 @@ public class ModuleContextSnippet extends CodeSnippet {
                 .getTypeLiteral().toString()));
           } else {
             try {
-              //this is ugly but it will have to do until guice is updated
-              if (bindWhat.equals("int")) {
-                bindTo = binding.getProvider().get().toString();
-              } else if (bindWhat.equals("boolean")) {
-                bindTo = binding.getProvider().get().toString();
-              } else if (bindWhat.equals("char")) {
-                bindTo = binding.getProvider().get().toString();
+              Metaprovider<?> metaprovider = binding.getMetaprovider();
+              if (metaprovider.isBoundToProvider()) {
+                bindToProvider = metaprovider.resolveProvider().getName();
+              } else if (metaprovider.isBoundToInstance()) {
+                bindToInstance = metaprovider.resolveInstance().toString();
               } else {
-                bindTo = binding.getProvider().get().getClass().getName();
+                bindTo = metaprovider.resolve().getName();
               }
               if (binding.getSource() instanceof StackTraceElement) {
                 source = (StackTraceElement) binding.getSource();
@@ -149,7 +150,7 @@ public class ModuleContextSnippet extends CodeSnippet {
           stackTrace[0] = source;
           this.bindings.put(keyRepresentation, new BindingCodeLocation(stackTrace,
               keyRepresentation.bindWhat, keyRepresentation.annotatedWith,
-              bindTo, name, file, location, 
+              bindTo, bindToProvider, bindToInstance, name, file, location, 
               bindingLocationDescription, locationProblems));
         }
       }
@@ -245,7 +246,7 @@ public class ModuleContextSnippet extends CodeSnippet {
       String name) {
     this.name = name;
     try {
-      injector = Guice.createInjector(moduleInstances);
+      injector = Guice.simulateInjector(moduleInstances);
       isValid = true;
     } catch (CreationException exception) {
       problems.add(new CodeProblem.CreationProblem(getName(), exception));
