@@ -38,6 +38,7 @@ import org.eclipse.ui.PlatformUI;
  * 
  * @author dcreutz@gmail.com (Darren Creutz)
  */
+@SuppressWarnings("restriction")
 public class FindBindingsAction implements IWorkbenchWindowActionDelegate {
   private GuicePlugin guicePlugin;
 
