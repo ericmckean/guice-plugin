@@ -7,32 +7,36 @@
             id="com.google.inject.tools.ideplugin.eclipse.bindings.objectContribution"
             nameFilter="*"
             objectClass="org.eclipse.jdt.core.IJavaElement">
-         <menu label="Guice" path="additions"
-         	id="com.google.inject.tools.ideplugin.eclipse.objectmenu.guice">
+         <menu label="&amp;Guice" path="additions"
+           	id="com.google.inject.tools.ideplugin.eclipse.objectmenu.guice">
          	<separator name="actions"/>
          	<separator name="modules"/>
          	<separator name="options"/>
          </menu>
          <action
-               class="com.google.inject.tools.ideplugin.eclipse.BindingsObjectAction"
-               enablesFor="1"
-               id="com.google.inject.tools.ideplugin.eclipse.bindings.objectContributionAction"
-               label="Find Bindings"
-               menubarPath="com.google.inject.tools.ideplugin.eclipse.objectmenu.guice/actions"/>
+             class="com.google.inject.tools.ideplugin.eclipse.BindingsObjectAction"
+             definitionId="com.google.inject.tools.ideplugin.eclipse.findBindingsCommand"
+             enablesFor="1"
+             id="com.google.inject.tools.ideplugin.eclipse.bindings.objectContributionAction"
+             label="Find &amp;Bindings"
+             menubarPath="com.google.inject.tools.ideplugin.eclipse.objectmenu.guice/actions"/>
          <action
          	   class="com.google.inject.tools.ideplugin.eclipse.GuicePluginConfigureAction"
+         	   definitionId="com.google.inject.tools.ideplugin.eclipse.configureCommand"
          	   enablesFor="*"
          	   id="com.google.inject.tools.ideplugin.eclipse.guiceconfigpluginaction"
-         	   label="Configure..."
+         	   label="&amp;Configure..."
          	   menubarPath="com.google.inject.tools.ideplugin.eclipse.objectmenu.guice/options"/>
          <action
          	   class="com.google.inject.tools.ideplugin.eclipse.RunModulesNowAction"
+         	   definitionId="com.google.inject.tools.ideplugin.eclipse.runnowCommand"
          	   enablesFor="*"
          	   id="com.google.inject.tools.ideplugin.eclipse.runmodulesaction"
-         	   label="Run Modules Now"
+         	   label="&amp;Run Modules Now"
          	   menubarPath="com.google.inject.tools.ideplugin.eclipse.objectmenu.guice/modules"/>
          <action
          	   class="com.google.inject.tools.ideplugin.eclipse.RunModulesAutoAction"
+         	   definitionId="com.google.inject.tools.ideplugin.eclipse.runautoCommand"
          	   style="toggle"
          	   state="false"
          	   enablesFor="*"
@@ -43,7 +47,7 @@
       <viewerContribution
       		id="com.google.inject.tools.ideplugin.eclipse.bindings.viewerContribution"
       		targetID="#CompilationUnitEditorContext">
-      	 <menu label="Guice" path="additions"
+      	 <menu label="&amp;Guice" path="additions"
          	id="com.google.inject.tools.ideplugin.eclipse.viewermenu.guice">
          	<separator name="actions"/>
          	<separator name="modules"/>
@@ -51,23 +55,27 @@
          </menu>
       	 <action
       	 	 	class="com.google.inject.tools.ideplugin.eclipse.BindingsEditorAction"
+      	 	 	definitionId="com.google.inject.tools.ideplugin.eclipse.findBindingsCommand"
       	 	 	id="com.google.inject.tools.ideplugin.eclipse.bindings.viewerContributionAction"
-      	 	 	label="Find Bindings"
+      	 	 	label="Find &amp;Bindings"
       	 	 	menubarPath="com.google.inject.tools.ideplugin.eclipse.viewermenu.guice/actions"/>
 		 <action
          	   class="com.google.inject.tools.ideplugin.eclipse.GuicePluginConfigureAction"
+         	   definitionId="com.google.inject.tools.ideplugin.eclipse.configureCommand"
          	   enablesFor="*"
          	   id="com.google.inject.tools.ideplugin.eclipse.guiceconfigpluginaction"
-         	   label="Configure..."
+         	   label="&amp;Configure..."
          	   menubarPath="com.google.inject.tools.ideplugin.eclipse.viewermenu.guice/options"/>
          <action
          	   class="com.google.inject.tools.ideplugin.eclipse.RunModulesNowAction"
+         	   definitionId="com.google.inject.tools.ideplugin.eclipse.runnowCommand"
          	   enablesFor="*"
          	   id="com.google.inject.tools.ideplugin.eclipse.runmodulesaction"
-         	   label="Run Modules Now"
+         	   label="&amp;Run Modules Now"
          	   menubarPath="com.google.inject.tools.ideplugin.eclipse.viewermenu.guice/modules"/>
          <action
          	   class="com.google.inject.tools.ideplugin.eclipse.RunModulesAutoAction"
+         	   definitionId="com.google.inject.tools.ideplugin.eclipse.runautoCommand"
          	   style="toggle"
          	   state="false"
          	   enablesFor="*"
@@ -104,5 +112,33 @@
    	 		relative="org.eclipse.ui.TaskList"
    	 		relationship="stack"/>
    	 </perspectiveExtension>
+   </extension>
+   <extension point="org.eclipse.ui.commands">
+     <command categoryId="com.google.inject.tools.ideplugin.eclipse.guice"
+              id="com.google.inject.tools.ideplugin.eclipse.findBindingsCommand"
+              name="Find Guice Bindings"/>
+     <command categoryId="com.google.inject.tools.ideplugin.eclipse.guice"
+              id="com.google.inject.tools.ideplugin.eclipse.configureCommand"
+              name="Configure Guice Plugin"/>
+     <command categoryId="com.google.inject.tools.ideplugin.eclipse.guice"
+              id="com.google.inject.tools.ideplugin.eclipse.runnowCommand"
+              name="Run Guice Module Contexts Now"/>
+     <command categoryId="com.google.inject.tools.ideplugin.eclipse.guice"
+              id="com.google.inject.tools.ideplugin.eclipse.runautoCommand"
+              name="Run Guice Module Contexts Automatically"/>
+   </extension>
+   <extension point="org.eclipse.ui.bindings">
+     <key commandId="com.google.inject.tools.ideplugin.eclipse.findBindingsCommand"
+          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+          sequence=""/>
+     <key commandId="com.google.inject.tools.ideplugin.eclipse.configureCommand"
+          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+          sequence=""/>
+     <key commandId="com.google.inject.tools.ideplugin.eclipse.runnowCommand"
+          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+          sequence=""/>
+     <key commandId="com.google.inject.tools.ideplugin.eclipse.runautoCommand"
+          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+          sequence=""/>
    </extension>
 </plugin>
