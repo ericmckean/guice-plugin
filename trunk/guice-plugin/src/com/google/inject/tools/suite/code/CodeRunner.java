@@ -19,7 +19,6 @@ package com.google.inject.tools.suite.code;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
 import java.util.List;
 import java.util.ArrayList;
 import com.google.inject.tools.suite.Messenger;
@@ -187,20 +186,14 @@ public interface CodeRunner {
     /**
      * Pass the output from the run back to the Runnable in object form.
      * 
-     * @param instream the stdout from the run
+     * @param output the result from the run
      */
-    public void gotOutput(InputStream instream) {
-      try {
-        final ObjectInputStream stream = new ObjectInputStream(instream);
-        final Object output = stream.readObject();
-        if (output instanceof CodeSnippetResult) {
-          codeRunner.notifyDone(this);
-          codeRunner.notifyResult(this, (CodeSnippetResult) output);
-        } else {
-          throw new NotCodeSnippetResultException(this, output);
-        }
-      } catch (Exception exception) {
-        caughtException(exception);
+    public void gotOutput(Object output) {
+      if (output instanceof CodeSnippetResult) {
+        codeRunner.notifyDone(this);
+        codeRunner.notifyResult(this, (CodeSnippetResult) output);
+      } else {
+        throw new NotCodeSnippetResultException(this, output);
       }
     }
   }
