@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Guice Plugin
 Bundle-SymbolicName: GuicePlugin;singleton:=true
-Bundle-Version: 0.1.6
+Bundle-Version: 0.1.7
 Bundle-Activator: com.google.inject.tools.ideplugin.eclipse.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -13,7 +13,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.workbench.texteditor,
  org.eclipse.ui.forms,
  org.eclipse.ui.editors,
- org.eclipse.ui.console
+ org.eclipse.ui.console,
+ org.eclipse.search
 Eclipse-LazyStart: true
 Export-Package: com.google.inject;
   uses:="com.google.inject.spi,
@@ -24,26 +25,6 @@ Export-Package: com.google.inject;
    new com.google.inject,
    com.google.inject.util,
    com.google.inject.cglib.reflect",
- com.google.inject.asm,
- com.google.inject.asm.signature,
- com.google.inject.binder;uses:="com.google.inject",
- com.google.inject.cglib.asm,
- com.google.inject.cglib.asm.signature,
- com.google.inject.cglib.beans;uses:="com.google.inject.cglib.core,com.google.inject.cglib.asm",
- com.google.inject.cglib.core;uses:="com.google.inject.cglib.asm",
- com.google.inject.cglib.proxy;uses:="com.google.inject.cglib.core,com.google.inject.cglib.asm",
- com.google.inject.cglib.reflect;uses:="com.google.inject.cglib.core,com.google.inject.cglib.asm",
- com.google.inject.cglib.transform;
-  uses:="org.apache.tools.ant.types,
-   org.apache.tools.ant,
-   com.google.inject.cglib.core,
-   com.google.inject.cglib.asm",
- com.google.inject.cglib.transform.impl;uses:="com.google.inject.cglib.transform,com.google.inject.cglib.core,com.google.inject.cglib.asm",
- com.google.inject.cglib.util;uses:="com.google.inject.cglib.core,com.google.inject.cglib.asm",
- com.google.inject.jndi;uses:="javax.naming,com.google.inject",
- com.google.inject.matcher,
- com.google.inject.name;uses:="com.google.inject.spi,com.google.inject",
- com.google.inject.spi,
  com.google.inject.tools.ideplugin;
   uses:="com.google.inject.tools.ideplugin.results,
    com.google.inject.tools.ideplugin.module,
@@ -65,7 +46,6 @@ Export-Package: com.google.inject;
  com.google.inject.tools.ideplugin.module;uses:="com.google.inject.tools.suite,com.google.inject.tools.ideplugin,com.google.inject.tools.suite.module",
  com.google.inject.tools.ideplugin.problem;uses:="com.google.inject.tools.suite",
  com.google.inject.tools.ideplugin.results;uses:="com.google.inject.tools.ideplugin,com.google.inject.tools.suite.snippets",
- com.google.inject.tools.jmx;uses:="javax.management,com.google.inject",
  com.google.inject.tools.suite;
   uses:="com.google.inject.binder,
    com.google.inject,
@@ -81,18 +61,17 @@ Export-Package: com.google.inject;
    junit.framework,
    com.google.inject.tools.suite.code,
    com.google.inject.tools.suite.snippets",
- com.google.inject.tools.suite.snippets;uses:="com.google.inject",
- com.google.inject.util;uses:="com.google.inject.cglib.core,new com.google.inject.util,com.google.inject.cglib.reflect",
- org.easymock;uses:="org.easymock.internal",
- org.easymock.internal;x-internal:=true,
- org.easymock.internal.matchers;x-internal:=true
+ com.google.inject.tools.suite.snippets;uses:="com.google.inject"
 Bundle-Vendor: com.google.inject.tools.ideplugin
 Bundle-ClassPath: src/,
  .,
  eclipse/,
  bin/,
  lib/EasyMock/easymock.jar,
- lib/Guice/guice-1.0.jar
+ lib/Guice/aopalliance.jar,
+ lib/Guice/asm-2.2.3.jar,
+ lib/Guice/cglib-2.2_beta1.jar,
+ lib/Guice/guice_1.0+dcreutz1.jar
 Import-Package: com.google.inject.tools.ideplugin,
  com.google.inject.tools.ideplugin.bindings,
  com.google.inject.tools.ideplugin.eclipse,

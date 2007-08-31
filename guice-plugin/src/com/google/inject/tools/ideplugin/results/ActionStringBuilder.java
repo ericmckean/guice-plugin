@@ -206,7 +206,7 @@ public class ActionStringBuilder {
         addTextWithAction(ClassNameUtility.shorten(bindTo),
             new ActionsHandler.GotoFile(bindTo), "Goto source of " + bindTo);
       } else if (bindToInstance != null) {
-        addText(" is bound to the constant " + bindToInstance);
+        addText(" is bound to the instance " + bindToInstance);
       } else {
         addText(" has an unresolvable binding");
       }

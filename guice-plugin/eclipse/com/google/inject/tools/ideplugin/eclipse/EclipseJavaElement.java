@@ -22,7 +22,6 @@ import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.ILocalVariable;
 import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.Signature;
 
 import com.google.inject.tools.ideplugin.JavaElement;
@@ -114,7 +113,7 @@ class EclipseJavaElement implements JavaElement {
         default:
           return null;
       }
-    } catch (JavaModelException e) {
+    } catch (Throwable e) {
       return null;
     }
   }
