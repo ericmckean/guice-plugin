@@ -33,7 +33,7 @@ The main entry point to the plugin's functionality is the context (right click) 
 
 *Configure* will bring up the configure dialog (see below).
 
-*Run Modules Now* will (re)run your contexts.
+*Run Modules Now* will (re)run your contexts. The plugin attempts to listen for changes to your code that necessitate rerunning the module contexts but is not always successful.  If you edit your code to change the bindings, you may need to do this to refresh the cache.
 
 *Run Modules Automatically* controls whether your contexts are automatically rerun in response to code changes.
 
@@ -51,4 +51,4 @@ The top half of the dialog displays your GuiceIDEPluginContextDefinition context
 
 === The Errors View ===
 
-The errors view servers two purposes.  It reports during context runtime any problems with your code (though these are also reported in response to "Find Bindings").  It also reports any internal errors the plugin has.  During the alpha phase, please check this from time to time and report errors on this website.
+The errors view servers two purposes.  During context runtime it displays any problems with your code (though these are also reported in response to "Find Bindings").  It also shows any internal errors the plugin has.  During the alpha phase, please check this from time to time and report errors on this website.
