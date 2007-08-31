@@ -142,9 +142,8 @@ class EclipseJavaProject implements JavaManager {
           presource =
               ResourcesPlugin.getWorkspace().getRoot().findMember(
                   entry.getPath());
-          resourceLocation = presource.getLocation().toOSString();
-          String outputLocation =
-              entry.getOutputLocation().makeRelative().toOSString();
+          resourceLocation = presource.getLocation().makeAbsolute().toOSString();
+          String outputLocation = resourceLocation;
           args.add(outputLocation.replaceFirst(presource.getName(),
               resourceLocation));
           break;

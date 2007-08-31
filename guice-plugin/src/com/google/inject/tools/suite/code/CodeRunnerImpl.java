@@ -163,7 +163,6 @@ class CodeRunnerImpl implements CodeRunner {
         done = false;
         try {
           process = new ProcessBuilder(cmd).start();
-          process.waitFor();
           if (!killed) {
             runnable.gotErrorOutput(process.getErrorStream());
             runnable.gotOutput(process.getInputStream());
