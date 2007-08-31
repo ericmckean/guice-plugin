@@ -92,9 +92,22 @@ class EclipseJavaElement implements JavaElement {
   }
   
   private String getClassNameFromResolvedSignature(String resolvedSignature) {
-    int start = resolvedSignature.indexOf('L');
-    int end = resolvedSignature.indexOf(';');
-    return resolvedSignature.substring(start+1, end);
+    int start = resolvedSignature.indexOf('<');
+    int end = resolvedSignature.lastIndexOf('>');
+    if (start == -1) {
+      return getClassNameHelper(resolvedSignature);
+    } else {
+      String sign = resolvedSignature.substring(0, start+1) +
+        getClassNameFromResolvedSignature(resolvedSignature.substring(start+2,end-1)) +
+        resolvedSignature.substring(end,resolvedSignature.length());
+      return getClassNameFromResolvedSignature(sign);
+    }
+  }
+  
+  private String getClassNameHelper(String sign) {
+    int start = sign.indexOf('L');
+    int end = sign.lastIndexOf(';');
+    return sign.substring(start+1, end);
   }
 
   private String findSignature() {
