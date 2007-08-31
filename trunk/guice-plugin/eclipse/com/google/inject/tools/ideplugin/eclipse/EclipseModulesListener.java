@@ -35,6 +35,8 @@ import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.ITypeHierarchy;
 import org.eclipse.jdt.core.ITypeHierarchyChangedListener;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
+
 import com.google.inject.Singleton;
 import com.google.inject.Inject;
 import com.google.inject.tools.ideplugin.module.ModulesListener;
@@ -210,19 +212,19 @@ class EclipseModulesListener extends ModulesListener {
             // do nothing
         }
       } else {
-        handleDelta(event.getDelta());
+        try {
+          handleDelta(event.getDelta());
+        } catch (JavaModelException e) {}
       }
     }
 
-    private void handleDelta(IJavaElementDelta delta) {
+    private void handleDelta(IJavaElementDelta delta) throws JavaModelException {
       IJavaElement element = delta.getElement();
       if (element instanceof ICompilationUnit) {
         IJavaProject project = element.getJavaProject();
         EclipseJavaProject javaManager = new EclipseJavaProject(project);
         ICompilationUnit cu = (ICompilationUnit) element;
-        //TODO: deal with inner classes...
-        IType type = cu.findPrimaryType();
-        if (type != null) {
+        for (IType type : cu.getAllTypes()) {
           if (typeHierarchies.get(javaManager) != null
               && typeHierarchies.get(javaManager).contains(type)) {
             switch (delta.getKind()) {
