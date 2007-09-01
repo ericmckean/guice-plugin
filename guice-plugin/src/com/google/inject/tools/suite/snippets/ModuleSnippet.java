@@ -301,7 +301,7 @@ public class ModuleSnippet<T extends Module> extends CodeSnippet {
   public static void main(String[] args) {
     OutputStream realSystemOut = System.out;
     System.setOut(System.err);
-    runSnippet(System.out, args);
+    runSnippet(realSystemOut, args);
   }
 
   @SuppressWarnings("unchecked")
