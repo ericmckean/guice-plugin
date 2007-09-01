@@ -1,0 +1,12 @@
+#summary The Guice Tools Framework
+
+== Introduction ==
+
+The Guice Tools Framework is at the heart of the guice IDE plugin and makes writing code analysis tools for guice painless.
+
+Download a copy from the Downloads page.
+
+
+=== Details ===
+
+Coming soon...
