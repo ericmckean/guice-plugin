@@ -29,7 +29,7 @@ import java.io.IOException;
  * A snippet *must* implement the main method as that is what the CodeRunner
  * will run. The main method should print the
  * {@link com.google.inject.tools.suite.snippets.CodeSnippetResult} for itself to
- * System.out.
+ * System.out (and redirect System.out before doing anything).
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
@@ -74,5 +74,11 @@ public abstract class CodeSnippet {
     }
   }
 
-  // public static abstract void main(String[] args);
+  /*public static void main(String[] args) {
+    OutputStream realSystemOut = System.out;
+    System.setOut(System.err);
+    runSnippet(System.out, args);
+  }
+
+  public static abstract void runSnippet(OutputStream stream, String[] args) {*/
 }

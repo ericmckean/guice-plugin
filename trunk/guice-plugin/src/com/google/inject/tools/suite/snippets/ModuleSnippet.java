@@ -299,6 +299,8 @@ public class ModuleSnippet<T extends Module> extends CodeSnippet {
    */
   // Expects 1 arg: the class name
   public static void main(String[] args) {
+    OutputStream realSystemOut = System.out;
+    System.setOut(System.err);
     runSnippet(System.out, args);
   }
 

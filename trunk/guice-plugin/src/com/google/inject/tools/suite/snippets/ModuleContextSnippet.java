@@ -36,6 +36,7 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Metaprovider;
 import com.google.inject.Module;
+import com.google.inject.tools.suite.snippets.CodeProblem.BindingProblem;
 
 /**
  * This code snippet runs a module context. It creates an injector based on the
@@ -104,54 +105,61 @@ public class ModuleContextSnippet extends CodeSnippet {
         for (Key<?> key : moduleBindings.keySet()) {
           final String bindWhat = key.getTypeLiteral().toString();
           String annotatedWith = null;
-          if (key.getAnnotation() != null) {
-            annotatedWith = key.getAnnotation().toString();
-          } else if (key.getAnnotationType() != null) {
-            annotatedWith = "@" + key.getAnnotationType().getName();
-          }
-          final KeyRepresentation keyRepresentation =
-            new KeyRepresentation(bindWhat, annotatedWith);
-          String bindTo = null;
-          String bindToProvider = null;
-          String bindToInstance = null;
-          String file = null;
-          int location = -1;
-          Binding<?> binding = moduleBindings.get(key);
-          Set<CodeProblem> locationProblems = new HashSet<CodeProblem>();
-          BindingCodeLocation bindingCodeLocation;
-          StackTraceElement source = null;
-          String bindingLocationDescription = null;
-          if (binding == null) {
-            locationProblems.add(new CodeProblem.NoBindingProblem(name, key
-                .getTypeLiteral().toString()));
-          } else {
-            try {
-              Metaprovider<?> metaprovider = binding.getMetaprovider();
-              if (metaprovider.isBoundToProvider()) {
-                bindToProvider = metaprovider.resolveProvider().getName();
-              } else if (metaprovider.isBoundToInstance()) {
-                bindToInstance = metaprovider.resolveInstance().toString();
-              } else {
-                bindTo = metaprovider.resolve().getName();
-              }
-              if (binding.getSource() instanceof StackTraceElement) {
-                source = (StackTraceElement) binding.getSource();
-                file = source.getFileName();
-                location = source.getLineNumber();
-              } else {
-                bindingLocationDescription = binding.getSource().toString();
-              }
-            } catch (Throwable throwable) {
-              locationProblems.add(new CodeProblem.BindingProblem(name, key
-                  .getTypeLiteral().toString(), throwable));
+          try {
+            if (key.getAnnotation() != null) {
+              annotatedWith = key.getAnnotation().toString();
+            } else if (key.getAnnotationType() != null) {
+              annotatedWith = "@" + key.getAnnotationType().getName();
             }
+            final KeyRepresentation keyRepresentation =
+              new KeyRepresentation(bindWhat, annotatedWith);
+            String bindTo = null;
+            String bindToProvider = null;
+            String bindToInstance = null;
+            String file = null;
+            int location = -1;
+            Binding<?> binding = moduleBindings.get(key);
+            Set<CodeProblem> locationProblems = new HashSet<CodeProblem>();
+            BindingCodeLocation bindingCodeLocation;
+            StackTraceElement source = null;
+            String bindingLocationDescription = null;
+            if (binding == null) {
+              locationProblems.add(new CodeProblem.NoBindingProblem(name, key
+                  .getTypeLiteral().toString()));
+            } else {
+              try {
+                Metaprovider<?> metaprovider = binding.getMetaprovider();
+                if (metaprovider.isBoundToProvider()) {
+                  bindToProvider = metaprovider.resolveProvider().getName();
+                } else if (metaprovider.isBoundToInstance()) {
+                  bindToInstance = metaprovider.resolveInstance().toString();
+                } else {
+                  bindTo = metaprovider.resolve().getName();
+                }
+                if (binding.getSource() instanceof StackTraceElement) {
+                  source = (StackTraceElement) binding.getSource();
+                  file = source.getFileName();
+                  location = source.getLineNumber();
+                } else {
+                  bindingLocationDescription = binding.getSource().toString();
+                }
+              } catch (Throwable throwable) {
+                locationProblems.add(new CodeProblem.BindingProblem(name, key
+                    .getTypeLiteral().toString(), throwable));
+              }
+            }
+            StackTraceElement[] stackTrace = new StackTraceElement[1];
+            stackTrace[0] = source;
+            this.bindings.put(keyRepresentation, new BindingCodeLocation(stackTrace,
+                keyRepresentation.bindWhat, keyRepresentation.annotatedWith,
+                bindTo, bindToProvider, bindToInstance, name, file, location, 
+                bindingLocationDescription, locationProblems));
+          } catch (Throwable throwable) {
+            this.bindings.put(new KeyRepresentation(bindWhat, null), 
+                new BindingCodeLocation(null, bindWhat, null, null, null, null, name,
+                    null, -1, null, 
+                    Collections.singleton(new BindingProblem(name, bindWhat, throwable))));
           }
-          StackTraceElement[] stackTrace = new StackTraceElement[1];
-          stackTrace[0] = source;
-          this.bindings.put(keyRepresentation, new BindingCodeLocation(stackTrace,
-              keyRepresentation.bindWhat, keyRepresentation.annotatedWith,
-              bindTo, bindToProvider, bindToInstance, name, file, location, 
-              bindingLocationDescription, locationProblems));
         }
       }
     }
@@ -300,6 +308,8 @@ public class ModuleContextSnippet extends CodeSnippet {
   // and returns an iterable of modules Iterable<com.google.inject.Module>
   // and args[4] is an optional method that returns an injector
   public static void main(String[] args) {
+    OutputStream realSystemOut = System.out;
+    System.setOut(System.err);
     runSnippet(System.out, args);
   }
 
