@@ -34,10 +34,12 @@ import com.google.inject.tools.suite.snippets.CodeSnippetResult;
 import java.util.HashSet;
 import java.util.Set;
 
-/*
+/**
+ * Standard implementation of the {@link ModuleManager}.
+ * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-public class ModuleManagerImpl implements ModuleManager,
+class ModuleManagerImpl implements ModuleManager,
     CodeRunner.CodeRunListener {
   private final ModulesSource modulesListener;
   private final ProblemsHandler problemsHandler;
