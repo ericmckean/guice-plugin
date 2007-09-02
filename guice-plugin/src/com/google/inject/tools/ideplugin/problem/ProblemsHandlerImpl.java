@@ -26,9 +26,7 @@ import com.google.inject.tools.suite.snippets.CodeProblem;
 
 import java.util.Set;
 
-/**
- * {@inheritDoc ProblemsHandler}
- * 
+/*
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 @Singleton

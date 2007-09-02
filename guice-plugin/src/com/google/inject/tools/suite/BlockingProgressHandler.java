@@ -23,8 +23,6 @@ import java.util.List;
  * An implementation of {@link ProgressHandler} that does nothing to display
  * the progress and blocks the calling thread while it runs.
  * 
- * {@inheritDoc ProgressHandler}
- * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class BlockingProgressHandler implements ProgressHandler {

@@ -22,9 +22,7 @@ import com.google.inject.tools.suite.GuiceToolsModule;
 import com.google.inject.tools.suite.ProblemsHandler;
 
 /**
- * The abstract implementation of the tools module specific to the IDE plugin.
- * 
- * {@inheritDoc GuiceToolsModule}
+ * The abstract implementation of the {@link GuiceToolsModule} specific to the IDE plugin.
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */

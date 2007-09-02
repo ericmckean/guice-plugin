@@ -32,11 +32,7 @@ import com.google.inject.tools.suite.GuiceToolsModule;
 import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.suite.Messenger;
 
-/**
- * Eclipse implementation of the GuicePlugin.
- * 
- * {@inheritDoc GuicePlugin}
- * 
+/*
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class EclipseGuicePlugin extends GuicePlugin {

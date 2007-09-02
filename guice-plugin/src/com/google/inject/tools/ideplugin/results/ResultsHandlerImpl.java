@@ -19,9 +19,7 @@ package com.google.inject.tools.ideplugin.results;
 import com.google.inject.Singleton;
 import com.google.inject.Inject;
 
-/**
- * {@inheritDoc ResultsHandler}
- * 
+/*
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 @Singleton
