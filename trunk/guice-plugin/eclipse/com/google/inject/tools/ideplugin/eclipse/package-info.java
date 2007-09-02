@@ -21,13 +21,14 @@
  * selecting menu items and of views and dialogs displaying results and 
  * configuration options.
  * 
- * <p>The {@link EclipseGuicePlugin} is a concrete implementation of a
- * {@link com.google.inject.tools.ideplugin.GuicePlugin} that is the core object
- * of the IDE plugin.  The {@link EclipsePluginModule} (and its inner submodule
- * the {@link EclipsePluginModule.EclipseGuiceToolsModule}) are concrete
+ * <p>The {@link com.google.inject.tools.ideplugin.eclipse.EclipseGuicePlugin} is a concrete 
+ * implementation of a {@link com.google.inject.tools.ideplugin.GuicePlugin} that is the core object
+ * of the IDE plugin.  The {@link com.google.inject.tools.ideplugin.eclipse.EclipsePluginModule} 
+ * (and its inner submodule the 
+ * {@link com.google.inject.tools.ideplugin.eclipse.EclipsePluginModule$EclipseGuiceToolsModule}) 
+ * are concrete
  * implementations of the {@link com.google.inject.tools.ideplugin.GuicePluginModule} 
- * and {@link com.google.inject.tools.suite.GuiceToolsModule} that bind the 
- * Eclipse pieces.
+ * and {@link com.google.inject.tools.suite.GuiceToolsModule} that bind the Eclipse pieces.
  */
 
 package com.google.inject.tools.ideplugin.eclipse;

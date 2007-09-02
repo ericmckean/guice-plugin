@@ -17,9 +17,11 @@
 /**
  * Module management objects specific to the IDE plugin tool.
  * 
- * <p>The {@link ModulesListener} is an abstract patial implementation of the
+ * <p>The {@link com.google.inject.tools.ideplugin.module.ModulesListener} is an abstract 
+ * partial implementation of the
  * {@link com.google.inject.tools.suite.module.ModulesSource} for use with IDE 
- * plugins.  The {@link ModuleSelectionView} defines an IDE component allowing 
+ * plugins.  The {@link com.google.inject.tools.ideplugin.module.ModuleSelectionView} defines an 
+ * IDE component allowing 
  * for the configuration bu the user of which module contexts to run.
  */
 

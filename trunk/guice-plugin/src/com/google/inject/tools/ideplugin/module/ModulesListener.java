@@ -23,19 +23,13 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.inject.Inject;
-import com.google.inject.tools.ideplugin.CustomContextDefinitionSource;
 import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.module.ModulesSource;
 
 /**
- * Abstract implementation of the {@link ModulesSource} and
- * {@link CustomContextDefinitionSource} for the IDE plugins.
- * 
- * {@inheritDoc ModulesSource}
- * 
- * {@inheritDoc CustomContextDefinitionSource}
+ * Abstract implementation of the {@link ModulesSource} for the IDE plugin.
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */

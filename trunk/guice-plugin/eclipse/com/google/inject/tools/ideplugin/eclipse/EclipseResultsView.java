@@ -42,8 +42,6 @@ import com.google.inject.tools.suite.Messenger;
  * The Eclipse implementation of the {@link ResultsView}, a view for displaying
  * results and error messages (a view is a tab in the lower panel).
  * 
- * {@inheritDoc ResultsView}
- * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class EclipseResultsView extends ViewPart implements ResultsView {

@@ -25,9 +25,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * {@inheritDoc CustomContextDefinitionSource}
- * 
+/* 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 public abstract class CustomContextDefinitionSourceImpl implements

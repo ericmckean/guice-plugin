@@ -49,7 +49,7 @@ public interface CustomContextDefinitionSource {
    * Find and return all custom contexts; usually called just before calling
    * addListener(this).
    * 
-   * @param javaManager the java context to find custom module contexts for
+   * @param javaProject the java context to find custom module contexts for
    */
   public Set<String> getContexts(JavaProject javaProject);
   
