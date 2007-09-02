@@ -22,11 +22,22 @@ package com.google.inject.tools.ideplugin;
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class ProjectSettings {
+  /**
+   * Should modules be treated as contexts by default.
+   */
   public boolean activateByDefault;
+  /**
+   * Should module contexts be (re)run automatically in response to changes.
+   */
   public boolean runAutomatically;
   
   //TODO: rest of settings
   
+  /**
+   * Create settings with default values.
+   */
   public ProjectSettings() {
+    activateByDefault = false;
+    runAutomatically = false;
   }
 }
