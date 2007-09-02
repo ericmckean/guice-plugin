@@ -502,9 +502,14 @@ public class ModuleManagerImpl implements ModuleManager,
   public void acceptDone() {
     // do nothing
   }
+  
+  public boolean runAutomatically() {
+    return runAutomatically;
+  }
 
   public void setRunAutomatically(boolean run) {
     this.runAutomatically = run;
+    updateModules(false, true);
   }
 
   public boolean activateModulesByDefault() {

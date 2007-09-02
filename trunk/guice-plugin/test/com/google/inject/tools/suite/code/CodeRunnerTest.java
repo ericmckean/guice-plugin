@@ -173,7 +173,7 @@ public class CodeRunnerTest extends TestCase implements
     }
 
     @Override
-    public void caughtException(Exception e) {
+    public void caughtException(Throwable e) {
       fail();
     }
 

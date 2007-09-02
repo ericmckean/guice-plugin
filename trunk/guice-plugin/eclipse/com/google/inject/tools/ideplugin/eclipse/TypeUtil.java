@@ -264,10 +264,6 @@ final class TypeUtil
       {
         return TypeConstants.TYPE_JAVAOBJECT;
       }
-      
-      // TODO: is there a better way to handle a failure to resolve
-      // than just garbage out?
-      //JSFCommonPlugin.log(new Exception("Failed to resolve type: "+typeSignature), "Failed to resolve type: "+typeSignature); //$NON-NLS-1$ //$NON-NLS-2$
     }
     
     return typeSignature;
@@ -281,7 +277,6 @@ final class TypeUtil
     
     try
     {
-      // TODO: this call is only supported on sourceTypes!
       String[][] resolved = owningType.resolveType(fullName);
       
       if (resolved != null && resolved.length > 0)
@@ -429,7 +424,6 @@ final class TypeUtil
         {
           if (pos < typeArguments.size())
           {
-            // TODO: should typeArguments.size ever != typeParams.length?
             return typeArguments.get(pos);
           }
         }
@@ -509,8 +503,6 @@ final class TypeUtil
     {
       return true;
     }
-    
-    // TODO: support the case of enum base type with generic type argument
     
     // only comparable if is the same class
     return typeSig1.equals(typeSig2);

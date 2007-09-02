@@ -39,6 +39,7 @@ import org.eclipse.jdt.core.JavaModelException;
 
 import com.google.inject.Singleton;
 import com.google.inject.Inject;
+import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.ideplugin.module.ModulesListener;
 import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.Messenger;
@@ -72,8 +73,8 @@ class EclipseModulesListener extends ModulesListener {
   }
 
   @Override
-  public Set<JavaManager> getOpenProjects() {
-    Set<JavaManager> projects = new HashSet<JavaManager>();
+  public Set<JavaProject> getOpenProjects() {
+    Set<JavaProject> projects = new HashSet<JavaProject>();
     try {
       if (ResourcesPlugin.getWorkspace() != null) {
         for (IProject project : ResourcesPlugin.getWorkspace().getRoot()
@@ -114,7 +115,7 @@ class EclipseModulesListener extends ModulesListener {
   }
 
   @Override
-  protected void initialize(JavaManager javaManager) {
+  protected void initialize(JavaProject javaManager) {
     super.initialize(javaManager);
     if (javaManager instanceof EclipseJavaProject) {
       initialize2((EclipseJavaProject) javaManager);
@@ -153,9 +154,9 @@ class EclipseModulesListener extends ModulesListener {
 
   public static class NotEclipseJavaProjectException extends RuntimeException {
     private static final long serialVersionUID = 5868250037957080902L;
-    private final JavaManager javaManager;
+    private final JavaProject javaManager;
 
-    public NotEclipseJavaProjectException(JavaManager javaManager) {
+    public NotEclipseJavaProjectException(JavaProject javaManager) {
       this.javaManager = javaManager;
     }
 
@@ -166,7 +167,7 @@ class EclipseModulesListener extends ModulesListener {
   }
 
   @Override
-  protected Set<String> locateModules(JavaManager javaManager) throws Throwable {
+  protected Set<String> locateModules(JavaProject javaManager) throws Throwable {
     if (javaManager instanceof EclipseJavaProject) {
       return locateModules((EclipseJavaProject) javaManager);
     } else {

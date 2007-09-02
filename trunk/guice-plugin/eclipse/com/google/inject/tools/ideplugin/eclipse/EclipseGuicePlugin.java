@@ -29,7 +29,7 @@ import com.google.inject.tools.ideplugin.results.ResultsView;
 import com.google.inject.tools.ideplugin.results.Results;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
 import com.google.inject.tools.suite.GuiceToolsModule;
-import com.google.inject.tools.suite.JavaManager;
+import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.suite.Messenger;
 
 /**
@@ -79,9 +79,9 @@ public class EclipseGuicePlugin extends GuicePlugin {
   @Singleton
   public static class ModuleSelectionViewImpl implements ModuleSelectionView {
     private class GetToUIThread implements Runnable {
-      private final JavaManager project;
+      private final JavaProject project;
 
-      public GetToUIThread(JavaManager project) {
+      public GetToUIThread(JavaProject project) {
         this.project = project;
       }
 
@@ -105,7 +105,7 @@ public class EclipseGuicePlugin extends GuicePlugin {
       this.projectManager = projectManager;
     }
 
-    public void show(JavaManager project) {
+    public void show(JavaProject project) {
       Display.getDefault().syncExec(new GetToUIThread(project));
     }
   }

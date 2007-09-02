@@ -171,8 +171,10 @@ class CodeRunnerImpl implements CodeRunner {
             runnable.gotOutput(result);
             process.destroy();
           }
-        } catch (Exception exception) {
-          runnable.caughtException(exception);
+        } catch (Throwable exception) {
+          if (!killed) {
+            runnable.caughtException(exception);
+          }
         }
       }
     }

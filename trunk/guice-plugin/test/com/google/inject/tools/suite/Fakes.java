@@ -18,7 +18,8 @@ package com.google.inject.tools.suite;
 
 import com.google.inject.CreationException;
 import com.google.inject.spi.Message;
-import com.google.inject.tools.suite.JavaManager;
+import com.google.inject.tools.ideplugin.JavaProject;
+import com.google.inject.tools.ideplugin.ProjectSettings;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.code.CodeRunner;
 import com.google.inject.tools.suite.snippets.CodeProblem;
@@ -138,7 +139,7 @@ public class Fakes {
     }
   }
 
-  public static class FakeJavaManager implements JavaManager {
+  public static class FakeJavaManager implements JavaProject {
     public String getJavaCommand() throws Exception {
       return null;
     }
@@ -156,6 +157,13 @@ public class Fakes {
     }
     
     public String getClasspathDelimiter() {
+      return null;
+    }
+    
+    public void saveSettings(ProjectSettings setting) {
+    }
+    
+    public ProjectSettings loadSettings() {
       return null;
     }
   }

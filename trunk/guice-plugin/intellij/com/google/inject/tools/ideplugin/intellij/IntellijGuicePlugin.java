@@ -17,11 +17,11 @@
 package com.google.inject.tools.ideplugin.intellij;
 
 import com.google.inject.tools.ideplugin.GuicePlugin;
+import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
 import com.google.inject.tools.ideplugin.results.Results;
 import com.google.inject.tools.ideplugin.results.ResultsView;
 import com.google.inject.tools.suite.GuiceToolsModule;
-import com.google.inject.tools.suite.JavaManager;
 
 /**
  * IntelliJ implementation of the GuicePlugin.
@@ -42,20 +42,14 @@ public class IntellijGuicePlugin extends GuicePlugin {
   }
   
   public static class ResultsViewImpl implements ResultsView {
-
     public void displayResults(Results results) {
-      // TODO Auto-generated method stub
       
     }
-    
   }
   
   public static class ModuleSelectionViewImpl implements ModuleSelectionView {
-
-    public void show(JavaManager project) {
-      // TODO Auto-generated method stub
+    public void show(JavaProject project) {
       
     }
-    
   }
 }

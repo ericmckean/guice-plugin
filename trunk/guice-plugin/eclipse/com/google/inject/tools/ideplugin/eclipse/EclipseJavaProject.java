@@ -20,7 +20,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.inject.tools.suite.JavaManager;
+import com.google.inject.tools.ideplugin.JavaProject;
+import com.google.inject.tools.ideplugin.ProjectSettings;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -40,7 +41,7 @@ import org.osgi.framework.Bundle;
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-class EclipseJavaProject implements JavaManager {
+class EclipseJavaProject implements JavaProject {
   private final IJavaProject project;
 
   public EclipseJavaProject(IJavaProject project) {
@@ -177,6 +178,18 @@ class EclipseJavaProject implements JavaManager {
     URL url = bundle.getEntry(jarFile);
     url = FileLocator.toFileURL(url);
     return url.getFile();
+  }
+  
+  public void saveSettings(ProjectSettings settings) {
+    //TODO: save settings
+  }
+  
+  public ProjectSettings loadSettings() {
+    //TODO: load settings
+    ProjectSettings settings = new ProjectSettings();
+    settings.activateByDefault = false;
+    settings.runAutomatically = false;
+    return settings;
   }
 
   @Override

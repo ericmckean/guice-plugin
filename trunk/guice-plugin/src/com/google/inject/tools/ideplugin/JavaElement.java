@@ -72,4 +72,9 @@ public interface JavaElement {
    * Return the annotations on this element (if it is at an injection point).
    */
   public String getAnnotations();
+  
+  /**
+   * Return true if the element is a concrete class type.
+   */
+  public boolean isConcreteClass();
 }

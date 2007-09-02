@@ -16,6 +16,7 @@
 
 package com.google.inject.tools.ideplugin.eclipse;
 
+import org.eclipse.jdt.core.Flags;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMethod;
@@ -189,6 +190,16 @@ class EclipseJavaElement implements JavaElement {
   public String getAnnotations() {
     //TODO: determine what annotations (if any) this element has
     return null;
+  }
+  
+  public boolean isConcreteClass() {
+    try {
+      IType owningType = compilationUnit.getAllTypes()[0];
+      IType resolvedType = TypeUtil.resolveType(owningType, findSignature());
+      return ! Flags.isAbstract(resolvedType.getFlags());
+    } catch (Throwable throwable) {
+      return false;
+    }
   }
 
   @Override

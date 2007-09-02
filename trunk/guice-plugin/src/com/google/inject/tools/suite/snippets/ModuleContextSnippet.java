@@ -36,6 +36,7 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Metaprovider;
 import com.google.inject.Module;
+import com.google.inject.Provider;
 import com.google.inject.tools.suite.snippets.CodeProblem.BindingProblem;
 
 /**
@@ -130,11 +131,25 @@ public class ModuleContextSnippet extends CodeSnippet {
               try {
                 Metaprovider<?> metaprovider = binding.getMetaprovider();
                 if (metaprovider.isBoundToProvider()) {
-                  bindToProvider = metaprovider.resolveProvider().getName();
+                  Class<? extends Provider<?>> provider = metaprovider.resolveProvider();
+                  if (provider.isAnonymousClass()) {
+                    bindToProvider = "anonymous inner class in " + provider.getEnclosingClass().getName();
+                  } else {
+                    bindToProvider = metaprovider.resolveProvider().getName();
+                  }
                 } else if (metaprovider.isBoundToInstance()) {
-                  bindToInstance = metaprovider.resolveInstance().toString();
+                  try {
+                    bindToInstance = metaprovider.resolveInstance().toString();
+                  } catch (Throwable t) {
+                    bindToInstance = metaprovider.resolveInstance().getClass().getName();
+                  }
                 } else {
-                  bindTo = metaprovider.resolve().getName();
+                  Class<?> theclass = metaprovider.resolve();
+                  if (theclass.isAnonymousClass()) {
+                    bindTo = "anonymous inner class in " + theclass.getEnclosingClass().getName();
+                  } else {
+                    bindTo = metaprovider.resolve().getName();
+                  }
                 }
                 if (binding.getSource() instanceof StackTraceElement) {
                   source = (StackTraceElement) binding.getSource();

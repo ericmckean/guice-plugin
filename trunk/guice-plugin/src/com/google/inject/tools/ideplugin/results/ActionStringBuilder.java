@@ -21,6 +21,7 @@ import com.google.inject.tools.suite.module.ClassNameUtility;
 import com.google.inject.tools.suite.snippets.BindingCodeLocation;
 import com.google.inject.tools.suite.snippets.CodeLocation;
 import com.google.inject.tools.suite.snippets.CodeProblem;
+import com.google.inject.tools.suite.snippets.BindingCodeLocation.ImplicitBindingLocation;
 import com.google.inject.tools.suite.snippets.BindingCodeLocation.NoBindingLocation;
 import com.google.inject.tools.suite.snippets.CodeProblem.BindingProblem;
 import com.google.inject.tools.suite.snippets.CodeProblem.InvalidModuleContextProblem;
@@ -145,7 +146,10 @@ public class ActionStringBuilder {
    * Create an ActionString for a {@link CodeLocation}.
    */
   public static ActionString getDisplayString(CodeLocation location) {
-    if (location instanceof NoBindingLocation) {
+    if (location instanceof ImplicitBindingLocation) {
+      return new ImplicitBindingLocationActionString(
+          (ImplicitBindingLocation)location);
+    } else if (location instanceof NoBindingLocation) {
       return new NoBindingLocationActionString(
           (NoBindingLocation)location);
     } else if (location instanceof BindingCodeLocation) {
@@ -174,6 +178,16 @@ public class ActionStringBuilder {
       addText("No binding for ");
       addTextWithAction(ClassNameUtility.shorten(theClass), new ActionsHandler.GotoFile(
         theClass), "Goto source of " + theClass);
+    }
+  }
+  
+  public static class ImplicitBindingLocationActionString extends ActionString {
+    public ImplicitBindingLocationActionString(ImplicitBindingLocation location) {
+      super();
+      String theClass = location.getTheClass();
+      addTextWithAction(ClassNameUtility.shorten(theClass), new ActionsHandler.GotoFile(
+          theClass), "Goto source of " + theClass);
+      addText(" is implicitly bound");
     }
   }
   

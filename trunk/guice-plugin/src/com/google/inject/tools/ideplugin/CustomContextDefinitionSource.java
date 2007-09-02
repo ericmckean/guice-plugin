@@ -16,7 +16,7 @@
 
 package com.google.inject.tools.ideplugin;
 
-import com.google.inject.tools.suite.JavaManager;
+import com.google.inject.tools.ideplugin.JavaProject;
 
 import java.util.Set;
 
@@ -32,13 +32,13 @@ public interface CustomContextDefinitionSource {
    */
   public interface CustomContextDefinitionListener {
     public void contextDefinitionAdded(CustomContextDefinitionSource source,
-        JavaManager javaManager, String contextDefinitionName);
+        JavaProject javaProject, String contextDefinitionName);
 
     public void contextDefinitionRemoved(CustomContextDefinitionSource source,
-        JavaManager javaManager, String contextDefinitionName);
+        JavaProject javaProject, String contextDefinitionName);
 
     public void contextDefinitionChanged(CustomContextDefinitionSource source,
-        JavaManager javaManager, String contextDefinitionName);
+        JavaProject javaProject, String contextDefinitionName);
   }
 
   public void addListener(CustomContextDefinitionListener listener);
@@ -51,10 +51,10 @@ public interface CustomContextDefinitionSource {
    * 
    * @param javaManager the java context to find custom module contexts for
    */
-  public Set<String> getContexts(JavaManager javaManager);
+  public Set<String> getContexts(JavaProject javaProject);
   
   /**
    * Called by the client when a possible refresh is needed.
    */
-  public void refresh(JavaManager javaManager);
+  public void refresh(JavaProject javaProject);
 }

@@ -111,6 +111,10 @@ public class Fakes {
       return false;
     }
     
+    public boolean isConcreteClass() {
+      return false;
+    }
+    
     public String getAnnotations() {
       return null;
     }
