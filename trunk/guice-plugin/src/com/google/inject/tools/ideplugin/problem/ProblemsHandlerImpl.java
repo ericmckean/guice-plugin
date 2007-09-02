@@ -26,7 +26,9 @@ import com.google.inject.tools.suite.snippets.CodeProblem;
 
 import java.util.Set;
 
-/*
+/**
+ * Standard implementation of the {@link ProblemsHandler}.
+ * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 @Singleton
