@@ -25,7 +25,7 @@ import com.google.inject.tools.ideplugin.results.ResultsHandler;
 import com.google.inject.tools.ideplugin.results.ResultsHandlerImpl;
 import com.google.inject.tools.ideplugin.results.ResultsView;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
-import com.google.inject.tools.suite.JavaManager;
+import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProblemsHandler;
 import com.google.inject.tools.suite.ProgressHandler;
@@ -46,7 +46,7 @@ import com.google.inject.tools.suite.ProgressHandler;
  */
 public abstract class GuicePluginModule extends AbstractModule {
   protected interface BindingsEngineFactory {
-    public BindingsEngine create(JavaElement element, JavaManager javaManager);
+    public BindingsEngine create(JavaElement element, JavaProject javaProject);
   }
 
   protected static class BindingsEngineFactoryImpl implements
@@ -67,8 +67,8 @@ public abstract class GuicePluginModule extends AbstractModule {
       this.messengerProvider = messengerProvider;
     }
 
-    public BindingsEngine create(JavaElement element, JavaManager javaManager) {
-      return new BindingsEngine(projectManager.getModuleManager(javaManager),
+    public BindingsEngine create(JavaElement element, JavaProject javaProject) {
+      return new BindingsEngine(projectManager.getModuleManager(javaProject),
           problemsHandlerProvider.get(), resultsHandlerProvider.get(),
           messengerProvider.get(), element);
     }

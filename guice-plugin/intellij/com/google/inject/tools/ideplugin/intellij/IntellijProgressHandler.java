@@ -21,22 +21,18 @@ import com.google.inject.tools.suite.ProgressHandler;
 class IntellijProgressHandler implements ProgressHandler {
   
   public void go(String label, boolean backgroundAutomatically) {
-    // TODO Auto-generated method stub
     
   }
   
   public boolean isCancelled() {
-    // TODO Auto-generated method stub
     return false;
   }
   
   public void step(ProgressStep step) {
-    // TODO Auto-generated method stub
     
   }
   
   public void waitFor() {
-    // TODO Auto-generated method stub
     
   }
   

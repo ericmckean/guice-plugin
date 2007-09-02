@@ -14,20 +14,19 @@
  * the License.
  */
 
-package com.google.inject.tools.ideplugin.module;
-
-import com.google.inject.tools.ideplugin.JavaProject;
+package com.google.inject.tools.ideplugin;
 
 /**
- * Interface for IDE specific objects presenting the module choices to the user.
- * Responsible for notifying the
- * {@link com.google.inject.tools.suite.module.ModuleManager} of the user's selections
- * by creating
- * {@link com.google.inject.tools.suite.module.ModuleContextRepresentation} objects
- * and passing them to the manager.
+ * Represent the project wide settings for the plugin.
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-public interface ModuleSelectionView {
-  public void show(JavaProject project);
+public class ProjectSettings {
+  public boolean activateByDefault;
+  public boolean runAutomatically;
+  
+  //TODO: rest of settings
+  
+  public ProjectSettings() {
+  }
 }

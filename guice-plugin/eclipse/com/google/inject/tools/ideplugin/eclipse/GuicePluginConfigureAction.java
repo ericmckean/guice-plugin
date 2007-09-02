@@ -27,9 +27,9 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
+import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.ideplugin.ProjectManager;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
-import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.module.ModuleManager;
 
 /**
@@ -65,7 +65,7 @@ public class GuicePluginConfigureAction implements IEditorActionDelegate,
     IEditorInput editorInput = ((CompilationUnitEditor) editor).getEditorInput();
     ICompilationUnit cu = JavaPlugin.getDefault()
         .getWorkingCopyManager().getWorkingCopy(editorInput);
-    JavaManager project = new EclipseJavaProject(cu.getJavaProject());
+    JavaProject project = new EclipseJavaProject(cu.getJavaProject());
     ModuleManager moduleManager = projectManager.getModuleManager(project);
     moduleSelectionView.show(project);
   }

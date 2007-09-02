@@ -16,7 +16,7 @@
 
 package com.google.inject.tools.ideplugin;
 
-import com.google.inject.tools.suite.JavaManager;
+import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.suite.module.ModuleManager;
 
 /**
@@ -28,17 +28,17 @@ public interface ProjectManager {
   /**
    * Notify the ProjectManager that the given project has been opened.
    */
-  public void projectOpened(JavaManager javaManager);
+  public void projectOpened(JavaProject javaProject);
 
   /**
    * Notify the ProjectManager that the given project has been closed.
    */
-  public void projectClosed(JavaManager javaManager);
+  public void projectClosed(JavaProject javaProject);
 
   /**
    * Return the {@link ModuleManager} for the given project.
    */
-  public ModuleManager getModuleManager(JavaManager javaManager);
+  public ModuleManager getModuleManager(JavaProject javaProject);
 
   /**
    * Return the {@link ModuleManager} for the current project.
@@ -48,5 +48,5 @@ public interface ProjectManager {
   /**
    * Return the current (last accessed) project.
    */
-  public JavaManager getCurrentProject();
+  public JavaProject getCurrentProject();
 }

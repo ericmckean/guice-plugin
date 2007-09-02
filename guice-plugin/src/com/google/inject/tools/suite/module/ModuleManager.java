@@ -260,6 +260,11 @@ public interface ModuleManager {
       boolean backgroundAutomatically);
 
   /**
+   * True if the module contexts should be run automatically.
+   */
+  public boolean runAutomatically();
+  
+  /**
    * Tell the module manager to run modules automatically as needed.
    */
   public void setRunAutomatically(boolean run);

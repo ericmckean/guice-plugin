@@ -38,8 +38,8 @@ import org.eclipse.jdt.core.JavaModelException;
 import com.google.inject.Singleton;
 import com.google.inject.Inject;
 import com.google.inject.tools.ideplugin.CustomContextDefinitionSourceImpl;
+import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.ideplugin.ProjectManager;
-import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.module.ModulesSource;
 
@@ -97,14 +97,14 @@ class EclipseContextDefinitionListener extends CustomContextDefinitionSourceImpl
   }
 
   @Override
-  protected void initialize(JavaManager javaManager) {
+  protected void initialize(JavaProject javaManager) {
     super.initialize(javaManager);
     if (javaManager instanceof EclipseJavaProject) {
       initialize2((EclipseJavaProject) javaManager);
     }
   }
   
-  public void refresh(JavaManager javaManager) {
+  public void refresh(JavaProject javaManager) {
     if (contextTypes.get(javaManager) == null 
         || contextTypeHierarchies.get(javaManager) == null) {
       if (javaManager instanceof EclipseJavaProject) {
@@ -140,9 +140,9 @@ class EclipseContextDefinitionListener extends CustomContextDefinitionSourceImpl
 
   public static class NotEclipseJavaProjectException extends RuntimeException {
     private static final long serialVersionUID = 5868250037957080902L;
-    private final JavaManager javaManager;
+    private final JavaProject javaManager;
 
-    public NotEclipseJavaProjectException(JavaManager javaManager) {
+    public NotEclipseJavaProjectException(JavaProject javaManager) {
       this.javaManager = javaManager;
     }
 
@@ -153,7 +153,7 @@ class EclipseContextDefinitionListener extends CustomContextDefinitionSourceImpl
   }
 
   @Override
-  protected Set<String> locateContexts(JavaManager javaManager)
+  protected Set<String> locateContexts(JavaProject javaManager)
       throws Throwable {
     if (javaManager instanceof EclipseJavaProject) {
       return locateContexts((EclipseJavaProject) javaManager);

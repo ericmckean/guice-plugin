@@ -37,7 +37,26 @@ public class BindingCodeLocation extends CodeLocation {
     
     public NoBindingLocation(String theClass) {
       super(new StackTraceElement[0], null, -1, "has no binding", Collections
-          .<CodeProblem> emptySet());
+          .<CodeProblem>emptySet());
+      this.theClass = theClass;
+    }
+    
+    public String getTheClass() {
+      return theClass;
+    }
+  }
+  
+  /**
+   * Represents an implicit binding.
+   */
+  public static class ImplicitBindingLocation extends CodeLocation {
+    private static final long serialVersionUID = -5617466328980845643L;
+    
+    private final String theClass;
+    
+    public ImplicitBindingLocation(String theClass) {
+      super(new StackTraceElement[0], null, -1, "is implicitly bound",
+          Collections.<CodeProblem>emptySet());
       this.theClass = theClass;
     }
     

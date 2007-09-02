@@ -21,7 +21,7 @@ import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.ui.IEditorPart;
 
-import com.google.inject.tools.suite.JavaManager;
+import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.suite.module.ModuleManager;
 
 /**
@@ -35,7 +35,7 @@ public class GuicePluginConfigureAction2 extends EclipseMenuAction {
   protected boolean runMyAction(IEditorPart part) {
     ICompilationUnit cu = JavaPlugin.getDefault()
         .getWorkingCopyManager().getWorkingCopy(((CompilationUnitEditor)part).getEditorInput());
-    JavaManager project = new EclipseJavaProject(cu.getJavaProject());
+    JavaProject project = new EclipseJavaProject(cu.getJavaProject());
     ModuleManager moduleManager = guicePlugin.getProjectManager().getModuleManager(project);
     guicePlugin.getModuleSelectionView().show(project);
     return true;

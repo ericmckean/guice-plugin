@@ -19,6 +19,7 @@ package com.google.inject.tools.ideplugin.intellij;
 import java.util.Set;
 
 import com.google.inject.Inject;
+import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.ideplugin.module.ModulesListener;
 import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.Messenger;
@@ -30,18 +31,18 @@ class IntellijModulesListener extends ModulesListener {
   }
   
   @Override
-  public Set<JavaManager> getOpenProjects() {
-    // TODO Auto-generated method stub
+  public Set<JavaProject> getOpenProjects() {
     return null;
   }
   
   @Override
-  protected Set<String> locateModules(JavaManager javaManager) throws Throwable {
-    // TODO Auto-generated method stub
+  protected Set<String> locateModules(JavaProject javaProject) throws Throwable {
     return null;
   }
   
   public void refresh(JavaManager javaManager) {
-    // TODO
+    if (javaManager instanceof JavaProject) {
+      JavaProject javaProject = (JavaProject)javaManager;
+    }
   }
 }

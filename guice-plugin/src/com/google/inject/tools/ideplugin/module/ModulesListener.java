@@ -16,6 +16,7 @@
 
 package com.google.inject.tools.ideplugin.module;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -23,6 +24,7 @@ import java.util.Set;
 
 import com.google.inject.Inject;
 import com.google.inject.tools.ideplugin.CustomContextDefinitionSource;
+import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.module.ModulesSource;
@@ -40,39 +42,44 @@ import com.google.inject.tools.suite.module.ModulesSource;
 public abstract class ModulesListener implements ModulesSource {
   protected final Messenger messenger;
   private final Set<ModulesSourceListener> listeners;
-  private final Map<JavaManager, Set<String>> modules;
+  private final Map<JavaProject, Set<String>> modules;
 
   @Inject
   public ModulesListener(Messenger messenger) {
     this.messenger = messenger;
     this.listeners = new HashSet<ModulesSourceListener>();
-    this.modules = new HashMap<JavaManager, Set<String>>();
+    this.modules = new HashMap<JavaProject, Set<String>>();
   }
 
   /**
    * Create listeners and find initially opened projects.
    */
-  public abstract Set<JavaManager> getOpenProjects();
+  public abstract Set<JavaProject> getOpenProjects();
 
   /**
    * Locate the modules.
    */
-  protected abstract Set<String> locateModules(JavaManager javaManager)
+  protected abstract Set<String> locateModules(JavaProject javaProject)
       throws Throwable;
 
   public Set<String> getModules(JavaManager javaManager) {
-    if (modules.get(javaManager) == null) {
-      initialize(javaManager);
+    if (javaManager instanceof JavaProject) {
+      JavaProject project = (JavaProject)javaManager;
+      if (modules.get(project) == null) {
+        initialize(project);
+      }
+      try {
+        keepModulesByName(project, locateModules(project));
+      } catch (Throwable throwable) {
+        hadProblem(throwable);
+      }
+      return new HashSet<String>(modules.get(project));
+    } else {
+      return Collections.<String>emptySet();
     }
-    try {
-      keepModulesByName(javaManager, locateModules(javaManager));
-    } catch (Throwable throwable) {
-      hadProblem(throwable);
-    }
-    return new HashSet<String>(modules.get(javaManager));
   }
 
-  protected synchronized void keepModulesByName(JavaManager javaManager,
+  protected synchronized void keepModulesByName(JavaProject javaManager,
       Set<String> modulesNames) {
     Set<String> newModules = new HashSet<String>(modulesNames);
     Set<String> removeModules = new HashSet<String>();
@@ -96,7 +103,7 @@ public abstract class ModulesListener implements ModulesSource {
     }
   }
 
-  protected void initialize(JavaManager javaManager) {
+  protected void initialize(JavaProject javaManager) {
     if (modules.get(javaManager) == null) {
       modules.put(javaManager, new HashSet<String>());
     }
@@ -114,31 +121,31 @@ public abstract class ModulesListener implements ModulesSource {
     listeners.remove(listener);
   }
 
-  protected void moduleChanged(JavaManager javaManager, String moduleName) {
+  protected void moduleChanged(JavaProject javaManager, String moduleName) {
     for (ModulesSourceListener listener : listeners) {
       listener.moduleChanged(this, javaManager, moduleName);
     }
   }
 
-  protected void moduleRemoved(JavaManager javaManager, String moduleName) {
+  protected void moduleRemoved(JavaProject javaManager, String moduleName) {
     for (ModulesSourceListener listener : listeners) {
       listener.moduleRemoved(this, javaManager, moduleName);
     }
   }
 
-  protected void moduleAdded(JavaManager javaManager, String moduleName) {
+  protected void moduleAdded(JavaProject javaManager, String moduleName) {
     for (ModulesSourceListener listener : listeners) {
       listener.moduleAdded(this, javaManager, moduleName);
     }
   }
   
-  protected void javaManagerAdded(JavaManager javaManager) {
+  protected void javaManagerAdded(JavaProject javaManager) {
     for (ModulesSourceListener listener : listeners) {
       listener.javaManagerAdded(this, javaManager);
     }
   }
   
-  protected void javaManagerRemoved(JavaManager javaManager) {
+  protected void javaManagerRemoved(JavaProject javaManager) {
     for (ModulesSourceListener listener : listeners) {
       listener.javaManagerRemoved(this, javaManager);
     }

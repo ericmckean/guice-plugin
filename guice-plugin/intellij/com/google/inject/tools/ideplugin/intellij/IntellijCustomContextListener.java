@@ -20,8 +20,8 @@ import java.util.Set;
 
 import com.google.inject.Inject;
 import com.google.inject.tools.ideplugin.CustomContextDefinitionSourceImpl;
+import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.ideplugin.ProjectManager;
-import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.Messenger;
 
 class IntellijCustomContextListener extends
@@ -33,15 +33,12 @@ class IntellijCustomContextListener extends
   }
   
   @Override
-  protected Set<String> locateContexts(JavaManager javaManager)
+  protected Set<String> locateContexts(JavaProject javaProject)
       throws Throwable {
-    // TODO Auto-generated method stub
     return null;
   }
   
-  public void refresh(JavaManager javaManager) {
-    // TODO Auto-generated method stub
+  public void refresh(JavaProject javaProject) {
     
   }
-  
 }

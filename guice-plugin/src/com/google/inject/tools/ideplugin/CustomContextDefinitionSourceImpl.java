@@ -17,7 +17,7 @@
 package com.google.inject.tools.ideplugin;
 
 import com.google.inject.Inject;
-import com.google.inject.tools.suite.JavaManager;
+import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.suite.Messenger;
 
 import java.util.HashMap;
@@ -35,7 +35,7 @@ public abstract class CustomContextDefinitionSourceImpl implements
   private final Set<CustomContextDefinitionListener> listeners;
   protected final Messenger messenger;
   protected final ProjectManager projectManager;
-  private final Map<JavaManager, Set<String>> contexts;
+  private final Map<JavaProject, Set<String>> contexts;
 
   @Inject
   public CustomContextDefinitionSourceImpl(ProjectManager projectManager,
@@ -43,16 +43,16 @@ public abstract class CustomContextDefinitionSourceImpl implements
     this.projectManager = projectManager;
     this.messenger = messenger;
     this.listeners = new HashSet<CustomContextDefinitionListener>();
-    this.contexts = new HashMap<JavaManager, Set<String>>();
+    this.contexts = new HashMap<JavaProject, Set<String>>();
   }
   
   /**
    * Locate custom contexts.
    */
-  protected abstract Set<String> locateContexts(JavaManager javaManager)
+  protected abstract Set<String> locateContexts(JavaProject javaManager)
       throws Throwable;
   
-  public Set<String> getContexts(JavaManager javaManager) {
+  public Set<String> getContexts(JavaProject javaManager) {
     if (contexts.get(javaManager) == null) {
       initialize(javaManager);
     }
@@ -64,7 +64,7 @@ public abstract class CustomContextDefinitionSourceImpl implements
     return new HashSet<String>(contexts.get(javaManager));
   }
 
-  protected synchronized void keepContextsByName(JavaManager javaManager,
+  protected synchronized void keepContextsByName(JavaProject javaManager,
       Set<String> contextNames) {
     Set<String> newContexts = new HashSet<String>(contextNames);
     Set<String> removeContexts = new HashSet<String>();
@@ -88,7 +88,7 @@ public abstract class CustomContextDefinitionSourceImpl implements
     }
   }
   
-  protected void initialize(JavaManager javaManager) {
+  protected void initialize(JavaProject javaManager) {
     if (contexts.get(javaManager) == null) {
       contexts.put(javaManager, new HashSet<String>());
     }
@@ -107,7 +107,7 @@ public abstract class CustomContextDefinitionSourceImpl implements
     messenger.logException("Context Listener error", exception);
   }
 
-  protected void contextDefinitionChanged(JavaManager javaManager,
+  protected void contextDefinitionChanged(JavaProject javaManager,
       String contextDefinitionName) {
     for (CustomContextDefinitionListener listener : listeners) {
       listener.contextDefinitionChanged(this, javaManager,
@@ -115,7 +115,7 @@ public abstract class CustomContextDefinitionSourceImpl implements
     }
   }
 
-  protected void contextDefinitionRemoved(JavaManager javaManager,
+  protected void contextDefinitionRemoved(JavaProject javaManager,
       String contextDefinitionName) {
     for (CustomContextDefinitionListener listener : listeners) {
       listener.contextDefinitionRemoved(this, javaManager,
@@ -123,7 +123,7 @@ public abstract class CustomContextDefinitionSourceImpl implements
     }
   }
 
-  protected void contextDefinitionAdded(JavaManager javaManager,
+  protected void contextDefinitionAdded(JavaProject javaManager,
       String contextDefinitionName) {
     for (CustomContextDefinitionListener listener : listeners) {
       listener.contextDefinitionAdded(this, javaManager, contextDefinitionName);

@@ -21,7 +21,7 @@ import com.google.inject.Injector;
 import com.google.inject.tools.ideplugin.bindings.BindingsEngine;
 import com.google.inject.tools.ideplugin.results.ResultsHandler;
 import com.google.inject.tools.suite.GuiceToolsModule;
-import com.google.inject.tools.suite.JavaManager;
+import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProblemsHandler;
 import com.google.inject.tools.suite.GuiceToolsModule.ModuleManagerFactory;
@@ -71,9 +71,9 @@ public abstract class GuicePlugin {
    * @param element the java element to find bindings of
    */
   public BindingsEngine getBindingsEngine(JavaElement element,
-      JavaManager javaManager) {
+      JavaProject javaProject) {
     return getInstance(GuicePluginModule.BindingsEngineFactory.class).create(
-        element, javaManager);
+        element, javaProject);
   }
 
   /**
@@ -86,8 +86,8 @@ public abstract class GuicePlugin {
   /**
    * Return the {@link ModuleManager}.
    */
-  public ModuleManager getModuleManager(JavaManager javaManager) {
-    return getInstance(ModuleManagerFactory.class).create(javaManager);
+  public ModuleManager getModuleManager(JavaProject javaProject) {
+    return getInstance(ModuleManagerFactory.class).create(javaProject);
   }
 
   /**

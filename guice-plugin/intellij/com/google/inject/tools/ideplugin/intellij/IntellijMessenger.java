@@ -21,18 +21,14 @@ import com.google.inject.tools.suite.Messenger;
 class IntellijMessenger implements Messenger {
   
   public void display(String message) {
-    // TODO Auto-generated method stub
     
   }
   
   public void logException(String label, Throwable throwable) {
-    // TODO Auto-generated method stub
     
   }
   
   public void logMessage(String message) {
-    // TODO Auto-generated method stub
     
   }
-  
 }

@@ -20,6 +20,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.tools.ideplugin.CustomContextDefinitionSource.CustomContextDefinitionListener;
 import com.google.inject.tools.ideplugin.module.ModulesListener;
+import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.GuiceToolsModule.ModuleManagerFactory;
 import com.google.inject.tools.suite.module.ModuleManager;
@@ -36,12 +37,12 @@ import java.util.Map;
 @Singleton
 class ProjectManagerImpl implements ProjectManager,
     ModulesSource.ModulesSourceListener, CustomContextDefinitionListener {
-  private final Map<JavaManager, ModuleManager> moduleManagers;
+  private final Map<JavaProject, ModuleManager> moduleManagers;
   private final ModuleManagerFactory moduleManagerFactory;
   private final ModulesSource modulesSource;
   private final CustomContextDefinitionSource customContextDefinitionSource;
-  private JavaManager currentProject;
-  private final Map<JavaManager, CustomContextsThread> initThreads;
+  private JavaProject currentProject;
+  private final Map<JavaProject, CustomContextsThread> initThreads;
 
   @Inject
   public ProjectManagerImpl(ModuleManagerFactory moduleManagerFactory,
@@ -51,12 +52,12 @@ class ProjectManagerImpl implements ProjectManager,
     this.modulesSource = modulesSource;
     this.customContextDefinitionSource = customContextDefinitionSource;
     customContextDefinitionSource.addListener(this);
-    this.moduleManagers = new HashMap<JavaManager, ModuleManager>();
+    this.moduleManagers = new HashMap<JavaProject, ModuleManager>();
     currentProject = null;
     modulesSource.addListener(this);
-    initThreads = new HashMap<JavaManager, CustomContextsThread>();
+    initThreads = new HashMap<JavaProject, CustomContextsThread>();
     if (modulesSource instanceof ModulesListener) { // which it should be
-      for (JavaManager project : ((ModulesListener) modulesSource)
+      for (JavaProject project : ((ModulesListener) modulesSource)
           .getOpenProjects()) {
         createModuleManager(project);
         CustomContextsThread initThread = 
@@ -71,12 +72,12 @@ class ProjectManagerImpl implements ProjectManager,
   private static class CustomContextsThread extends Thread {
     private final ModuleManager moduleManager;
     private final CustomContextDefinitionSource customContextDefinitionSource;
-    private final JavaManager project;
+    private final JavaProject project;
     private volatile boolean done;
 
     public CustomContextsThread(ModuleManager moduleManager,
         CustomContextDefinitionSource customContextDefinitionSource,
-        JavaManager project) {
+        JavaProject project) {
       done = false;
       this.moduleManager = moduleManager;
       this.customContextDefinitionSource = customContextDefinitionSource;
@@ -102,10 +103,13 @@ class ProjectManagerImpl implements ProjectManager,
 
   public void moduleAdded(ModulesSource source, JavaManager javaManager,
       String module) {
-    if (moduleManagers.get(javaManager) == null) {
-      projectOpened(javaManager);
+    if (javaManager instanceof JavaProject) {
+      JavaProject project = (JavaProject)javaManager;
+      if (moduleManagers.get(project) == null) {
+        projectOpened(project);
+      }
+      moduleManagers.get(project).initModuleName(module);
     }
-    moduleManagers.get(javaManager).initModuleName(module);
   }
 
   public void moduleChanged(ModulesSource source, JavaManager javaManager,
@@ -119,7 +123,7 @@ class ProjectManagerImpl implements ProjectManager,
   }
 
   public void contextDefinitionAdded(CustomContextDefinitionSource source,
-      JavaManager javaManager, String context) {
+      JavaProject javaManager, String context) {
     if (moduleManagers.get(javaManager) == null) {
       projectOpened(javaManager);
     }
@@ -127,16 +131,16 @@ class ProjectManagerImpl implements ProjectManager,
   }
 
   public void contextDefinitionChanged(CustomContextDefinitionSource source,
-      JavaManager javaManager, String context) {
+      JavaProject javaManager, String context) {
     moduleManagers.get(javaManager).customContextChanged(context);
   }
 
   public void contextDefinitionRemoved(CustomContextDefinitionSource source,
-      JavaManager javaManager, String context) {
+      JavaProject javaManager, String context) {
     moduleManagers.get(javaManager).removeCustomContext(context);
   }
 
-  public ModuleManager getModuleManager(JavaManager javaManager) {
+  public ModuleManager getModuleManager(JavaProject javaManager) {
     if (initThreads.get(javaManager) != null
         && !initThreads.get(javaManager).isDone()) {
       try {
@@ -152,31 +156,42 @@ class ProjectManagerImpl implements ProjectManager,
     return createModuleManager(currentProject);
   }
   
-  public void projectOpened(JavaManager javaManager) {
-    createModuleManager(javaManager);
-    //TODO: load settings...
+  public void projectOpened(JavaProject javaProject) {
+    ProjectSettings settings = javaProject.loadSettings();
+    createModuleManager(javaProject);
+    moduleManagers.get(javaProject).setActivateModulesByDefault(settings.activateByDefault);
+    moduleManagers.get(javaProject).setRunAutomatically(settings.runAutomatically);
+    //TODO: load contexts
   }
   
-  public void projectClosed(JavaManager javaManager) {
-    // TODO: save settings...
+  public void projectClosed(JavaProject javaManager) {
+    ProjectSettings settings = new ProjectSettings();
+    settings.activateByDefault = moduleManagers.get(javaManager).activateModulesByDefault();
+    settings.runAutomatically = moduleManagers.get(javaManager).runAutomatically();
+    //TODO: save contexts
+    javaManager.saveSettings(settings);
     moduleManagers.remove(javaManager);
   }
 
   public void javaManagerAdded(ModulesSource modulesSource, 
       JavaManager javaManager) {
-    projectOpened(javaManager);
+    if (javaManager instanceof JavaProject) {
+      projectOpened((JavaProject)javaManager);
+    }
   }
 
   public void javaManagerRemoved(ModulesSource modulesSource, 
       JavaManager javaManager) {
-    projectClosed(javaManager);
+    if (javaManager instanceof JavaProject) {
+      projectClosed((JavaProject)javaManager);
+    }
   }
 
-  public JavaManager getCurrentProject() {
+  public JavaProject getCurrentProject() {
     return currentProject;
   }
 
-  private ModuleManager createModuleManager(JavaManager javaManager) {
+  private ModuleManager createModuleManager(JavaProject javaManager) {
     currentProject = javaManager;
     if (moduleManagers.get(javaManager) == null) {
       moduleManagers.put(javaManager, moduleManagerFactory.create(javaManager));

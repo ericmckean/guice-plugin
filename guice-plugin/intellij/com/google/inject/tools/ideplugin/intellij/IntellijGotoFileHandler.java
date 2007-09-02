@@ -20,10 +20,7 @@ import com.google.inject.tools.ideplugin.GotoFileHandler;
 import com.google.inject.tools.ideplugin.ActionsHandler.GotoFile;
 
 class IntellijGotoFileHandler implements GotoFileHandler {
-  
   public void run(GotoFile action) {
-    // TODO Auto-generated method stub
     
   }
-  
 }
