@@ -187,8 +187,6 @@ class EclipseJavaProject implements JavaProject {
   public ProjectSettings loadSettings() {
     //TODO: load settings
     ProjectSettings settings = new ProjectSettings();
-    settings.activateByDefault = false;
-    settings.runAutomatically = false;
     return settings;
   }
 
