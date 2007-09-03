@@ -20,7 +20,6 @@ import com.google.inject.binder.AnnotatedBindingBuilder;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
 import com.google.inject.tools.ideplugin.results.ResultsHandler;
 import com.google.inject.tools.ideplugin.results.ResultsView;
-import com.google.inject.tools.suite.ProgressHandler;
 import com.google.inject.tools.suite.MockingGuiceToolsModule.ProxyMock;
 
 /**
@@ -36,7 +35,6 @@ public class MockingGuicePluginModule extends GuicePluginModule {
   private ResultsView resultsView = null;
   private ModuleSelectionView moduleSelectionView = null;
   private ActionsHandler actionsHandler = null;
-  private ProgressHandler progressHandler = null;
 
   /**
    * Create a purely mocked module.
@@ -74,12 +72,6 @@ public class MockingGuicePluginModule extends GuicePluginModule {
   public MockingGuicePluginModule useActionsHandler(
       ActionsHandler actionsHandler) {
     this.actionsHandler = actionsHandler;
-    return this;
-  }
-
-  public MockingGuicePluginModule useProgressHandler(
-      ProgressHandler progressHandler) {
-    this.progressHandler = progressHandler;
     return this;
   }
 
@@ -151,16 +143,6 @@ public class MockingGuicePluginModule extends GuicePluginModule {
   protected void bindGotoFileHandler(
       AnnotatedBindingBuilder<GotoFileHandler> bindGotoFileHandler) {
     bindToMockInstance(bindGotoFileHandler, GotoFileHandler.class);
-  }
-
-  @Override
-  protected void bindProgressHandler(
-      AnnotatedBindingBuilder<ProgressHandler> builder) {
-    if (progressHandler != null) {
-      bindToInstance(builder, progressHandler);
-    } else {
-      bindToMockInstance(builder, ProgressHandler.class);
-    }
   }
 
   @Override

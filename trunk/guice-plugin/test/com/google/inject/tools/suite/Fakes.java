@@ -26,7 +26,9 @@ import com.google.inject.tools.suite.snippets.CodeProblem;
 import com.google.inject.tools.suite.snippets.CodeSnippet;
 import com.google.inject.tools.suite.snippets.CodeSnippetResult;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -165,6 +167,39 @@ public class Fakes {
     
     public ProjectSettings loadSettings() {
       return null;
+    }
+  }
+  
+  public static class FakeMessenger implements Messenger {
+    public void display(String message) {
+    }
+
+    public void logException(String label, Throwable throwable) {
+    }
+
+    public void logMessage(String message) {
+    }
+  }
+  
+  public static class FakeProgressHandler implements ProgressHandler {
+    private final List<ProgressStep> steps = new ArrayList<ProgressStep>();
+
+    public void go(String label, boolean backgroundAutomatically) {
+      for (ProgressStep step : steps) {
+        step.run();
+        step.complete();
+      }
+    }
+
+    public void waitFor() {
+    }
+
+    public boolean isCancelled() {
+      return false;
+    }
+
+    public void step(ProgressStep step) {
+      steps.add(step);
     }
   }
 }

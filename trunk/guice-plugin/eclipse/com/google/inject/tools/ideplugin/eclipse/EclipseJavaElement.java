@@ -196,7 +196,9 @@ class EclipseJavaElement implements JavaElement {
     try {
       IType owningType = compilationUnit.getAllTypes()[0];
       IType resolvedType = TypeUtil.resolveType(owningType, findSignature());
-      return ! Flags.isAbstract(resolvedType.getFlags());
+      boolean isInterface = Flags.isInterface(resolvedType.getFlags());
+      boolean isAbstract = Flags.isAbstract(resolvedType.getFlags());
+      return (!isInterface) && (!isAbstract);
     } catch (Throwable throwable) {
       return false;
     }

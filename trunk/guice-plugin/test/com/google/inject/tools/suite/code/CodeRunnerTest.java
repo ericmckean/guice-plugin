@@ -17,6 +17,8 @@
 package com.google.inject.tools.suite.code;
 
 import com.google.inject.tools.suite.JavaManager;
+import com.google.inject.tools.suite.Fakes.FakeMessenger;
+import com.google.inject.tools.suite.Fakes.FakeProgressHandler;
 import com.google.inject.tools.suite.Fakes.TestSnippet;
 import com.google.inject.tools.suite.code.CodeRunner;
 import com.google.inject.tools.suite.code.CodeRunnerImpl;
@@ -58,7 +60,8 @@ public class CodeRunnerTest extends TestCase implements
   }
 
   public void testCodeRunnerSimple() throws Exception {
-    CodeRunner runner = new CodeRunnerImpl(new MockJavaProject());
+    CodeRunner runner = new CodeRunnerImpl(new FakeJavaProject(),
+        new FakeProgressHandler(), new FakeMessenger());
     runner.addListener(this);
     CodeRunner.Runnable runnable = new TestRunnable(runner);
     runner.queue(runnable);
@@ -69,7 +72,8 @@ public class CodeRunnerTest extends TestCase implements
   }
 
   public void testCodeRunnerLongProcess() throws Exception {
-    CodeRunner runner = new CodeRunnerImpl(new MockJavaProject());
+    CodeRunner runner = new CodeRunnerImpl(new FakeJavaProject(),
+        new FakeProgressHandler(), new FakeMessenger());
     runner.addListener(this);
     CodeRunner.Runnable runnable = new TestRunnable(runner, 2000);
     runner.queue(runnable);
@@ -80,7 +84,8 @@ public class CodeRunnerTest extends TestCase implements
   }
 
   public void testCodeRunnerMultiple() throws Exception {
-    CodeRunner runner = new CodeRunnerImpl(new MockJavaProject());
+    CodeRunner runner = new CodeRunnerImpl(new FakeJavaProject(),
+        new FakeProgressHandler(), new FakeMessenger());
     runner.addListener(this);
     CodeRunner.Runnable runnable1 = new TestRunnable(runner, 200);
     CodeRunner.Runnable runnable2 = new TestRunnable(runner, 400);
@@ -93,7 +98,8 @@ public class CodeRunnerTest extends TestCase implements
   }
 
   public void testCodeRunnerFlurry() throws Exception {
-    CodeRunner runner = new CodeRunnerImpl(new MockJavaProject());
+    CodeRunner runner = new CodeRunnerImpl(new FakeJavaProject(),
+        new FakeProgressHandler(), new FakeMessenger());
     runner.addListener(this);
     for (int i = 0; i < 20; i++) {
       runner.queue(new TestRunnable(runner, i < 10 ? 100 : 300));
@@ -118,7 +124,7 @@ public class CodeRunnerTest extends TestCase implements
     // do nothing
   }
 
-  public static class MockJavaProject implements JavaManager {
+  public static class FakeJavaProject implements JavaManager {
     public String getJavaCommand() throws Exception {
       return "java";
     }

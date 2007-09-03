@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.ArrayList;
 
 import com.google.inject.Inject;
-import com.google.inject.tools.suite.BlockingProgressHandler;
 import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProgressHandler;
@@ -43,42 +42,16 @@ class CodeRunnerImpl implements CodeRunner {
   private final JavaManager project;
   private final Map<Runnable, RunnableProgressStep> progressSteps;
   private boolean cancelled;
-
-  public CodeRunnerImpl(JavaManager project) {
-    this(project, new BlockingProgressHandler(), new NullMessenger());
-  }
-
+  
   @Inject
   public CodeRunnerImpl(JavaManager project, ProgressHandler progressHandler,
       Messenger messenger) {
-    if (messenger != null) {
-      this.messenger = messenger;
-    } else {
-      this.messenger = new NullMessenger();
-    }
-    if (progressHandler != null) {
-      this.progressHandler = progressHandler;
-    } else {
-      this.progressHandler = new BlockingProgressHandler();
-    }
+    this.messenger = messenger;
+    this.progressHandler = progressHandler;
     this.project = project;
     listeners = new HashSet<CodeRunListener>();
     progressSteps = new HashMap<Runnable, RunnableProgressStep>();
     cancelled = false;
-  }
-
-  /**
-   * An implementation of {@link Messenger} that does nothing.
-   */
-  protected static class NullMessenger implements Messenger {
-    public void display(String message) {
-    }
-
-    public void logException(String label, Throwable throwable) {
-    }
-
-    public void logMessage(String message) {
-    }
   }
 
   public void addListener(CodeRunListener listener) {
