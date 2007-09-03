@@ -160,7 +160,7 @@ public class ActionStringBuilder {
     }
   }
   
-  public static class UnsupportedCodeLocationException extends RuntimeException {
+  static class UnsupportedCodeLocationException extends RuntimeException {
     private final CodeLocation location;
     public UnsupportedCodeLocationException(CodeLocation location) {
       this.location = location;
@@ -171,7 +171,7 @@ public class ActionStringBuilder {
     }
   }
   
-  public static class NoBindingLocationActionString extends ActionString {
+  static class NoBindingLocationActionString extends ActionString {
     public NoBindingLocationActionString(NoBindingLocation location) {
       super();
       String theClass = location.getTheClass();
@@ -181,7 +181,7 @@ public class ActionStringBuilder {
     }
   }
   
-  public static class ImplicitBindingLocationActionString extends ActionString {
+  static class ImplicitBindingLocationActionString extends ActionString {
     public ImplicitBindingLocationActionString(ImplicitBindingLocation location) {
       super();
       String theClass = location.getTheClass();
@@ -191,7 +191,7 @@ public class ActionStringBuilder {
     }
   }
   
-  public static class BindingCodeLocationActionString extends ActionString {
+  static class BindingCodeLocationActionString extends ActionString {
     public BindingCodeLocationActionString(BindingCodeLocation location) {
       super();
       String bindWhat = location.bindWhat();
@@ -252,7 +252,7 @@ public class ActionStringBuilder {
     }
   }
   
-  public static class CodeProblemActionString extends ActionString {
+  static class CodeProblemActionString extends ActionString {
     public CodeProblemActionString(CodeProblem problem) {
       super();
       addText("Guice Code Problem: ");
@@ -260,7 +260,7 @@ public class ActionStringBuilder {
     }
   }
   
-  public static class BindingProblemActionString extends CodeProblemActionString {
+  static class BindingProblemActionString extends CodeProblemActionString {
     public BindingProblemActionString(BindingProblem problem) {
       super(problem);
       String theClass = problem.getTheClass();
@@ -274,14 +274,14 @@ public class ActionStringBuilder {
     }
   }
   
-  public static class InvalidModuleContextProblemActionString extends CodeProblemActionString {
+  static class InvalidModuleContextProblemActionString extends CodeProblemActionString {
     public InvalidModuleContextProblemActionString(InvalidModuleContextProblem problem) {
       super(problem);
       addText("Guice Module Context is invalid: " + problem.getModuleContext());
     }
   }
   
-  public static class InvalidModuleProblemActionString extends CodeProblemActionString {
+  static class InvalidModuleProblemActionString extends CodeProblemActionString {
     public InvalidModuleProblemActionString(InvalidModuleProblem problem) {
       super(problem);
       addText("Invalid Module: ");

@@ -14,21 +14,31 @@
  * the License.
  */
 
-package com.google.inject.tools.ideplugin;
+package com.google.inject.tools.suite;
 
-import com.google.inject.binder.AnnotatedBindingBuilder;
-import com.google.inject.tools.suite.GuiceToolsModule;
-import com.google.inject.tools.suite.ProblemsHandler;
+import java.util.Collections;
+import java.util.Set;
+
+import com.google.inject.Singleton;
+import com.google.inject.tools.suite.module.ModulesSource;
 
 /**
- * The abstract implementation of the {@link GuiceToolsModule} specific to the IDE plugin.
+ * Implementation of the {@link ModulesSource} that reports nothing.
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-public abstract class GuiceToolsModuleImpl extends GuiceToolsModule {
-  @Override
-  protected void bindProblemsHandler(
-      AnnotatedBindingBuilder<ProblemsHandler> bindProblemsHandler) {
-    bindProblemsHandler.to(ProblemsHandlerImpl.class).asEagerSingleton();
+@Singleton
+public class DefaultModulesSource implements ModulesSource {
+  public void addListener(ModulesSourceListener listener) {
+  }
+
+  public Set<String> getModules(JavaManager javaManager) {
+    return Collections.<String>emptySet();
+  }
+
+  public void refresh(JavaManager javaManager) {
+  }
+
+  public void removeListener(ModulesSourceListener listener) {
   }
 }

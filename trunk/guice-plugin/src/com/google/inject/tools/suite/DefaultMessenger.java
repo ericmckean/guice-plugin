@@ -14,21 +14,23 @@
  * the License.
  */
 
-package com.google.inject.tools.ideplugin;
+package com.google.inject.tools.suite;
 
-import com.google.inject.binder.AnnotatedBindingBuilder;
-import com.google.inject.tools.suite.GuiceToolsModule;
-import com.google.inject.tools.suite.ProblemsHandler;
+import com.google.inject.Singleton;
 
 /**
- * The abstract implementation of the {@link GuiceToolsModule} specific to the IDE plugin.
+ * Implementation of the {@link Messenger} that does nothing.
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-public abstract class GuiceToolsModuleImpl extends GuiceToolsModule {
-  @Override
-  protected void bindProblemsHandler(
-      AnnotatedBindingBuilder<ProblemsHandler> bindProblemsHandler) {
-    bindProblemsHandler.to(ProblemsHandlerImpl.class).asEagerSingleton();
+@Singleton
+class DefaultMessenger implements Messenger {
+  public void display(String message) {
+  }
+
+  public void logException(String label, Throwable throwable) {
+  }
+
+  public void logMessage(String message) {
   }
 }

@@ -44,7 +44,7 @@ class EclipsePluginModule extends GuicePluginModule {
     }
 
     @Override
-    protected void bindModulesListener(
+    protected void bindModulesSource(
         AnnotatedBindingBuilder<ModulesSource> bindModulesListener) {
       bindModulesListener.to(EclipseModulesListener.class).asEagerSingleton();
     }

@@ -16,19 +16,13 @@
 
 package com.google.inject.tools.ideplugin;
 
-import com.google.inject.binder.AnnotatedBindingBuilder;
-import com.google.inject.tools.suite.GuiceToolsModule;
-import com.google.inject.tools.suite.ProblemsHandler;
-
 /**
- * The abstract implementation of the {@link GuiceToolsModule} specific to the IDE plugin.
+ * Responsible for listening the changes in the user's code relating to modules
+ * and notifying the {@link com.google.inject.tools.suite.ProblemsHandler} of any
+ * problems with their code. This requires IDE specific implementations.
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-public abstract class GuiceToolsModuleImpl extends GuiceToolsModule {
-  @Override
-  protected void bindProblemsHandler(
-      AnnotatedBindingBuilder<ProblemsHandler> bindProblemsHandler) {
-    bindProblemsHandler.to(ProblemsHandlerImpl.class).asEagerSingleton();
-  }
+public interface ProblemsListener {
+  // TODO: Phase II: do this
 }

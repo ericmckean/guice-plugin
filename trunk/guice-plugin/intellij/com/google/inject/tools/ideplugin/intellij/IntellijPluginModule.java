@@ -44,7 +44,7 @@ class IntellijPluginModule extends GuicePluginModule {
     }
 
     @Override
-    protected void bindModulesListener(
+    protected void bindModulesSource(
         AnnotatedBindingBuilder<ModulesSource> bindModulesListener) {
       bindModulesListener.to(IntellijModulesListener.class).asEagerSingleton();
     }
