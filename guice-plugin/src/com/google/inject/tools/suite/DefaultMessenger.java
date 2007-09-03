@@ -24,7 +24,7 @@ import com.google.inject.Singleton;
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 @Singleton
-class DefaultMessenger implements Messenger {
+public class DefaultMessenger implements Messenger {
   public void display(String message) {
   }
 

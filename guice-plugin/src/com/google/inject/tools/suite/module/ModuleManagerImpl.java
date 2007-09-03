@@ -562,4 +562,30 @@ class ModuleManagerImpl implements ModuleManager,
       context.markDirty();
     }
   }
+  
+  public ModuleContextRepresentation getModuleContext(String name) {
+    for (ModuleContextRepresentation moduleContext : moduleContexts) {
+      if (moduleContext.getName().equals(name)) {
+        return moduleContext;
+      }
+    }
+    return null;
+  }
+  
+  public ModuleContextRepresentation createModuleContext(String name) {
+    if (getModuleContext(name) != null) {
+      return getModuleContext(name);
+    }
+    ModuleContextRepresentation moduleContext = new ModuleContextRepresentationImpl(name);
+    moduleContexts.add(moduleContext);
+    if (activateByDefault) activeModuleContexts.add(moduleContext);
+    return moduleContext;
+  }
+  
+  public ModuleContextRepresentation addToModuleContext(String name, String module) {
+    ModuleContextRepresentation moduleContext = getModuleContext(name);
+    if (moduleContext == null) return null;
+    moduleContext.add(new ModuleInstanceRepresentation(module));
+    return moduleContext;
+  }
 }

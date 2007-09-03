@@ -28,7 +28,7 @@ import com.google.inject.Singleton;
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 @Singleton
-class DefaultJavaManager implements JavaManager {
+public class DefaultJavaManager implements JavaManager {
   public String getClasspathDelimiter() {
     return System.getProperty("path.separator");
   }
