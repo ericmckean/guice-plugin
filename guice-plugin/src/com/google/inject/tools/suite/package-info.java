@@ -30,17 +30,17 @@
  * <p>
  * The {@link com.google.inject.tools.suite.JavaManager},
  * {@link com.google.inject.tools.suite.ProblemsHandler},
- * {@link com.google.inject.tools.suite.ModulesSource} and
+ * {@link com.google.inject.tools.suite.module.ModulesSource} and
  * {@link com.google.inject.tools.suite.Messenger} should also be implemented and bound
  * in a subclass of {@link com.google.inject.tools.suite.GuiceToolsModule} that should 
  * be used for the injections.
  * 
  * If they are not the defaults are:
  * <dl>
- * <dt>{@link JavaManager} <dd>java manager that assumes everything is on the default classpath
- * <dt>{@link ModulesSource} <dd>modules source that knows about no modules
- * <dt>{@link ProblemsHandler} <dd>problems handler that ignores problems
- * <dt>{@link Messenger} <dd>messenger that ignores messages
+ * <dt>{@link com.google.inject.tools.suite.JavaManager} <dd>java manager that assumes everything is on the default classpath
+ * <dt>{@link com.google.inject.tools.suite.module.ModulesSource} <dd>modules source that knows about no modules
+ * <dt>{@link com.google.inject.tools.suite.ProblemsHandler} <dd>problems handler that ignores problems
+ * <dt>{@link com.google.inject.tools.suite.Messenger} <dd>messenger that ignores messages
  * 
  * <p>
  * The basic objects in our tool suite are:
