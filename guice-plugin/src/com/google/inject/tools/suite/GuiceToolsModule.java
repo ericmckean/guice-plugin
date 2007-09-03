@@ -41,16 +41,7 @@ import com.google.inject.tools.suite.module.ModulesSource;
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 public abstract class GuiceToolsModule extends AbstractModule {
-  /**
-   * Factory for creating {@link CodeRunner}s. Either this should be used or
-   * the injected CodeRunner (but not both).
-   */
   public interface CodeRunnerFactory extends Provider<CodeRunner> {
-    /**
-     * Create a {@link CodeRunner}.
-     * 
-     * @param project the {@link JavaManager} to run code in
-     */
     public CodeRunner create(JavaManager project);
   }
 
@@ -68,6 +59,7 @@ public abstract class GuiceToolsModule extends AbstractModule {
     bindProblemsHandler(bind(ProblemsHandler.class));
     bindMessenger(bind(Messenger.class));
     bindJavaManager(bind(JavaManager.class));
+    bindProgressHandler(bind(ProgressHandler.class));
   }
 
   protected void bindModuleManagerFactory(
@@ -81,26 +73,16 @@ public abstract class GuiceToolsModule extends AbstractModule {
     bindModuleManager.toProvider(ModuleManagerFactoryImpl.class);
   }
 
-  /**
-   * Bind the {@link ProblemsHandler} implementation.
-   */
   protected void bindProblemsHandler(
       AnnotatedBindingBuilder<ProblemsHandler> bindProblemsHandler) {
     bindProblemsHandler.to(DefaultProblemsHandler.class);
   }
 
-  /**
-   * Bind the {@link com.google.inject.tools.suite.module.ModulesSource}
-   * implementation.
-   */
   protected void bindModulesSource(
       AnnotatedBindingBuilder<ModulesSource> bindModulesSource) {
     bindModulesSource.to(DefaultModulesSource.class);
   }
 
-  /**
-   * Bind the {@link Messenger} implementation.
-   */
   protected void bindMessenger(
       AnnotatedBindingBuilder<Messenger> bindMessenger) {
     bindMessenger.to(DefaultMessenger.class);
@@ -116,11 +98,13 @@ public abstract class GuiceToolsModule extends AbstractModule {
     bindCodeRunner.toProvider(CodeRunnerFactoryImpl.class);
   }
 
-  /**
-   * Bind the {@link JavaManager} implementation.
-   */
   protected void bindJavaManager(
       AnnotatedBindingBuilder<JavaManager> bindJavaManager) {
     bindJavaManager.to(DefaultJavaManager.class);
+  }
+  
+  protected void bindProgressHandler(
+      AnnotatedBindingBuilder<ProgressHandler> bindProgressHandler) {
+    bindProgressHandler.to(BlockingProgressHandler.class);
   }
 }

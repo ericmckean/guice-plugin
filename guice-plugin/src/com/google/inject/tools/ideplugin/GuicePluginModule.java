@@ -28,7 +28,6 @@ import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
 import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProblemsHandler;
-import com.google.inject.tools.suite.ProgressHandler;
 
 /**
  * Abstract module for the plugin's dependency injection. IDE specific
@@ -78,7 +77,6 @@ public abstract class GuicePluginModule extends AbstractModule {
   protected void configure() {
     bindProjectManager(bind(ProjectManager.class));
     bindBindingsEngine(bind(BindingsEngineFactory.class));
-    bindProgressHandler(bind(ProgressHandler.class));
     bindActionsHandler(bind(ActionsHandler.class));
     bindGotoCodeLocationHandler(bind(GotoCodeLocationHandler.class));
     bindGotoFileHandler(bind(GotoFileHandler.class));
@@ -143,12 +141,6 @@ public abstract class GuicePluginModule extends AbstractModule {
    */
   protected abstract void bindGotoFileHandler(
       AnnotatedBindingBuilder<GotoFileHandler> bindGotoFileHandler);
-
-  /**
-   * Bind the {@link ProgressHandler} implementation.
-   */
-  protected abstract void bindProgressHandler(
-      AnnotatedBindingBuilder<ProgressHandler> bindProgressHandler);
 
   /**
    * Bind the {@link CustomContextDefinitionSource} implementation.

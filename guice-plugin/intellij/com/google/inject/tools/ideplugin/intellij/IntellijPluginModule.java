@@ -48,6 +48,12 @@ class IntellijPluginModule extends GuicePluginModule {
         AnnotatedBindingBuilder<ModulesSource> bindModulesListener) {
       bindModulesListener.to(IntellijModulesListener.class).asEagerSingleton();
     }
+    
+    @Override
+    protected void bindProgressHandler(
+        AnnotatedBindingBuilder<ProgressHandler> bindProgressHandler) {
+      bindProgressHandler.to(IntellijProgressHandler.class);
+    }
   }
 
   /**
@@ -83,12 +89,6 @@ class IntellijPluginModule extends GuicePluginModule {
   protected void bindGotoFileHandler(
       AnnotatedBindingBuilder<GotoFileHandler> bindGotoFileHandler) {
     bindGotoFileHandler.to(IntellijGotoFileHandler.class).asEagerSingleton();
-  }
-
-  @Override
-  protected void bindProgressHandler(
-      AnnotatedBindingBuilder<ProgressHandler> bindProgressHandler) {
-    bindProgressHandler.to(IntellijProgressHandler.class);
   }
 
   @Override
