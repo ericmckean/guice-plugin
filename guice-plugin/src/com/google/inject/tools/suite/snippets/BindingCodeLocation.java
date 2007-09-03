@@ -139,4 +139,10 @@ public class BindingCodeLocation extends CodeLocation {
   public String bindToInstance() {
     return bindToInstance;
   }
+  
+  @Override
+  public String toString() {
+    return "BindingCodeLocation: " + bindWhat + " annotated with " + annotatedWith +
+        " is bound to " + bindTo + " at " + super.toString();
+  }
 }

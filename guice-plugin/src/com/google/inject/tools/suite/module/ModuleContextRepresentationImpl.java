@@ -67,9 +67,12 @@ class ModuleContextRepresentationImpl implements
     KeyRepresentation key = new KeyRepresentation(theClass, annotatedWith);
     if (bindings.get(key) != null) {
       return bindings.get(key);
-    } else {
-      return new NoBindingLocation(theClass);
     }
+    key = new KeyRepresentation(theClass, "@" + annotatedWith);
+    if (bindings.get(key) != null) {
+      return bindings.get(key);
+    }
+    return new NoBindingLocation(theClass);
   }
   
   public Set<CodeLocation> findLocations(String theClass) {

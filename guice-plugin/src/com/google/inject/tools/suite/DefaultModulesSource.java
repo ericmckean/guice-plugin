@@ -17,6 +17,7 @@
 package com.google.inject.tools.suite;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import com.google.inject.Singleton;
@@ -29,7 +30,14 @@ import com.google.inject.tools.suite.module.ModulesSource;
  */
 @Singleton
 public class DefaultModulesSource implements ModulesSource {
+  protected final Set<ModulesSourceListener> listeners;
+  
+  public DefaultModulesSource() {
+    listeners = new HashSet<ModulesSourceListener>();
+  }
+  
   public void addListener(ModulesSourceListener listener) {
+    listeners.add(listener);
   }
 
   public Set<String> getModules(JavaManager javaManager) {
@@ -40,5 +48,6 @@ public class DefaultModulesSource implements ModulesSource {
   }
 
   public void removeListener(ModulesSourceListener listener) {
+    listeners.remove(listener);
   }
 }

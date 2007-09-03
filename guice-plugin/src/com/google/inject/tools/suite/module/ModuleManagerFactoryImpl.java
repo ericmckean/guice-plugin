@@ -67,7 +67,7 @@ public class ModuleManagerFactoryImpl implements ModuleManagerFactory {
       moduleManagerInstances.put(javaManager, new ModuleManagerImpl(
           modulesSourceProvider.get(), problemsHandlerProvider.get(),
           messengerProvider.get(), javaManager, codeRunnerFactoryProvider
-          .get(), false));
+          .get(), false, false, false));
     }
     return moduleManagerInstances.get(javaManager);
   }
@@ -76,6 +76,8 @@ public class ModuleManagerFactoryImpl implements ModuleManagerFactory {
    * Create a ModuleManager with an injected JavaManager.
    */
   public ModuleManager get() {
-    return create(javaManagerProvider.get());
+    return new ModuleManagerImpl(modulesSourceProvider.get(), problemsHandlerProvider.get(),
+        messengerProvider.get(), javaManagerProvider.get(), codeRunnerFactoryProvider.get(),
+        true, true, true);
   }
 }

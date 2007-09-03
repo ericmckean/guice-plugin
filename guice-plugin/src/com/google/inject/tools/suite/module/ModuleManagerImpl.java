@@ -62,13 +62,13 @@ class ModuleManagerImpl implements ModuleManager,
       ProblemsHandler problemsHandler, Messenger messenger,
       JavaManager javaManager, CodeRunnerFactory codeRunnerFactory) {
     this(modulesListener, problemsHandler, messenger, javaManager,
-        codeRunnerFactory, true);
+        codeRunnerFactory, true, true, true);
   }
   
   public ModuleManagerImpl(ModulesSource modulesListener,
       ProblemsHandler problemsHandler, Messenger messenger,
       JavaManager javaManager, CodeRunnerFactory codeRunnerFactory,
-      boolean waitOnInit) {
+      boolean waitOnInit, boolean runAutomatically, boolean activateByDefault) {
     this.modulesListener = modulesListener;
     this.problemsHandler = problemsHandler;
     this.codeRunnerFactory = codeRunnerFactory;
@@ -78,8 +78,8 @@ class ModuleManagerImpl implements ModuleManager,
     activeModuleContexts = new HashSet<ModuleContextRepresentation>();
     this.javaManager = javaManager;
 
-    this.runAutomatically = false;
-    this.activateByDefault = false;
+    this.runAutomatically = runAutomatically;
+    this.activateByDefault = activateByDefault;
 
     if (waitOnInit) {
       initThread = null;
@@ -153,6 +153,9 @@ class ModuleManagerImpl implements ModuleManager,
           activeModuleContexts.add(moduleContext);
         }
       }
+    }
+    if (runAutomatically) {
+      cleanModuleContexts(true, true);
     }
   }
 

@@ -175,10 +175,10 @@ public interface CodeRunner {
       String line;
       try {
         while ((line = r.readLine()) != null) {
-          codeRunner.getMessenger().logMessage(line);
+          codeRunner.getMessenger().logCodeRunnerMessage(line);
         }
       } catch (Exception e) {
-        codeRunner.getMessenger().logException(
+        codeRunner.getMessenger().logCodeRunnerException(
             "Exception getting error output", e);
       }
     }

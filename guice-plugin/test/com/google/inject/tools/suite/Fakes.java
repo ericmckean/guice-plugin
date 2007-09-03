@@ -186,6 +186,12 @@ public class Fakes {
 
     public void logMessage(String message) {
     }
+    
+    public void logCodeRunnerException(String label, Throwable throwable) {
+    }
+
+    public void logCodeRunnerMessage(String message) {
+    }
   }
   
   public static class FakeProgressHandler implements ProgressHandler {
