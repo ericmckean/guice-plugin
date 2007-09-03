@@ -55,33 +55,6 @@ public interface ModuleManager {
   }
   
   /**
-   * A {@link JavaManager} implementation that does nothing.
-   * 
-   * @author Darren Creutz (dcreutz@gmail.com)
-   */
-  public static class NullJavaManager implements JavaManager {
-    public String getJavaCommand() throws Exception {
-      return null;
-    }
-
-    public String getProjectClasspath() throws Exception {
-      return null;
-    }
-    
-    public String getGuiceClasspath() throws Exception {
-      return null;
-    }
-
-    public String getSnippetsClasspath() throws Exception {
-      return null;
-    }
-    
-    public String getClasspathDelimiter() {
-      return null;
-    }
-  }
-
-  /**
    * Notify the ModuleManager that a module has been added by the user.
    * 
    * @param module the module added

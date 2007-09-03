@@ -76,11 +76,7 @@ class ModuleManagerImpl implements ModuleManager,
     modules = new HashSet<ModuleRepresentation>();
     moduleContexts = new HashSet<ModuleContextRepresentation>();
     activeModuleContexts = new HashSet<ModuleContextRepresentation>();
-    if (javaManager instanceof NullJavaManager) {
-      this.javaManager = null;
-    } else {
-      this.javaManager = javaManager;
-    }
+    this.javaManager = javaManager;
 
     this.runAutomatically = false;
     this.activateByDefault = false;

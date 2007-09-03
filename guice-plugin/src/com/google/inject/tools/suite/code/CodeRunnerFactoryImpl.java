@@ -18,7 +18,6 @@ package com.google.inject.tools.suite.code;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.google.inject.binder.AnnotatedBindingBuilder;
 import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProgressHandler;
@@ -32,16 +31,20 @@ import com.google.inject.tools.suite.GuiceToolsModule.CodeRunnerFactory;
  */
 public class CodeRunnerFactoryImpl implements CodeRunnerFactory {
   private final Provider<ProgressHandler> progressHandlerProvider;
-  private final Messenger messenger;
+  private final Provider<Messenger> messengerProvider;
+  private final Provider<JavaManager> javaManagerProvider;
 
   /**
    * The factory should be injected.
    */
   @Inject
   public CodeRunnerFactoryImpl(
-      Provider<ProgressHandler> progressHandlerProvider, Messenger messenger) {
+      Provider<ProgressHandler> progressHandlerProvider, 
+      Provider<Messenger> messengerProvider,
+      Provider<JavaManager> javaManagerProvider) {
     this.progressHandlerProvider = progressHandlerProvider;
-    this.messenger = messenger;
+    this.messengerProvider = messengerProvider;
+    this.javaManagerProvider = javaManagerProvider;
   }
 
   /**
@@ -49,14 +52,10 @@ public class CodeRunnerFactoryImpl implements CodeRunnerFactory {
    */
   public CodeRunner create(JavaManager project) {
     return new CodeRunnerImpl(project, progressHandlerProvider.get(),
-        messenger);
+        messengerProvider.get());
   }
   
-  /**
-   * Bind the {@link CodeRunner} without a factory (for tools that do not
-   * have a {@link JavaManager}).
-   */
-  public static void bindCodeRunner(AnnotatedBindingBuilder<CodeRunner> bindCodeRunner) {
-    bindCodeRunner.to(CodeRunnerImpl.class);
+  public CodeRunner get() {
+    return create(javaManagerProvider.get());
   }
 }

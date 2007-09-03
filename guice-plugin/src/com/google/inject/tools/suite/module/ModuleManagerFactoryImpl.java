@@ -18,7 +18,6 @@ package com.google.inject.tools.suite.module;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.google.inject.binder.AnnotatedBindingBuilder;
 import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProblemsHandler;
@@ -42,6 +41,7 @@ public class ModuleManagerFactoryImpl implements ModuleManagerFactory {
   private final Provider<ProblemsHandler> problemsHandlerProvider;
   private final Provider<Messenger> messengerProvider;
   private final Provider<CodeRunnerFactory> codeRunnerFactoryProvider;
+  private final Provider<JavaManager> javaManagerProvider;
   private final Map<JavaManager, ModuleManager> moduleManagerInstances;
 
   @Inject
@@ -49,16 +49,18 @@ public class ModuleManagerFactoryImpl implements ModuleManagerFactory {
       Provider<ModulesSource> modulesSourceProvider,
       Provider<ProblemsHandler> problemsHandlerProvider,
       Provider<Messenger> messengerProvider,
-      Provider<CodeRunnerFactory> codeRunnerFactoryProvider) {
+      Provider<CodeRunnerFactory> codeRunnerFactoryProvider,
+      Provider<JavaManager> javaManagerProvider) {
     this.modulesSourceProvider = modulesSourceProvider;
     this.problemsHandlerProvider = problemsHandlerProvider;
     this.messengerProvider = messengerProvider;
     this.codeRunnerFactoryProvider = codeRunnerFactoryProvider;
+    this.javaManagerProvider = javaManagerProvider;
     this.moduleManagerInstances = new HashMap<JavaManager, ModuleManager>();
   }
 
   /**
-   * Create a ModuleManager.
+   * Create a ModuleManager with the given JavaManager.
    */
   public ModuleManager create(JavaManager javaManager) {
     if (moduleManagerInstances.get(javaManager) == null) {
@@ -71,10 +73,9 @@ public class ModuleManagerFactoryImpl implements ModuleManagerFactory {
   }
   
   /**
-   * Bind ModuleManager to an implementation for use without a JavaManager.
+   * Create a ModuleManager with an injected JavaManager.
    */
-  public static void bindModuleManager(
-      AnnotatedBindingBuilder<ModuleManager> bindModuleManager) {
-    bindModuleManager.to(ModuleManagerImpl.class);
+  public ModuleManager get() {
+    return create(javaManagerProvider.get());
   }
 }

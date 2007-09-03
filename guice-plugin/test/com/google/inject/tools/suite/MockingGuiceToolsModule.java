@@ -122,7 +122,7 @@ public class MockingGuiceToolsModule extends GuiceToolsModule {
   }
 
   @Override
-  protected void bindModulesListener(
+  protected void bindModulesSource(
       AnnotatedBindingBuilder<ModulesSource> builder) {
     if (modulesListener != null) {
       bindToInstance(builder, modulesListener);
@@ -222,6 +222,10 @@ public class MockingGuiceToolsModule extends GuiceToolsModule {
     public CodeRunner create(JavaManager project) {
       return instance;
     }
+    
+    public CodeRunner get() {
+      return instance;
+    }
   }
 
   public static class CodeRunnerMockFactory extends CodeRunnerInstanceFactory {
@@ -240,6 +244,10 @@ public class MockingGuiceToolsModule extends GuiceToolsModule {
     }
 
     public ModuleManager create(JavaManager project) {
+      return instance;
+    }
+    
+    public ModuleManager get() {
       return instance;
     }
   }

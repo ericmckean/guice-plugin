@@ -17,6 +17,7 @@
 package com.google.inject.tools.suite;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Provider;
 import com.google.inject.binder.AnnotatedBindingBuilder;
 import com.google.inject.tools.suite.code.CodeRunner;
 import com.google.inject.tools.suite.code.CodeRunnerFactoryImpl;
@@ -28,9 +29,11 @@ import com.google.inject.tools.suite.module.ModulesSource;
  * The guice module controlling the tools suite.
  * 
  * The general pattern is:
+ * 
  * <code>protected abstract void bindFoo(AnnotatedBindingBuilder<Foo> bindFoo)</code>
  * 
  * should be implemented as:
+ * 
  * <code>void bindFoo(AnnotatedBindingBuilder<Foo> bindFoo) {
  *   bindFoo.to(FooImpl.class);
  * }</code>
@@ -42,7 +45,7 @@ public abstract class GuiceToolsModule extends AbstractModule {
    * Factory for creating {@link CodeRunner}s. Either this should be used or
    * the injected CodeRunner (but not both).
    */
-  public interface CodeRunnerFactory {
+  public interface CodeRunnerFactory extends Provider<CodeRunner> {
     /**
      * Create a {@link CodeRunner}.
      * 
@@ -51,7 +54,7 @@ public abstract class GuiceToolsModule extends AbstractModule {
     public CodeRunner create(JavaManager project);
   }
 
-  public interface ModuleManagerFactory {
+  public interface ModuleManagerFactory extends Provider<ModuleManager> {
     public ModuleManager create(JavaManager javaManager);
   }
 
@@ -61,7 +64,7 @@ public abstract class GuiceToolsModule extends AbstractModule {
     bindCodeRunner(bind(CodeRunner.class));
     bindModuleManagerFactory(bind(ModuleManagerFactory.class));
     bindModuleManager(bind(ModuleManager.class));
-    bindModulesListener(bind(ModulesSource.class));
+    bindModulesSource(bind(ModulesSource.class));
     bindProblemsHandler(bind(ProblemsHandler.class));
     bindMessenger(bind(Messenger.class));
     bindJavaManager(bind(JavaManager.class));
@@ -72,48 +75,45 @@ public abstract class GuiceToolsModule extends AbstractModule {
     bindModuleManagerFactory.to(ModuleManagerFactoryImpl.class)
         .asEagerSingleton();
   }
-
-  /**
-   * Bind the {@link ModuleManager} implementation.
-   */
+  
   protected void bindModuleManager(
       AnnotatedBindingBuilder<ModuleManager> bindModuleManager) {
-    ModuleManagerFactoryImpl.bindModuleManager(bindModuleManager);
+    bindModuleManager.toProvider(ModuleManagerFactoryImpl.class);
   }
 
   /**
    * Bind the {@link ProblemsHandler} implementation.
    */
-  protected abstract void bindProblemsHandler(
-      AnnotatedBindingBuilder<ProblemsHandler> bindProblemsHandler);
+  protected void bindProblemsHandler(
+      AnnotatedBindingBuilder<ProblemsHandler> bindProblemsHandler) {
+    bindProblemsHandler.to(DefaultProblemsHandler.class);
+  }
 
   /**
    * Bind the {@link com.google.inject.tools.suite.module.ModulesSource}
    * implementation.
    */
-  protected abstract void bindModulesListener(
-      AnnotatedBindingBuilder<ModulesSource> bindModulesListener);
+  protected void bindModulesSource(
+      AnnotatedBindingBuilder<ModulesSource> bindModulesSource) {
+    bindModulesSource.to(DefaultModulesSource.class);
+  }
 
   /**
    * Bind the {@link Messenger} implementation.
    */
-  protected abstract void bindMessenger(
-      AnnotatedBindingBuilder<Messenger> bindMessenger);
+  protected void bindMessenger(
+      AnnotatedBindingBuilder<Messenger> bindMessenger) {
+    bindMessenger.to(DefaultMessenger.class);
+  }
 
-  /**
-   * Bind the {@link CodeRunnerFactory} implementation.
-   */
   protected void bindCodeRunnerFactory(
       AnnotatedBindingBuilder<CodeRunnerFactory> bindCodeRunnerFactory) {
     bindCodeRunnerFactory.to(CodeRunnerFactoryImpl.class);
   }
 
-  /**
-   * Bind the {@link CodeRunner} implementation.
-   */
   protected void bindCodeRunner(
       AnnotatedBindingBuilder<CodeRunner> bindCodeRunner) {
-    CodeRunnerFactoryImpl.bindCodeRunner(bindCodeRunner);
+    bindCodeRunner.toProvider(CodeRunnerFactoryImpl.class);
   }
 
   /**
@@ -121,6 +121,6 @@ public abstract class GuiceToolsModule extends AbstractModule {
    */
   protected void bindJavaManager(
       AnnotatedBindingBuilder<JavaManager> bindJavaManager) {
-    bindJavaManager.to(ModuleManager.NullJavaManager.class);
+    bindJavaManager.to(DefaultJavaManager.class);
   }
 }
