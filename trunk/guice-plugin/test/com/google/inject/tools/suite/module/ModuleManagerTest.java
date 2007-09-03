@@ -77,7 +77,7 @@ public class ModuleManagerTest extends TestCase {
         injector.getInstance(ModuleManagerFactory.class).create(project);
     moduleManager.waitForInitialization();
     moduleManager.findNewContexts(true, true);
-    moduleManager.updateModules(true, true);
+    moduleManager.update(true, true);
     moduleManager.addModuleContext(workingModuleContext, true);
     assertTrue(moduleManager.getModuleContexts().contains(workingModuleContext));
     assertTrue(moduleManager.getModuleContexts().size() == 1);
@@ -122,7 +122,7 @@ public class ModuleManagerTest extends TestCase {
     ModuleManager moduleManager =
         injector.getInstance(ModuleManagerFactory.class).create(project);
     moduleManager.waitForInitialization();
-    moduleManager.updateModules(true, true);
+    moduleManager.update(true, true);
     moduleManager.addModule(workingModule, false);
     assertTrue(moduleManager.getModules().contains(workingModule));
     assertTrue(moduleManager.getModules().size() == 1);
@@ -162,7 +162,7 @@ public class ModuleManagerTest extends TestCase {
         injector.getInstance(ModuleManagerFactory.class).create(project);
     moduleManager.waitForInitialization();
     moduleManager.findNewContexts(true, true);
-    moduleManager.updateModules(true, true);
+    moduleManager.update(true, true);
     assertTrue(moduleManager.getModules().size() == 1);
     ModuleRepresentation module = moduleManager.getModules().iterator().next();
     assertTrue(module.getName().equals(WorkingModule.class.getName()));
@@ -196,7 +196,7 @@ public class ModuleManagerTest extends TestCase {
         injector.getInstance(ModuleManagerFactory.class).create(project);
     moduleManager.waitForInitialization();
     moduleManager.findNewContexts(true, true);
-    moduleManager.updateModules(true, true);
+    moduleManager.update(true, true);
     assertTrue(moduleManager.getModules().size() == 1);
     ModuleRepresentation module = moduleManager.getModules().iterator().next();
     assertTrue(module.getName().equals(WorkingModule.class.getName()));

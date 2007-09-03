@@ -306,7 +306,7 @@ class ModuleManagerImpl implements ModuleManager,
     }
   }
 
-  public boolean updateModules(boolean waitFor, boolean backgroundAutomatically) {
+  public boolean update(boolean waitFor, boolean backgroundAutomatically) {
     if (javaManager != null) {
       return cleanModuleContexts(waitFor, backgroundAutomatically);
     } else {
@@ -320,11 +320,11 @@ class ModuleManagerImpl implements ModuleManager,
         context.markDirty();
       }
     }
-    return updateModules(waitFor, backgroundAutomatically);
+    return update(waitFor, backgroundAutomatically);
   }
 
-  public boolean updateModules() {
-    return updateModules(true, true);
+  public boolean update() {
+    return update(true, true);
   }
 
   public boolean rerunModules() {
@@ -364,7 +364,7 @@ class ModuleManagerImpl implements ModuleManager,
 
     @Override
     protected boolean myTask(boolean backgroundAutomatically) {
-      return moduleManager.updateModules(true, backgroundAutomatically);
+      return moduleManager.update(true, backgroundAutomatically);
     }
   }
 
@@ -392,7 +392,7 @@ class ModuleManagerImpl implements ModuleManager,
     }
   }
 
-  public void updateModules(final PostUpdater postUpdater,
+  public void update(final PostUpdater postUpdater,
       final boolean backgroundAutomatically) {
     new UpdateModulesThread(this, postUpdater, backgroundAutomatically).start();
   }
@@ -509,7 +509,7 @@ class ModuleManagerImpl implements ModuleManager,
   public void setRunAutomatically(boolean run) {
     this.runAutomatically = run;
     if (run) {
-      updateModules(false, true);
+      update(false, true);
     }
   }
 
