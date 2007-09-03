@@ -85,7 +85,7 @@ public final class BindingsEngine {
         new CodeLocationsResults("Bindings for "
             + ClassNameUtility.shorten(theClass) + "  (" + theClass + ")",
             theClass);
-      if (!moduleManager.updateModules(true, false)) {
+      if (!moduleManager.update(true, false)) {
         results.userCancelled();
       } else {
         if ((moduleManager.getActiveModuleContexts() != null)

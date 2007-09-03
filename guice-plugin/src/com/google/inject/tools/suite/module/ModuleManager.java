@@ -158,7 +158,7 @@ public interface ModuleManager {
    * @return true if the update succeeded (false if the user canceled the
    *         operation)
    */
-  public boolean updateModules(boolean waitFor, boolean backgroundAutomatically);
+  public boolean update(boolean waitFor, boolean backgroundAutomatically);
 
   /**
    * Wait for the manager to clean the modules.
@@ -166,7 +166,7 @@ public interface ModuleManager {
    * @return true if the update succeeded (false if the user cancelled the
    *         operation)
    */
-  public boolean updateModules();
+  public boolean update();
 
   /**
    * A piece of code to run after an update has completed.
@@ -182,7 +182,7 @@ public interface ModuleManager {
    * @param backgroundAutomatically true if the process should run in the
    * background
    */
-  public void updateModules(PostUpdater postUpdater,
+  public void update(PostUpdater postUpdater,
       boolean backgroundAutomatically);
 
   /**

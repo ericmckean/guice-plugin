@@ -95,7 +95,7 @@ public class SampleToolsFrameworkUseCase extends TestCase {
     moduleManager.addToModuleContext("My Context", WorkingModule.class.getName());
     moduleManager.addToModuleContext("My Context", WorkingModule2.class.getName());
     
-    moduleManager.updateModules();
+    moduleManager.update();
     
     assertTrue(moduleManager.getModuleContexts().size() == 1);
     assertTrue(moduleManager.getActiveModuleContexts().size() == 1);
