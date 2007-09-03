@@ -84,7 +84,7 @@ moduleManager.addToContext("My Context", TheModuleToAnalyze.class.getName());
 === Ask the Module Context for bindings and problems ===
 
 {{{
-moduleManager.updateModules();
+moduleManager.update();
 
 ModuleContextRepresentation context = moduleManager.get("My Context");
 
