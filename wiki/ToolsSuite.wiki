@@ -105,7 +105,7 @@ for (CodeProblem problem : problems) {
 }
 }}}
 
-The above sample code will look for a binding of !SomeClass annotated with !SomeAnnotation in !SampleModule (see above) and print out the result.  If no binding exists it will report that.  It will then report any problems with the binding (e.g. !CreationException).
+The above sample code will look for a binding of !SomeClass annotated with !SomeAnnotation in !TheModuleToAnalyze and print out the result.  If no binding exists it will report that.  It will then report any problems with the binding (e.g. !CreationException).
 
 === Details about classes you may wish to implement ===
 
@@ -120,4 +120,3 @@ While none of these must be implemented to use the tools framework, in most case
 *Messenger*: passed messages from the tools suite regarding problems with running the framework.  Default implementation does nothing.
 
 *!ProgressHandler*: responsible for stepping through the steps of the code runner and measuring progress (if desired).  Default implementation simply blocks the thread calling the module manager until the snippets are run without reporting any progress.  Be careful overriding this, be sure to look at the !BlockingProgressHandler class implementation before you do.
-
