@@ -78,6 +78,6 @@ public class ModuleManagerFactoryImpl implements ModuleManagerFactory {
   public ModuleManager get() {
     return new ModuleManagerImpl(modulesSourceProvider.get(), problemsHandlerProvider.get(),
         messengerProvider.get(), javaManagerProvider.get(), codeRunnerFactoryProvider.get(),
-        true, true, true);
+        true, false, true);
   }
 }

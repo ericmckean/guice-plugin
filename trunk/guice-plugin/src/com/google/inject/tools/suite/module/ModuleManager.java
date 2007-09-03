@@ -290,4 +290,19 @@ public interface ModuleManager {
    * Tell the calling thread to wait for the manager to initialize.
    */
   public void waitForInitialization() throws InterruptedException;
+  
+  /**
+   * Create a new (empty) module context.
+   */
+  public ModuleContextRepresentation createModuleContext(String name);
+  
+  /**
+   * Add the given module to the given context.
+   */
+  public ModuleContextRepresentation addToModuleContext(String name, String module);
+  
+  /**
+   * Return the module context with the given name.
+   */
+  public ModuleContextRepresentation getModuleContext(String name);
 }

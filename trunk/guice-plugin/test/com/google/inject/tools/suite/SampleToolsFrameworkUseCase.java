@@ -17,20 +17,20 @@
 package com.google.inject.tools.suite;
 
 import java.net.URL;
-import java.util.Collections;
 import java.util.Set;
 
 import junit.framework.TestCase;
 
 import com.google.inject.Guice;
 import com.google.inject.binder.AnnotatedBindingBuilder;
+import com.google.inject.tools.suite.SampleModuleScenario.MockInjectedInterface2;
 import com.google.inject.tools.suite.SampleModuleScenario.Red;
 import com.google.inject.tools.suite.SampleModuleScenario.RedService;
 import com.google.inject.tools.suite.SampleModuleScenario.Service;
 import com.google.inject.tools.suite.SampleModuleScenario.WorkingModule;
+import com.google.inject.tools.suite.SampleModuleScenario.WorkingModule2;
 import com.google.inject.tools.suite.module.ModuleContextRepresentation;
 import com.google.inject.tools.suite.module.ModuleManager;
-import com.google.inject.tools.suite.module.ModulesSource;
 import com.google.inject.tools.suite.snippets.BindingCodeLocation;
 import com.google.inject.tools.suite.snippets.CodeLocation;
 import com.google.inject.tools.suite.snippets.ModuleContextSnippet;
@@ -43,19 +43,8 @@ import com.google.inject.tools.suite.snippets.ModuleContextSnippet;
 public class SampleToolsFrameworkUseCase extends TestCase {
   static class MyToolsModule extends GuiceToolsModule {
     @Override
-    protected void bindModulesSource(AnnotatedBindingBuilder<ModulesSource> bindModulesSource) {
-      bindModulesSource.to(MyModulesSource.class);
-    }
-    @Override
     protected void bindJavaManager(AnnotatedBindingBuilder<JavaManager> bindJavaManager) {
       bindJavaManager.to(MyJavaManager.class);
-    }
-  }
-  
-  static class MyModulesSource extends DefaultModulesSource {
-    @Override
-    public Set<String> getModules(JavaManager javaManager) {
-      return Collections.singleton(WorkingModule.class.getName());
     }
   }
   
@@ -101,9 +90,17 @@ public class SampleToolsFrameworkUseCase extends TestCase {
   public void testToolsFramework() {
     ModuleManager moduleManager = 
       Guice.createInjector(new MyToolsModule()).getInstance(ModuleManager.class);
+    
+    moduleManager.createModuleContext("My Context");
+    moduleManager.addToModuleContext("My Context", WorkingModule.class.getName());
+    moduleManager.addToModuleContext("My Context", WorkingModule2.class.getName());
+    
+    moduleManager.updateModules();
+    
     assertTrue(moduleManager.getModuleContexts().size() == 1);
     assertTrue(moduleManager.getActiveModuleContexts().size() == 1);
-    ModuleContextRepresentation context = moduleManager.getModuleContexts().iterator().next();
+    
+    ModuleContextRepresentation context = moduleManager.getModuleContext("My Context");
     assertTrue(context.contains(WorkingModule.class.getName()));
     Set<CodeLocation> locations = context.findLocations(Service.class.getName());
     assertTrue(locations.size() == 2);
@@ -112,5 +109,9 @@ public class SampleToolsFrameworkUseCase extends TestCase {
     assertTrue(location instanceof BindingCodeLocation);
     BindingCodeLocation bindingLocation = (BindingCodeLocation)location;
     assertTrue(bindingLocation.bindTo().equals(RedService.class.getName()));
+    assertTrue(context.contains(WorkingModule2.class.getName()));
+    Set<CodeLocation> locations2 = context.findLocations(MockInjectedInterface2.class.getName());
+    assertTrue(locations2.size() == 1);
+    assertTrue(locations2.iterator().next().getProblems().isEmpty());
   }
 }

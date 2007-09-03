@@ -25,7 +25,7 @@ import java.util.List;
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-class BlockingProgressHandler implements ProgressHandler {
+public class BlockingProgressHandler implements ProgressHandler {
   private final List<ProgressStep> steps = new ArrayList<ProgressStep>();
 
   public void go(String label, boolean backgroundAutomatically) {
