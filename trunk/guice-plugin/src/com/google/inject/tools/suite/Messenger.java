@@ -39,4 +39,14 @@ public interface Messenger {
    * Log an exception to the guice error output view.
    */
   public void logException(String label, Throwable throwable);
+  
+  /**
+   * Log stdout and stderr output from the snippets.
+   */
+  public void logCodeRunnerMessage(String message);
+  
+  /**
+   * Log an exception running the snippets.
+   */
+  public void logCodeRunnerException(String label, Throwable throwable);
 }

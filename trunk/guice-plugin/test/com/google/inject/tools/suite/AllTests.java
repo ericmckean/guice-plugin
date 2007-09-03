@@ -41,6 +41,7 @@ public class AllTests {
     suite.addTestSuite(ModuleSnippetTest.class);
     suite.addTestSuite(ModuleCustomContextTest.class);
     suite.addTestSuite(ModuleContextSnippetTest.class);
+    suite.addTestSuite(SampleToolsFrameworkUseCase.class);
 
     return suite;
   }

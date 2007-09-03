@@ -31,4 +31,12 @@ class IntellijMessenger implements Messenger {
   public void logMessage(String message) {
     
   }
+  
+  public void logCodeRunnerMessage(String message) {
+    //do nothing
+  }
+  
+  public void logCodeRunnerException(String label, Throwable throwable) {
+    //do nothing
+  }
 }

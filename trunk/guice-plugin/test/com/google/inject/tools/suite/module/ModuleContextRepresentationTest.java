@@ -78,6 +78,14 @@ public class ModuleContextRepresentationTest extends TestCase {
 
         public void logMessage(String message) {
         }
+        
+        public void logCodeRunnerMessage(String message) {
+          
+        }
+        
+        public void logCodeRunnerException(String label, Throwable throwable) {
+          
+        }
       };
     }
 

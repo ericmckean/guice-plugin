@@ -141,7 +141,7 @@ class CodeRunnerImpl implements CodeRunner {
           ObjectInputStream input = new ObjectInputStream(process.getInputStream());
           Object result = input.readObject();
           if (!killed) {
-            //runnable.gotErrorOutput(process.getErrorStream());
+            runnable.gotErrorOutput(process.getErrorStream());
             runnable.gotOutput(result);
             process.destroy();
           }

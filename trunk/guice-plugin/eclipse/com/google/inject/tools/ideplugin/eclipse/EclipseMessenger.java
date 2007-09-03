@@ -114,4 +114,12 @@ class EclipseMessenger implements Messenger {
     }
     log(message.toString());
   }
+  
+  public void logCodeRunnerMessage(String message) {
+    //do nothing
+  }
+  
+  public void logCodeRunnerException(String label, Throwable throwable) {
+    //do nothing
+  }
 }
