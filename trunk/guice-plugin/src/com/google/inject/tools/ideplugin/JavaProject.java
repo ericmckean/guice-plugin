@@ -23,14 +23,18 @@ import com.google.inject.tools.suite.JavaManager;
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-public interface JavaProject extends JavaManager {
+public abstract class JavaProject implements JavaManager {
   /**
    * Save the settings.
    */
-  public void saveSettings(ProjectSettings settings);
+  public abstract void saveSettings(ProjectSettings settings);
   
   /**
    * Load the settings.
    */
-  public ProjectSettings loadSettings();
+  public abstract ProjectSettings loadSettings();
+  
+  public String getClasspathDelimiter() {
+    return System.getProperty("path.separator");
+  }
 }

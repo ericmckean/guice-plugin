@@ -31,6 +31,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -127,6 +128,10 @@ public class CodeRunnerTest extends TestCase implements
   public static class FakeJavaProject implements JavaManager {
     public String getJavaCommand() throws Exception {
       return "java";
+    }
+    
+    public List<String> getJavaFlags() throws Exception {
+      return Collections.<String>emptyList();
     }
 
     public String getProjectClasspath() throws Exception {

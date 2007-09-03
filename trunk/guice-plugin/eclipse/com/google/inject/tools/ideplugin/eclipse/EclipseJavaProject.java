@@ -18,6 +18,7 @@ package com.google.inject.tools.ideplugin.eclipse;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.google.inject.tools.ideplugin.JavaProject;
@@ -41,7 +42,7 @@ import org.osgi.framework.Bundle;
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-class EclipseJavaProject implements JavaProject {
+class EclipseJavaProject extends JavaProject {
   private final IJavaProject project;
 
   public EclipseJavaProject(IJavaProject project) {
@@ -58,6 +59,10 @@ class EclipseJavaProject implements JavaProject {
   public String getJavaCommand() throws Exception {
     // TODO: get java command from project
     return "java";
+  }
+  
+  public List<String> getJavaFlags() throws Exception {
+    return Collections.<String>emptyList();
   }
 
   public String getProjectClasspath() throws Exception {
@@ -79,10 +84,6 @@ class EclipseJavaProject implements JavaProject {
     }
     args2.append(args.get(args.size() - 1));
     return args2.toString();
-  }
-  
-  public String getClasspathDelimiter() {
-    return System.getProperty("path.separator");
   }
 
   private String getProjectOutputLocation(IJavaProject project)
@@ -180,10 +181,12 @@ class EclipseJavaProject implements JavaProject {
     return url.getFile();
   }
   
+  @Override
   public void saveSettings(ProjectSettings settings) {
     //TODO: save settings
   }
   
+  @Override
   public ProjectSettings loadSettings() {
     //TODO: load settings
     ProjectSettings settings = new ProjectSettings();

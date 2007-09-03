@@ -16,6 +16,9 @@
 
 package com.google.inject.tools.suite;
 
+import java.util.Collections;
+import java.util.List;
+
 import com.google.inject.Singleton;
 
 /**
@@ -36,6 +39,10 @@ class DefaultJavaManager implements JavaManager {
 
   public String getJavaCommand() throws Exception {
     return "java";
+  }
+  
+  public List<String> getJavaFlags() throws Exception {
+    return Collections.<String>emptyList();
   }
 
   public String getProjectClasspath() throws Exception {

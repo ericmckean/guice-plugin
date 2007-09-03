@@ -29,6 +29,7 @@ import com.google.inject.tools.suite.module.ModuleManager;
 import com.google.inject.tools.suite.snippets.CodeLocation;
 import com.google.inject.tools.suite.snippets.CodeProblem;
 import com.google.inject.tools.suite.snippets.BindingCodeLocation.ImplicitBindingLocation;
+import com.google.inject.tools.suite.snippets.BindingCodeLocation.NoBindingLocation;
 
 /**
  * The BindingsEngine is the glue between the other objects; it is responsible
@@ -92,24 +93,24 @@ public final class BindingsEngine {
           for (ModuleContextRepresentation moduleContext : moduleManager
               .getActiveModuleContexts()) {
             BindingLocator locater;
-            if (element.isConcreteClass()) {
+            if (element.isInjectionPoint()) {
+              locater = new BindingLocator(theClass, element.getAnnotations(),
+                  moduleContext);
+            } else {
+              locater = new BindingLocator(theClass, moduleContext);
+            }
+            if ((locater.getCodeLocations().isEmpty() ||
+                locater.getCodeLocations().iterator().next() instanceof NoBindingLocation)
+                && element.isConcreteClass()) {
               results.put(moduleContext.getName(), 
                   Collections.singleton((CodeLocation)new ImplicitBindingLocation(theClass)), 
                   Collections.<CodeProblem>emptySet());
             } else {
-              if (element.isInjectionPoint()) {
-                locater = new BindingLocator(theClass, element.getAnnotations(),
-                    moduleContext);
-              } else {
-                locater = new BindingLocator(theClass, moduleContext);
+              for (CodeLocation codeLocation : locater.getCodeLocations()) {
+                problemsHandler.foundProblems(codeLocation.getProblems());
               }
-              if (locater.getCodeLocations() != null) {
-                for (CodeLocation codeLocation : locater.getCodeLocations()) {
-                  problemsHandler.foundProblems(codeLocation.getProblems());
-                }
-                results.put(locater.getModuleContext().getName(),
-                    locater.getCodeLocations(), locater.getProblems());
-              }
+              results.put(locater.getModuleContext().getName(),
+                  locater.getCodeLocations(), locater.getProblems());
             }
           }
           if (!results.keySet().isEmpty()) {

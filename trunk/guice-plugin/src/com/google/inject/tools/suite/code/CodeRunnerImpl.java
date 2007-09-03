@@ -111,6 +111,7 @@ class CodeRunnerImpl implements CodeRunner {
             project.getSnippetsClasspath() + project.getClasspathDelimiter()
                 + guicePath + project.getProjectClasspath();
         cmd.add(project.getJavaCommand());
+        cmd.addAll(project.getJavaFlags());
         cmd.add("-classpath");
         cmd.add(classpath);
         cmd.add(runnable.getClassToRun());
