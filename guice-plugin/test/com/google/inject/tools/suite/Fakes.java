@@ -141,8 +141,12 @@ public class Fakes {
     }
   }
 
-  public static class FakeJavaManager implements JavaProject {
+  public static class FakeJavaManager extends JavaProject {
     public String getJavaCommand() throws Exception {
+      return null;
+    }
+    
+    public List<String> getJavaFlags() throws Exception {
       return null;
     }
 
@@ -158,13 +162,16 @@ public class Fakes {
       return null;
     }
     
+    @Override
     public String getClasspathDelimiter() {
       return null;
     }
     
+    @Override
     public void saveSettings(ProjectSettings setting) {
     }
     
+    @Override
     public ProjectSettings loadSettings() {
       return null;
     }

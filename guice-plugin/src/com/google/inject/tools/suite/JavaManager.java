@@ -16,6 +16,8 @@
 
 package com.google.inject.tools.suite;
 
+import java.util.List;
+
 /**
  * Represents a project in the user's code.
  * 
@@ -28,6 +30,13 @@ public interface JavaManager {
    * @throws Exception if the command line cannot be determined
    */
   public String getJavaCommand() throws Exception;
+  
+  /**
+   * Return the flags to pass to the java command line.
+   * 
+   * @throws Exception if the flags cannot be determined
+   */
+  public List<String> getJavaFlags() throws Exception;
 
   /**
    * Return the classpath entry for the precompiled snippets.jar file.
