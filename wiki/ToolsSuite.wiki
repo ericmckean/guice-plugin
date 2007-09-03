@@ -12,7 +12,8 @@ Download a copy from the Downloads page.
   # Subclass the !GuiceToolsModule
   # Implement your tools framework classes
   # Inject a !ModuleManager
-  # Ask the !ModuleContexts for bindings and problems
+  # Set up a Module Context
+  # Ask the !Module Context for bindings and problems
 
 These steps are explained in detail below.  You may also look at the source code of the IDE plugin in test/com.google.inject.tools.suite for the !SampleToolsSuiteUseCaseTest.java file which also serves as an example of how to use the tools suite.
 
@@ -31,10 +32,6 @@ class MyToolsModule extends GuiceToolsModule {
   @Override
   void bindJavaManager(AnnotatedBindingBuilder<JavaManager> bindJavaManager) {
     bindJavaManager.to(MyJavaManager.class);
-  }
-  @Override
-  void bindModulesSource(AnnotatedBindingBuilder<ModulesSource> bindModulesSource) {
-    bindModulesSource.to(MyModulesSource.class);
   }
 }
 }}}
@@ -64,22 +61,11 @@ class MyJavaManager implements JavaManager {
     return Collections.<String>emptyList();
   }
 }
-
-class MyModulesSource implements ModulesSource {
-  Set<String> getModules(JavaManager javaManager) {
-    return Collections.singleton(SampleModule.class.getName());
-  }
-  void refresh(JavaManager javaManager) {}
-  void addListener(ModulesSourceListener listener) {}
-  void removeListener(ModulesSourceListener listener) {}
-}
 }}}
 
 *IMPORTANT* Version 1.0 of Guice is too old for the tools suite, you must use at least the version included in the tools framework download.
 
 The sample code above defines a !JavaManager that runs the standard java command and passes in hard coded classpath information about the code to analyze and the jar files from the tools framework.
-
-The !ModulesSource is the source of the modules to analyze.  The sample code creates a source that knows of one hard coded module.
 
 === Inject a !ModuleManager ===
 
@@ -88,11 +74,19 @@ ModuleManager moduleManager =
   Guice.createInjector(new MyToolsModule()).getInstance(ModuleManager.class);
 }}}
 
-=== Ask the ModuleContexts for bindings and problems ===
+=== Set up a Module Context ===
 
 {{{
-ModuleContextRepresentation context =
-  moduleManager.getModuleContexts().iterator().next();
+moduleManager.createContext("My Context");
+moduleManager.addToContext("My Context", TheModuleToAnalyze.class.getName());
+}}}
+
+=== Ask the Module Context for bindings and problems ===
+
+{{{
+moduleManager.updateModules();
+
+ModuleContextRepresentation context = moduleManager.get("My Context");
 
 CodeLocation location = context.findLocation(SomeInterface.class, SomeAnnotation.class);
 if (location instanceof BindingCodeLocation) {
@@ -115,7 +109,7 @@ The above sample code will look for a binding of !SomeClass annotated with !Some
 
 === Details about classes you may wish to implement ===
 
-While none of these must be implemented to use the tools framework, in most cases you will want to at least implement the !ModulesSource since without it using the framework can be tricky.  The most straightforward method of doing code analysis is to follow the sample code above and implement only the !ModulesSource (and !JavaManager if necessary).
+While none of these must be implemented to use the tools framework, in most cases you will want to at least implement the !ModulesSource since without it using the framework can be tricky.  The most straightforward method of doing code analysis is to follow the sample code above and implement only the !JavaManager (if necessary).
 
 *!JavaManager*: responsible for returning the java command line, any flags to pass in, and the classpath entries for the code to analyze and the jar files of the tools framework (included in the download).  Default implementation uses java as the command line with no flags and assumes the code and jar files are on the default classpath.
 
@@ -126,5 +120,4 @@ While none of these must be implemented to use the tools framework, in most case
 *Messenger*: passed messages from the tools suite regarding problems with running the framework.  Default implementation does nothing.
 
 *!ProgressHandler*: responsible for stepping through the steps of the code runner and measuring progress (if desired).  Default implementation simply blocks the thread calling the module manager until the snippets are run without reporting any progress.  Be careful overriding this, be sure to look at the !BlockingProgressHandler class implementation before you do.
-
 
