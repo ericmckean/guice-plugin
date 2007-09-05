@@ -20,7 +20,6 @@ These steps are explained in detail below.  You may also look at the source code
 === Subclass the !GuiceToolsModule ===
 
 The !GuiceToolsModule binds the pieces of the framework together.  To use the framework you need to define your own classes and bind them.  The classes you may choose to bind your own implementations of are:
-  * !ModulesSource
   * !JavaManager
   * !ProblemsHandler
   * !ProgressHandler
@@ -77,8 +76,8 @@ ModuleManager moduleManager =
 === Set up a Module Context ===
 
 {{{
-moduleManager.createContext("My Context");
-moduleManager.addToContext("My Context", TheModuleToAnalyze.class.getName());
+moduleManager.createContext("My Context")
+  .addModule(TheModuleToAnalyze.class.getName());
 }}}
 
 === Ask the Module Context for bindings and problems ===
@@ -112,8 +111,6 @@ The above sample code will look for a binding of !SomeClass annotated with !Some
 While none of these must be implemented to use the tools framework, in most cases you will want to at least implement the !ModulesSource since without it using the framework can be tricky.  The most straightforward method of doing code analysis is to follow the sample code above and implement only the !JavaManager (if necessary).
 
 *!JavaManager*: responsible for returning the java command line, any flags to pass in, and the classpath entries for the code to analyze and the jar files of the tools framework (included in the download).  Default implementation uses java as the command line with no flags and assumes the code and jar files are on the default classpath.
-
-*!ModulesSource*: responsible for generating a set of names (fully qualified . and $ notation) of classes of modules to analyze for bindings.  The default implementation knows about no modules.
 
 *!ProblemsHandler*: notified automatically of any problems found in the module contexts (without a request for finding bindings).  Default implementation does nothing.
 
