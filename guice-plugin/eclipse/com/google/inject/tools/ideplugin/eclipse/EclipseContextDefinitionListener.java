@@ -16,7 +16,6 @@
 
 package com.google.inject.tools.ideplugin.eclipse;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -34,14 +33,8 @@ import org.eclipse.jdt.core.ITypeHierarchy;
 import org.eclipse.jdt.core.ITypeHierarchyChangedListener;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ASTParser;
-import org.eclipse.jdt.core.dom.ASTVisitor;
-import org.eclipse.jdt.core.dom.Annotation;
-import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.MarkerAnnotation;
-import org.eclipse.jdt.core.dom.NormalAnnotation;
 
+import com.google.inject.Module;
 import com.google.inject.Singleton;
 import com.google.inject.Inject;
 import com.google.inject.tools.ideplugin.CustomContextDefinitionSourceImpl;
@@ -102,7 +95,7 @@ class EclipseContextDefinitionListener extends CustomContextDefinitionSourceImpl
       hadProblem(throwable);
     }
   }
-
+  
   @Override
   protected void initialize(JavaProject javaManager) {
     super.initialize(javaManager);
@@ -123,12 +116,12 @@ class EclipseContextDefinitionListener extends CustomContextDefinitionSourceImpl
   protected void initialize2(EclipseJavaProject javaManager) {
     try {
       IType contextType =
-          javaManager
-              .getIJavaProject()
-              .findType(
-                  com.google.inject.Module.class
-                      .getName());
-      if (contextType != null && contextType.getJavaProject().equals(javaManager.getIJavaProject())) {
+        javaManager
+        .getIJavaProject()
+        .findType(
+            Iterable.class.getName());
+      if (contextType != null && 
+          contextType.getJavaProject().equals(javaManager.getIJavaProject())) {
         contextTypes.put(javaManager, contextType);
         contextTypeHierarchies.put(javaManager, contextTypes.get(javaManager)
             .newTypeHierarchy(null));
@@ -136,12 +129,12 @@ class EclipseContextDefinitionListener extends CustomContextDefinitionSourceImpl
             new MyContextTypeHierarchyChangedListener(javaManager));
         if (contextTypeHierarchies.get(javaManager) != null) {
           contextTypeHierarchies.get(javaManager)
-              .addTypeHierarchyChangedListener(
-                  contextTypeHierarchyListeners.get(javaManager));
+          .addTypeHierarchyChangedListener(
+              contextTypeHierarchyListeners.get(javaManager));
         }
       }
     } catch (Throwable throwable) {
-      //hadProblem(throwable);
+      hadProblem(throwable);
     }
   }
 
@@ -168,27 +161,29 @@ class EclipseContextDefinitionListener extends CustomContextDefinitionSourceImpl
       throw new NotEclipseJavaProjectException(javaManager);
     }
   }
-
-  protected Set<String> locateContexts(EclipseJavaProject javaManager)
-      throws Throwable {
-    if (javaManager != null && contextTypeHierarchies.get(javaManager) != null) {
-      final Set<String> contextNames = new HashSet<String>();
-      contextTypeHierarchies.get(javaManager).refresh(null);
-      IType[] subclasses =
+  
+  protected Set<String> locateContexts(EclipseJavaProject javaManager) {
+    final Set<String> contextNames = new HashSet<String>();
+    try {
+      if (javaManager != null && contextTypeHierarchies.get(javaManager) != null) {
+        contextTypeHierarchies.get(javaManager).refresh(null);
+        IType[] subclasses =
           contextTypeHierarchies.get(javaManager).getAllSubtypes(
               contextTypes.get(javaManager));
-      for (IType subclass : subclasses) {
-        if (subclass.isClass()) {
-          if (!Flags.isAbstract(subclass.getFlags())) {
-            if (isAnnotatedWithApplicationModule(subclass)) {
-              contextNames.add(subclass.getFullyQualifiedName());
+        for (IType subclass : subclasses) {
+          if (subclass.isClass()) {
+            if (!Flags.isAbstract(subclass.getFlags())) {
+              if (isIterableModule(subclass)) {
+                contextNames.add(subclass.getFullyQualifiedName());
+              }
             }
           }
         }
       }
       return contextNames;
-    } else {
-      return Collections.<String> emptySet();
+    } catch (Throwable t) {
+      hadProblem(t);
+      return contextNames;
     }
   }
 
@@ -224,7 +219,7 @@ class EclipseContextDefinitionListener extends CustomContextDefinitionSourceImpl
         for (IType type : cu.getAllTypes()) {
           if (contextTypeHierarchies.get(javaManager) != null
               && contextTypeHierarchies.get(javaManager).contains(type)
-              && isAnnotatedWithApplicationModule(type)) {
+              && isIterableModule(type)) {
             switch (delta.getKind()) {
               case IJavaElementDelta.ADDED:
                 EclipseContextDefinitionListener.this.contextDefinitionAdded(javaManager, type
@@ -250,40 +245,23 @@ class EclipseContextDefinitionListener extends CustomContextDefinitionSourceImpl
     }
   }
   
-  private boolean isAnnotatedWithApplicationModule(IType type) {
+  private boolean isIterableModule(IType type) {
     try {
-      ASTParser parser = ASTParser.newParser(AST.JLS3);
-      parser.setKind(ASTParser.K_COMPILATION_UNIT);
-      parser.setSource(type.getCompilationUnit());
-      CompilationUnit cu = (CompilationUnit) parser.createAST(null);
-      MyASTVisitor visitor = new MyASTVisitor();
-      cu.accept(visitor);
-      return visitor.hasApplicationModuleAnnotation();
-    } catch (Throwable t) {
-      return false;
-    }
-  }
-  
-  private static class MyASTVisitor extends ASTVisitor {
-    private boolean hasApplicationModuleAnnotation = false;
-    @Override
-    public boolean visit(MarkerAnnotation node) {
-      process(node);
-      return false;
-    }
-    @Override
-    public boolean visit(NormalAnnotation node) {
-      process(node);
-      return false;
-    }
-    private void process(Annotation node) {
-      String typeName = node.getTypeName().getFullyQualifiedName();
-      if (typeName.equals("ApplicationModule") || typeName.equals("com.google.inject.ApplicationModule")) {
-        hasApplicationModuleAnnotation = true;
+      for (String s : type.getSuperInterfaceNames()) {
+        String iterableLongName = Iterable.class.getName();
+        String iterableName = Iterable.class.getSimpleName();
+        String moduleLongName = Module.class.getName();
+        String moduleName = Module.class.getSimpleName();
+        if (s.contains(iterableLongName + "<" + moduleLongName + ">")
+            || s.contains(iterableLongName + "<" + moduleName + ">")
+            || s.contains(iterableName + "<" + moduleLongName + ">")
+            || s.contains(iterableName + "<" + moduleName + ">")) {
+          return true;
+        }
       }
+    } catch (Throwable e) {
+      hadProblem(e);
     }
-    public boolean hasApplicationModuleAnnotation() {
-      return hasApplicationModuleAnnotation;
-    }
+    return false;
   }
 }

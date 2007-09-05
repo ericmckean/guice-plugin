@@ -16,19 +16,15 @@
 
 package com.google.inject.tools.ideplugin.eclipse;
 
-import java.util.HashSet;
-
-import com.google.inject.Module;
-import com.google.inject.tools.ideplugin.eclipse.EclipsePluginModule.EclipseGuiceToolsModule;
+import org.eclipse.ui.IStartup;
 
 /**
- * Helper allowing us to use the plugin on our code.
+ * Forces the plugin to load early so it can look for projects in the background.
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-public class EclipseApplicationContext extends HashSet<Module> {
-  public EclipseApplicationContext() {
-    add(new EclipsePluginModule());
-    add(new EclipseGuiceToolsModule());
+public class EclipseEarlyStartup implements IStartup {
+  public void earlyStartup() {
+    Activator.getDefault();
   }
 }

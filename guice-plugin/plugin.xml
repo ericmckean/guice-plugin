@@ -165,4 +165,9 @@
               id="com.google.inject.tools.ideplugin.eclipse.runnowCommand2"
               name="Run Guice Module Contexts Now"/>
    </extension>
+   <extension
+         point="org.eclipse.ui.startup">
+      <startup class="com.google.inject.tools.ideplugin.eclipse.EclipseEarlyStartup">
+      </startup>
+   </extension>
 </plugin>
