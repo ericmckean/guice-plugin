@@ -14,9 +14,9 @@
  * the License.
  */
 
-package com.google.inject.tools.suite.code;
+package com.google.inject.tools.suite.module;
 
-import com.google.inject.tools.suite.module.CustomModuleContextRepresentation;
+import com.google.inject.tools.suite.code.CodeRunner;
 import com.google.inject.tools.suite.snippets.ModuleContextSnippet;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ import java.util.List;
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-public class RunCustomModuleContextSnippet extends CodeRunner.Runnable {
+class RunCustomModuleContextSnippet extends CodeRunner.Runnable {
   private final CustomModuleContextRepresentation moduleContext;
 
   public RunCustomModuleContextSnippet(CodeRunner codeRunner,

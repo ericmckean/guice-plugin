@@ -47,7 +47,7 @@
  * <p>
  * Key objects which must be created in IDE specific manner are:
  * <dl>
- * <dt>{@link com.google.inject.tools.suite.module.ModulesSource}
+ * <dt>{@link com.google.inject.tools.ideplugin.module.ModulesSource}
  * <dd>listen for changes in the user's code involving modules
  * <dt>{@link com.google.inject.tools.ideplugin.module.ModuleSelectionView}
  * <dd>allow the user to configure what modules the plugin runs

@@ -46,6 +46,17 @@ public class SampleToolsFrameworkUseCase extends TestCase {
     protected void bindJavaManager(AnnotatedBindingBuilder<JavaManager> bindJavaManager) {
       bindJavaManager.to(MyJavaManager.class);
     }
+    @Override
+    protected void bindMessenger(AnnotatedBindingBuilder<Messenger> bindMessenger) {
+      bindMessenger.to(MyMessenger.class);
+    }
+  }
+  
+  static class MyMessenger extends DefaultMessenger {
+    @Override
+    public void logCodeRunnerMessage(String msg) {
+      System.out.println("!!!" + msg);
+    }
   }
   
   static class MyJavaManager extends DefaultJavaManager {
@@ -79,7 +90,7 @@ public class SampleToolsFrameworkUseCase extends TestCase {
     @Override
     public String getGuiceClasspath() {
       String base = CODECLASSPATH.substring(0, CODECLASSPATH.lastIndexOf("bin")) + "lib/Guice/";
-      String guice = base + "guice_r350+dcreutz1.jar";
+      String guice = base + "guice_r350+dcreutz2.jar";
       String asm = base + "asm-2.2.3.jar";
       String cglib = base + "cglib-2.2_beta1.jar";
       String aop = base + "aopalliance.jar";
@@ -91,9 +102,9 @@ public class SampleToolsFrameworkUseCase extends TestCase {
     ModuleManager moduleManager = 
       Guice.createInjector(new MyToolsModule()).getInstance(ModuleManager.class);
     
-    moduleManager.createModuleContext("My Context");
-    moduleManager.addToModuleContext("My Context", WorkingModule.class.getName());
-    moduleManager.addToModuleContext("My Context", WorkingModule2.class.getName());
+    ModuleContextRepresentation mcontext = moduleManager.createModuleContext("My Context");
+    mcontext.addModule(WorkingModule.class.getName());
+    mcontext.addModule(WorkingModule2.class.getName());
     
     moduleManager.update();
     

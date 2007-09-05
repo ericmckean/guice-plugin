@@ -29,6 +29,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.google.inject.ApplicationModule;
 import com.google.inject.Binding;
 import com.google.inject.CreationException;
 import com.google.inject.Guice;
@@ -366,6 +368,11 @@ public class ModuleContextSnippet extends CodeSnippet {
         snippet = new ModuleContextSnippet(modules, contextName);
       } else {
         Class<?> classToUse = Class.forName(arguments.next());
+        if (isModule(classToUse) && classToUse.isAnnotationPresent(ApplicationModule.class)) {
+          Iterable<com.google.inject.Module> moduleInstances = 
+            Collections.singleton((Module)classToUse.newInstance());
+          snippet = new ModuleContextSnippet(moduleInstances, contextName);
+        } else {
         Method methodToCall =
           classToUse.getMethod(arguments.next(), (Class[]) null);
         Object result;
@@ -378,6 +385,7 @@ public class ModuleContextSnippet extends CodeSnippet {
         Iterable<com.google.inject.Module> moduleInstances =
           (Iterable<com.google.inject.Module>) result;
         snippet = new ModuleContextSnippet(moduleInstances, contextName);
+        }
       }
     } catch (Throwable t) {
       if (snippet == null) {
@@ -389,5 +397,14 @@ public class ModuleContextSnippet extends CodeSnippet {
       }
     }
     snippet.printResult(stream);
+  }
+  
+  private static boolean isModule(Class<?> aClass) {
+    try {
+      aClass.asSubclass(Module.class);
+      return true;
+    } catch (Exception e) {
+      return false;
+    }
   }
 }

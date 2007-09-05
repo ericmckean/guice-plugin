@@ -16,7 +16,8 @@
 
 package com.google.inject.tools.suite;
 
-import com.google.inject.tools.ideplugin.eclipse.GuicePluginToolsHelper;
+import com.google.inject.tools.ideplugin.eclipse.EclipseApplicationContext;
+import com.google.inject.tools.suite.module.ClassNameUtility;
 import com.google.inject.tools.suite.snippets.ModuleContextSnippet;
 
 import junit.framework.TestCase;
@@ -33,16 +34,15 @@ import java.io.PipedOutputStream;
  */
 public class ModuleCustomContextTest extends TestCase {
   public void testMyPluginHelper() throws Exception {
-    String[] args = new String[4];
-    args[0] = "Custom Context";
+    String[] args = new String[3];
+    args[0] = ClassNameUtility.shorten(EclipseApplicationContext.class.getName());
     args[1] = String.valueOf(-1);
-    args[2] = GuicePluginToolsHelper.class.getName();
-    args[3] = "getModuleContextDefinition";
+    args[2] = EclipseApplicationContext.class.getName();
     Object obj = runASnippet(args);
     assertTrue(obj instanceof ModuleContextSnippet.ModuleContextResult);
     ModuleContextSnippet.ModuleContextResult result =
         (ModuleContextSnippet.ModuleContextResult) obj;
-    assertTrue(result.getName().equals("Custom Context"));
+    assertTrue(result.getName().equals("EclipseApplicationContext"));
     assertTrue(result.getProblems().isEmpty());
     assertNotNull(result.getBindings());
   }

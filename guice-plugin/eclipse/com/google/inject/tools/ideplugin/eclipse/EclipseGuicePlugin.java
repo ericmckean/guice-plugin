@@ -83,8 +83,8 @@ public class EclipseGuicePlugin extends GuicePlugin {
 
       public void run() {
         try {
-          EclipseModuleDialog.display(new Shell(), projectManager
-              .getModuleManager(project));
+          EclipseModuleDialog.display(new Shell(), projectManager,
+              projectManager.getModuleManager(project));
         } catch (Throwable t) {
           messenger.logException("Error opening ModuleSelectionView", t);
         }

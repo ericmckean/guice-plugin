@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.inject.tools.suite.code.CodeRunner;
-import com.google.inject.tools.suite.code.RunModuleContextSnippet;
 import com.google.inject.tools.suite.module.ClassNameUtility;
 import com.google.inject.tools.suite.module.ModuleContextRepresentation;
 import com.google.inject.tools.suite.snippets.BindingCodeLocation;
@@ -159,6 +158,10 @@ class ModuleContextRepresentationImpl implements
       }
     }
     return false;
+  }
+  
+  public synchronized ModuleContextRepresentation addModule(String moduleName) {
+    return add(new ModuleInstanceRepresentation(moduleName));
   }
 
   @Override

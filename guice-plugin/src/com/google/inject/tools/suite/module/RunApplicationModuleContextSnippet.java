@@ -14,42 +14,47 @@
  * the License.
  */
 
-package com.google.inject.tools.suite.code;
+package com.google.inject.tools.suite.module;
 
-import com.google.inject.tools.suite.module.ModuleRepresentation;
-import com.google.inject.tools.suite.snippets.ModuleSnippet;
-
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+
+import com.google.inject.tools.suite.code.CodeRunner;
+import com.google.inject.tools.suite.snippets.ModuleContextSnippet;
 
 /**
  * A {@link CodeRunner.Runnable} that can be used by the {@link CodeRunner} to
- * run a {@link com.google.inject.tools.suite.snippets.ModuleSnippet} in userspace.
+ * run a {@link com.google.inject.tools.suite.snippets.ModuleContextSnippet} in
+ * userspace for an application module context 
+ * ({@link com.google.inject.tools.suite.module.ApplicationModuleContextRepresentation}).
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-public class RunModuleSnippet extends CodeRunner.Runnable {
-  private final ModuleRepresentation module;
+class RunApplicationModuleContextSnippet extends CodeRunner.Runnable {
+  private final ApplicationModuleContextRepresentation moduleContext;
 
-  public RunModuleSnippet(CodeRunner codeRunner, ModuleRepresentation module) {
+  public RunApplicationModuleContextSnippet(CodeRunner codeRunner,
+      ApplicationModuleContextRepresentation moduleContext) {
     super(codeRunner);
-    this.module = module;
+    this.moduleContext = moduleContext;
   }
 
   @Override
   public String label() {
-    return "Running module " + module.getName();
+    return "Running module context " + moduleContext.getName();
   }
 
   @Override
   protected String getFullyQualifiedSnippetClass() {
-    return ModuleSnippet.class.getName();
+    return ModuleContextSnippet.class.getName();
   }
 
   @Override
   protected List<? extends Object> getSnippetArguments() {
     final List<Object> args = new ArrayList<Object>();
-    args.add(module.getName());
+    args.add(moduleContext.getName());
+    args.add(String.valueOf(-1));
+    args.add(moduleContext.getClassName());
     return args;
   }
 }

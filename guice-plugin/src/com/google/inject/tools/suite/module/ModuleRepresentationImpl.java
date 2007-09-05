@@ -19,7 +19,6 @@ package com.google.inject.tools.suite.module;
 import java.util.Set;
 
 import com.google.inject.tools.suite.code.CodeRunner;
-import com.google.inject.tools.suite.code.RunModuleSnippet;
 import com.google.inject.tools.suite.module.ModuleRepresentation;
 import com.google.inject.tools.suite.snippets.CodeSnippetResult;
 import com.google.inject.tools.suite.snippets.ModuleSnippet;

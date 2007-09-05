@@ -41,6 +41,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
+import com.google.inject.tools.ideplugin.ProjectManager;
 import com.google.inject.tools.suite.module.ClassNameUtility;
 import com.google.inject.tools.suite.module.CustomModuleContextRepresentation;
 import com.google.inject.tools.suite.module.ModuleContextRepresentation;
@@ -54,23 +55,25 @@ import com.google.inject.tools.suite.module.ModuleContextRepresentation.ModuleIn
  */
 class EclipseModuleDialog extends FormDialog {
   private final ModuleManager moduleManager;
+  private final ProjectManager projectManager;
   private Set<ModuleContextRepresentation> moduleContexts;
   private Set<ModuleContextRepresentation> activeModuleContexts;
   private boolean activateByDefault;
   private FormToolkit toolkit;
   private final Shell shell;
 
-  public EclipseModuleDialog(Shell parent, ModuleManager moduleManager) {
+  public EclipseModuleDialog(Shell parent, ProjectManager projectManager, ModuleManager moduleManager) {
     super(parent);
     this.shell = parent;
     this.moduleManager = moduleManager;
+    this.projectManager = projectManager;
     moduleContexts = moduleManager.getModuleContexts();
     activeModuleContexts = moduleManager.getActiveModuleContexts();
     activateByDefault = moduleManager.activateModulesByDefault();
   }
 
-  public static void display(Shell parent, ModuleManager moduleManager) {
-    EclipseModuleDialog dialog = new EclipseModuleDialog(parent, moduleManager);
+  public static void display(Shell parent, ProjectManager projectManager, ModuleManager moduleManager) {
+    EclipseModuleDialog dialog = new EclipseModuleDialog(parent, projectManager, moduleManager);
     dialog.create();
     dialog.getShell().setBounds(200, 200, 500, 400);
     dialog.getShell().setText("Guice Context Configuration");
@@ -158,7 +161,7 @@ class EclipseModuleDialog extends FormDialog {
       moduleManager.addCustomContext(title, classToUse, methodToUse);
     }
 
-    public static void display(Shell parent, ModuleManager moduleManager) {
+    public static void display(Shell parent, ProjectManager projectManager, ModuleManager moduleManager) {
       NewContextDialog dialog = new NewContextDialog(parent, moduleManager);
       dialog.create();
       dialog.getShell().setBounds(200, 200, 500, 200);
@@ -168,7 +171,7 @@ class EclipseModuleDialog extends FormDialog {
       if (dialog.getReturnCode() == Window.OK) {
         dialog.saveSettings();
       }
-      EclipseModuleDialog.display(parent, moduleManager);
+      EclipseModuleDialog.display(parent, projectManager, moduleManager);
     }
   }
 
@@ -192,7 +195,7 @@ class EclipseModuleDialog extends FormDialog {
     makeHyperlink(body, "Create new context", new IHyperlinkListener() {
       public void linkActivated(HyperlinkEvent e) {
         EclipseModuleDialog.this.close();
-        NewContextDialog.display(shell, moduleManager);
+        NewContextDialog.display(shell, projectManager, moduleManager);
       }
 
       public void linkEntered(HyperlinkEvent e) {
@@ -244,11 +247,12 @@ class EclipseModuleDialog extends FormDialog {
     makeHyperlink(body, "Scan for new contexts", new IHyperlinkListener() {
       public void linkActivated(HyperlinkEvent e) {
         EclipseModuleDialog.this.close();
-        moduleManager.findNewContexts(new ModuleManager.PostUpdater() {
+        projectManager.findNewContexts(projectManager.getJavaManager(moduleManager),
+            new ModuleManager.PostUpdater() {
           public void execute(boolean success) {
             Display.getDefault().asyncExec(new Runnable() {
               public void run() {
-                EclipseModuleDialog.display(shell, moduleManager);
+                EclipseModuleDialog.display(shell, projectManager, moduleManager);
               }
             });
           }
@@ -396,16 +400,16 @@ class EclipseModuleDialog extends FormDialog {
     moduleManager.setActivateModulesByDefault(activateByDefault);
     for (CheckboxListener checkbox : checkboxListeners) {
       if (checkbox.getState()) {
-        moduleManager.activateModuleContext(checkbox.getModuleContext());
+        moduleManager.activateModuleContext(checkbox.getModuleContext().getName());
       } else {
-        moduleManager.deactivateModuleContext(checkbox.getModuleContext());
+        moduleManager.deactivateModuleContext(checkbox.getModuleContext().getName());
       }
     }
     for (CheckboxListener checkbox : customCheckboxListeners) {
       if (checkbox.getState()) {
-        moduleManager.activateModuleContext(checkbox.getModuleContext());
+        moduleManager.activateModuleContext(checkbox.getModuleContext().getName());
       } else {
-        moduleManager.deactivateModuleContext(checkbox.getModuleContext());
+        moduleManager.deactivateModuleContext(checkbox.getModuleContext().getName());
       }
     }
   }

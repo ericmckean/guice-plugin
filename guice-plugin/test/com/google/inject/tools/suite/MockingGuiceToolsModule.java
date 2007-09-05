@@ -28,7 +28,6 @@ import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProblemsHandler;
 import com.google.inject.tools.suite.code.CodeRunner;
 import com.google.inject.tools.suite.module.ModuleManager;
-import com.google.inject.tools.suite.module.ModulesSource;
 
 /**
  * Implementation of the {@link GuiceToolsModule} that injects mock objects.
@@ -44,7 +43,6 @@ public class MockingGuiceToolsModule extends GuiceToolsModule {
   private Messenger messenger = null;
   private CodeRunner codeRunner = null;
   private ProblemsHandler problemsHandler = null;
-  private ModulesSource modulesListener = null;
 
   public MockingGuiceToolsModule useRealModuleManager() {
     useRealModuleManager = true;
@@ -53,12 +51,6 @@ public class MockingGuiceToolsModule extends GuiceToolsModule {
 
   public MockingGuiceToolsModule useModuleManager(ModuleManager moduleManager) {
     this.moduleManager = moduleManager;
-    return this;
-  }
-
-  public MockingGuiceToolsModule useModulesListener(
-      ModulesSource modulesListener) {
-    this.modulesListener = modulesListener;
     return this;
   }
 
@@ -118,16 +110,6 @@ public class MockingGuiceToolsModule extends GuiceToolsModule {
       bindToInstance(builder, messenger);
     } else {
       bindToMockInstance(builder, Messenger.class);
-    }
-  }
-
-  @Override
-  protected void bindModulesSource(
-      AnnotatedBindingBuilder<ModulesSource> builder) {
-    if (modulesListener != null) {
-      bindToInstance(builder, modulesListener);
-    } else {
-      bindToMockInstance(builder, ModulesSource.class);
     }
   }
 
