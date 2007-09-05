@@ -2,7 +2,7 @@
 <feature
       id="GuicePlugin"
       label="Guice Plugin"
-      version="0.2.0"
+      version="0.2.1"
       provider-name="Google">
 
    <description>
@@ -225,7 +225,7 @@
          id="GuicePlugin"
          download-size="0"
          install-size="0"
-         version="0.2.0"
+         version="0.2.1"
          unpack="false"/>
 
 </feature>

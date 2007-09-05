@@ -102,7 +102,7 @@ public abstract class CustomContextDefinitionSourceImpl implements
   }
 
   protected void hadProblem(Throwable exception) {
-    messenger.logException("Context Listener error", exception);
+    //messenger.logException("Context Listener error", exception);
   }
 
   protected void contextDefinitionChanged(JavaProject javaManager,

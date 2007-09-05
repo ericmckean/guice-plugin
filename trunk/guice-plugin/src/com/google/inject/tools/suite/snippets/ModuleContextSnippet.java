@@ -21,6 +21,8 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.inject.ApplicationModule;
 import com.google.inject.Binding;
 import com.google.inject.CreationException;
 import com.google.inject.Guice;
@@ -368,23 +369,23 @@ public class ModuleContextSnippet extends CodeSnippet {
         snippet = new ModuleContextSnippet(modules, contextName);
       } else {
         Class<?> classToUse = Class.forName(arguments.next());
-        if (isModule(classToUse) && classToUse.isAnnotationPresent(ApplicationModule.class)) {
+        if (isIterableModule(classToUse)) {
           Iterable<com.google.inject.Module> moduleInstances = 
-            Collections.singleton((Module)classToUse.newInstance());
+            (Iterable<com.google.inject.Module>)classToUse.newInstance();
           snippet = new ModuleContextSnippet(moduleInstances, contextName);
         } else {
-        Method methodToCall =
-          classToUse.getMethod(arguments.next(), (Class[]) null);
-        Object result;
-        if (Modifier.isStatic(methodToCall.getModifiers())) {
-          result = methodToCall.invoke(null, (Object[])null);
-        } else {
-          result = methodToCall.invoke(classToUse.newInstance(), 
-              (Object[]) null);
-        }
-        Iterable<com.google.inject.Module> moduleInstances =
-          (Iterable<com.google.inject.Module>) result;
-        snippet = new ModuleContextSnippet(moduleInstances, contextName);
+          Method methodToCall =
+            classToUse.getMethod(arguments.next(), (Class[]) null);
+          Object result;
+          if (Modifier.isStatic(methodToCall.getModifiers())) {
+            result = methodToCall.invoke(null, (Object[])null);
+          } else {
+            result = methodToCall.invoke(classToUse.newInstance(), 
+                (Object[]) null);
+          }
+          Iterable<com.google.inject.Module> moduleInstances =
+            (Iterable<com.google.inject.Module>) result;
+          snippet = new ModuleContextSnippet(moduleInstances, contextName);
         }
       }
     } catch (Throwable t) {
@@ -399,12 +400,22 @@ public class ModuleContextSnippet extends CodeSnippet {
     snippet.printResult(stream);
   }
   
-  private static boolean isModule(Class<?> aClass) {
+  private static boolean isIterableModule(Class<?> aClass) {
     try {
-      aClass.asSubclass(Module.class);
-      return true;
-    } catch (Exception e) {
-      return false;
-    }
+      for (Type type : aClass.getGenericInterfaces()) {
+        if (type instanceof ParameterizedType) {
+          ParameterizedType ptype = (ParameterizedType)type;
+          if (ptype.getRawType() instanceof Class<?>
+            && Iterable.class.isAssignableFrom((Class<?>)ptype.getRawType())) {
+            Type[] args = ptype.getActualTypeArguments();
+            if (args.length == 1 && args[0] instanceof Class<?>
+              && Module.class.isAssignableFrom((Class<?>)args[0])) {
+              return true;
+            }
+          }
+        }
+      }
+    } catch (Throwable e) {}
+    return false;
   }
 }

@@ -19,9 +19,9 @@ package com.google.inject.tools.suite;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import com.google.inject.AbstractModule;
-import com.google.inject.ApplicationModule;
 import com.google.inject.BindingAnnotation;
 import com.google.inject.Inject;
 import com.google.inject.Module;
@@ -134,12 +134,10 @@ public class SampleModuleScenario {
   public interface ProvidedService {
   }
   
-  @ApplicationModule
-  public static class Helper extends AbstractModule {
-    @Override
-    protected void configure() {
-      install(new WorkingModule());
-      install(new WorkingModule2());
+  public static class Helper extends HashSet<Module> {
+    public Helper() {
+      add(new WorkingModule());
+      add(new WorkingModule2());
     }
   }
   
