@@ -27,7 +27,6 @@ import com.google.inject.tools.suite.module.ModuleContextRepresentationImpl;
 import com.google.inject.tools.suite.module.ModuleManager;
 import com.google.inject.tools.suite.module.ModuleRepresentation;
 import com.google.inject.tools.suite.module.ModuleRepresentationImpl;
-import com.google.inject.tools.suite.module.ModulesSource;
 import com.google.inject.tools.suite.module.ModuleContextRepresentation.ModuleInstanceRepresentation;
 import com.google.inject.tools.suite.snippets.CodeSnippetResult;
 
@@ -41,130 +40,47 @@ import java.util.Set;
  */
 class ModuleManagerImpl implements ModuleManager,
     CodeRunner.CodeRunListener {
-  private final ModulesSource modulesListener;
   private final ProblemsHandler problemsHandler;
   private final CodeRunnerFactory codeRunnerFactory;
   private final Messenger messenger;
-  private final HashSet<ModuleRepresentation> modules;
-  private final HashSet<ModuleContextRepresentation> moduleContexts;
-  private final HashSet<ModuleContextRepresentation> activeModuleContexts;
+  private final HashSet<ModuleRepresentationImpl> modules;
+  private final HashSet<ModuleContextRepresentationImpl> moduleContexts;
+  private final HashSet<ModuleContextRepresentationImpl> activeModuleContexts;
   private final JavaManager javaManager;
   private boolean runAutomatically;
   private boolean activateByDefault;
-  private boolean initing;
-  private final InitThread initThread;
 
   /**
    * Create a ModuleManagerImpl. This should be done by injection.
    */
   @Inject
-  public ModuleManagerImpl(ModulesSource modulesListener,
-      ProblemsHandler problemsHandler, Messenger messenger,
+  public ModuleManagerImpl(ProblemsHandler problemsHandler, Messenger messenger,
       JavaManager javaManager, CodeRunnerFactory codeRunnerFactory) {
-    this(modulesListener, problemsHandler, messenger, javaManager,
+    this(problemsHandler, messenger, javaManager,
         codeRunnerFactory, true, true, true);
   }
   
-  public ModuleManagerImpl(ModulesSource modulesListener,
-      ProblemsHandler problemsHandler, Messenger messenger,
+  public ModuleManagerImpl(ProblemsHandler problemsHandler, Messenger messenger,
       JavaManager javaManager, CodeRunnerFactory codeRunnerFactory,
       boolean waitOnInit, boolean runAutomatically, boolean activateByDefault) {
-    this.modulesListener = modulesListener;
     this.problemsHandler = problemsHandler;
     this.codeRunnerFactory = codeRunnerFactory;
     this.messenger = messenger;
-    modules = new HashSet<ModuleRepresentation>();
-    moduleContexts = new HashSet<ModuleContextRepresentation>();
-    activeModuleContexts = new HashSet<ModuleContextRepresentation>();
+    modules = new HashSet<ModuleRepresentationImpl>();
+    moduleContexts = new HashSet<ModuleContextRepresentationImpl>();
+    activeModuleContexts = new HashSet<ModuleContextRepresentationImpl>();
     this.javaManager = javaManager;
 
     this.runAutomatically = runAutomatically;
     this.activateByDefault = activateByDefault;
-
-    if (waitOnInit) {
-      initThread = null;
-      initModules();
-      initContexts();
-      initing = false;
-    } else {
-      initing = true;
-      initThread = new InitThread();
-      initThread.start();
-    }
-  }
-
-  // this is to avoid blocking loading in the UI if there is one
-  private class InitThread extends Thread {
-    @Override
-    public void run() {
-      synchronized (ModuleManagerImpl.this) {
-        initModules();
-        initContexts();
-        initing = false;
-      }
-    }
-  }
-
-  public void waitForInitialization() throws InterruptedException {
-    if (initing) {
-      initThread.join();
-    }
-  }
-
-  /*
-   * Ask the ModulesListener for all the modules in the user's code.
-   */
-  private synchronized void initModules() {
-    if (javaManager != null) {
-      Set<String> moduleNames = modulesListener.getModules(javaManager);
-      for (String moduleName : moduleNames) {
-        initModule(moduleName);
-      }
-    }
-    if (runAutomatically) {
-      cleanAllModules(true, true);
-    }
-  }
-
-  private void initModule(String moduleName) {
-    modules.add(new ModuleRepresentationImpl(moduleName));
-  }
-
-  public boolean findNewContexts(boolean waitFor,
-      boolean backgroundAutomatically) {
-    boolean result = cleanAllModules(waitFor, backgroundAutomatically);
-    initContexts();
-    return result;
-  }
-
-  /*
-   * Create module contexts for each module that we can.
-   */
-  private synchronized void initContexts() {
-    for (ModuleRepresentation module : modules) {
-      if (module.hasDefaultConstructor()) {
-        ModuleContextRepresentation moduleContext =
-            new ModuleContextRepresentationImpl(module.getName());
-        ModuleInstanceRepresentation moduleInstance =
-            new ModuleInstanceRepresentation(module.getName());
-        moduleContext.add(moduleInstance);
-        moduleContexts.add(moduleContext);
-        if (activateByDefault) {
-          activeModuleContexts.add(moduleContext);
-        }
-      }
-    }
-    if (runAutomatically) {
-      cleanModuleContexts(true, true);
-    }
   }
 
   public synchronized void addModule(ModuleRepresentation module,
-      boolean createContext) throws NoJavaManagerException {
+      boolean createContext) {
     if (javaManager != null) {
-      modules.add(module);
+      modules.add((ModuleRepresentationImpl)module);
       if (module.hasDefaultConstructor()) {
-        ModuleContextRepresentation moduleContext =
+        ModuleContextRepresentationImpl moduleContext =
             new ModuleContextRepresentationImpl(module.getName());
         moduleContext.add(new ModuleInstanceRepresentation(module.getName()));
         moduleContexts.add(moduleContext);
@@ -172,18 +88,10 @@ class ModuleManagerImpl implements ModuleManager,
           activeModuleContexts.add(moduleContext);
         }
       }
-    } else {
-      throw new NoJavaManagerException(this);
     }
   }
 
-  public synchronized void initModuleName(String moduleName)
-      throws NoJavaManagerException {
-    initModule(moduleName);
-  }
-
-  public synchronized void addModule(String moduleName, boolean createContext)
-      throws NoJavaManagerException {
+  public synchronized void addModule(String moduleName, boolean createContext) {
     if (javaManager != null) {
       for (ModuleRepresentation module : modules) {
         if (module.getName().equals(moduleName)) {
@@ -191,13 +99,10 @@ class ModuleManagerImpl implements ModuleManager,
         }
       }
       addModule(new ModuleRepresentationImpl(moduleName), createContext);
-    } else {
-      throw new NoJavaManagerException(this);
     }
   }
 
-  public synchronized void removeModule(String moduleName)
-      throws NoJavaManagerException {
+  public synchronized void removeModule(String moduleName) {
     if (javaManager != null) {
       ModuleRepresentation moduleToRemove = null;
       for (ModuleRepresentation module : modules) {
@@ -206,13 +111,10 @@ class ModuleManagerImpl implements ModuleManager,
         }
       }
       removeModule(moduleToRemove);
-    } else {
-      throw new NoJavaManagerException(this);
     }
   }
 
-  public synchronized void removeModule(ModuleRepresentation module)
-      throws NoJavaManagerException {
+  public synchronized void removeModule(ModuleRepresentation module) {
     if (javaManager != null) {
       Set<ModuleContextRepresentation> contextsToRemove =
           new HashSet<ModuleContextRepresentation>();
@@ -226,8 +128,6 @@ class ModuleManagerImpl implements ModuleManager,
         moduleContexts.remove(moduleContext);
         activeModuleContexts.remove(moduleContext);
       }
-    } else {
-      throw new NoJavaManagerException(this);
     }
   }
 
@@ -242,15 +142,12 @@ class ModuleManagerImpl implements ModuleManager,
   }
 
   public synchronized void addModuleContext(
-      ModuleContextRepresentation moduleContext, boolean active)
-      throws NoJavaManagerException {
-    if (javaManager != null) {
-      moduleContexts.add(moduleContext);
+      ModuleContextRepresentation moduleContext, boolean active) {
+    if (javaManager != null && moduleContext instanceof ModuleContextRepresentationImpl) {
+      moduleContexts.add((ModuleContextRepresentationImpl)moduleContext);
       if (active) {
-        activeModuleContexts.add(moduleContext);
+        activeModuleContexts.add((ModuleContextRepresentationImpl)moduleContext);
       }
-    } else {
-      throw new NoJavaManagerException(this);
     }
   }
 
@@ -272,7 +169,7 @@ class ModuleManagerImpl implements ModuleManager,
 
   public void moduleChanged(String moduleName) {
     synchronized (this) {
-      for (ModuleContextRepresentation moduleContext : moduleContexts) {
+      for (ModuleContextRepresentationImpl moduleContext : moduleContexts) {
         if (moduleContext.contains(moduleName)) {
           moduleContext.markDirty();
         }
@@ -285,12 +182,10 @@ class ModuleManagerImpl implements ModuleManager,
   }
 
   public synchronized void removeModuleContext(
-      ModuleContextRepresentation moduleContext) throws NoJavaManagerException {
+      ModuleContextRepresentation moduleContext) {
     if (javaManager != null) {
       moduleContexts.remove(moduleContext);
       activeModuleContexts.remove(moduleContext);
-    } else {
-      throw new NoJavaManagerException(this);
     }
   }
 
@@ -316,7 +211,7 @@ class ModuleManagerImpl implements ModuleManager,
 
   public boolean rerunModules(boolean waitFor, boolean backgroundAutomatically) {
     synchronized (this) {
-      for (ModuleContextRepresentation context : activeModuleContexts) {
+      for (ModuleContextRepresentationImpl context : activeModuleContexts) {
         context.markDirty();
       }
     }
@@ -331,16 +226,12 @@ class ModuleManagerImpl implements ModuleManager,
     return rerunModules(true, true);
   }
 
-  public boolean findNewContexts() {
-    return findNewContexts(true, true);
-  }
-
   private static abstract class ModuleManagerThread extends Thread {
-    protected final ModuleManager moduleManager;
+    protected final ModuleManagerImpl moduleManager;
     protected final PostUpdater postUpdater;
     protected final boolean backgroundAutomatically;
 
-    public ModuleManagerThread(ModuleManager moduleManager,
+    public ModuleManagerThread(ModuleManagerImpl moduleManager,
         PostUpdater postUpdater, boolean backgroundAutomatically) {
       this.moduleManager = moduleManager;
       this.postUpdater = postUpdater;
@@ -357,7 +248,7 @@ class ModuleManagerImpl implements ModuleManager,
   }
 
   private static class UpdateModulesThread extends ModuleManagerThread {
-    public UpdateModulesThread(ModuleManager moduleManager,
+    public UpdateModulesThread(ModuleManagerImpl moduleManager,
         PostUpdater postUpdater, boolean backgroundAutomatically) {
       super(moduleManager, postUpdater, backgroundAutomatically);
     }
@@ -369,7 +260,7 @@ class ModuleManagerImpl implements ModuleManager,
   }
 
   private static class RerunModulesThread extends ModuleManagerThread {
-    public RerunModulesThread(ModuleManager moduleManager,
+    public RerunModulesThread(ModuleManagerImpl moduleManager,
         PostUpdater postUpdater, boolean backgroundAutomatically) {
       super(moduleManager, postUpdater, backgroundAutomatically);
     }
@@ -377,18 +268,6 @@ class ModuleManagerImpl implements ModuleManager,
     @Override
     protected boolean myTask(boolean backgroundAutomatically) {
       return moduleManager.rerunModules(true, backgroundAutomatically);
-    }
-  }
-
-  private static class FindNewContextsThread extends ModuleManagerThread {
-    public FindNewContextsThread(ModuleManager moduleManager,
-        PostUpdater postUpdater, boolean backgroundAutomatically) {
-      super(moduleManager, postUpdater, backgroundAutomatically);
-    }
-
-    @Override
-    protected boolean myTask(boolean backgroundAutomatically) {
-      return moduleManager.findNewContexts(true, backgroundAutomatically);
     }
   }
 
@@ -402,12 +281,6 @@ class ModuleManagerImpl implements ModuleManager,
     new RerunModulesThread(this, postUpdater, backgroundAutomatically).start();
   }
 
-  public void findNewContexts(final PostUpdater postUpdater,
-      final boolean backgroundAutomatically) {
-    new FindNewContextsThread(this, postUpdater, backgroundAutomatically)
-        .start();
-  }
-
   /*
    * Tells the contexts to run themselves anew. Uses the progress handler.
    */
@@ -415,7 +288,7 @@ class ModuleManagerImpl implements ModuleManager,
       boolean backgroundAutomatically) {
     CodeRunner codeRunner = codeRunnerFactory.create(javaManager);
     synchronized (this) {
-      for (ModuleContextRepresentation moduleContext : activeModuleContexts) {
+      for (ModuleContextRepresentationImpl moduleContext : activeModuleContexts) {
         if (moduleContext.isDirty()) {
           moduleContext.clean(codeRunner);
         }
@@ -446,10 +319,10 @@ class ModuleManagerImpl implements ModuleManager,
   }
 
   protected boolean cleanModules(boolean waitFor,
-      boolean backgroundAutomatically, Set<ModuleRepresentation> modulesToClean) {
+      boolean backgroundAutomatically, Set<ModuleRepresentationImpl> modulesToClean) {
     CodeRunner codeRunner = codeRunnerFactory.create(javaManager);
     synchronized (this) {
-      for (ModuleRepresentation module : modulesToClean) {
+      for (ModuleRepresentationImpl module : modulesToClean) {
         if (module.isDirty()) {
           module.clean(codeRunner);
         }
@@ -468,11 +341,11 @@ class ModuleManagerImpl implements ModuleManager,
     return true;
   }
 
-  private Set<ModuleRepresentation> getModulesInActiveContexts() {
-    Set<ModuleRepresentation> activeModules =
-        new HashSet<ModuleRepresentation>();
+  private Set<ModuleRepresentationImpl> getModulesInActiveContexts() {
+    Set<ModuleRepresentationImpl> activeModules =
+        new HashSet<ModuleRepresentationImpl>();
     if (javaManager != null) {
-      for (ModuleContextRepresentation moduleContext : activeModuleContexts) {
+      for (ModuleContextRepresentationImpl moduleContext : activeModuleContexts) {
         for (ModuleInstanceRepresentation module : moduleContext.getModules()) {
           activeModules.add(getModule(module.getClassName()));
         }
@@ -481,8 +354,8 @@ class ModuleManagerImpl implements ModuleManager,
     return activeModules;
   }
 
-  protected synchronized ModuleRepresentation getModule(String name) {
-    for (ModuleRepresentation module : modules) {
+  protected synchronized ModuleRepresentationImpl getModule(String name) {
+    for (ModuleRepresentationImpl module : modules) {
       if (module.getName().equals(name)) {
         return module;
       }
@@ -522,7 +395,7 @@ class ModuleManagerImpl implements ModuleManager,
   }
 
   public synchronized void activateModuleContext(
-      ModuleContextRepresentation moduleContext) {
+      ModuleContextRepresentationImpl moduleContext) {
     if (javaManager != null) {
       activeModuleContexts.add(moduleContext);
     }
@@ -550,9 +423,36 @@ class ModuleManagerImpl implements ModuleManager,
   }
 
   public void customContextChanged(String contextName) {
-    ModuleContextRepresentation context = null;
+    ModuleContextRepresentationImpl context = null;
     synchronized (this) {
-      for (ModuleContextRepresentation moduleContext : moduleContexts) {
+      for (ModuleContextRepresentationImpl moduleContext : moduleContexts) {
+        if (moduleContext.getName().equals(contextName)) {
+          context = moduleContext;
+        }
+      }
+    }
+    if (context != null) {
+      context.markDirty();
+    }
+  }
+  
+  public void addApplicationContext(String className) {
+    addApplicationContext(className, className);
+  }
+  
+  public void addApplicationContext(String name, String className) {
+    addModuleContext(new ApplicationModuleContextRepresentationImpl(name,
+        className), true);
+  }
+
+  public void removeApplicationContext(String contextName) {
+    removeModuleContext(contextName);
+  }
+
+  public void applicationContextChanged(String contextName) {
+    ModuleContextRepresentationImpl context = null;
+    synchronized (this) {
+      for (ModuleContextRepresentationImpl moduleContext : moduleContexts) {
         if (moduleContext.getName().equals(contextName)) {
           context = moduleContext;
         }
@@ -576,16 +476,25 @@ class ModuleManagerImpl implements ModuleManager,
     if (getModuleContext(name) != null) {
       return getModuleContext(name);
     }
-    ModuleContextRepresentation moduleContext = new ModuleContextRepresentationImpl(name);
+    ModuleContextRepresentationImpl moduleContext = new ModuleContextRepresentationImpl(name);
     moduleContexts.add(moduleContext);
     if (activateByDefault) activeModuleContexts.add(moduleContext);
     return moduleContext;
   }
   
-  public ModuleContextRepresentation addToModuleContext(String name, String module) {
-    ModuleContextRepresentation moduleContext = getModuleContext(name);
-    if (moduleContext == null) return null;
-    moduleContext.add(new ModuleInstanceRepresentation(module));
-    return moduleContext;
+  public boolean updateModules() {
+    return cleanAllModules(true, true);
+  }
+  
+  public boolean updateModules(boolean waitFor, boolean backgroundAutomatically) {
+    return cleanAllModules(waitFor, backgroundAutomatically);
+  }
+  
+  public void activateModuleContext(String contextName) {
+    activateModuleContext((ModuleContextRepresentationImpl)getModuleContext(contextName));
+  }
+  
+  public void deactivateModuleContext(String contextName) {
+    deactivateModuleContext(getModuleContext(contextName));
   }
 }

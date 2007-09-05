@@ -30,8 +30,7 @@
  * <p>
  * The {@link com.google.inject.tools.suite.JavaManager},
  * {@link com.google.inject.tools.suite.ProblemsHandler},
- * {@link com.google.inject.tools.suite.ProgressHandler},
- * {@link com.google.inject.tools.suite.module.ModulesSource} and
+ * {@link com.google.inject.tools.suite.ProgressHandler} and
  * {@link com.google.inject.tools.suite.Messenger} should also be implemented and bound
  * in a subclass of {@link com.google.inject.tools.suite.GuiceToolsModule} that should 
  * be used for the injections.
@@ -40,8 +39,6 @@
  * <dl>
  * <dt>{@link com.google.inject.tools.suite.JavaManager} 
  * <dd>java manager that assumes everything is on the default classpath
- * <dt>{@link com.google.inject.tools.suite.module.ModulesSource} 
- * <dd>modules source that knows about no modules
  * <dt>{@link com.google.inject.tools.suite.ProblemsHandler} 
  * <dd>problems handler that ignores problems
  * <dt>{@link com.google.inject.tools.suite.Messenger} 
@@ -54,8 +51,6 @@
  * <dl>
  * <dt>{@link com.google.inject.tools.suite.module.ModuleManager}
  * <dd>manages the modules in the user's code
- * <dt>{@link com.google.inject.tools.suite.module.ModulesSource}
- * <dd>notify the manager of changes in modules
  * <dt>{@link com.google.inject.tools.suite.ProblemsHandler}
  * <dd>notifies the user of guice related problems in the code
  * <dt>{@link com.google.inject.tools.suite.code.CodeRunner}

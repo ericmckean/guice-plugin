@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import com.google.inject.tools.suite.code.CodeRunner;
 import com.google.inject.tools.suite.module.ModuleContextRepresentation;
 import com.google.inject.tools.suite.snippets.CodeLocation;
 import com.google.inject.tools.suite.snippets.CodeProblem;
@@ -218,25 +217,12 @@ public interface ModuleContextRepresentation {
   public boolean contains(String moduleName);
 
   /**
-   * Mark the module context as dirty, i.e. needing to be rerun in userspace.
-   */
-  public void markDirty();
-
-  /**
-   * Return true if the context is dirty.
-   */
-  public boolean isDirty();
-
-  /**
-   * Clean the context by rerunning it in userspace. NOTE: The runnable returned
-   * will not actually be run until the client calls .run() on it.
-   * 
-   * @param codeRunner the {@link CodeRunner} to run the module context with
-   */
-  public CodeRunner.Runnable clean(CodeRunner codeRunner);
-
-  /**
    * Return the set of {@link CodeProblem}s occurring with this context.
    */
   public Set<? extends CodeProblem> getProblems();
+  
+  /**
+   * Add a module to the context.
+   */
+  public ModuleContextRepresentation addModule(String moduleName);
 }

@@ -14,15 +14,22 @@
  * the License.
  */
 
-/**
- * Module management objects specific to the IDE plugin tool.
- * 
- * <p>The {@link com.google.inject.tools.ideplugin.module.ModulesListener} is an abstract 
- * partial implementation of the
- * {@link com.google.inject.tools.ideplugin.module.ModulesSource} for use with IDE 
- * plugins.  The {@link com.google.inject.tools.ideplugin.module.ModuleSelectionView} defines an 
- * IDE component allowing 
- * for the configuration bu the user of which module contexts to run.
- */
+package com.google.inject.tools.ideplugin.eclipse;
 
-package com.google.inject.tools.ideplugin.module;
+import com.google.inject.AbstractModule;
+import com.google.inject.ApplicationModule;
+import com.google.inject.tools.ideplugin.eclipse.EclipsePluginModule.EclipseGuiceToolsModule;
+
+/**
+ * Helper allowing us to use the plugin on our code.
+ * 
+ * @author Darren Creutz (dcreutz@gmail.com)
+ */
+@ApplicationModule
+public class EclipseApplicationContext extends AbstractModule {
+  @Override
+  protected void configure() {
+    install(new EclipseGuiceToolsModule());
+    install(new EclipsePluginModule());
+  }
+}

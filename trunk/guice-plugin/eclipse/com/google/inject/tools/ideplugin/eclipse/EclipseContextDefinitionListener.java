@@ -34,14 +34,19 @@ import org.eclipse.jdt.core.ITypeHierarchy;
 import org.eclipse.jdt.core.ITypeHierarchyChangedListener;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.ASTParser;
+import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.NormalAnnotation;
 
 import com.google.inject.Singleton;
 import com.google.inject.Inject;
 import com.google.inject.tools.ideplugin.CustomContextDefinitionSourceImpl;
 import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.ideplugin.ProjectManager;
+import com.google.inject.tools.ideplugin.module.ModulesSource;
 import com.google.inject.tools.suite.Messenger;
-import com.google.inject.tools.suite.module.ModulesSource;
 
 /**
  * Eclipse implementation of the {@link ModulesSource}.
@@ -119,7 +124,7 @@ class EclipseContextDefinitionListener extends CustomContextDefinitionSourceImpl
           javaManager
               .getIJavaProject()
               .findType(
-                  com.google.inject.tools.ideplugin.GuiceIDEPluginContextDefinition.class
+                  com.google.inject.Module.class
                       .getName());
       if (contextType != null && contextType.getJavaProject().equals(javaManager.getIJavaProject())) {
         contextTypes.put(javaManager, contextType);
@@ -173,7 +178,9 @@ class EclipseContextDefinitionListener extends CustomContextDefinitionSourceImpl
       for (IType subclass : subclasses) {
         if (subclass.isClass()) {
           if (!Flags.isAbstract(subclass.getFlags())) {
-            contextNames.add(subclass.getFullyQualifiedName());
+            if (isAnnotatedWithApplicationModule(subclass)) {
+              contextNames.add(subclass.getFullyQualifiedName());
+            }
           }
         }
       }
@@ -214,7 +221,8 @@ class EclipseContextDefinitionListener extends CustomContextDefinitionSourceImpl
         ICompilationUnit cu = (ICompilationUnit) element;
         for (IType type : cu.getAllTypes()) {
           if (contextTypeHierarchies.get(javaManager) != null
-              && contextTypeHierarchies.get(javaManager).contains(type)) {
+              && contextTypeHierarchies.get(javaManager).contains(type)
+              && isAnnotatedWithApplicationModule(type)) {
             switch (delta.getKind()) {
               case IJavaElementDelta.ADDED:
                 EclipseContextDefinitionListener.this.contextDefinitionAdded(javaManager, type
@@ -237,6 +245,34 @@ class EclipseContextDefinitionListener extends CustomContextDefinitionSourceImpl
       for (IJavaElementDelta child : delta.getAffectedChildren()) {
         handleDelta(child);
       }
+    }
+  }
+  
+  private boolean isAnnotatedWithApplicationModule(IType type) {
+    try {
+      ASTParser parser = ASTParser.newParser(AST.JLS3);
+      parser.setKind(ASTParser.K_COMPILATION_UNIT);
+      parser.setSource(type.getCompilationUnit());
+      CompilationUnit cu = (CompilationUnit) parser.createAST(null);
+      MyASTVisitor visitor = new MyASTVisitor();
+      cu.accept(visitor);
+      return visitor.hasApplicationModuleAnnotation();
+    } catch (Throwable t) {
+      return false;
+    }
+  }
+  
+  private static class MyASTVisitor extends ASTVisitor {
+    private boolean hasApplicationModuleAnnotation = false;
+    @Override
+    public boolean visit(NormalAnnotation node) {
+      if (node.getTypeName().getFullyQualifiedName().equals("com.google.inject.ApplicationModule")) {
+        hasApplicationModuleAnnotation = true;
+      }
+      return false;
+    }
+    public boolean hasApplicationModuleAnnotation() {
+      return hasApplicationModuleAnnotation;
     }
   }
 }

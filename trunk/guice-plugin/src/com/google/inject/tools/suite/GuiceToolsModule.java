@@ -23,7 +23,6 @@ import com.google.inject.tools.suite.code.CodeRunner;
 import com.google.inject.tools.suite.code.CodeRunnerFactoryImpl;
 import com.google.inject.tools.suite.module.ModuleManager;
 import com.google.inject.tools.suite.module.ModuleManagerFactoryImpl;
-import com.google.inject.tools.suite.module.ModulesSource;
 
 /**
  * The guice module controlling the tools suite.
@@ -55,7 +54,6 @@ public abstract class GuiceToolsModule extends AbstractModule {
     bindCodeRunner(bind(CodeRunner.class));
     bindModuleManagerFactory(bind(ModuleManagerFactory.class));
     bindModuleManager(bind(ModuleManager.class));
-    bindModulesSource(bind(ModulesSource.class));
     bindProblemsHandler(bind(ProblemsHandler.class));
     bindMessenger(bind(Messenger.class));
     bindJavaManager(bind(JavaManager.class));
@@ -76,11 +74,6 @@ public abstract class GuiceToolsModule extends AbstractModule {
   protected void bindProblemsHandler(
       AnnotatedBindingBuilder<ProblemsHandler> bindProblemsHandler) {
     bindProblemsHandler.to(DefaultProblemsHandler.class);
-  }
-
-  protected void bindModulesSource(
-      AnnotatedBindingBuilder<ModulesSource> bindModulesSource) {
-    bindModulesSource.to(DefaultModulesSource.class);
   }
 
   protected void bindMessenger(

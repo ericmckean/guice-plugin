@@ -19,9 +19,6 @@ package com.google.inject.tools.suite.module;
 import java.util.Set;
 
 import com.google.inject.tools.suite.code.CodeRunner;
-import com.google.inject.tools.suite.code.RunModuleSnippet;
-import com.google.inject.tools.suite.module.ModuleManager;
-import com.google.inject.tools.suite.module.ModulesSource;
 import com.google.inject.tools.suite.snippets.ModuleSnippet.ConstructorRepresentation;
 
 /**
@@ -53,8 +50,7 @@ public interface ModuleRepresentation {
   public boolean isDirty();
 
   /**
-   * Mark the module as dirty. This is called by the {@link ModuleManager} in
-   * response to the {@link ModulesSource}.
+   * Mark the module as dirty.
    */
   public void makeDirty();
 

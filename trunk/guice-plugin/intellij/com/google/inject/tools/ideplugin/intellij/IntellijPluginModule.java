@@ -24,9 +24,9 @@ import com.google.inject.tools.ideplugin.GuicePluginModule;
 import com.google.inject.tools.ideplugin.GuiceToolsModuleImpl;
 import com.google.inject.tools.ideplugin.results.ResultsView;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
+import com.google.inject.tools.ideplugin.module.ModulesSource;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProgressHandler;
-import com.google.inject.tools.suite.module.ModulesSource;
 
 /**
  * The module binding Intellij implementations to interfaces.
@@ -42,18 +42,18 @@ class IntellijPluginModule extends GuicePluginModule {
         AnnotatedBindingBuilder<Messenger> bindMessenger) {
       bindMessenger.to(IntellijMessenger.class).asEagerSingleton();
     }
-
-    @Override
-    protected void bindModulesSource(
-        AnnotatedBindingBuilder<ModulesSource> bindModulesListener) {
-      bindModulesListener.to(IntellijModulesListener.class).asEagerSingleton();
-    }
     
     @Override
     protected void bindProgressHandler(
         AnnotatedBindingBuilder<ProgressHandler> bindProgressHandler) {
       bindProgressHandler.to(IntellijProgressHandler.class);
     }
+  }
+  
+  @Override
+  protected void bindModulesSource(
+      AnnotatedBindingBuilder<ModulesSource> bindModulesListener) {
+    bindModulesListener.to(IntellijModulesListener.class).asEagerSingleton();
   }
 
   /**

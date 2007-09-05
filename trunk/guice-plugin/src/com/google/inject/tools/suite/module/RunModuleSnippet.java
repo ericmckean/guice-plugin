@@ -14,49 +14,42 @@
  * the License.
  */
 
-package com.google.inject.tools.suite.code;
+package com.google.inject.tools.suite.module;
 
-import com.google.inject.tools.suite.module.ModuleContextRepresentation;
-import com.google.inject.tools.suite.module.ModuleContextRepresentation.ModuleInstanceRepresentation;
-import com.google.inject.tools.suite.snippets.ModuleContextSnippet;
+import com.google.inject.tools.suite.code.CodeRunner;
+import com.google.inject.tools.suite.snippets.ModuleSnippet;
 
 import java.util.List;
 import java.util.ArrayList;
 
 /**
  * A {@link CodeRunner.Runnable} that can be used by the {@link CodeRunner} to
- * run a {@link com.google.inject.tools.suite.snippets.ModuleContextSnippet} in
- * userspace.
+ * run a {@link com.google.inject.tools.suite.snippets.ModuleSnippet} in userspace.
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-public class RunModuleContextSnippet extends CodeRunner.Runnable {
-  private final ModuleContextRepresentation moduleContext;
+class RunModuleSnippet extends CodeRunner.Runnable {
+  private final ModuleRepresentation module;
 
-  public RunModuleContextSnippet(CodeRunner codeRunner,
-      ModuleContextRepresentation moduleContext) {
+  public RunModuleSnippet(CodeRunner codeRunner, ModuleRepresentation module) {
     super(codeRunner);
-    this.moduleContext = moduleContext;
+    this.module = module;
   }
 
   @Override
   public String label() {
-    return "Running module context " + moduleContext.getName();
+    return "Running module " + module.getName();
   }
 
   @Override
   protected String getFullyQualifiedSnippetClass() {
-    return ModuleContextSnippet.class.getName();
+    return ModuleSnippet.class.getName();
   }
 
   @Override
   protected List<? extends Object> getSnippetArguments() {
     final List<Object> args = new ArrayList<Object>();
-    args.add(moduleContext.getName());
-    args.add(moduleContext.getModules().size());
-    for (ModuleInstanceRepresentation module : moduleContext.getModules()) {
-      args.addAll(module.toStringList());
-    }
+    args.add(module.getName());
     return args;
   }
 }

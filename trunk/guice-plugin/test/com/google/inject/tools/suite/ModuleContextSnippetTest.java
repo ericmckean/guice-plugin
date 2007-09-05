@@ -110,10 +110,10 @@ public class ModuleContextSnippetTest extends TestCase {
     assertTrue(location.location() == WorkingModuleBindLocation);
   }
 
-  private static final int WorkingModuleBindLocation = 46;
+  private static final int WorkingModuleBindLocation = 45;
   private static final String WorkingModuleBindFile =
       "SampleModuleScenario.java";
-  private static final int WorkingModuleBindLocation2 = 81;
+  private static final int WorkingModuleBindLocation2 = 80;
   private static final String WorkingModuleBindFile2 =
       "SampleModuleScenario.java";
 
@@ -309,11 +309,10 @@ public class ModuleContextSnippetTest extends TestCase {
   }
   
   public void testGuiceIDEContextDef() throws Exception {
-    String[] args = new String[4];
+    String[] args = new String[3];
     args[0] = "Custom Context";
     args[1] = String.valueOf(-1);
     args[2] = SampleModuleScenario.Helper.class.getName();
-    args[3] = "getModuleContextDefinition";
     Object obj = runASnippet(args);
     assertTrue(obj instanceof ModuleContextSnippet.ModuleContextResult);
     ModuleContextSnippet.ModuleContextResult result =

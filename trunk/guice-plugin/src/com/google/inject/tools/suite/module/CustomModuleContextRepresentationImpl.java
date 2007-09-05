@@ -17,7 +17,6 @@
 package com.google.inject.tools.suite.module;
 
 import com.google.inject.tools.suite.code.CodeRunner;
-import com.google.inject.tools.suite.code.RunCustomModuleContextSnippet;
 import com.google.inject.tools.suite.module.ModuleContextRepresentationImpl;
 import com.google.inject.tools.suite.snippets.CodeSnippetResult;
 import com.google.inject.tools.suite.snippets.ModuleContextSnippet;

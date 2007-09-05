@@ -18,6 +18,7 @@ package com.google.inject.tools.ideplugin;
 
 import com.google.inject.binder.AnnotatedBindingBuilder;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
+import com.google.inject.tools.ideplugin.module.ModulesSource;
 import com.google.inject.tools.ideplugin.results.ResultsHandler;
 import com.google.inject.tools.ideplugin.results.ResultsView;
 import com.google.inject.tools.suite.MockingGuiceToolsModule.ProxyMock;
@@ -35,6 +36,7 @@ public class MockingGuicePluginModule extends GuicePluginModule {
   private ResultsView resultsView = null;
   private ModuleSelectionView moduleSelectionView = null;
   private ActionsHandler actionsHandler = null;
+  private ModulesSource modulesSource = null;
 
   /**
    * Create a purely mocked module.
@@ -150,6 +152,17 @@ public class MockingGuicePluginModule extends GuicePluginModule {
       AnnotatedBindingBuilder<CustomContextDefinitionSource> bindCustomContextDefinitionSource) {
     bindToMockInstance(bindCustomContextDefinitionSource,
         CustomContextDefinitionSource.class);
+  }
+  
+
+  @Override
+  protected void bindModulesSource(
+      AnnotatedBindingBuilder<ModulesSource> builder) {
+    if (modulesSource != null) {
+      bindToInstance(builder, modulesSource);
+    } else {
+      bindToMockInstance(builder, ModulesSource.class);
+    }
   }
 
   @SuppressWarnings( {"unchecked"})

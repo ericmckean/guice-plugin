@@ -41,9 +41,9 @@ import com.google.inject.Singleton;
 import com.google.inject.Inject;
 import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.ideplugin.module.ModulesListener;
+import com.google.inject.tools.ideplugin.module.ModulesSource;
 import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.Messenger;
-import com.google.inject.tools.suite.module.ModulesSource;
 
 /**
  * Eclipse implementation of the {@link ModulesSource}.

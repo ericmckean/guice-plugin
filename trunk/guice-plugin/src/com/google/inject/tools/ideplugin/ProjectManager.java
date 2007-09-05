@@ -17,7 +17,9 @@
 package com.google.inject.tools.ideplugin;
 
 import com.google.inject.tools.ideplugin.JavaProject;
+import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.module.ModuleManager;
+import com.google.inject.tools.suite.module.ModuleManager.PostUpdater;
 
 /**
  * Manages the set of open projects in the user's code.
@@ -49,4 +51,11 @@ public interface ProjectManager {
    * Return the current (last accessed) project.
    */
   public JavaProject getCurrentProject();
+  
+  public void findNewContexts(JavaManager javaManager,
+      PostUpdater postUpdater, boolean backgroundAutomatically);
+  
+  public boolean findNewContexts(JavaManager javaManager);
+  
+  public JavaManager getJavaManager(ModuleManager moduleManager);
 }

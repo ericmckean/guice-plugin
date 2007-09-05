@@ -24,7 +24,6 @@ import com.google.inject.Provider;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.SampleModuleScenario;
 import com.google.inject.tools.suite.code.CodeRunner;
-import com.google.inject.tools.suite.module.ModuleContextRepresentation;
 import com.google.inject.tools.suite.module.ModuleContextRepresentationImpl;
 import com.google.inject.tools.suite.snippets.BindingCodeLocation;
 import com.google.inject.tools.suite.snippets.CodeLocation;
@@ -45,7 +44,7 @@ import java.util.Map;
  */
 public class ModuleContextRepresentationTest extends TestCase {
   public void testModuleContextRepresentation() throws Exception {
-    ModuleContextRepresentation moduleContext =
+    ModuleContextRepresentationImpl moduleContext =
         new ModuleContextRepresentationImpl("Working Module Context");
     CodeRunner codeRunner = new SimulatedCodeRunner();
     moduleContext.clean(codeRunner);

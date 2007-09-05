@@ -14,11 +14,11 @@
  * the License.
  */
 
-package com.google.inject.tools.suite.module;
+package com.google.inject.tools.ideplugin.module;
 
+import com.google.inject.tools.ideplugin.module.ModulesSource;
 import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.module.ModuleRepresentation;
-import com.google.inject.tools.suite.module.ModulesSource;
 
 import java.util.Set;
 

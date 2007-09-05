@@ -25,7 +25,6 @@ import com.google.inject.tools.suite.GuiceToolsModule.CodeRunnerFactory;
 import com.google.inject.tools.suite.GuiceToolsModule.ModuleManagerFactory;
 import com.google.inject.tools.suite.module.ModuleManager;
 import com.google.inject.tools.suite.module.ModuleManagerImpl;
-import com.google.inject.tools.suite.module.ModulesSource;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +36,6 @@ import java.util.Map;
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class ModuleManagerFactoryImpl implements ModuleManagerFactory {
-  private final Provider<ModulesSource> modulesSourceProvider;
   private final Provider<ProblemsHandler> problemsHandlerProvider;
   private final Provider<Messenger> messengerProvider;
   private final Provider<CodeRunnerFactory> codeRunnerFactoryProvider;
@@ -46,12 +44,10 @@ public class ModuleManagerFactoryImpl implements ModuleManagerFactory {
 
   @Inject
   public ModuleManagerFactoryImpl(
-      Provider<ModulesSource> modulesSourceProvider,
       Provider<ProblemsHandler> problemsHandlerProvider,
       Provider<Messenger> messengerProvider,
       Provider<CodeRunnerFactory> codeRunnerFactoryProvider,
       Provider<JavaManager> javaManagerProvider) {
-    this.modulesSourceProvider = modulesSourceProvider;
     this.problemsHandlerProvider = problemsHandlerProvider;
     this.messengerProvider = messengerProvider;
     this.codeRunnerFactoryProvider = codeRunnerFactoryProvider;
@@ -65,7 +61,7 @@ public class ModuleManagerFactoryImpl implements ModuleManagerFactory {
   public ModuleManager create(JavaManager javaManager) {
     if (moduleManagerInstances.get(javaManager) == null) {
       moduleManagerInstances.put(javaManager, new ModuleManagerImpl(
-          modulesSourceProvider.get(), problemsHandlerProvider.get(),
+          problemsHandlerProvider.get(),
           messengerProvider.get(), javaManager, codeRunnerFactoryProvider
           .get(), false, false, false));
     }
@@ -76,7 +72,7 @@ public class ModuleManagerFactoryImpl implements ModuleManagerFactory {
    * Create a ModuleManager with an injected JavaManager.
    */
   public ModuleManager get() {
-    return new ModuleManagerImpl(modulesSourceProvider.get(), problemsHandlerProvider.get(),
+    return new ModuleManagerImpl(problemsHandlerProvider.get(),
         messengerProvider.get(), javaManagerProvider.get(), codeRunnerFactoryProvider.get(),
         true, false, true);
   }

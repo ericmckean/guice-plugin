@@ -24,9 +24,9 @@ import com.google.inject.tools.ideplugin.GuicePluginModule;
 import com.google.inject.tools.ideplugin.GuiceToolsModuleImpl;
 import com.google.inject.tools.ideplugin.results.ResultsView;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
+import com.google.inject.tools.ideplugin.module.ModulesSource;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProgressHandler;
-import com.google.inject.tools.suite.module.ModulesSource;
 
 /**
  * The module binding Eclipse implementations to interfaces.
@@ -41,12 +41,6 @@ class EclipsePluginModule extends GuicePluginModule {
     protected void bindMessenger(
         AnnotatedBindingBuilder<Messenger> bindMessenger) {
       bindMessenger.to(EclipseMessenger.class).asEagerSingleton();
-    }
-
-    @Override
-    protected void bindModulesSource(
-        AnnotatedBindingBuilder<ModulesSource> bindModulesListener) {
-      bindModulesListener.to(EclipseModulesListener.class).asEagerSingleton();
     }
     
     @Override
@@ -96,5 +90,11 @@ class EclipsePluginModule extends GuicePluginModule {
       AnnotatedBindingBuilder<CustomContextDefinitionSource> bindCustomContextDefinitionSource) {
     bindCustomContextDefinitionSource.to(EclipseContextDefinitionListener.class)
         .asEagerSingleton();
+  }
+  
+  @Override
+  protected void bindModulesSource(
+      AnnotatedBindingBuilder<ModulesSource> bindModulesListener) {
+    bindModulesListener.to(EclipseModulesListener.class).asEagerSingleton();
   }
 }

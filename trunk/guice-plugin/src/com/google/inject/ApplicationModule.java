@@ -14,25 +14,19 @@
  * the License.
  */
 
-package com.google.inject.tools.ideplugin.eclipse;
+package com.google.inject;
 
-import com.google.inject.Module;
-import com.google.inject.tools.ideplugin.GuiceIDEPluginContextDefinition;
-import com.google.inject.tools.ideplugin.eclipse.EclipsePluginModule.EclipseGuiceToolsModule;
-
-import java.util.HashSet;
-import java.util.Set;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Helper allowing us to use the plugin on our code.
+ * Modules that contain a complete set of bindings should be annotated with this.
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-public class GuicePluginToolsHelper implements GuiceIDEPluginContextDefinition {
-  public Set<Module> getModuleContextDefinition() {
-    Set<Module> modules = new HashSet<Module>();
-    modules.add(new EclipseGuiceToolsModule());
-    modules.add(new EclipsePluginModule());
-    return modules;
-  }
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface ApplicationModule {
 }

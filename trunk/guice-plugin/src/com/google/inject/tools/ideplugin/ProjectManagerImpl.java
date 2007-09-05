@@ -20,11 +20,14 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.tools.ideplugin.CustomContextDefinitionSource.CustomContextDefinitionListener;
 import com.google.inject.tools.ideplugin.module.ModulesListener;
+import com.google.inject.tools.ideplugin.module.ModulesSource;
 import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.GuiceToolsModule.ModuleManagerFactory;
+import com.google.inject.tools.suite.module.ModuleContextRepresentation;
 import com.google.inject.tools.suite.module.ModuleManager;
-import com.google.inject.tools.suite.module.ModulesSource;
+import com.google.inject.tools.suite.module.ModuleRepresentation;
+import com.google.inject.tools.suite.module.ModuleManager.PostUpdater;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,6 +46,7 @@ class ProjectManagerImpl implements ProjectManager,
   private final CustomContextDefinitionSource customContextDefinitionSource;
   private JavaProject currentProject;
   private final Map<JavaProject, CustomContextsThread> initThreads;
+  private final Map<JavaProject, InitThread> moduleInitThreads;
 
   @Inject
   public ProjectManagerImpl(ModuleManagerFactory moduleManagerFactory,
@@ -56,41 +60,38 @@ class ProjectManagerImpl implements ProjectManager,
     currentProject = null;
     modulesSource.addListener(this);
     initThreads = new HashMap<JavaProject, CustomContextsThread>();
+    moduleInitThreads = new HashMap<JavaProject, InitThread>();
     if (modulesSource instanceof ModulesListener) { // which it should be
       for (JavaProject project : ((ModulesListener) modulesSource)
           .getOpenProjects()) {
         createModuleManager(project);
         CustomContextsThread initThread = 
-            new CustomContextsThread(moduleManagers.get(project),
-                customContextDefinitionSource, project);
+            new CustomContextsThread(moduleManagers.get(project), project);
         initThreads.put(project, initThread);
         initThread.start();
       }
     }
   }
 
-  private static class CustomContextsThread extends Thread {
+  private class CustomContextsThread extends Thread {
     private final ModuleManager moduleManager;
-    private final CustomContextDefinitionSource customContextDefinitionSource;
     private final JavaProject project;
     private volatile boolean done;
 
     public CustomContextsThread(ModuleManager moduleManager,
-        CustomContextDefinitionSource customContextDefinitionSource,
         JavaProject project) {
       done = false;
       this.moduleManager = moduleManager;
-      this.customContextDefinitionSource = customContextDefinitionSource;
       this.project = project;
     }
 
     @Override
     public void run() {
       try {
-        moduleManager.waitForInitialization();
+        waitForInitialization(project);
         for (String customContextName : customContextDefinitionSource
             .getContexts(project)) {
-          moduleManager.addCustomContext(customContextName);
+          moduleManager.addApplicationContext(customContextName);
         }
       } catch (InterruptedException e) {}
       done = true;
@@ -108,7 +109,7 @@ class ProjectManagerImpl implements ProjectManager,
       if (moduleManagers.get(project) == null) {
         projectOpened(project);
       }
-      moduleManagers.get(project).initModuleName(module);
+      initModuleName(project, module);
     }
   }
 
@@ -127,20 +128,25 @@ class ProjectManagerImpl implements ProjectManager,
     if (moduleManagers.get(javaManager) == null) {
       projectOpened(javaManager);
     }
-    moduleManagers.get(javaManager).addCustomContext(context);
+    moduleManagers.get(javaManager).addApplicationContext(context);
   }
 
   public void contextDefinitionChanged(CustomContextDefinitionSource source,
       JavaProject javaManager, String context) {
-    moduleManagers.get(javaManager).customContextChanged(context);
+    moduleManagers.get(javaManager).applicationContextChanged(context);
   }
 
   public void contextDefinitionRemoved(CustomContextDefinitionSource source,
       JavaProject javaManager, String context) {
-    moduleManagers.get(javaManager).removeCustomContext(context);
+    moduleManagers.get(javaManager).removeApplicationContext(context);
   }
 
   public ModuleManager getModuleManager(JavaProject javaManager) {
+    if (moduleInitThreads.get(javaManager) != null) {
+      try {
+        moduleInitThreads.get(javaManager).waitForInitialization();
+      } catch (InterruptedException e) {}
+    }
     if (initThreads.get(javaManager) != null
         && !initThreads.get(javaManager).isDone()) {
       try {
@@ -195,7 +201,133 @@ class ProjectManagerImpl implements ProjectManager,
     currentProject = javaManager;
     if (moduleManagers.get(javaManager) == null) {
       moduleManagers.put(javaManager, moduleManagerFactory.create(javaManager));
+      moduleInitThreads.put(javaManager, new InitThread(javaManager, moduleManagers.get(javaManager)));
+      moduleInitThreads.get(javaManager).start();
     }
     return moduleManagers.get(javaManager);
+  }
+  
+  // this is to avoid blocking loading in the UI if there is one
+  private class InitThread extends Thread {
+    private final ModuleManager moduleManager;
+    private final JavaManager javaManager;
+    private boolean initing;
+    public InitThread(JavaManager javaManager, ModuleManager moduleManager) {
+      this.moduleManager = moduleManager;
+      this.javaManager = javaManager;
+      this.initing = true;
+    }
+    @Override
+    public void run() {
+      synchronized (moduleManager) {
+        initModules(javaManager);
+        initContexts(moduleManager);
+        initing = false;
+      }
+    }
+    
+    public void waitForInitialization() throws InterruptedException {
+      if (initing) {
+        this.join();
+      }
+    }
+  }
+  
+  /*
+   * Ask the ModulesListener for all the modules in the user's code.
+   */
+  private synchronized void initModules(JavaManager javaManager) {
+    if (javaManager != null) {
+      for (String moduleName : modulesSource.getModules(javaManager)) {
+        initModule(moduleManagers.get(javaManager), moduleName);
+      }
+    }
+    if (moduleManagers.get(javaManager).runAutomatically()) {
+      cleanAllModules(moduleManagers.get(javaManager), true, true);
+    }
+  }
+
+  private void initModule(ModuleManager moduleManager, String moduleName) {
+    moduleManager.addModule(moduleName, false);
+  }
+  
+  public boolean findNewContexts(JavaManager javaManager, boolean waitFor,
+      boolean backgroundAutomatically) {
+    boolean result = cleanAllModules(moduleManagers.get(javaManager), waitFor, backgroundAutomatically);
+    initContexts(moduleManagers.get(javaManager));
+    return result;
+  }
+  
+  public boolean findNewContexts(JavaManager javaManager) {
+    return findNewContexts(javaManager, true, true);
+  }
+
+  /*
+   * Create module contexts for each module that we can.
+   */
+  private void initContexts(ModuleManager moduleManager) {
+    for (ModuleRepresentation module : moduleManager.getModules()) {
+      if (module.hasDefaultConstructor()) {
+        ModuleContextRepresentation context = moduleManager.createModuleContext(module.getName());
+        context.addModule(module.getName());
+        if (moduleManager.activateModulesByDefault()) {
+          moduleManager.activateModuleContext(module.getName());
+        }
+      }
+    }
+    if (moduleManager.runAutomatically()) {
+      cleanModuleContexts(moduleManager, true, true);
+    }
+  }
+  
+  private boolean cleanModuleContexts(ModuleManager moduleManager,
+      boolean waitFor, boolean backgroundAutomatically) {
+    return moduleManager.update(waitFor, backgroundAutomatically);
+  }
+  
+  private boolean cleanAllModules(ModuleManager moduleManager,
+      boolean waitFor, boolean backgroundAutomatically) {
+    return moduleManager.updateModules(waitFor, backgroundAutomatically);
+  }
+  
+  public void findNewContexts(JavaManager javaManager,
+      final PostUpdater postUpdater,
+      final boolean backgroundAutomatically) {
+    new FindNewContextsThread(javaManager, postUpdater, backgroundAutomatically)
+        .start();
+  }
+  
+  private class FindNewContextsThread extends Thread {
+    private final JavaManager javaManager;
+    private final PostUpdater postUpdater;
+    private final boolean backgroundAutomatically;
+    public FindNewContextsThread(JavaManager javaManager,
+        PostUpdater postUpdater, boolean backgroundAutomatically) {
+      this.javaManager = javaManager;
+      this.postUpdater = postUpdater;
+      this.backgroundAutomatically = backgroundAutomatically;
+    }
+
+    @Override
+    public void run() {
+      postUpdater.execute(findNewContexts(javaManager, true, backgroundAutomatically));
+    }
+  }
+  
+  private void initModuleName(JavaManager project, String moduleName) {
+    moduleManagers.get(project).addModule(moduleName, false);
+  }
+  
+  public JavaManager getJavaManager(ModuleManager moduleManager) {
+    for (JavaManager project : moduleManagers.keySet()) {
+      if (moduleManagers.get(project).equals(moduleManager)) {
+        return project;
+      }
+    }
+    return null;
+  }
+  
+  private void waitForInitialization(JavaProject project) throws InterruptedException{
+    moduleInitThreads.get(project).waitForInitialization();
   }
 }

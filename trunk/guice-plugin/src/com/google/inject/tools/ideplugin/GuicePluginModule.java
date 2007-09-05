@@ -25,6 +25,7 @@ import com.google.inject.tools.ideplugin.results.ResultsHandler;
 import com.google.inject.tools.ideplugin.results.ResultsHandlerImpl;
 import com.google.inject.tools.ideplugin.results.ResultsView;
 import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
+import com.google.inject.tools.ideplugin.module.ModulesSource;
 import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProblemsHandler;
@@ -77,6 +78,7 @@ public abstract class GuicePluginModule extends AbstractModule {
   protected void configure() {
     bindProjectManager(bind(ProjectManager.class));
     bindBindingsEngine(bind(BindingsEngineFactory.class));
+    bindModulesSource(bind(ModulesSource.class));
     bindActionsHandler(bind(ActionsHandler.class));
     bindGotoCodeLocationHandler(bind(GotoCodeLocationHandler.class));
     bindGotoFileHandler(bind(GotoFileHandler.class));
@@ -147,4 +149,7 @@ public abstract class GuicePluginModule extends AbstractModule {
    */
   protected abstract void bindCustomContextDefinitionSource(
       AnnotatedBindingBuilder<CustomContextDefinitionSource> bindCustomContextDefinitionSource);
+  
+  protected abstract void bindModulesSource(
+      AnnotatedBindingBuilder<ModulesSource> bindModulesSource);
 }

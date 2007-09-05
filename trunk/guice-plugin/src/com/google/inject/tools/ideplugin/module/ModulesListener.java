@@ -26,7 +26,6 @@ import com.google.inject.Inject;
 import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.Messenger;
-import com.google.inject.tools.suite.module.ModulesSource;
 
 /**
  * Abstract implementation of the {@link ModulesSource} for the IDE plugin.
