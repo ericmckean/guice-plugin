@@ -11,7 +11,7 @@ The install site is
   http://guice-plugin.googlecode.com/svn/trunk/eclipse-update-site/
 
 
-=== Step by Step Guice ===
+=== Step by Step Guide ===
 
   # In Eclipse, choose from the *Help Menu* the *Software Updates / Find and Install* item.
   # Choose *Search for new features to install* and click *Next*
@@ -25,5 +25,6 @@ The install site is
   # After the download is complete, click *Install*
   # When prompted, restart Eclipse by saying *Yes*
 
+=== @!ApplicationModule annotations ===
 
-
+To make the best use of the plugin, you should download the !ApplicationModule jar from the Downloads section (it will be included in the next release of guice).  Then annotate your application modules accordingly (an application module is a module with a complete set of bindings).  The plugin by default will use modules annotated as !ApplicationModules as contexts.
