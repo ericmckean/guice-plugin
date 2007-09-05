@@ -166,7 +166,7 @@ class EclipseJavaProject extends JavaProject {
   }
   
   public String getGuiceClasspath() throws Exception {
-    String guiceJar = getJarClasspath("lib/Guice/guice_r350+dcreutz1.jar");
+    String guiceJar = getJarClasspath("lib/Guice/guice_r350+dcreutz2.jar");
     String aoPath = getJarClasspath("lib/Guice/aopalliance.jar");
     String asmPath = getJarClasspath("lib/Guice/asm-2.2.3.jar");
     String cglibPath = getJarClasspath("lib/Guice/cglib-2.2_beta1.jar");

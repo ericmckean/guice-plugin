@@ -37,7 +37,9 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.MarkerAnnotation;
 import org.eclipse.jdt.core.dom.NormalAnnotation;
 
 import com.google.inject.Singleton;
@@ -265,11 +267,20 @@ class EclipseContextDefinitionListener extends CustomContextDefinitionSourceImpl
   private static class MyASTVisitor extends ASTVisitor {
     private boolean hasApplicationModuleAnnotation = false;
     @Override
+    public boolean visit(MarkerAnnotation node) {
+      process(node);
+      return false;
+    }
+    @Override
     public boolean visit(NormalAnnotation node) {
-      if (node.getTypeName().getFullyQualifiedName().equals("com.google.inject.ApplicationModule")) {
+      process(node);
+      return false;
+    }
+    private void process(Annotation node) {
+      String typeName = node.getTypeName().getFullyQualifiedName();
+      if (typeName.equals("ApplicationModule") || typeName.equals("com.google.inject.ApplicationModule")) {
         hasApplicationModuleAnnotation = true;
       }
-      return false;
     }
     public boolean hasApplicationModuleAnnotation() {
       return hasApplicationModuleAnnotation;

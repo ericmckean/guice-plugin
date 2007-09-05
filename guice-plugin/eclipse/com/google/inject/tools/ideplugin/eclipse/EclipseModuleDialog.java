@@ -42,6 +42,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
 import com.google.inject.tools.ideplugin.ProjectManager;
+import com.google.inject.tools.suite.module.ApplicationModuleContextRepresentation;
 import com.google.inject.tools.suite.module.ClassNameUtility;
 import com.google.inject.tools.suite.module.CustomModuleContextRepresentation;
 import com.google.inject.tools.suite.module.ModuleContextRepresentation;
@@ -207,7 +208,8 @@ class EclipseModuleDialog extends FormDialog {
 
     userCheckboxes = new HashSet<Button>();
     for (ModuleContextRepresentation moduleContext : moduleContexts) {
-      if (moduleContext instanceof CustomModuleContextRepresentation) {
+      if (moduleContext instanceof CustomModuleContextRepresentation 
+          || moduleContext instanceof ApplicationModuleContextRepresentation) {
         CheckboxListener listener =
             new CheckboxListener(moduleContext, activeModuleContexts
                 .contains(moduleContext));
@@ -268,7 +270,8 @@ class EclipseModuleDialog extends FormDialog {
 
     boolean hasAutoModuleContexts = false;
     for (ModuleContextRepresentation moduleContext : moduleContexts) {
-      if (!(moduleContext instanceof CustomModuleContextRepresentation)) {
+      if (!(moduleContext instanceof CustomModuleContextRepresentation ||
+          moduleContext instanceof ApplicationModuleContextRepresentation)) {
         hasAutoModuleContexts = true;
         break;
       }
