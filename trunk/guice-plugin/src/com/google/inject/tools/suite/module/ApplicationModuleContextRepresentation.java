@@ -17,8 +17,7 @@
 package com.google.inject.tools.suite.module;
 
 /**
- * Representation of a module context defined by an application module (see 
- * {@link com.google.inject.ApplicationModule}) in user space.
+ * Representation of a module context defined by an Iterable<Module> in user code.
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
