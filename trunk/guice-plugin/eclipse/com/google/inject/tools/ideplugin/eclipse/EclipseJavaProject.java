@@ -36,7 +36,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.osgi.framework.Bundle;
 
 /**
- * Eclipse specific implementation of the {@link JavaManager}.
+ * Eclipse specific implementation of the {@link com.google.inject.tools.suite.JavaManager}.
  * 
  * {@inheritDoc JavaManager}
  * 
