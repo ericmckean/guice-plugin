@@ -400,19 +400,34 @@ public class ModuleContextSnippet extends CodeSnippet {
     snippet.printResult(stream);
   }
   
+  private static boolean isIterableModule(Type type) {
+    if (type instanceof ParameterizedType) {
+      ParameterizedType ptype = (ParameterizedType)type;
+      if (ptype.getRawType() instanceof Class<?>
+        && Iterable.class.isAssignableFrom((Class<?>)ptype.getRawType())) {
+        Type[] args = ptype.getActualTypeArguments();
+        if (args.length == 1 && args[0] instanceof Class<?>
+          && Module.class.isAssignableFrom((Class<?>)args[0])) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+  
   private static boolean isIterableModule(Class<?> aClass) {
     try {
-      for (Type type : aClass.getGenericInterfaces()) {
-        if (type instanceof ParameterizedType) {
-          ParameterizedType ptype = (ParameterizedType)type;
-          if (ptype.getRawType() instanceof Class<?>
-            && Iterable.class.isAssignableFrom((Class<?>)ptype.getRawType())) {
-            Type[] args = ptype.getActualTypeArguments();
-            if (args.length == 1 && args[0] instanceof Class<?>
-              && Module.class.isAssignableFrom((Class<?>)args[0])) {
-              return true;
-            }
-          }
+      Type type = aClass.getGenericSuperclass();
+      if (isIterableModule(type)) return true;
+      for (Type atype : aClass.getGenericInterfaces()) {
+        if (isIterableModule(atype)) return true;
+      }
+      if (aClass.getSuperclass() != null) {
+        if (isIterableModule(aClass.getSuperclass())) return true;
+      }
+      if (aClass.getInterfaces().length > 0) {
+        for (Class<?> superclass : aClass.getInterfaces()) {
+          if (isIterableModule(superclass)) return true;
         }
       }
     } catch (Throwable e) {}

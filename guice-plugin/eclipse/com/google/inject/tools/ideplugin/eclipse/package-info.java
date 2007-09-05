@@ -25,7 +25,7 @@
  * implementation of a {@link com.google.inject.tools.ideplugin.GuicePlugin} that is the core object
  * of the IDE plugin.  The {@link com.google.inject.tools.ideplugin.eclipse.EclipsePluginModule} 
  * (and its inner submodule the 
- * {@link com.google.inject.tools.ideplugin.eclipse.EclipsePluginModule$EclipseGuiceToolsModule}) 
+ * {@link com.google.inject.tools.ideplugin.eclipse.EclipsePluginModule.EclipseGuiceToolsModule}) 
  * are concrete
  * implementations of the {@link com.google.inject.tools.ideplugin.GuicePluginModule} 
  * and {@link com.google.inject.tools.suite.GuiceToolsModule} that bind the Eclipse pieces.
