@@ -13,15 +13,14 @@ To use the plugin you must configure module contexts for it to run.  A *module c
 There are three ways to configure module contexts for use with the plugin:
 
   * Use a single module.
-  * Implement the GuiceIDEPluginContextDefinition interface in your code.
+  * Annotate a module in your code with @!ApplicationInterface.
   * Create a custom context.
 
 *The single module method*: The easiest way to configure a context is to specify a single module in your code to be the context.  This amounts to having the plugin run {{{ Guice.createInjector(new YourModule()); }}}.  The Module Context Configure Dialog (see below) will allow you to set up such a context.  The downside to this approach is that it only works if you have single modules that function independently.
 
-*The GuiceIDEPluginContextDefinition method*: To create a context that involves more than one of your modules, the best method is to create a class in your code that implements the GuiceIDEPluginContextDefinition interface (available in the Downloads section in a standalone jar).  The class will return a collection of modules that will then be used by the plugin to create an injector.  *Classes implementing this interface will be automatically detected by the plugin and enabled by default.*  This means that this method will make for the best ease of use of the plugin and will allow you to synchronize contexts with other coders.
+*Annotate a module in your code with @!ApplicationInterface*: The !ApplicationModule annotation (available in the Downloads section; to be released in the next version of Guice) designates that a module is a complete context, i.e. has a complete set of bindings.  The best practice when using guice is to create a module annotated as an !ApplicationModule that installs all the modules necessary to run your application.  *Modules annotated with !ApplicationModule will be automatically detected and configured to run by default by the plugin.*  This means that the best way of using the plugin is to properly annotate your modules that form applications.
 
-*The custom context method*: If you have created a class that returns a collection of modules as above but that does not implement the interface, you can specify that class (and method) in the configure dialog (see below) and have it create a context.  It is recommended to use the interface however.
-
+*The custom context method*: If you have created a class that returns a collection of modules, you can specify that class (and method) in the configure dialog (see below) and have it create a context.  However it is recommended to instead create a module annotated as !ApplicationModule that installs these modules.
 
 == User Interface ==
 
@@ -47,8 +46,9 @@ The Configure dialog allows you to specify what contexts to run.
 
 To set up single module contexts, click the "Scan for New Contexts" link in the lower half of the dialog and then select which modules you want to run (clicking the link will temporarily close the dialog while your modules are detected).
 
-The top half of the dialog displays your GuiceIDEPluginContextDefinition contexts (and allows you to disable/enable them); custom contexts can also be added here.
+The top half of the dialog displays your !ApplicationModules contexts (and allows you to disable/enable them); custom contexts can also be added here.
 
 === The Errors View ===
 
 The errors view servers two purposes.  During context runtime it displays any problems with your code (though these are also reported in response to "Find Bindings").  It also shows any internal errors the plugin has.  During the alpha phase, please check this from time to time and report errors on this website.
+
