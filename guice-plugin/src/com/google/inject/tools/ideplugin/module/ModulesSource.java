@@ -45,6 +45,10 @@ public interface ModulesSource {
 
   public void removeListener(ModulesSourceListener listener);
 
+  public boolean isListeningForChanges();
+  
+  public void listenForChanges(boolean listenForChanges);
+  
   /**
    * Listener for changes in the modules available.
    * 

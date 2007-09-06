@@ -57,6 +57,8 @@ class EclipseModulesListener extends ModulesListener {
   private final Map<EclipseJavaProject, ITypeHierarchy> typeHierarchies;
   private final Map<EclipseJavaProject, MyTypeHierarchyChangedListener> typeHierarchyListeners;
   private final Map<EclipseJavaProject, IType> types;
+  private boolean listenForChanges;
+  private ModuleElementChangedListener changeListener;
 
   /**
    * Create an EclipseModulesListener. This should be injected.
@@ -68,8 +70,30 @@ class EclipseModulesListener extends ModulesListener {
     typeHierarchyListeners =
         new HashMap<EclipseJavaProject, MyTypeHierarchyChangedListener>();
     types = new HashMap<EclipseJavaProject, IType>();
-    JavaCore.addElementChangedListener(new ModuleElementChangedListener(),
-        ElementChangedEvent.POST_CHANGE);
+  }
+  
+  public void listenForChanges(boolean listenForChanges) {
+    if (this.listenForChanges && !listenForChanges) {
+      stopListeningForChanges();
+    }
+    if (listenForChanges && !this.listenForChanges) {
+      startListeningForChanges();
+    }
+    this.listenForChanges = listenForChanges;
+  }
+  
+  public boolean isListeningForChanges() {
+    return listenForChanges;
+  }
+  
+  private void startListeningForChanges() {
+    changeListener = new ModuleElementChangedListener();
+    JavaCore.addElementChangedListener(changeListener, ElementChangedEvent.POST_CHANGE);
+  }
+  
+  private void stopListeningForChanges() {
+    JavaCore.removeElementChangedListener(changeListener);
+    changeListener = null;
   }
 
   @Override

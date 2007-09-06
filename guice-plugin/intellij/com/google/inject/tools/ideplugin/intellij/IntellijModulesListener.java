@@ -25,6 +25,13 @@ import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.Messenger;
 
 class IntellijModulesListener extends ModulesListener {
+  public boolean isListeningForChanges() {
+    return false;
+  }
+
+  public void listenForChanges(boolean listenForChanges) {
+  }
+
   @Inject
   public IntellijModulesListener(Messenger messenger) {
     super(messenger);

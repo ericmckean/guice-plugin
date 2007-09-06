@@ -174,7 +174,8 @@ public interface CodeRunner {
       BufferedReader r = new BufferedReader(ir);
       String line;
       try {
-        while ((line = r.readLine()) != null) {
+        while (r.ready()) {
+          line = r.readLine();
           codeRunner.getMessenger().logCodeRunnerMessage(line);
         }
       } catch (Exception e) {

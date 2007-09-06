@@ -57,4 +57,8 @@ public interface CustomContextDefinitionSource {
    * Called by the client when a possible refresh is needed.
    */
   public void refresh(JavaProject javaProject);
+  
+  public abstract boolean isListeningForChanges();
+  
+  public abstract void listenForChanges(boolean listenForChanges);
 }

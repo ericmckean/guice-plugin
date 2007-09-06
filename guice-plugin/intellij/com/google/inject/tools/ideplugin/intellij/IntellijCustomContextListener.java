@@ -26,6 +26,13 @@ import com.google.inject.tools.suite.Messenger;
 
 class IntellijCustomContextListener extends
     CustomContextDefinitionSourceImpl {
+  public boolean isListeningForChanges() {
+    return false;
+  }
+
+  public void listenForChanges(boolean listenForChanges) {
+  }
+
   @Inject
   public IntellijCustomContextListener(ProjectManager projectManager,
       Messenger messenger) {

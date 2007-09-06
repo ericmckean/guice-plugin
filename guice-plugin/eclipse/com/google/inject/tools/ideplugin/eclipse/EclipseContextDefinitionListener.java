@@ -55,6 +55,8 @@ class EclipseContextDefinitionListener extends CustomContextDefinitionSourceImpl
   private final Map<EclipseJavaProject, ITypeHierarchy> contextTypeHierarchies;
   private final Map<EclipseJavaProject, MyContextTypeHierarchyChangedListener> contextTypeHierarchyListeners;
   private final Map<EclipseJavaProject, IType> contextTypes;
+  private boolean listenForChanges;
+  private ModuleElementChangedListener changeListener;
 
   /**
    * Create an EclipseModulesListener. This should be injected.
@@ -67,8 +69,32 @@ class EclipseContextDefinitionListener extends CustomContextDefinitionSourceImpl
     contextTypeHierarchyListeners =
         new HashMap<EclipseJavaProject, MyContextTypeHierarchyChangedListener>();
     contextTypes = new HashMap<EclipseJavaProject, IType>();
-    JavaCore.addElementChangedListener(new ModuleElementChangedListener(),
-        ElementChangedEvent.POST_CHANGE);
+    listenForChanges = false;
+    changeListener = null;
+  }
+  
+  public void listenForChanges(boolean listenForChanges) {
+    if (this.listenForChanges && !listenForChanges) {
+      stopListeningForChanges();
+    }
+    if (listenForChanges && !this.listenForChanges) {
+      startListeningForChanges();
+    }
+    this.listenForChanges = listenForChanges;
+  }
+  
+  public boolean isListeningForChanges() {
+    return listenForChanges;
+  }
+  
+  private void startListeningForChanges() {
+    changeListener = new ModuleElementChangedListener();
+    JavaCore.addElementChangedListener(changeListener, ElementChangedEvent.POST_CHANGE);
+  }
+  
+  private void stopListeningForChanges() {
+    JavaCore.removeElementChangedListener(changeListener);
+    changeListener = null;
   }
 
   private class MyContextTypeHierarchyChangedListener implements
