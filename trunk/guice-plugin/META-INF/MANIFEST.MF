@@ -27,19 +27,16 @@ Export-Package: com.google.inject;
    com.google.inject.cglib.reflect",
  com.google.inject.tools.ideplugin;
   uses:="com.google.inject.tools.ideplugin.results,
-   com.google.inject.tools.ideplugin.module,
    com.google.inject.binder,
    com.google.inject.tools.suite,
    junit.framework",
  com.google.inject.tools.ideplugin.bindings;
   uses:="com.google.inject.tools.ideplugin.results,
    com.google.inject.tools.suite,
-   com.google.inject.tools.ideplugin,
-   com.google.inject.tools.suite.module",
+   com.google.inject.tools.ideplugin",
  com.google.inject.tools.ideplugin.eclipse;uses:="junit.framework,com.google.inject.tools.ideplugin",
  com.google.inject.tools.ideplugin.intellij;
   uses:="com.google.inject.tools.ideplugin.results,
-   com.google.inject.tools.ideplugin.module,
    com.google.inject.binder,
    com.google.inject.tools.suite,
    com.google.inject.tools.ideplugin",
@@ -50,15 +47,8 @@ Export-Package: com.google.inject;
    com.google.inject.tools.ideplugin,
    junit.framework,
    com.google.inject.tools.suite.code,
-   com.google.inject.tools.suite.module,
    com.google.inject.tools.suite.snippets",
  com.google.inject.tools.suite.code;uses:="com.google.inject.tools.suite,junit.framework,com.google.inject.tools.suite.snippets",
- com.google.inject.tools.suite.module;
-  uses:="com.google.inject.tools.suite,
-   com.google.inject,
-   junit.framework,
-   com.google.inject.tools.suite.code,
-   com.google.inject.tools.suite.snippets",
  com.google.inject.tools.suite.snippets;uses:="com.google.inject"
 Bundle-Vendor: com.google.inject.tools.ideplugin
 Bundle-ClassPath: src/,
@@ -77,6 +67,5 @@ Import-Package: com.google.inject.tools.ideplugin,
  com.google.inject.tools.ideplugin.results,
  com.google.inject.tools.suite,
  com.google.inject.tools.suite.code,
- com.google.inject.tools.suite.module,
  com.google.inject.tools.suite.snippets,
  junit.framework;version="3.8.2"
