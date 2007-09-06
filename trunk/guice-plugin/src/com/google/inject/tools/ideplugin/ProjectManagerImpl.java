@@ -23,6 +23,7 @@ import com.google.inject.tools.ideplugin.module.ModulesListener;
 import com.google.inject.tools.ideplugin.module.ModulesSource;
 import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.suite.JavaManager;
+import com.google.inject.tools.suite.ProgressHandler;
 import com.google.inject.tools.suite.GuiceToolsModule.ModuleManagerFactory;
 import com.google.inject.tools.suite.module.ModuleContextRepresentation;
 import com.google.inject.tools.suite.module.ModuleManager;
@@ -44,61 +45,64 @@ class ProjectManagerImpl implements ProjectManager,
   private final ModuleManagerFactory moduleManagerFactory;
   private final ModulesSource modulesSource;
   private final CustomContextDefinitionSource customContextDefinitionSource;
+  private final ProgressHandler progressHandler;
   private JavaProject currentProject;
-  private final Map<JavaProject, CustomContextsThread> initThreads;
-  private final Map<JavaProject, InitThread> moduleInitThreads;
 
   @Inject
   public ProjectManagerImpl(ModuleManagerFactory moduleManagerFactory,
-      ModulesSource modulesSource,
+      ModulesSource modulesSource, ProgressHandler progressHandler,
       CustomContextDefinitionSource customContextDefinitionSource) {
     this.moduleManagerFactory = moduleManagerFactory;
     this.modulesSource = modulesSource;
     this.customContextDefinitionSource = customContextDefinitionSource;
+    this.progressHandler = progressHandler;
     customContextDefinitionSource.addListener(this);
     this.moduleManagers = new HashMap<JavaProject, ModuleManager>();
     currentProject = null;
     modulesSource.addListener(this);
-    initThreads = new HashMap<JavaProject, CustomContextsThread>();
-    moduleInitThreads = new HashMap<JavaProject, InitThread>();
-    if (modulesSource instanceof ModulesListener) { // which it should be
-      for (JavaProject project : ((ModulesListener) modulesSource)
-          .getOpenProjects()) {
-        createModuleManager(project);
-        CustomContextsThread initThread = 
-            new CustomContextsThread(moduleManagers.get(project), project);
-        initThreads.put(project, initThread);
-        initThread.start();
-      }
-    }
+    initializeProjects();
   }
-
-  private class CustomContextsThread extends Thread {
-    private final ModuleManager moduleManager;
-    private final JavaProject project;
-    private volatile boolean done;
-
-    public CustomContextsThread(ModuleManager moduleManager,
-        JavaProject project) {
-      done = false;
-      this.moduleManager = moduleManager;
-      this.project = project;
+  
+  private void initializeProjects() {
+    for (JavaProject project : ((ModulesListener) modulesSource)
+        .getOpenProjects()) {
+      progressHandler.step(new InitializationProgressStep(project));
     }
-
-    @Override
-    public void run() {
-      try {
-        waitForInitialization(project);
-        for (String customContextName : customContextDefinitionSource
-            .getContexts(project)) {
-          moduleManager.addApplicationContext(customContextName);
-        }
-      } catch (InterruptedException e) {}
-      done = true;
+    progressHandler.go("Guice Plugin Initialization", true);
+  }
+  
+  private class InitializationProgressStep implements ProgressHandler.ProgressStep {
+    private final JavaProject project;
+    private boolean done;
+    
+    public InitializationProgressStep(JavaProject project) {
+      this.project = project;
+      done = false;
     }
     
+    public void cancel() {
+      //TODO: cancel initialization?
+    }
+
+    public void complete() {
+      done = true;
+    }
+
     public boolean isDone() {
       return done;
+    }
+
+    public String label() {
+      return "Initializing project for guice: " + project.getName();
+    }
+
+    public void run() {
+      done = false;
+      ModuleManager moduleManager = createModuleManager(project);
+      for (String customContextName : customContextDefinitionSource
+          .getContexts(project)) {
+        moduleManager.addApplicationContext(customContextName);
+      }
     }
   }
 
@@ -142,17 +146,9 @@ class ProjectManagerImpl implements ProjectManager,
   }
 
   public ModuleManager getModuleManager(JavaProject javaManager) {
-    if (moduleInitThreads.get(javaManager) != null) {
-      try {
-        moduleInitThreads.get(javaManager).waitForInitialization();
-      } catch (InterruptedException e) {}
-    }
-    if (initThreads.get(javaManager) != null
-        && !initThreads.get(javaManager).isDone()) {
-      try {
-        initThreads.get(javaManager).join();
-      } catch (InterruptedException e) {}
-    }
+    try {
+      progressHandler.waitFor();
+    } catch (InterruptedException e) {}
     modulesSource.refresh(javaManager);
     customContextDefinitionSource.refresh(javaManager);
     return createModuleManager(javaManager);
@@ -200,37 +196,14 @@ class ProjectManagerImpl implements ProjectManager,
   private ModuleManager createModuleManager(JavaProject javaManager) {
     currentProject = javaManager;
     if (moduleManagers.get(javaManager) == null) {
-      moduleManagers.put(javaManager, moduleManagerFactory.create(javaManager));
-      moduleInitThreads.put(javaManager, new InitThread(javaManager, moduleManagers.get(javaManager)));
-      moduleInitThreads.get(javaManager).start();
-    }
-    return moduleManagers.get(javaManager);
-  }
-  
-  // this is to avoid blocking loading in the UI if there is one
-  private class InitThread extends Thread {
-    private final ModuleManager moduleManager;
-    private final JavaManager javaManager;
-    private boolean initing;
-    public InitThread(JavaManager javaManager, ModuleManager moduleManager) {
-      this.moduleManager = moduleManager;
-      this.javaManager = javaManager;
-      this.initing = true;
-    }
-    @Override
-    public void run() {
+      ModuleManager moduleManager = moduleManagerFactory.create(javaManager);
+      moduleManagers.put(javaManager, moduleManager);
       synchronized (moduleManager) {
         initModules(javaManager);
         initContexts(moduleManager);
-        initing = false;
       }
     }
-    
-    public void waitForInitialization() throws InterruptedException {
-      if (initing) {
-        this.join();
-      }
-    }
+    return moduleManagers.get(javaManager);
   }
   
   /*
@@ -325,9 +298,5 @@ class ProjectManagerImpl implements ProjectManager,
       }
     }
     return null;
-  }
-  
-  private void waitForInitialization(JavaProject project) throws InterruptedException{
-    moduleInitThreads.get(project).waitForInitialization();
   }
 }

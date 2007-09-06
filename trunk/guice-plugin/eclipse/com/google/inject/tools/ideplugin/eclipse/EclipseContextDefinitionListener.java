@@ -245,17 +245,22 @@ class EclipseContextDefinitionListener extends CustomContextDefinitionSourceImpl
     }
   }
   
+  private static final String iterableLongModuleLong = 
+    Iterable.class.getName() + "<" + Module.class.getName() + ">";
+  private static final String iterableLongModule = 
+    Iterable.class.getName() + "<" + Module.class.getSimpleName() + ">";
+  private static final String iterableModuleLong = 
+    Iterable.class.getSimpleName() + "<" + Module.class.getName() + ">";
+  private static final String iterableModule = 
+    Iterable.class.getSimpleName() + "<" + Module.class.getSimpleName() + ">";
+  
   private boolean isIterableModule(IType type) {
     try {
       for (String s : type.getSuperInterfaceNames()) {
-        String iterableLongName = Iterable.class.getName();
-        String iterableName = Iterable.class.getSimpleName();
-        String moduleLongName = Module.class.getName();
-        String moduleName = Module.class.getSimpleName();
-        if (s.contains(iterableLongName + "<" + moduleLongName + ">")
-            || s.contains(iterableLongName + "<" + moduleName + ">")
-            || s.contains(iterableName + "<" + moduleLongName + ">")
-            || s.contains(iterableName + "<" + moduleName + ">")) {
+        if (s.equals(iterableLongModuleLong)
+            || s.equals(iterableLongModule)
+            || s.equals(iterableModuleLong)
+            || s.equals(iterableModule)) {
           return true;
         }
       }

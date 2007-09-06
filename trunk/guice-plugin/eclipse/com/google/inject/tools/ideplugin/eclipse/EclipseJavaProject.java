@@ -182,6 +182,11 @@ class EclipseJavaProject extends JavaProject {
   }
   
   @Override
+  public String getName() {
+    return project.getProject().getName();
+  }
+  
+  @Override
   public void saveSettings(ProjectSettings settings) {
     //TODO: save settings
   }
