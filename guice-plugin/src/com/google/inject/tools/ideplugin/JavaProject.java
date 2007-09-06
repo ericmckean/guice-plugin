@@ -37,4 +37,6 @@ public abstract class JavaProject implements JavaManager {
   public String getClasspathDelimiter() {
     return System.getProperty("path.separator");
   }
+  
+  public abstract String getName();
 }

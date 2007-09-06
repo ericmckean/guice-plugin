@@ -163,6 +163,11 @@ public class Fakes {
     }
     
     @Override
+    public String getName() {
+      return null;
+    }
+    
+    @Override
     public String getClasspathDelimiter() {
       return null;
     }
