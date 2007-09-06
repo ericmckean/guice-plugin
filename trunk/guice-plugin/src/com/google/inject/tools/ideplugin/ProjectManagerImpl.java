@@ -48,6 +48,9 @@ class ProjectManagerImpl implements ProjectManager,
   private final ProgressHandler progressHandler;
   private JavaProject currentProject;
 
+  //TODO: make this a preference
+  private static final boolean shouldListenForChanges = false;
+  
   @Inject
   public ProjectManagerImpl(ModuleManagerFactory moduleManagerFactory,
       ModulesSource modulesSource, ProgressHandler progressHandler,
@@ -60,6 +63,8 @@ class ProjectManagerImpl implements ProjectManager,
     this.moduleManagers = new HashMap<JavaProject, ModuleManager>();
     currentProject = null;
     modulesSource.addListener(this);
+    modulesSource.listenForChanges(shouldListenForChanges);
+    customContextDefinitionSource.listenForChanges(shouldListenForChanges);
     initializeProjects();
   }
   

@@ -30,6 +30,10 @@ public class ProjectSettings {
    * Should module contexts be (re)run automatically in response to changes.
    */
   public boolean runAutomatically;
+  /**
+   * Should the plugin listen for changes to contexts.
+   */
+  public boolean listenForChanges;
   
   //TODO: rest of settings
   
