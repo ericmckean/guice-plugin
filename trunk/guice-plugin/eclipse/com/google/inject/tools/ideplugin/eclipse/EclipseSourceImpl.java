@@ -169,12 +169,16 @@ abstract class EclipseSourceImpl extends SourceImpl {
     final Set<String> names = new HashSet<String>();
     IType[] subclasses = hierarchy.getAllSubtypes(type);
     for (IType subclass : subclasses) {
-      if (subclass.isClass()) {
-        if (!Flags.isAbstract(subclass.getFlags())) {
-          if (isTypeWeCareAbout(subclass)) {
-            names.add(subclass.getFullyQualifiedName());
+      try {
+        if (subclass.isClass()) {
+          if (!Flags.isAbstract(subclass.getFlags())) {
+            if (isTypeWeCareAbout(subclass)) {
+              names.add(subclass.getFullyQualifiedName());
+            }
           }
         }
+      } catch (Throwable t) {
+        hadProblem(t);
       }
     }
     return names;
