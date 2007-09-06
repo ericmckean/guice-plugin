@@ -34,9 +34,9 @@ import com.google.inject.tools.ideplugin.ProjectSourceImpl;
 import com.google.inject.tools.suite.Messenger;
 
 /**
- * Eclipse implementation of the {@link ProjectSource}.
+ * Eclipse implementation of the {@link com.google.inject.tools.ideplugin.ProjectSource}.
  * 
- * {@inheritDoc ProjectSource}
+ * {@inheritDoc com.google.inject.tools.ideplugin.ProjectSource}
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */

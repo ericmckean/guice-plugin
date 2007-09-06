@@ -41,9 +41,9 @@ import com.google.inject.tools.ideplugin.SourceImpl;
 import com.google.inject.tools.suite.Messenger;
 
 /**
- * Eclipse implementation of the {@link Source}.
+ * Eclipse implementation of the {@link com.google.inject.tools.ideplugin.Source}.
  * 
- * {@inheritDoc Source}
+ * {@inheritDoc com.google.inject.tools.ideplugin.Source}
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
