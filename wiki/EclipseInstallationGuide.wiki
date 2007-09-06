@@ -25,6 +25,6 @@ The install site is
   # After the download is complete, click *Install*
   # When prompted, restart Eclipse by saying *Yes*
 
-=== @!ApplicationModule annotations ===
+=== Implementing Iterable<Module> ===
 
-To make the best use of the plugin, you should download the !ApplicationModule jar from the Downloads section (it will be included in the next release of guice).  Then annotate your application modules accordingly (an application module is a module with a complete set of bindings).  The plugin by default will use modules annotated as !ApplicationModules as contexts.
+To make the best use of the plugin, create classes that implement Iterable<Module> and return the set of modules you would pass to Guice.createInjector.  The plugin will automatically detect such classes and by default will use them as a context for finding bindings.
