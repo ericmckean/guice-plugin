@@ -69,24 +69,35 @@ class ProjectManagerImpl implements ProjectManager, SourceListener, ProjectSourc
     modulesSource.listenForChanges(shouldListenForChanges);
     customContextDefinitionSource.listenForChanges(shouldListenForChanges);
     projectSource.listenForChanges(true);
-    initializeProjects();
+    initializeProjects(false);
   }
   
-  private void initializeProjects() {
-    setupProgressHandler();
+  private void initializeProjects(boolean waitFor) {
+    setupProgressHandler(waitFor);
     for (JavaProject project : projectSource.getOpenProjects()) {
       progressHandler.step(new InitializationProgressStep(project));
     }
     progressHandler.go("Guice Plugin Initialization", true);
+    if (waitFor) {
+      try {
+        progressHandler.waitFor();
+      } catch (InterruptedException e) {}
+    }
   }
   
-  private void initializeProject(JavaProject project) {
+  private void initializeProject(JavaProject project, boolean waitFor) {
+    setupProgressHandler(waitFor);
     progressHandler.step(new InitializationProgressStep(project));
     progressHandler.go("Guice Plugin Update", false);
+    if (waitFor) {
+      try {
+        progressHandler.waitFor();
+      } catch (InterruptedException e) {}
+    }
   }
   
-  private void setupProgressHandler() {
-    if (progressHandler != null) {
+  private void setupProgressHandler(boolean waitFor) {
+    if (waitFor && progressHandler != null) {
       try {
         progressHandler.waitFor();
       } catch (InterruptedException e) {}
@@ -268,7 +279,7 @@ class ProjectManagerImpl implements ProjectManager, SourceListener, ProjectSourc
   public boolean findNewContexts(JavaProject javaManager, boolean waitFor,
       boolean backgroundAutomatically) {
     if (!modulesSource.isListeningForChanges()) {
-      initializeProject(javaManager);
+      initializeProject(javaManager, waitFor);
     }
     boolean result = cleanAllModules(moduleManagers.get(javaManager), waitFor, backgroundAutomatically);
     initContexts(moduleManagers.get(javaManager));
