@@ -98,7 +98,7 @@ class ProjectManagerImpl implements ProjectManager,
     }
 
     public String label() {
-      return "Initializing project for guice: " + project.getName();
+      return "Initializing project for guice plugin: " + project.getName();
     }
 
     public void run() {
