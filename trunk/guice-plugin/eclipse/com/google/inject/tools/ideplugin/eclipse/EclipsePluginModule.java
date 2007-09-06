@@ -22,9 +22,10 @@ import com.google.inject.tools.ideplugin.GotoCodeLocationHandler;
 import com.google.inject.tools.ideplugin.GotoFileHandler;
 import com.google.inject.tools.ideplugin.GuicePluginModule;
 import com.google.inject.tools.ideplugin.GuiceToolsModuleImpl;
+import com.google.inject.tools.ideplugin.ModuleSelectionView;
+import com.google.inject.tools.ideplugin.ModulesSource;
+import com.google.inject.tools.ideplugin.ProjectSource;
 import com.google.inject.tools.ideplugin.results.ResultsView;
-import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
-import com.google.inject.tools.ideplugin.module.ModulesSource;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProgressHandler;
 
@@ -96,5 +97,11 @@ class EclipsePluginModule extends GuicePluginModule {
   protected void bindModulesSource(
       AnnotatedBindingBuilder<ModulesSource> bindModulesListener) {
     bindModulesListener.to(EclipseModulesListener.class).asEagerSingleton();
+  }
+  
+  @Override
+  protected void bindProjectSource(
+      AnnotatedBindingBuilder<ProjectSource> bindProjectSource) {
+    bindProjectSource.to(EclipseProjectSource.class).asEagerSingleton();
   }
 }

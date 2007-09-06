@@ -20,36 +20,25 @@ import java.util.Set;
 
 import com.google.inject.Inject;
 import com.google.inject.tools.ideplugin.JavaProject;
-import com.google.inject.tools.ideplugin.module.ModulesListener;
-import com.google.inject.tools.suite.JavaManager;
+import com.google.inject.tools.ideplugin.ModulesSource;
+import com.google.inject.tools.ideplugin.SourceImpl;
 import com.google.inject.tools.suite.Messenger;
 
-class IntellijModulesListener extends ModulesListener {
-  public boolean isListeningForChanges() {
-    return false;
-  }
-
-  public void listenForChanges(boolean listenForChanges) {
-  }
-
+class IntellijModulesListener extends SourceImpl implements ModulesSource {
   @Inject
   public IntellijModulesListener(Messenger messenger) {
     super(messenger);
   }
   
   @Override
-  public Set<JavaProject> getOpenProjects() {
+  protected Set<String> locate(JavaProject javaProject) throws Throwable {
     return null;
   }
   
-  @Override
-  protected Set<String> locateModules(JavaProject javaProject) throws Throwable {
-    return null;
+  public boolean isListeningForChanges() {
+    return false;
   }
   
-  public void refresh(JavaManager javaManager) {
-    if (javaManager instanceof JavaProject) {
-      JavaProject javaProject = (JavaProject)javaManager;
-    }
+  public void listenForChanges(boolean listenForChanges) {
   }
 }

@@ -55,7 +55,6 @@ public class SampleToolsFrameworkUseCase extends TestCase {
   static class MyMessenger extends DefaultMessenger {
     @Override
     public void logCodeRunnerMessage(String msg) {
-      System.out.println("!!!" + msg);
     }
   }
   

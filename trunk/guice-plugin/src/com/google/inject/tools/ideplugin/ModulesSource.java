@@ -14,15 +14,18 @@
  * the License.
  */
 
-/**
- * Module management objects specific to the IDE plugin tool.
- * 
- * <p>The {@link com.google.inject.tools.ideplugin.module.ModulesListener} is an abstract 
- * partial implementation of the
- * {@link com.google.inject.tools.ideplugin.module.ModulesSource} for use with IDE 
- * plugins.  The {@link com.google.inject.tools.ideplugin.module.ModuleSelectionView} defines an 
- * IDE component allowing 
- * for the configuration bu the user of which module contexts to run.
- */
+package com.google.inject.tools.ideplugin;
 
-package com.google.inject.tools.ideplugin.module;
+import com.google.inject.tools.ideplugin.ModulesSource;
+import com.google.inject.tools.suite.module.ModuleRepresentation;
+
+/**
+ * Responsible for listening to changes in the user's code involving
+ * {@link com.google.inject.Module}s. IDE specific implementations should
+ * notify the ModuleManager when changes occur by creating
+ * {@link ModuleRepresentation} objects and passing them to the manager.
+ * 
+ * @author Darren Creutz (dcreutz@gmail.com)
+ */
+public interface ModulesSource extends Source {
+}

@@ -17,8 +17,6 @@
 package com.google.inject.tools.ideplugin;
 
 import com.google.inject.binder.AnnotatedBindingBuilder;
-import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
-import com.google.inject.tools.ideplugin.module.ModulesSource;
 import com.google.inject.tools.ideplugin.results.ResultsHandler;
 import com.google.inject.tools.ideplugin.results.ResultsView;
 import com.google.inject.tools.suite.MockingGuiceToolsModule.ProxyMock;
@@ -154,6 +152,11 @@ public class MockingGuicePluginModule extends GuicePluginModule {
         CustomContextDefinitionSource.class);
   }
   
+  @Override
+  protected void bindProjectSource(
+      AnnotatedBindingBuilder<ProjectSource> bindProjectSource) {
+    bindToMockInstance(bindProjectSource, ProjectSource.class);
+  }
 
   @Override
   protected void bindModulesSource(

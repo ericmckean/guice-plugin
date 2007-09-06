@@ -26,7 +26,6 @@ import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProblemsHandler;
 import com.google.inject.tools.suite.GuiceToolsModule.ModuleManagerFactory;
 import com.google.inject.tools.suite.module.ModuleManager;
-import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
 
 /**
  * The main object of the plugin. Unfortunately, it must be created in IDE

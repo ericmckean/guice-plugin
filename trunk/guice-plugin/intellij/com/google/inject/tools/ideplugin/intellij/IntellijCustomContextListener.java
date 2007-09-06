@@ -19,13 +19,13 @@ package com.google.inject.tools.ideplugin.intellij;
 import java.util.Set;
 
 import com.google.inject.Inject;
-import com.google.inject.tools.ideplugin.CustomContextDefinitionSourceImpl;
+import com.google.inject.tools.ideplugin.CustomContextDefinitionSource;
 import com.google.inject.tools.ideplugin.JavaProject;
-import com.google.inject.tools.ideplugin.ProjectManager;
+import com.google.inject.tools.ideplugin.SourceImpl;
 import com.google.inject.tools.suite.Messenger;
 
 class IntellijCustomContextListener extends
-    CustomContextDefinitionSourceImpl {
+    SourceImpl implements CustomContextDefinitionSource {
   public boolean isListeningForChanges() {
     return false;
   }
@@ -34,13 +34,12 @@ class IntellijCustomContextListener extends
   }
 
   @Inject
-  public IntellijCustomContextListener(ProjectManager projectManager,
-      Messenger messenger) {
-    super(projectManager, messenger);
+  public IntellijCustomContextListener(Messenger messenger) {
+    super(messenger);
   }
   
   @Override
-  protected Set<String> locateContexts(JavaProject javaProject)
+  protected Set<String> locate(JavaProject javaProject)
       throws Throwable {
     return null;
   }

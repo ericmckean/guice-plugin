@@ -14,9 +14,8 @@
  * the License.
  */
 
-package com.google.inject.tools.ideplugin.module;
+package com.google.inject.tools.ideplugin;
 
-import com.google.inject.tools.ideplugin.JavaProject;
 
 /**
  * Interface for IDE specific objects presenting the module choices to the user.
