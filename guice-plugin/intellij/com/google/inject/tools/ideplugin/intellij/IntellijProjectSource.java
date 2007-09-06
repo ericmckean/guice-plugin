@@ -14,37 +14,32 @@
  * the License.
  */
 
-package com.google.inject.tools.ideplugin.eclipse;
+package com.google.inject.tools.ideplugin.intellij;
 
-import org.eclipse.jdt.core.IType;
+import java.util.Set;
 
-import com.google.inject.Module;
-import com.google.inject.Singleton;
 import com.google.inject.Inject;
-import com.google.inject.tools.ideplugin.ModulesSource;
+import com.google.inject.Singleton;
+import com.google.inject.tools.ideplugin.JavaProject;
+import com.google.inject.tools.ideplugin.ProjectSourceImpl;
 import com.google.inject.tools.suite.Messenger;
 
-/**
- * Eclipse implementation of the {@link ModulesSource}.
- * 
- * {@inheritDoc ModulesSource}
- * 
- * @author Darren Creutz (dcreutz@gmail.com)
- */
 @Singleton
-class EclipseModulesListener extends EclipseSourceImpl implements ModulesSource {
+class IntellijProjectSource extends ProjectSourceImpl {
   @Inject
-  public EclipseModulesListener(Messenger messenger) {
+  public IntellijProjectSource(Messenger messenger) {
     super(messenger);
   }
   
   @Override
-  protected String getTypeName() {
-    return Module.class.getName();
+  public Set<JavaProject> getOpenProjects() {
+    return null;
   }
   
-  @Override
-  protected boolean isTypeWeCareAbout(IType type) {
-    return true;
+  public boolean isListeningForChanges() {
+    return false;
+  }
+  
+  public void listenForChanges(boolean listenForChanges) {
   }
 }

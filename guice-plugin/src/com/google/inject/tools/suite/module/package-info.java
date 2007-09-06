@@ -21,7 +21,7 @@
  * Modules in the user's code are managed by the
  * {@link com.google.inject.tools.suite.module.ModuleManager} which is injected as a
  * singleton. The
- * {@link com.google.inject.tools.ideplugin.module.ModuleSelectionView} interface must be
+ * {@link com.google.inject.tools.ideplugin.ModuleSelectionView} interface must be
  * implemented by IDE specific classes to notify the manager of changes in the
  * user's code and configuration.
  * 

@@ -28,8 +28,8 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
 import com.google.inject.tools.ideplugin.JavaProject;
+import com.google.inject.tools.ideplugin.ModuleSelectionView;
 import com.google.inject.tools.ideplugin.ProjectManager;
-import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
 import com.google.inject.tools.suite.module.ModuleManager;
 
 /**

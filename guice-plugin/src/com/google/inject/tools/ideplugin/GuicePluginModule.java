@@ -24,8 +24,6 @@ import com.google.inject.tools.ideplugin.bindings.BindingsEngine;
 import com.google.inject.tools.ideplugin.results.ResultsHandler;
 import com.google.inject.tools.ideplugin.results.ResultsHandlerImpl;
 import com.google.inject.tools.ideplugin.results.ResultsView;
-import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
-import com.google.inject.tools.ideplugin.module.ModulesSource;
 import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProblemsHandler;
@@ -86,12 +84,16 @@ public abstract class GuicePluginModule extends AbstractModule {
     bindResultsView(bind(ResultsView.class));
     bindModuleSelectionView(bind(ModuleSelectionView.class));
     bindCustomContextDefinitionSource(bind(CustomContextDefinitionSource.class));
+    bindProjectSource(bind(ProjectSource.class));
   }
 
   protected void bindProjectManager(
       AnnotatedBindingBuilder<ProjectManager> bindProjectManager) {
     bindProjectManager.to(ProjectManagerImpl.class).asEagerSingleton();
   }
+  
+  protected abstract void bindProjectSource(
+      AnnotatedBindingBuilder<ProjectSource> bindProjectSource);
 
   /**
    * Bind the {@link BindingsEngine} factory.
@@ -118,7 +120,7 @@ public abstract class GuicePluginModule extends AbstractModule {
 
   /**
    * Bind the
-   * {@link com.google.inject.tools.ideplugin.module.ModuleSelectionView}
+   * {@link com.google.inject.tools.ideplugin.ModuleSelectionView}
    * instance.
    */
   protected abstract void bindModuleSelectionView(

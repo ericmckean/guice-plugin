@@ -18,7 +18,7 @@ package com.google.inject.tools.ideplugin.intellij;
 
 import com.google.inject.tools.ideplugin.GuicePlugin;
 import com.google.inject.tools.ideplugin.JavaProject;
-import com.google.inject.tools.ideplugin.module.ModuleSelectionView;
+import com.google.inject.tools.ideplugin.ModuleSelectionView;
 import com.google.inject.tools.ideplugin.results.Results;
 import com.google.inject.tools.ideplugin.results.ResultsView;
 import com.google.inject.tools.suite.GuiceToolsModule;

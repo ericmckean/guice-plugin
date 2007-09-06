@@ -17,7 +17,6 @@
 package com.google.inject.tools.ideplugin;
 
 import com.google.inject.tools.ideplugin.JavaProject;
-import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.module.ModuleManager;
 import com.google.inject.tools.suite.module.ModuleManager.PostUpdater;
 
@@ -55,16 +54,16 @@ public interface ProjectManager {
   /**
    * Find new contexts in the given project and run the post updater afterward.
    */
-  public void findNewContexts(JavaManager javaManager,
+  public void findNewContexts(JavaProject javaManager,
       PostUpdater postUpdater, boolean backgroundAutomatically);
   
   /**
    * Find new contexts in the given project.
    */
-  public boolean findNewContexts(JavaManager javaManager);
+  public boolean findNewContexts(JavaProject javaManager);
   
   /**
    * Return the java manager for the given module manager.
    */
-  public JavaManager getJavaManager(ModuleManager moduleManager);
+  public JavaProject getJavaManager(ModuleManager moduleManager);
 }
