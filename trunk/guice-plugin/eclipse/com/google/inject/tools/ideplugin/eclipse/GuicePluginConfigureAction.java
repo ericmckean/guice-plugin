@@ -28,9 +28,6 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
 import com.google.inject.tools.ideplugin.JavaProject;
-import com.google.inject.tools.ideplugin.ModuleSelectionView;
-import com.google.inject.tools.ideplugin.ProjectManager;
-import com.google.inject.tools.suite.module.ModuleManager;
 
 /**
  * Responds to the user choosing configure from the Guice menu by opening the
@@ -41,15 +38,7 @@ import com.google.inject.tools.suite.module.ModuleManager;
 @SuppressWarnings("restriction")
 public class GuicePluginConfigureAction implements IEditorActionDelegate,
     IObjectActionDelegate {
-  private final ModuleSelectionView moduleSelectionView;
-  private final ProjectManager projectManager;
   private IEditorPart editor;
-
-  public GuicePluginConfigureAction() {
-    this.moduleSelectionView =
-        Activator.getGuicePlugin().getModuleSelectionView();
-    this.projectManager = Activator.getGuicePlugin().getProjectManager();
-  }
 
   public void setActiveEditor(IAction action, IEditorPart targetEditor) {
     this.editor = targetEditor;
@@ -66,7 +55,6 @@ public class GuicePluginConfigureAction implements IEditorActionDelegate,
     ICompilationUnit cu = JavaPlugin.getDefault()
         .getWorkingCopyManager().getWorkingCopy(editorInput);
     JavaProject project = new EclipseJavaProject(cu.getJavaProject());
-    ModuleManager moduleManager = projectManager.getModuleManager(project);
-    moduleSelectionView.show(project);
+    Activator.getGuicePlugin().configurePlugin(project, false);
   }
 }

@@ -26,7 +26,8 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
-import com.google.inject.tools.ideplugin.ProjectManager;
+
+import com.google.inject.tools.ideplugin.JavaProject;
 
 /**
  * Menu action to run the modules now.
@@ -36,12 +37,7 @@ import com.google.inject.tools.ideplugin.ProjectManager;
 @SuppressWarnings("restriction")
 public class RunModulesNowAction implements IEditorActionDelegate,
     IObjectActionDelegate {
-  private final ProjectManager projectManager;
   private IEditorPart editor;
-
-  public RunModulesNowAction() {
-    this.projectManager = Activator.getGuicePlugin().getProjectManager();
-  }
 
   public void setActiveEditor(IAction action, IEditorPart targetEditor) {
     this.editor = targetEditor;
@@ -57,8 +53,7 @@ public class RunModulesNowAction implements IEditorActionDelegate,
     IEditorInput editorInput = ((CompilationUnitEditor) editor).getEditorInput();
     ICompilationUnit cu = JavaPlugin.getDefault()
         .getWorkingCopyManager().getWorkingCopy(editorInput);
-    projectManager
-        .getModuleManager(new EclipseJavaProject(cu.getJavaProject()))
-        .rerunModules(false, false);
+    JavaProject project = new EclipseJavaProject(cu.getJavaProject());
+    Activator.getGuicePlugin().runModulesNow(project, false);
   }
 }
