@@ -49,8 +49,9 @@ public final class BindingsEngine {
    * @param resultsHandler the ResultsHandler to send results to (injected)
    * @param problemsHandler the ProblemsHandler to notify with problems
    *        (injected)
-   * @param moduleManager the ModuleManager to ask for what context to run in
+   * @param projectManager the ProjectManager to ask for what context to run in
    *        (injected)
+   * @param project the JavaProject (not injected)
    * @param messenger the Messenger to display notifications with (injected)
    * @param element the JavaElement to find bindings for (not injected)
    */

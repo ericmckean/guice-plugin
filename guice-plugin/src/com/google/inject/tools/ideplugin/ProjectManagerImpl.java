@@ -78,7 +78,8 @@ class ProjectManagerImpl implements ProjectManager, SourceListener, ProjectSourc
   private void initializeProjects(boolean waitFor) {
     ProgressHandler progressHandler = setupProgressHandler(waitFor);
     for (JavaProject project : projectSource.getOpenProjects()) {
-      progressHandler.step(new InitializationProgressStep(project, progressHandler));
+      progressHandler.step(new ModuleInitializationStep(project, progressHandler));
+      progressHandler.step(new ContextInitializationStep(project, progressHandler));
     }
     progressHandler.go("Guice Plugin Initialization", true);
     if (waitFor) {
@@ -90,7 +91,8 @@ class ProjectManagerImpl implements ProjectManager, SourceListener, ProjectSourc
   
   private void initializeProject(JavaProject project, boolean waitFor) {
     ProgressHandler progressHandler = setupProgressHandler(waitFor);
-    progressHandler.step(new InitializationProgressStep(project, progressHandler));
+    progressHandler.step(new ModuleInitializationStep(project, progressHandler));
+    progressHandler.step(new ContextInitializationStep(project, progressHandler));
     progressHandler.go("Guice Plugin Update", false);
     if (waitFor) {
       try {
@@ -110,9 +112,10 @@ class ProjectManagerImpl implements ProjectManager, SourceListener, ProjectSourc
     return progressHandler;
   }
   
-  private class InitializationProgressStep implements ProgressHandler.ProgressStep {
-    private final JavaProject project;
-    private final ProgressHandler progressHandler;
+  private abstract class InitializationProgressStep implements ProgressHandler.ProgressStep {
+    protected final JavaProject project;
+    protected final ProgressHandler progressHandler;
+    protected ModuleManager moduleManager;
     private boolean done;
     
     public InitializationProgressStep(JavaProject project, ProgressHandler progressHandler) {
@@ -139,11 +142,34 @@ class ProjectManagerImpl implements ProjectManager, SourceListener, ProjectSourc
 
     public void run() {
       done = false;
-      ModuleManager moduleManager = createModuleManager(project);
+      moduleManager = createModuleManager(project);
+      runit();
+    }
+    
+    public abstract void runit();
+  }
+  
+  private class ModuleInitializationStep extends InitializationProgressStep {
+    public ModuleInitializationStep(JavaProject project, ProgressHandler progressHandler) {
+      super(project, progressHandler);
+    }
+    
+    @Override
+    public void runit() {
       synchronized (moduleManager) {
         initModules(project, progressHandler);
         initContexts(moduleManager);
       }
+    }
+  }
+  
+  private class ContextInitializationStep extends InitializationProgressStep {
+    public ContextInitializationStep(JavaProject project, ProgressHandler progressHandler) {
+      super(project, progressHandler);
+    }
+    
+    @Override
+    public void runit() {
       for (String customContextName : customContextDefinitionSource.get(project, progressHandler)) {
         moduleManager.addApplicationContext(customContextName);
       }

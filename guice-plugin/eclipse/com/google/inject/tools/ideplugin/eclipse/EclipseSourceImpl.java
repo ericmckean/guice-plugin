@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jdt.core.ElementChangedEvent;
 import org.eclipse.jdt.core.Flags;
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -168,16 +169,16 @@ abstract class EclipseSourceImpl extends SourceImpl {
   protected Set<String> locate(EclipseJavaProject javaManager, ProgressHandler progressHandler)
       throws Throwable {
     EclipseProgressHandler eclipseProgressHandler = (EclipseProgressHandler)progressHandler;
-    eclipseProgressHandler.setSubMonitors(2);
     IType type = javaManager.getIJavaProject().findType(getTypeName());
-    ITypeHierarchy hierarchy = type.newTypeHierarchy(
-        eclipseProgressHandler.getSubMonitor("Creating Guice Type Hierarchy", 0, 1));
+    IProgressMonitor submonitor = eclipseProgressHandler.getSubMonitor();
+    SubProgressMonitor subprogressmonitor = new SubProgressMonitor(submonitor, 50);
+    ITypeHierarchy hierarchy = type.newTypeHierarchy(subprogressmonitor);
     final Set<String> names = new HashSet<String>();
     IType[] subclasses = hierarchy.getAllSubtypes(type);
-    IProgressMonitor monitor = 
-      eclipseProgressHandler.getSubMonitor("Checking Guice Type Validity", 1, subclasses.length);
-    int totalUnits = eclipseProgressHandler.getExpectedWorkForSubmonitor(1);
-    monitor.beginTask("Checking Guice Subtypes", totalUnits);
+    int totalFakeUnits = subclasses.length;
+    int workedFakeUnits = 0;
+    int totalRealUnits = 50;
+    int workedRealUnits = 0;
     for (IType subclass : subclasses) {
       try {
         if (subclass.isClass()) {
@@ -190,9 +191,16 @@ abstract class EclipseSourceImpl extends SourceImpl {
       } catch (Throwable t) {
         hadProblem(t);
       }
-      monitor.worked(eclipseProgressHandler.workedSubmonitor(1));
+      workedFakeUnits++;
+      int newRealUnits = (totalRealUnits * workedFakeUnits) / totalFakeUnits;
+      if (newRealUnits > workedRealUnits) {
+        submonitor.worked(newRealUnits - workedRealUnits);
+        workedRealUnits = newRealUnits;
+      }
     }
-    monitor.done();
+    if (workedRealUnits < totalRealUnits) {
+      submonitor.worked(totalRealUnits - workedRealUnits);
+    }
     return names;
   }
   

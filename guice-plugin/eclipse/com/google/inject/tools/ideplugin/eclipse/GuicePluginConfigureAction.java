@@ -55,6 +55,6 @@ public class GuicePluginConfigureAction implements IEditorActionDelegate,
     ICompilationUnit cu = JavaPlugin.getDefault()
         .getWorkingCopyManager().getWorkingCopy(editorInput);
     JavaProject project = new EclipseJavaProject(cu.getJavaProject());
-    Activator.getGuicePlugin().configurePlugin(project, false);
+    Activator.getGuicePlugin().configurePlugin(project, true);
   }
 }

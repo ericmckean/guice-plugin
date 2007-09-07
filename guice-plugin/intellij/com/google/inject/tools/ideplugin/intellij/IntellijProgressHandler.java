@@ -24,6 +24,10 @@ class IntellijProgressHandler implements ProgressHandler {
     
   }
   
+  public void go(String label, boolean backgroundAutomatically, boolean cancelThread) {
+    
+  }
+  
   public boolean isCancelled() {
     return false;
   }

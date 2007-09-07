@@ -37,6 +37,10 @@ public class BlockingProgressHandler implements ProgressHandler {
     }
     done = true;
   }
+  
+  public void go(String label, boolean backgroundAutomatically, boolean cancelThread) {
+    go(label, backgroundAutomatically);
+  }
 
   public void waitFor() {
   }

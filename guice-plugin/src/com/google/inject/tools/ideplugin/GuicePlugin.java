@@ -109,6 +109,7 @@ public abstract class GuicePlugin {
 
     public void complete() {
       done = true;
+      getModuleSelectionView().show(project);
     }
 
     public boolean isDone() {
@@ -122,7 +123,6 @@ public abstract class GuicePlugin {
     public void run() {
       done = false;
       ModuleManager moduleManager = getProjectManager().getModuleManager(project);
-      getModuleSelectionView().show(project);
     }
   }
   

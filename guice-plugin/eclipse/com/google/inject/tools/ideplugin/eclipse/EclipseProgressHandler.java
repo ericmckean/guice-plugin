@@ -22,7 +22,6 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 
 import com.google.inject.Inject;
@@ -41,11 +40,8 @@ class EclipseProgressHandler implements ProgressHandler {
   private final List<ProgressStep> steps;
   private ProgressHandlerJob job;
   private volatile boolean done;
+  private volatile boolean gotSubmonitor;
   private volatile IProgressMonitor monitor;
-  private List<Integer> submonitorworkunits;
-  private List<Integer> submonitorworkedsofar;
-  private List<Integer> submonitorfakeunits;
-  private List<Integer> submonitorworkedfakesofar;
 
   @Inject
   public EclipseProgressHandler(Messenger messenger) {
@@ -65,10 +61,14 @@ class EclipseProgressHandler implements ProgressHandler {
   public void step(ProgressStep step) {
     steps.add(step);
   }
-
+  
   public void go(String label, boolean backgroundAutomatically) {
+    go(label, backgroundAutomatically, false);
+  }
+
+  public void go(String label, boolean backgroundAutomatically, boolean cancelThread) {
     done = false;
-    job = new ProgressHandlerJob(label);
+    job = new ProgressHandlerJob(label, cancelThread);
     job.setUser(!backgroundAutomatically);
     job.schedule();
   }
@@ -77,65 +77,37 @@ class EclipseProgressHandler implements ProgressHandler {
     job.join();
   }
   
-  public void setSubMonitors(int num) {
-    submonitorworkunits = new ArrayList<Integer>(num);
-    submonitorworkedsofar = new ArrayList<Integer>(num);
-    submonitorfakeunits = new ArrayList<Integer>(num);
-    submonitorworkedfakesofar = new ArrayList<Integer>(num);
-    for (int i=0; i<num-1; i++) {
-      submonitorworkunits.set(i, 100 / num);
-    }
-    submonitorworkunits.set(num-1, 100 - ((100 / num) * (num - 1)));
-    for (int i=0; i<num; i++) {
-      submonitorworkedsofar.set(i, 0);
-      submonitorworkedfakesofar.set(i, 0);
-    }
-  }
-  
-  public int getExpectedWorkForSubmonitor(int num) {
-    return submonitorworkunits.get(num);
-  }
-  
-  public int workedSubmonitor(int num) {
-    int oldfakeunits = submonitorworkedfakesofar.get(num);
-    int newfakeunits = oldfakeunits + 1;
-    int oldrealunits = submonitorworkedsofar.get(num);
-    int newrealunits = (submonitorworkunits.get(num) * newfakeunits) / submonitorfakeunits.get(num);
-    int addedrealunits = newrealunits = oldrealunits;
-    submonitorworkedfakesofar.set(num, newfakeunits);
-    submonitorworkedsofar.set(num, newrealunits);
-    return addedrealunits;
-  }
-  
-  public IProgressMonitor getSubMonitor(String name, int num, int fakeUnits) {
-    submonitorfakeunits.set(num, fakeUnits);
-    if (monitor!=null && !isDone()) {
-      return new SubProgressMonitor(monitor, submonitorworkunits.get(num));
-    } else {
-      return null;
-    }
+  public IProgressMonitor getSubMonitor() {
+    gotSubmonitor = true;
+    return monitor;
   }
 
   private class ProgressHandlerJob extends Job {
     private final String label;
+    private final boolean cancelThread;
     private volatile ProgressStep currentStep;
     
-    public ProgressHandlerJob(String label) {
+    public ProgressHandlerJob(String label, boolean cancelThread) {
       super(label);
       this.label = label;
+      this.cancelThread = cancelThread;
     }
 
     @Override
     protected IStatus run(IProgressMonitor monitor) {
+      EclipseProgressHandler.this.monitor = monitor;
       monitor.beginTask(label, steps.size() * 100);
-      spinOffCancelThread(monitor);
+      if (cancelThread) spinOffCancelThread(monitor);
       for (ProgressStep step : steps) {
         if (!monitor.isCanceled()) {
           monitor.setTaskName(step.label());
           currentStep = step;
+          gotSubmonitor = false;
           step.run();
           currentStep = null;
-          monitor.worked(100);
+          if (!gotSubmonitor) {
+            monitor.worked(100);
+          }
         }
         if (monitor.isCanceled()) {
           step.cancel();
