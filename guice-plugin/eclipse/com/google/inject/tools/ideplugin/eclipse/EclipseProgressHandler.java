@@ -22,6 +22,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 
 import com.google.inject.Inject;
@@ -39,13 +40,24 @@ class EclipseProgressHandler implements ProgressHandler {
   private final Messenger messenger;
   private final List<ProgressStep> steps;
   private ProgressHandlerJob job;
+  private volatile boolean done;
+  private volatile IProgressMonitor monitor;
+  private List<Integer> submonitorworkunits;
+  private List<Integer> submonitorworkedsofar;
+  private List<Integer> submonitorfakeunits;
+  private List<Integer> submonitorworkedfakesofar;
 
   @Inject
   public EclipseProgressHandler(Messenger messenger) {
     this.messenger = messenger;
     this.steps = new ArrayList<ProgressStep>();
+    done = false;
   }
 
+  public boolean isDone() {
+    return done;
+  }
+  
   public boolean isCancelled() {
     return false;
   }
@@ -55,6 +67,7 @@ class EclipseProgressHandler implements ProgressHandler {
   }
 
   public void go(String label, boolean backgroundAutomatically) {
+    done = false;
     job = new ProgressHandlerJob(label);
     job.setUser(!backgroundAutomatically);
     job.schedule();
@@ -62,6 +75,45 @@ class EclipseProgressHandler implements ProgressHandler {
 
   public void waitFor() throws InterruptedException {
     job.join();
+  }
+  
+  public void setSubMonitors(int num) {
+    submonitorworkunits = new ArrayList<Integer>(num);
+    submonitorworkedsofar = new ArrayList<Integer>(num);
+    submonitorfakeunits = new ArrayList<Integer>(num);
+    submonitorworkedfakesofar = new ArrayList<Integer>(num);
+    for (int i=0; i<num-1; i++) {
+      submonitorworkunits.set(i, 100 / num);
+    }
+    submonitorworkunits.set(num-1, 100 - ((100 / num) * (num - 1)));
+    for (int i=0; i<num; i++) {
+      submonitorworkedsofar.set(i, 0);
+      submonitorworkedfakesofar.set(i, 0);
+    }
+  }
+  
+  public int getExpectedWorkForSubmonitor(int num) {
+    return submonitorworkunits.get(num);
+  }
+  
+  public int workedSubmonitor(int num) {
+    int oldfakeunits = submonitorworkedfakesofar.get(num);
+    int newfakeunits = oldfakeunits + 1;
+    int oldrealunits = submonitorworkedsofar.get(num);
+    int newrealunits = (submonitorworkunits.get(num) * newfakeunits) / submonitorfakeunits.get(num);
+    int addedrealunits = newrealunits = oldrealunits;
+    submonitorworkedfakesofar.set(num, newfakeunits);
+    submonitorworkedsofar.set(num, newrealunits);
+    return addedrealunits;
+  }
+  
+  public IProgressMonitor getSubMonitor(String name, int num, int fakeUnits) {
+    submonitorfakeunits.set(num, fakeUnits);
+    if (monitor!=null && !isDone()) {
+      return new SubProgressMonitor(monitor, submonitorworkunits.get(num));
+    } else {
+      return null;
+    }
   }
 
   private class ProgressHandlerJob extends Job {
@@ -75,7 +127,7 @@ class EclipseProgressHandler implements ProgressHandler {
 
     @Override
     protected IStatus run(IProgressMonitor monitor) {
-      monitor.beginTask(label, steps.size());
+      monitor.beginTask(label, steps.size() * 100);
       spinOffCancelThread(monitor);
       for (ProgressStep step : steps) {
         if (!monitor.isCanceled()) {
@@ -83,7 +135,7 @@ class EclipseProgressHandler implements ProgressHandler {
           currentStep = step;
           step.run();
           currentStep = null;
-          monitor.worked(1);
+          monitor.worked(100);
         }
         if (monitor.isCanceled()) {
           step.cancel();
@@ -91,6 +143,7 @@ class EclipseProgressHandler implements ProgressHandler {
         step.complete();
       }
       monitor.done();
+      EclipseProgressHandler.this.done = true;
       if (monitor.isCanceled()) {
         return Status.CANCEL_STATUS;
       } else {
@@ -99,14 +152,10 @@ class EclipseProgressHandler implements ProgressHandler {
     }
 
     private void spinOffCancelThread(IProgressMonitor monitor) {
-      new CancelListener(monitor).start();
+      new CancelListener().start();
     }
     
     private class CancelListener extends Thread {
-      private final IProgressMonitor monitor;
-      public CancelListener(IProgressMonitor monitor) {
-        this.monitor = monitor;
-      }
       @Override
       public void run() {
         while (!monitor.isCanceled()) {

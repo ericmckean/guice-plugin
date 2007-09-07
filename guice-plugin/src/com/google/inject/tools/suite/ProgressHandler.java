@@ -81,4 +81,9 @@ public interface ProgressHandler {
    * Tell the calling thread to wait until the progress handler tasks complete.
    */
   public void waitFor() throws InterruptedException;
+  
+  /**
+   * Return true if the progress handler is finished.
+   */
+  public boolean isDone();
 }

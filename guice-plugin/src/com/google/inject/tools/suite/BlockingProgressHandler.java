@@ -27,12 +27,15 @@ import java.util.List;
  */
 public class BlockingProgressHandler implements ProgressHandler {
   private final List<ProgressStep> steps = new ArrayList<ProgressStep>();
+  private volatile boolean done;
 
   public void go(String label, boolean backgroundAutomatically) {
+    done = false;
     for (ProgressStep step : steps) {
       step.run();
       step.complete();
     }
+    done = true;
   }
 
   public void waitFor() {
@@ -40,6 +43,10 @@ public class BlockingProgressHandler implements ProgressHandler {
 
   public boolean isCancelled() {
     return false;
+  }
+  
+  public boolean isDone() {
+    return done;
   }
 
   public void step(ProgressStep step) {

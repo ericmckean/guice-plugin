@@ -23,6 +23,7 @@ import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.ideplugin.ModulesSource;
 import com.google.inject.tools.ideplugin.SourceImpl;
 import com.google.inject.tools.suite.Messenger;
+import com.google.inject.tools.suite.ProgressHandler;
 
 class IntellijModulesListener extends SourceImpl implements ModulesSource {
   @Inject
@@ -31,7 +32,8 @@ class IntellijModulesListener extends SourceImpl implements ModulesSource {
   }
   
   @Override
-  protected Set<String> locate(JavaProject javaProject) throws Throwable {
+  protected Set<String> locate(JavaProject javaProject, ProgressHandler progressHandler)
+      throws Throwable {
     return null;
   }
   

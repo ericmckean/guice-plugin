@@ -36,4 +36,7 @@ class IntellijProgressHandler implements ProgressHandler {
     
   }
   
+  public boolean isDone() {
+    return true;
+  }
 }
