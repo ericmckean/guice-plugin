@@ -35,7 +35,7 @@ public class GuicePluginConfigureAction2 extends EclipseMenuAction {
     ICompilationUnit cu = JavaPlugin.getDefault()
         .getWorkingCopyManager().getWorkingCopy(((CompilationUnitEditor)part).getEditorInput());
     JavaProject project = new EclipseJavaProject(cu.getJavaProject());
-    guicePlugin.configurePlugin(project, false);
+    guicePlugin.configurePlugin(project, true);
     return true;
   }
   

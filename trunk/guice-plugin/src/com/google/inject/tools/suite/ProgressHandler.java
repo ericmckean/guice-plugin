@@ -78,6 +78,16 @@ public interface ProgressHandler {
   public void go(String label, boolean backgroundAutomatically);
   
   /**
+   * Actually execute the steps.
+   * 
+   * @param label the display label for the handler initially
+   * @param backgroundAutomatically true if the progress should be backgrounded
+   *        initially
+   * @param cancelThread true if a thread to check cancellation should be spawned
+   */
+  public void go(String label, boolean backgroundAutomatically, boolean cancelThread);
+  
+  /**
    * Tell the calling thread to wait until the progress handler tasks complete.
    */
   public void waitFor() throws InterruptedException;

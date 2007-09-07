@@ -209,6 +209,10 @@ public class Fakes {
       }
     }
 
+    public void go(String label, boolean backgroundAutomatically, boolean cancelThread) {
+      go(label, backgroundAutomatically);
+    }
+    
     public void waitFor() {
     }
     

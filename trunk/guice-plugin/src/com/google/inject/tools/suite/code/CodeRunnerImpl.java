@@ -170,7 +170,7 @@ class CodeRunnerImpl implements CodeRunner {
 
   public void run(String label, boolean backgroundAutomatically) {
     cancelled = false;
-    progressHandler.go(label, backgroundAutomatically);
+    progressHandler.go(label, backgroundAutomatically, true);
   }
 
   public void run(String label) {
