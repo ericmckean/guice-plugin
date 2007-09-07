@@ -60,7 +60,7 @@ public final class BindingsEngine {
       new BindingsEngineThread(moduleManager, problemsHandler,
           resultsHandler, messenger, element);
     progressHandler.step(engineThread);
-    progressHandler.go("Finding Guice Bindings", false);
+    progressHandler.go("Finding Guice Bindings", true);
   }
 
   private class BindingsEngineThread implements ProgressHandler.ProgressStep {
