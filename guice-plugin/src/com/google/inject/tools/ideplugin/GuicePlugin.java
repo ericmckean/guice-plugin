@@ -27,6 +27,7 @@ import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProblemsHandler;
 import com.google.inject.tools.suite.ProgressHandler;
 import com.google.inject.tools.suite.GuiceToolsModule.ModuleManagerFactory;
+import com.google.inject.tools.suite.ProgressHandler.ProgressMonitor;
 import com.google.inject.tools.suite.module.ModuleManager;
 
 /**
@@ -79,9 +80,11 @@ public abstract class GuicePlugin {
         element, javaProject);
   }
   
-  private void runAction(ProgressHandler.ProgressStep step, boolean backgroundAutomatically) {
+  private void runAction(ProgressHandler.ProgressStep step, boolean backgroundAutomatically,
+      Runnable executeAfter) {
     ProgressHandler progressHandler = progressHandlerProvider.get();
     progressHandler.step(step);
+    progressHandler.executeAfter(executeAfter);
     progressHandler.go(step.label(), backgroundAutomatically);
   }
   
@@ -91,7 +94,20 @@ public abstract class GuicePlugin {
    * @param project the JavaProject to configure
    */
   public void configurePlugin(JavaProject project, boolean backgroundAutomatically) {
-    runAction(new ConfigurePluginAction(project), backgroundAutomatically);
+    runAction(new ConfigurePluginAction(project), backgroundAutomatically,
+        new ConfigurePluginActionComplete(project));
+  }
+  
+  class ConfigurePluginActionComplete implements Runnable {
+    private final JavaProject project;
+    
+    public ConfigurePluginActionComplete(JavaProject project) {
+      this.project = project;
+    }
+    
+    public void run() {
+      getModuleSelectionView().show(project);
+    }
   }
   
   class ConfigurePluginAction implements ProgressHandler.ProgressStep {
@@ -109,7 +125,6 @@ public abstract class GuicePlugin {
 
     public void complete() {
       done = true;
-      getModuleSelectionView().show(project);
     }
 
     public boolean isDone() {
@@ -120,7 +135,7 @@ public abstract class GuicePlugin {
       return "Configuring Guice Plugin for " + project.getName();
     }
 
-    public void run() {
+    public void run(ProgressMonitor monitor) {
       done = false;
       ModuleManager moduleManager = getProjectManager().getModuleManager(project);
     }
@@ -151,7 +166,7 @@ public abstract class GuicePlugin {
       return "Configuring Guice Plugin for " + project.getName();
     }
 
-    public void run() {
+    public void run(ProgressMonitor monitor) {
       done = false;
       getProjectManager().getModuleManager(project).rerunModules(false, false);
     }
@@ -163,7 +178,7 @@ public abstract class GuicePlugin {
    * @param project the JavaProject to run modules in
    */
   public void runModulesNow(JavaProject project, boolean backgroundAutomatically) {
-    runAction(new RunModulesNowAction(project), backgroundAutomatically);
+    runAction(new RunModulesNowAction(project), backgroundAutomatically, null);
   }
 
   /**

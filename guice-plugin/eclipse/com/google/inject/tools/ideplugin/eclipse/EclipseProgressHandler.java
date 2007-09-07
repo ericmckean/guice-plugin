@@ -22,6 +22,9 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 
 import com.google.inject.Inject;
@@ -40,14 +43,15 @@ class EclipseProgressHandler implements ProgressHandler {
   private final List<ProgressStep> steps;
   private ProgressHandlerJob job;
   private volatile boolean done;
-  private volatile boolean gotSubmonitor;
   private volatile IProgressMonitor monitor;
+  private Runnable executeAfter;
 
   @Inject
   public EclipseProgressHandler(Messenger messenger) {
     this.messenger = messenger;
     this.steps = new ArrayList<ProgressStep>();
     done = false;
+    executeAfter = null;
   }
 
   public boolean isDone() {
@@ -66,10 +70,29 @@ class EclipseProgressHandler implements ProgressHandler {
     go(label, backgroundAutomatically, false);
   }
 
+  class ExecuteAfterListener implements IJobChangeListener {
+    public void aboutToRun(IJobChangeEvent event) {
+    }
+    public void awake(IJobChangeEvent event) {
+    }
+    public void done(IJobChangeEvent event) {
+      executeAfter.run();
+    }
+    public void running(IJobChangeEvent event) {
+    }
+    public void scheduled(IJobChangeEvent event) {
+    }
+    public void sleeping(IJobChangeEvent event) {
+    }
+  }
+  
   public void go(String label, boolean backgroundAutomatically, boolean cancelThread) {
     done = false;
     job = new ProgressHandlerJob(label, cancelThread);
     job.setUser(!backgroundAutomatically);
+    if (executeAfter != null) {
+      job.addJobChangeListener(new ExecuteAfterListener());
+    }
     job.schedule();
   }
 
@@ -77,9 +100,48 @@ class EclipseProgressHandler implements ProgressHandler {
     job.join();
   }
   
-  public IProgressMonitor getSubMonitor() {
-    gotSubmonitor = true;
-    return monitor;
+  static class EclipseProgressMonitor implements ProgressMonitor {
+    private final IProgressMonitor monitor;
+    private SubProgressMonitor submonitor;
+    private final int parentunits;
+    private boolean used;
+    
+    public EclipseProgressMonitor(IProgressMonitor monitor) {
+      this(monitor, 1000);
+    }
+    
+    public EclipseProgressMonitor(IProgressMonitor monitor, int parentunits) {
+      this.monitor = monitor;
+      this.submonitor = null;
+      this.parentunits = parentunits;
+      used = false;
+    }
+    
+    public void begin(String label, int units) {
+      used = true;
+      submonitor = new SubProgressMonitor(monitor, parentunits);
+      submonitor.beginTask(label, units);
+    }
+
+    public void done() {
+      submonitor.done();
+    }
+
+    public ProgressMonitor getSubMonitor(int parentunits) {
+      return new EclipseProgressMonitor(submonitor, parentunits);
+    }
+
+    public void worked(int units) {
+      submonitor.worked(units);
+    }
+    
+    public IProgressMonitor getSubIProgressMonitor(int parentunits) {
+      return new SubProgressMonitor(submonitor, parentunits);
+    }
+    
+    public boolean gotUsed() {
+      return used;
+    }
   }
 
   private class ProgressHandlerJob extends Job {
@@ -96,17 +158,17 @@ class EclipseProgressHandler implements ProgressHandler {
     @Override
     protected IStatus run(IProgressMonitor monitor) {
       EclipseProgressHandler.this.monitor = monitor;
-      monitor.beginTask(label, steps.size() * 100);
+      monitor.beginTask(label, steps.size() * 1000);
       if (cancelThread) spinOffCancelThread(monitor);
       for (ProgressStep step : steps) {
         if (!monitor.isCanceled()) {
+          EclipseProgressMonitor eclipsemonitor = new EclipseProgressMonitor(monitor);
           monitor.setTaskName(step.label());
           currentStep = step;
-          gotSubmonitor = false;
-          step.run();
+          step.run(eclipsemonitor);
           currentStep = null;
-          if (!gotSubmonitor) {
-            monitor.worked(100);
+          if (!eclipsemonitor.gotUsed()) {
+            monitor.worked(1000);
           }
         }
         if (monitor.isCanceled()) {
@@ -151,5 +213,9 @@ class EclipseProgressHandler implements ProgressHandler {
         }
       }
     }
+  }
+  
+  public void executeAfter(Runnable executeAfter) {
+    this.executeAfter = executeAfter;
   }
 }

@@ -43,4 +43,8 @@ class IntellijProgressHandler implements ProgressHandler {
   public boolean isDone() {
     return true;
   }
+  
+  public void executeAfter(Runnable executeAfter) {
+    
+  }
 }

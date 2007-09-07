@@ -19,10 +19,12 @@ package com.google.inject.tools.ideplugin.eclipse;
 import org.eclipse.jdt.core.Flags;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IMember;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.ILocalVariable;
 import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.ITypeParameter;
 import org.eclipse.jdt.core.Signature;
 
 import com.google.inject.tools.ideplugin.JavaElement;
@@ -38,11 +40,12 @@ import com.google.inject.tools.suite.JavaManager;
  */
 class EclipseJavaElement implements JavaElement {
   private final IJavaElement element;
-  private final Type type;
+  private Type type;
   private final String name;
-  private final String className;
+  private String className;
   private final EclipseJavaProject javaProject;
   private final ICompilationUnit compilationUnit;
+  private boolean isConcrete;
 
   /**
    * Create a JavaElement.
@@ -53,38 +56,65 @@ class EclipseJavaElement implements JavaElement {
       ICompilationUnit compilationUnit) {
     this.compilationUnit = compilationUnit;
     this.element = element;
-    this.type = findType();
     this.name = findName();
-    this.className = findClassName();
     this.javaProject = new EclipseJavaProject(element.getJavaProject());
+    findClassNameAndType(element);
   }
-
-  private Type findType() {
-    if (element instanceof IMethod) {
-      return Type.PARAMETER;
-    } else if (element instanceof IField) {
-      return Type.FIELD;
-    } else if (element instanceof ILocalVariable) {
-      return Type.FIELD;
-    } else {
-      return null;
+    
+  private void findClassNameAndType(IJavaElement element) {
+    try {
+      if (element instanceof IMethod) {
+        className = getClassName(element, ((IMethod)element).getSignature());
+        type = Type.PARAMETER;
+        isConcrete = findIsConcreteClass(((IMethod)element).getSignature());
+      } else if (element instanceof IField) {
+        className = getClassName(element, ((IField)element).getTypeSignature());
+        type = Type.FIELD;
+        isConcrete = findIsConcreteClass(((IField)element).getTypeSignature());
+      } else if (element instanceof ILocalVariable) {
+        className = getClassName(element, ((ILocalVariable)element).getTypeSignature());
+        type = Type.FIELD;
+        isConcrete = findIsConcreteClass(((ILocalVariable)element).getTypeSignature());
+      } else if (element instanceof IType) {
+        type = Type.PARAMETER;
+        if (((IType)element).isResolved()) {
+          className = ((IType)element).getFullyQualifiedName();
+          isConcrete = findIsConcreteClass((IType)element);
+        } else {
+          IType resolvedType = TypeUtil.resolveType(element.getJavaProject(), 
+              Signature.createTypeSignature(((IType)element).getFullyQualifiedName(), false));
+          className = resolvedType.getFullyQualifiedName();
+          isConcrete = findIsConcreteClass(resolvedType);
+        }
+      } else if (element instanceof ITypeParameter) {
+        IMember member = ((ITypeParameter)element).getDeclaringMember();
+        findClassNameAndType(member);
+      } else {
+        className = null;
+        type = null;
+        isConcrete = false;
+      }
+    } catch (Throwable e) {
+      className = null;
+      type = null;
+      isConcrete = false;
     }
   }
-
-  private String findClassName() {
-    String type = getType(element);
+  
+  private String getClassName(IJavaElement element, String signature) {
+    String type = getType(element, signature);
     if (type != null) {
       return type;
     } else {
-      return getClassNameFromSignature(findSignature());
+      return getClassNameFromSignature(signature);
     }
   }
 
-  private String getType(IJavaElement element) {
+  private String getType(IJavaElement element, String signature) {
     try {
       IType type = compilationUnit.getAllTypes()[0];
       String resolvedSignature = 
-        TypeUtil.resolveTypeSignature(type, findSignature(), false);
+        TypeUtil.resolveTypeSignature(type, signature, false);
       String className = getClassNameFromResolvedSignature(resolvedSignature);
       return className;
     } catch (Exception e) {
@@ -109,27 +139,6 @@ class EclipseJavaElement implements JavaElement {
     int start = sign.indexOf('L');
     int end = sign.lastIndexOf(';');
     return sign.substring(start+1, end);
-  }
-
-  private String findSignature() {
-    try {
-      switch (getType()) {
-        case PARAMETER:
-          return ((IMethod) element).getSignature();
-        case FIELD:
-          if (element instanceof IField) {
-            return ((IField) element).getTypeSignature();
-          } else if (element instanceof ILocalVariable) {
-            return ((ILocalVariable) element).getTypeSignature();
-          } else {
-            return null;
-          }
-        default:
-          return null;
-      }
-    } catch (Throwable e) {
-      return null;
-    }
   }
 
   private String findName() {
@@ -193,9 +202,21 @@ class EclipseJavaElement implements JavaElement {
   }
   
   public boolean isConcreteClass() {
+    return isConcrete;
+  }
+  
+  private boolean findIsConcreteClass(String signature) {
     try {
       IType owningType = compilationUnit.getAllTypes()[0];
-      IType resolvedType = TypeUtil.resolveType(owningType, findSignature());
+      IType resolvedType = TypeUtil.resolveType(owningType, signature);
+      return findIsConcreteClass(resolvedType);
+    } catch (Throwable throwable) {
+      return false;
+    }
+  }
+  
+  private boolean findIsConcreteClass(IType resolvedType) {
+    try {
       boolean isInterface = Flags.isInterface(resolvedType.getFlags());
       boolean isAbstract = Flags.isAbstract(resolvedType.getFlags());
       return (!isInterface) && (!isAbstract);

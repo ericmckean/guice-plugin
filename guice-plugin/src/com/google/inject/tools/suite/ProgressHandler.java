@@ -37,8 +37,11 @@ public interface ProgressHandler {
 
     /**
      * Called by progress handler to run this step.
+     * 
+     * @param monitor the progress monitor to post status to, it does not need to be used
+     * but if it is then it must follow the contract of {@link ProgressMonitor}
      */
-    public void run();
+    public void run(ProgressMonitor monitor);
 
     /**
      * Called by progress handler to cancel this step.
@@ -54,6 +57,34 @@ public interface ProgressHandler {
      * Return true if this step is done.
      */
     public boolean isDone();
+  }
+  
+  /**
+   * Allows for progress updates from the steps.
+   */
+  public interface ProgressMonitor {
+    /**
+     * Tell the monitor that we are beginning work; done() must be called if this is.
+     * 
+     * @param label the label to display
+     * @param units the total number of work units we will do
+     */
+    public void begin(String label, int units);
+    
+    /**
+     * Create a submonitor using the given number of units of this monitor.
+     */
+    public ProgressMonitor getSubMonitor(int parentunits);
+    
+    /**
+     * State that we have worked the given number of units.
+     */
+    public void worked(int workedunits);
+    
+    /**
+     * State that the work is done.
+     */
+    public void done();
   }
 
   /**
@@ -96,4 +127,9 @@ public interface ProgressHandler {
    * Return true if the progress handler is finished.
    */
   public boolean isDone();
+  
+  /**
+   * Set the code to be executed after the progress handler completes all the steps.
+   */
+  public void executeAfter(Runnable executeAfter);
 }
