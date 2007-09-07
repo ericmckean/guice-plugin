@@ -10,10 +10,10 @@ After both have been in use at Google for a while, the project will move to beta
 
 == Big Picture ==
 
-*Phase I* Navigation
-*Phase II* Problem Notification
-*Phase III* Problem Correction Assistance
-*Phase IV* Refactoring
+  * *Phase I* Navigation
+  * *Phase II* Problem Notification
+  * *Phase III* Problem Correction Assistance
+  * *Phase IV* Refactoring
 
 === Phase I. Navigation ===
 
