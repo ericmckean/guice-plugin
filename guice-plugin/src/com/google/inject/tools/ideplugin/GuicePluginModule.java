@@ -27,6 +27,7 @@ import com.google.inject.tools.ideplugin.results.ResultsView;
 import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProblemsHandler;
+import com.google.inject.tools.suite.ProgressHandler;
 
 /**
  * Abstract module for the plugin's dependency injection. IDE specific
@@ -53,22 +54,25 @@ public abstract class GuicePluginModule extends AbstractModule {
     private final Provider<ProblemsHandler> problemsHandlerProvider;
     private final Provider<ResultsHandler> resultsHandlerProvider;
     private final Provider<Messenger> messengerProvider;
+    private final Provider<ProgressHandler> progressHandlerProvider;
 
     @Inject
     public BindingsEngineFactoryImpl(ProjectManager projectManager,
         Provider<ProblemsHandler> problemsHandlerProvider,
         Provider<ResultsHandler> resultsHandlerProvider,
-        Provider<Messenger> messengerProvider) {
+        Provider<Messenger> messengerProvider,
+        Provider<ProgressHandler> progressHandlerProvider) {
       this.projectManager = projectManager;
       this.problemsHandlerProvider = problemsHandlerProvider;
       this.resultsHandlerProvider = resultsHandlerProvider;
       this.messengerProvider = messengerProvider;
+      this.progressHandlerProvider = progressHandlerProvider;
     }
 
     public BindingsEngine create(JavaElement element, JavaProject javaProject) {
       return new BindingsEngine(projectManager.getModuleManager(javaProject),
           problemsHandlerProvider.get(), resultsHandlerProvider.get(),
-          messengerProvider.get(), element);
+          progressHandlerProvider.get(), messengerProvider.get(), element);
     }
   }
 

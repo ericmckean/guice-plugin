@@ -23,6 +23,7 @@ import com.google.inject.tools.ideplugin.results.CodeLocationsResults;
 import com.google.inject.tools.ideplugin.results.ResultsHandler;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProblemsHandler;
+import com.google.inject.tools.suite.ProgressHandler;
 import com.google.inject.tools.suite.module.ClassNameUtility;
 import com.google.inject.tools.suite.module.ModuleContextRepresentation;
 import com.google.inject.tools.suite.module.ModuleManager;
@@ -54,19 +55,21 @@ public final class BindingsEngine {
   // @AssistedInject replaced by factory in GuicePlugin
   public BindingsEngine(ModuleManager moduleManager,
       ProblemsHandler problemsHandler, ResultsHandler resultsHandler,
-      Messenger messenger, JavaElement element) {
-    Thread engineThread =
+      ProgressHandler progressHandler, Messenger messenger, JavaElement element) {
+    ProgressHandler.ProgressStep engineThread =
       new BindingsEngineThread(moduleManager, problemsHandler,
           resultsHandler, messenger, element);
-    engineThread.start();
+    progressHandler.step(engineThread);
+    progressHandler.go("Finding Guice Bindings", false);
   }
 
-  private class BindingsEngineThread extends Thread {
+  private class BindingsEngineThread implements ProgressHandler.ProgressStep {
     private final ModuleManager moduleManager;
     private final ProblemsHandler problemsHandler;
     private final ResultsHandler resultsHandler;
     private final Messenger messenger;
     private final JavaElement element;
+    private volatile boolean done;
 
     public BindingsEngineThread(ModuleManager moduleManager,
         ProblemsHandler problemsHandler, ResultsHandler resultsHandler,
@@ -76,10 +79,27 @@ public final class BindingsEngine {
       this.resultsHandler = resultsHandler;
       this.messenger = messenger;
       this.element = element;
+      done = false;
+    }
+    
+    public void cancel() {
+      done = true;
+    }
+    
+    public void complete() {
+      done = true;
+    }
+    
+    public boolean isDone() {
+      return done;
+    }
+    
+    public String label() {
+      return "Finding Guice Bindings for " + ClassNameUtility.shorten(element.getClassName());
     }
 
-    @Override
     public void run() {
+      done = false;
       final String theClass = element.getClassName();
       final CodeLocationsResults results =
         new CodeLocationsResults("Bindings for "

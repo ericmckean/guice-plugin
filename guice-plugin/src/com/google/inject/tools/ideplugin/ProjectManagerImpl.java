@@ -321,23 +321,43 @@ class ProjectManagerImpl implements ProjectManager, SourceListener, ProjectSourc
   public void findNewContexts(JavaProject javaManager,
       final PostUpdater postUpdater,
       final boolean backgroundAutomatically) {
-    new FindNewContextsThread(javaManager, postUpdater, backgroundAutomatically)
-        .start();
+    ProgressHandler progressHandler = progressHandlerProvider.get();
+    progressHandler.step(new FindNewContextsThread(javaManager, postUpdater, backgroundAutomatically));
+    progressHandler.go("Finding New Guice Contexts", backgroundAutomatically);
   }
   
-  private class FindNewContextsThread extends Thread {
+  private class FindNewContextsThread implements ProgressHandler.ProgressStep {
     private final JavaProject javaManager;
     private final PostUpdater postUpdater;
     private final boolean backgroundAutomatically;
+    private volatile boolean done;
+    
     public FindNewContextsThread(JavaProject javaManager,
         PostUpdater postUpdater, boolean backgroundAutomatically) {
       this.javaManager = javaManager;
       this.postUpdater = postUpdater;
       this.backgroundAutomatically = backgroundAutomatically;
+      done = false;
+    }
+    
+    public void cancel() {
+      done = true;
+    }
+    
+    public void complete() {
+      done = true;
+    }
+    
+    public boolean isDone() {
+      return done;
+    }
+    
+    public String label() {
+      return "Finding New Guice Contexts for " + javaManager.getName();
     }
 
-    @Override
     public void run() {
+      done = false;
       postUpdater.execute(findNewContexts(javaManager, true, backgroundAutomatically));
     }
   }
