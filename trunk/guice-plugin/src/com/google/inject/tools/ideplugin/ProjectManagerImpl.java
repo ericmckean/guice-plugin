@@ -30,7 +30,9 @@ import com.google.inject.tools.suite.module.ModuleRepresentation;
 import com.google.inject.tools.suite.module.ModuleManager.PostUpdater;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * {@inheritDoc ProjectManager}
@@ -45,8 +47,8 @@ class ProjectManagerImpl implements ProjectManager, SourceListener, ProjectSourc
   private final CustomContextDefinitionSource customContextDefinitionSource;
   private final ProjectSource projectSource;
   private final Provider<ProgressHandler> progressHandlerProvider;
+  private final Set<ProgressHandler> progressHandlers;
   private JavaProject currentProject;
-  private ProgressHandler progressHandler;
 
   //TODO: make this a preference
   private static final boolean shouldListenForChanges = false;
@@ -61,6 +63,7 @@ class ProjectManagerImpl implements ProjectManager, SourceListener, ProjectSourc
     this.customContextDefinitionSource = customContextDefinitionSource;
     this.progressHandlerProvider = progressHandlerProvider;
     this.projectSource = projectSource;
+    this.progressHandlers = new HashSet<ProgressHandler>();
     projectSource.addListener(this);
     customContextDefinitionSource.addListener(this);
     this.moduleManagers = new HashMap<JavaProject, ModuleManager>();
@@ -73,9 +76,9 @@ class ProjectManagerImpl implements ProjectManager, SourceListener, ProjectSourc
   }
   
   private void initializeProjects(boolean waitFor) {
-    setupProgressHandler(waitFor);
+    ProgressHandler progressHandler = setupProgressHandler(waitFor);
     for (JavaProject project : projectSource.getOpenProjects()) {
-      progressHandler.step(new InitializationProgressStep(project));
+      progressHandler.step(new InitializationProgressStep(project, progressHandler));
     }
     progressHandler.go("Guice Plugin Initialization", true);
     if (waitFor) {
@@ -86,8 +89,8 @@ class ProjectManagerImpl implements ProjectManager, SourceListener, ProjectSourc
   }
   
   private void initializeProject(JavaProject project, boolean waitFor) {
-    setupProgressHandler(waitFor);
-    progressHandler.step(new InitializationProgressStep(project));
+    ProgressHandler progressHandler = setupProgressHandler(waitFor);
+    progressHandler.step(new InitializationProgressStep(project, progressHandler));
     progressHandler.go("Guice Plugin Update", false);
     if (waitFor) {
       try {
@@ -96,21 +99,25 @@ class ProjectManagerImpl implements ProjectManager, SourceListener, ProjectSourc
     }
   }
   
-  private void setupProgressHandler(boolean waitFor) {
-    if (waitFor && progressHandler != null) {
+  private ProgressHandler setupProgressHandler(boolean waitFor) {
+    if (waitFor) {
       try {
-        progressHandler.waitFor();
+        waitForAllProgressHandlers();
       } catch (InterruptedException e) {}
     }
-    progressHandler = progressHandlerProvider.get();
+    ProgressHandler progressHandler = progressHandlerProvider.get();
+    progressHandlers.add(progressHandler);
+    return progressHandler;
   }
   
   private class InitializationProgressStep implements ProgressHandler.ProgressStep {
     private final JavaProject project;
+    private final ProgressHandler progressHandler;
     private boolean done;
     
-    public InitializationProgressStep(JavaProject project) {
+    public InitializationProgressStep(JavaProject project, ProgressHandler progressHandler) {
       this.project = project;
+      this.progressHandler = progressHandler;
       done = false;
     }
     
@@ -133,7 +140,11 @@ class ProjectManagerImpl implements ProjectManager, SourceListener, ProjectSourc
     public void run() {
       done = false;
       ModuleManager moduleManager = createModuleManager(project);
-      for (String customContextName : customContextDefinitionSource.get(project)) {
+      synchronized (moduleManager) {
+        initModules(project, progressHandler);
+        initContexts(moduleManager);
+      }
+      for (String customContextName : customContextDefinitionSource.get(project, progressHandler)) {
         moduleManager.addApplicationContext(customContextName);
       }
     }
@@ -205,7 +216,7 @@ class ProjectManagerImpl implements ProjectManager, SourceListener, ProjectSourc
 
   public ModuleManager getModuleManager(JavaProject javaManager) {
     try {
-      progressHandler.waitFor();
+      waitForAllProgressHandlers();
     } catch (InterruptedException e) {}
     return createModuleManager(javaManager);
   }
@@ -216,7 +227,7 @@ class ProjectManagerImpl implements ProjectManager, SourceListener, ProjectSourc
   
   public void projectOpened(JavaProject javaProject) {
     ProjectSettings settings = javaProject.loadSettings();
-    createModuleManager(javaProject);
+    initializeProject(javaProject, true);
     moduleManagers.get(javaProject).setActivateModulesByDefault(settings.activateByDefault);
     moduleManagers.get(javaProject).setRunAutomatically(settings.runAutomatically);
     //TODO: load contexts
@@ -250,10 +261,6 @@ class ProjectManagerImpl implements ProjectManager, SourceListener, ProjectSourc
     if (moduleManagers.get(javaManager) == null) {
       ModuleManager moduleManager = moduleManagerFactory.create(javaManager);
       moduleManagers.put(javaManager, moduleManager);
-      synchronized (moduleManager) {
-        initModules(javaManager);
-        initContexts(moduleManager);
-      }
     }
     return moduleManagers.get(javaManager);
   }
@@ -261,9 +268,9 @@ class ProjectManagerImpl implements ProjectManager, SourceListener, ProjectSourc
   /*
    * Ask the ModulesListener for all the modules in the user's code.
    */
-  private synchronized void initModules(JavaProject javaManager) {
+  private synchronized void initModules(JavaProject javaManager, ProgressHandler progressHandler) {
     if (javaManager != null) {
-      for (String moduleName : modulesSource.get(javaManager)) {
+      for (String moduleName : modulesSource.get(javaManager, progressHandler)) {
         initModule(moduleManagers.get(javaManager), moduleName);
       }
     }
@@ -373,5 +380,18 @@ class ProjectManagerImpl implements ProjectManager, SourceListener, ProjectSourc
       }
     }
     return null;
+  }
+  
+  private void waitForAllProgressHandlers() throws InterruptedException {
+    Set<ProgressHandler> toRemove = new HashSet<ProgressHandler>();
+    for (ProgressHandler progressHandler : progressHandlers) {
+      if (progressHandler.isDone()) {
+        toRemove.add(progressHandler);
+      }
+      progressHandler.waitFor();
+    }
+    for (ProgressHandler progressHandler : toRemove) {
+      progressHandlers.remove(progressHandler);
+    }
   }
 }

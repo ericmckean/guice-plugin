@@ -23,6 +23,7 @@ import com.google.inject.tools.ideplugin.CustomContextDefinitionSource;
 import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.ideplugin.SourceImpl;
 import com.google.inject.tools.suite.Messenger;
+import com.google.inject.tools.suite.ProgressHandler;
 
 class IntellijCustomContextListener extends
     SourceImpl implements CustomContextDefinitionSource {
@@ -39,7 +40,7 @@ class IntellijCustomContextListener extends
   }
   
   @Override
-  protected Set<String> locate(JavaProject javaProject)
+  protected Set<String> locate(JavaProject javaProject, ProgressHandler progressHandler)
       throws Throwable {
     return null;
   }

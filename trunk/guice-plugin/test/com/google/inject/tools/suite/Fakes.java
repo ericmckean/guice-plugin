@@ -211,6 +211,10 @@ public class Fakes {
 
     public void waitFor() {
     }
+    
+    public boolean isDone() {
+      return true;
+    }
 
     public boolean isCancelled() {
       return false;
