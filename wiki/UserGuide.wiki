@@ -16,7 +16,7 @@ There are three ways to configure module contexts for use with the plugin:
   * Use a single module.
   * Create a custom context.
 
-*Implement Iterable<Module>*: The plugin will search your code for anything that implements Iterable<Module> and configure itself to run each found class as a context.  This is the best way to use the plugin since it guarantees that everyone checking out the project will have the same contexts.
+*Implement Iterable<Module>*: The plugin will search your code for anything that implements Iterable<Module> and configure itself to run each found class as a context.  This is the best way to use the plugin since it guarantees that everyone checking out the project will have the same contexts.  *Important*: You must explicitly implement Iterable<Module> (i.e. add {{{ implements Iterable<Module> }}} even if your object is say a Set<Module>).
 
 *The single module method*: The easiest way to configure a context is to specify a single module in your code to be the context.  This amounts to having the plugin run {{{ Guice.createInjector(new YourModule()); }}}.  The Module Context Configure Dialog (see below) will allow you to set up such a context.  The downside to this approach is that it only works if you have single modules that function independently.
 
