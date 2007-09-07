@@ -28,6 +28,7 @@ import com.google.inject.Inject;
 import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProgressHandler;
+import com.google.inject.tools.suite.ProgressHandler.ProgressMonitor;
 import com.google.inject.tools.suite.snippets.CodeSnippetResult;
 
 /**
@@ -133,7 +134,7 @@ class CodeRunnerImpl implements CodeRunner {
       return runnable.label();
     }
 
-    public void run() {
+    public void run(ProgressMonitor monitor) {
       if (!killed && !done) {
         done = false;
         try {

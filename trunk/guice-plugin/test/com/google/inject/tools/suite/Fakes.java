@@ -21,6 +21,7 @@ import com.google.inject.spi.Message;
 import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.ideplugin.ProjectSettings;
 import com.google.inject.tools.suite.Messenger;
+import com.google.inject.tools.suite.ProgressHandler.ProgressMonitor;
 import com.google.inject.tools.suite.code.CodeRunner;
 import com.google.inject.tools.suite.snippets.CodeProblem;
 import com.google.inject.tools.suite.snippets.CodeSnippet;
@@ -199,14 +200,31 @@ public class Fakes {
     }
   }
   
+  static class FakeProgressMonitor implements ProgressMonitor {
+    public void begin(String label, int units) {
+    }
+
+    public void done() {
+    }
+
+    public ProgressMonitor getSubMonitor(int parentunits) {
+      return this;
+    }
+
+    public void worked(int workedunits) {
+    }
+  }
+  
   public static class FakeProgressHandler implements ProgressHandler {
     private final List<ProgressStep> steps = new ArrayList<ProgressStep>();
-
+    private Runnable executeAfter;
+    
     public void go(String label, boolean backgroundAutomatically) {
       for (ProgressStep step : steps) {
-        step.run();
+        step.run(new FakeProgressMonitor());
         step.complete();
       }
+      if (executeAfter != null) executeAfter.run();
     }
 
     public void go(String label, boolean backgroundAutomatically, boolean cancelThread) {
@@ -226,6 +244,10 @@ public class Fakes {
 
     public void step(ProgressStep step) {
       steps.add(step);
+    }
+    
+    public void executeAfter(Runnable executeAfter) {
+      this.executeAfter = executeAfter;
     }
   }
 }

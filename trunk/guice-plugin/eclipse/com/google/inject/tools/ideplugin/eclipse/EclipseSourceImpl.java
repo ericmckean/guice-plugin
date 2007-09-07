@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jdt.core.ElementChangedEvent;
 import org.eclipse.jdt.core.Flags;
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -41,7 +40,7 @@ import com.google.inject.Inject;
 import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.ideplugin.SourceImpl;
 import com.google.inject.tools.suite.Messenger;
-import com.google.inject.tools.suite.ProgressHandler;
+import com.google.inject.tools.suite.ProgressHandler.ProgressMonitor;
 
 /**
  * Eclipse implementation of the {@link com.google.inject.tools.ideplugin.Source}.
@@ -158,27 +157,25 @@ abstract class EclipseSourceImpl extends SourceImpl {
   
   @Override
   protected Set<String> locate(JavaProject javaManager,
-      ProgressHandler progressHandler) throws Throwable {
+      ProgressMonitor monitor) throws Throwable {
     if (javaManager instanceof EclipseJavaProject) {
-      return locate((EclipseJavaProject) javaManager, progressHandler);
+      return locate((EclipseJavaProject) javaManager, monitor);
     } else {
       throw new NotEclipseJavaProjectException(javaManager);
     }
   }
   
-  protected Set<String> locate(EclipseJavaProject javaManager, ProgressHandler progressHandler)
+  protected Set<String> locate(EclipseJavaProject javaManager, ProgressMonitor monitor)
       throws Throwable {
-    EclipseProgressHandler eclipseProgressHandler = (EclipseProgressHandler)progressHandler;
+    monitor.begin("Building Guice Type Hierarchy", 2);
     IType type = javaManager.getIJavaProject().findType(getTypeName());
-    IProgressMonitor submonitor = eclipseProgressHandler.getSubMonitor();
-    SubProgressMonitor subprogressmonitor = new SubProgressMonitor(submonitor, 50);
-    ITypeHierarchy hierarchy = type.newTypeHierarchy(subprogressmonitor);
+    IProgressMonitor eclipsemonitor = 
+        ((EclipseProgressHandler.EclipseProgressMonitor)monitor).getSubIProgressMonitor(1);
+    ITypeHierarchy hierarchy = type.newTypeHierarchy(eclipsemonitor);
     final Set<String> names = new HashSet<String>();
     IType[] subclasses = hierarchy.getAllSubtypes(type);
-    int totalFakeUnits = subclasses.length;
-    int workedFakeUnits = 0;
-    int totalRealUnits = 50;
-    int workedRealUnits = 0;
+    ProgressMonitor secondmonitor = monitor.getSubMonitor(1);
+    secondmonitor.begin("Analyzing Guice Type Hierarchy", subclasses.length);
     for (IType subclass : subclasses) {
       try {
         if (subclass.isClass()) {
@@ -191,16 +188,10 @@ abstract class EclipseSourceImpl extends SourceImpl {
       } catch (Throwable t) {
         hadProblem(t);
       }
-      workedFakeUnits++;
-      int newRealUnits = (totalRealUnits * workedFakeUnits) / totalFakeUnits;
-      if (newRealUnits > workedRealUnits) {
-        submonitor.worked(newRealUnits - workedRealUnits);
-        workedRealUnits = newRealUnits;
-      }
+      secondmonitor.worked(1);
     }
-    if (workedRealUnits < totalRealUnits) {
-      submonitor.worked(totalRealUnits - workedRealUnits);
-    }
+    secondmonitor.done();
+    monitor.done();
     return names;
   }
   

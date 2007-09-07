@@ -17,7 +17,7 @@
 package com.google.inject.tools.ideplugin;
 
 import com.google.inject.tools.ideplugin.JavaProject;
-import com.google.inject.tools.suite.ProgressHandler;
+import com.google.inject.tools.suite.ProgressHandler.ProgressMonitor;
 
 import java.util.Set;
 
@@ -52,7 +52,7 @@ public interface Source {
    * 
    * @param javaProject the java context to find custom module contexts for
    */
-  public Set<String> get(JavaProject javaProject, ProgressHandler progressHandler);
+  public Set<String> get(JavaProject javaProject, ProgressMonitor progressMonitor);
   
   public abstract boolean isListeningForChanges();
   

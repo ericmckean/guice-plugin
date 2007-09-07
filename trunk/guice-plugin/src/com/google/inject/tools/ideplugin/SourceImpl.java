@@ -24,7 +24,7 @@ import java.util.Set;
 import com.google.inject.Inject;
 import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.suite.Messenger;
-import com.google.inject.tools.suite.ProgressHandler;
+import com.google.inject.tools.suite.ProgressHandler.ProgressMonitor;
 
 /**
  * Abstract implementation of the {@link Source} for the IDE plugin.
@@ -49,14 +49,14 @@ public abstract class SourceImpl implements Source {
    * Locate the modules.
    */
   protected abstract Set<String> locate(JavaProject javaProject,
-      ProgressHandler progressHandler) throws Throwable;
+      ProgressMonitor progressMonitor) throws Throwable;
 
-  public Set<String> get(JavaProject project, ProgressHandler progressHandler) {
+  public Set<String> get(JavaProject project, ProgressMonitor progressMonitor) {
     if (things.get(project) == null) {
       initialize(project);
     }
     try {
-      keepByName(project, locate(project, progressHandler));
+      keepByName(project, locate(project, progressMonitor));
     } catch (Throwable throwable) {
       hadProblem(throwable);
     }

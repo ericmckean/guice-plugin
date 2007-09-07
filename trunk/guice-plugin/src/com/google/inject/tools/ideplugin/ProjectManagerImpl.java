@@ -24,6 +24,7 @@ import com.google.inject.tools.ideplugin.Source.SourceListener;
 import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.suite.ProgressHandler;
 import com.google.inject.tools.suite.GuiceToolsModule.ModuleManagerFactory;
+import com.google.inject.tools.suite.ProgressHandler.ProgressMonitor;
 import com.google.inject.tools.suite.module.ModuleContextRepresentation;
 import com.google.inject.tools.suite.module.ModuleManager;
 import com.google.inject.tools.suite.module.ModuleRepresentation;
@@ -78,8 +79,8 @@ class ProjectManagerImpl implements ProjectManager, SourceListener, ProjectSourc
   private void initializeProjects(boolean waitFor) {
     ProgressHandler progressHandler = setupProgressHandler(waitFor);
     for (JavaProject project : projectSource.getOpenProjects()) {
-      progressHandler.step(new ModuleInitializationStep(project, progressHandler));
-      progressHandler.step(new ContextInitializationStep(project, progressHandler));
+      progressHandler.step(new ModuleInitializationStep(project));
+      progressHandler.step(new ContextInitializationStep(project));
     }
     progressHandler.go("Guice Plugin Initialization", true);
     if (waitFor) {
@@ -91,8 +92,8 @@ class ProjectManagerImpl implements ProjectManager, SourceListener, ProjectSourc
   
   private void initializeProject(JavaProject project, boolean waitFor) {
     ProgressHandler progressHandler = setupProgressHandler(waitFor);
-    progressHandler.step(new ModuleInitializationStep(project, progressHandler));
-    progressHandler.step(new ContextInitializationStep(project, progressHandler));
+    progressHandler.step(new ModuleInitializationStep(project));
+    progressHandler.step(new ContextInitializationStep(project));
     progressHandler.go("Guice Plugin Update", false);
     if (waitFor) {
       try {
@@ -114,13 +115,11 @@ class ProjectManagerImpl implements ProjectManager, SourceListener, ProjectSourc
   
   private abstract class InitializationProgressStep implements ProgressHandler.ProgressStep {
     protected final JavaProject project;
-    protected final ProgressHandler progressHandler;
     protected ModuleManager moduleManager;
     private boolean done;
     
-    public InitializationProgressStep(JavaProject project, ProgressHandler progressHandler) {
+    public InitializationProgressStep(JavaProject project) {
       this.project = project;
-      this.progressHandler = progressHandler;
       done = false;
     }
     
@@ -140,37 +139,37 @@ class ProjectManagerImpl implements ProjectManager, SourceListener, ProjectSourc
       return "Initializing project for guice plugin: " + project.getName();
     }
 
-    public void run() {
+    public void run(ProgressMonitor monitor) {
       done = false;
       moduleManager = createModuleManager(project);
-      runit();
+      runit(monitor);
     }
     
-    public abstract void runit();
+    public abstract void runit(ProgressMonitor monitor);
   }
   
   private class ModuleInitializationStep extends InitializationProgressStep {
-    public ModuleInitializationStep(JavaProject project, ProgressHandler progressHandler) {
-      super(project, progressHandler);
+    public ModuleInitializationStep(JavaProject project) {
+      super(project);
     }
     
     @Override
-    public void runit() {
+    public void runit(ProgressMonitor monitor) {
       synchronized (moduleManager) {
-        initModules(project, progressHandler);
+        initModules(project, monitor);
         initContexts(moduleManager);
       }
     }
   }
   
   private class ContextInitializationStep extends InitializationProgressStep {
-    public ContextInitializationStep(JavaProject project, ProgressHandler progressHandler) {
-      super(project, progressHandler);
+    public ContextInitializationStep(JavaProject project) {
+      super(project);
     }
     
     @Override
-    public void runit() {
-      for (String customContextName : customContextDefinitionSource.get(project, progressHandler)) {
+    public void runit(ProgressMonitor monitor) {
+      for (String customContextName : customContextDefinitionSource.get(project, monitor)) {
         moduleManager.addApplicationContext(customContextName);
       }
     }
@@ -294,9 +293,9 @@ class ProjectManagerImpl implements ProjectManager, SourceListener, ProjectSourc
   /*
    * Ask the ModulesListener for all the modules in the user's code.
    */
-  private synchronized void initModules(JavaProject javaManager, ProgressHandler progressHandler) {
+  private synchronized void initModules(JavaProject javaManager, ProgressMonitor monitor) {
     if (javaManager != null) {
-      for (String moduleName : modulesSource.get(javaManager, progressHandler)) {
+      for (String moduleName : modulesSource.get(javaManager, monitor)) {
         initModule(moduleManagers.get(javaManager), moduleName);
       }
     }
@@ -389,7 +388,7 @@ class ProjectManagerImpl implements ProjectManager, SourceListener, ProjectSourc
       return "Finding New Guice Contexts for " + javaManager.getName();
     }
 
-    public void run() {
+    public void run(ProgressMonitor monitor) {
       done = false;
       postUpdater.execute(findNewContexts(javaManager, true, backgroundAutomatically));
     }

@@ -26,6 +26,7 @@ import com.google.inject.tools.ideplugin.results.ResultsHandler;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProblemsHandler;
 import com.google.inject.tools.suite.ProgressHandler;
+import com.google.inject.tools.suite.ProgressHandler.ProgressMonitor;
 import com.google.inject.tools.suite.module.ClassNameUtility;
 import com.google.inject.tools.suite.module.ModuleContextRepresentation;
 import com.google.inject.tools.suite.module.ModuleManager;
@@ -103,7 +104,7 @@ public final class BindingsEngine {
       return "Finding Guice Bindings for " + ClassNameUtility.shorten(element.getClassName());
     }
 
-    public void run() {
+    public void run(ProgressMonitor monitor) {
       done = false;
       ModuleManager moduleManager = projectManager.getModuleManager(project);
       final String theClass = element.getClassName();
