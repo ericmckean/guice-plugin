@@ -18,12 +18,14 @@ package com.google.inject.tools.ideplugin;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Provider;
 import com.google.inject.tools.ideplugin.bindings.BindingsEngine;
 import com.google.inject.tools.ideplugin.results.ResultsHandler;
 import com.google.inject.tools.suite.GuiceToolsModule;
 import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProblemsHandler;
+import com.google.inject.tools.suite.ProgressHandler;
 import com.google.inject.tools.suite.GuiceToolsModule.ModuleManagerFactory;
 import com.google.inject.tools.suite.module.ModuleManager;
 
@@ -37,6 +39,7 @@ import com.google.inject.tools.suite.module.ModuleManager;
  */
 public abstract class GuicePlugin {
   private final Injector injector;
+  private final Provider<ProgressHandler> progressHandlerProvider;
 
   /**
    * Create a (the) GuicePlugin.
@@ -45,6 +48,7 @@ public abstract class GuicePlugin {
    */
   public GuicePlugin(GuicePluginModule module, GuiceToolsModule toolsModule) {
     injector = Guice.createInjector(module, toolsModule);
+    progressHandlerProvider = injector.getProvider(ProgressHandler.class);
   }
 
   /**
@@ -73,6 +77,93 @@ public abstract class GuicePlugin {
       JavaProject javaProject) {
     return getInstance(GuicePluginModule.BindingsEngineFactory.class).create(
         element, javaProject);
+  }
+  
+  private void runAction(ProgressHandler.ProgressStep step, boolean backgroundAutomatically) {
+    ProgressHandler progressHandler = progressHandlerProvider.get();
+    progressHandler.step(step);
+    progressHandler.go(step.label(), backgroundAutomatically);
+  }
+  
+  /**
+   * Show the Configure dialog.
+   * 
+   * @param project the JavaProject to configure
+   */
+  public void configurePlugin(JavaProject project, boolean backgroundAutomatically) {
+    runAction(new ConfigurePluginAction(project), backgroundAutomatically);
+  }
+  
+  class ConfigurePluginAction implements ProgressHandler.ProgressStep {
+    private final JavaProject project;
+    private boolean done;
+    
+    public ConfigurePluginAction(JavaProject project) {
+      this.project = project;
+      done = false;
+    }
+    
+    public void cancel() {
+      done = true;
+    }
+
+    public void complete() {
+      done = true;
+    }
+
+    public boolean isDone() {
+      return done;
+    }
+
+    public String label() {
+      return "Configuring Guice Plugin for " + project.getName();
+    }
+
+    public void run() {
+      done = false;
+      ModuleManager moduleManager = getProjectManager().getModuleManager(project);
+      getModuleSelectionView().show(project);
+    }
+  }
+  
+  class RunModulesNowAction implements ProgressHandler.ProgressStep {
+    private final JavaProject project;
+    private boolean done;
+    
+    public RunModulesNowAction(JavaProject project) {
+      this.project = project;
+      done = false;
+    }
+    
+    public void cancel() {
+      done = true;
+    }
+
+    public void complete() {
+      done = true;
+    }
+
+    public boolean isDone() {
+      return done;
+    }
+
+    public String label() {
+      return "Configuring Guice Plugin for " + project.getName();
+    }
+
+    public void run() {
+      done = false;
+      getProjectManager().getModuleManager(project).rerunModules(false, false);
+    }
+  }
+  
+  /**
+   * Run the modules now.
+   * 
+   * @param project the JavaProject to run modules in
+   */
+  public void runModulesNow(JavaProject project, boolean backgroundAutomatically) {
+    runAction(new RunModulesNowAction(project), backgroundAutomatically);
   }
 
   /**

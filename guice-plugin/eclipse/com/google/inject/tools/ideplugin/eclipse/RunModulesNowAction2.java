@@ -32,9 +32,7 @@ public class RunModulesNowAction2 extends EclipseMenuAction {
   protected boolean runMyAction(IEditorPart part) {
     ICompilationUnit cu = JavaPlugin.getDefault()
         .getWorkingCopyManager().getWorkingCopy(((CompilationUnitEditor)part).getEditorInput());
-    guicePlugin.getProjectManager()
-        .getModuleManager(new EclipseJavaProject(cu.getJavaProject()))
-          .rerunModules(false, false);
+    guicePlugin.runModulesNow(new EclipseJavaProject(cu.getJavaProject()), false);
     return true;
   }
   

@@ -22,7 +22,6 @@ import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.ui.IEditorPart;
 
 import com.google.inject.tools.ideplugin.JavaProject;
-import com.google.inject.tools.suite.module.ModuleManager;
 
 /**
  * Run the Module Contexts Configure dialog.
@@ -36,8 +35,7 @@ public class GuicePluginConfigureAction2 extends EclipseMenuAction {
     ICompilationUnit cu = JavaPlugin.getDefault()
         .getWorkingCopyManager().getWorkingCopy(((CompilationUnitEditor)part).getEditorInput());
     JavaProject project = new EclipseJavaProject(cu.getJavaProject());
-    ModuleManager moduleManager = guicePlugin.getProjectManager().getModuleManager(project);
-    guicePlugin.getModuleSelectionView().show(project);
+    guicePlugin.configurePlugin(project, false);
     return true;
   }
   
