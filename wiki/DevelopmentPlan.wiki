@@ -1,2 +1,80 @@
-#summary Plans for feature improvements and releases.
+#summary Plans for further development.
 
+== Status ==
+
+The plugin is in *alpha* release of the Eclipse version for internal use at Google.
+
+The IntelliJ plugin will be built shortly.
+
+After both have been in use at Google for a while, the project will move to beta phase and be made public.
+
+== Big Picture ==
+
+*Phase I* Navigation
+*Phase II* Problem Notification
+*Phase III* Problem Correction Assistance
+*Phase IV* Refactoring
+
+=== Phase I. Navigation ===
+
+Allow users to navigate guice code by jumping through bindings.
+
+*Status*: 90% complete.  The "Find Bindings" feature is done (except for a few outstanding issues).
+
+*Outstanding Issues*
+  * Handle linked bindings (requires rewriting snippet to use new guice API)
+  * IntelliJ version
+
+*Eclipse Version Outstanding Issues*
+  * Save and load preferences for plugin
+  * Add toolbar buttons in Results View for guice actions
+  * Correctly determine java command and flags
+  * Determine if element is at an injection point and its annotations
+
+*Tools Suite Outstanding Issues*
+  * Rewrite snippet to use new guice API
+  * Implement !CodeRunners with various behaviors
+  * Implement the Module taking arguments functionality
+  * Write sample code
+
+*Plan*
+  # Make use of the new guice API
+  # Document the IntelliJ plugin (what's needed)
+  # Take care of the remaining issues
+
+=== Phase II. Problem Notification ===
+
+Notify users of guice related problems in their code (e.g. !CreationException) with markers (red and yellow underlining etc).
+
+*Status*: 25% complete.  The back end is in place, the !ProblemsHandler object receives information from the code runs about any problems detected.  These are passed in the form of !CodeProblem objects which wrap the underlying exceptions that will be thrown at runtime.
+
+*Plan*
+  # Complete the implementation of the Problems API
+  # Implement code listening (IDE specific)
+  # Implement the user interface
+
+=== Phase III. Problem Correction ===
+
+Use Code Complete features of IDEs to help the users correct problems from Phase II (such as alt-enter in IntelliJ to auto suggest code).
+
+*Status*: Not started.
+
+*Plan*
+  # Decide on supported problems
+  # Design a code problem correction framework for the plugin
+  # Implement the framework
+  # Implement the supported problems
+  # Implement the user interface
+
+=== Phase IV. Refactoring ===
+
+Allow users to refactor guice code automatically, for instance "add injected parameter" to a constructor.
+
+*Status*: Not started.
+
+*Plan*
+  # Decide on supported refactorings
+  # Design a refactoring framework for the plugin
+  # Implement the refactoring framework
+  # Implement the refactorings
+  # Implement the user interface
