@@ -70,7 +70,7 @@ public abstract class GuicePluginModule extends AbstractModule {
     }
 
     public BindingsEngine create(JavaElement element, JavaProject javaProject) {
-      return new BindingsEngine(projectManager.getModuleManager(javaProject),
+      return new BindingsEngine(projectManager, javaProject,
           problemsHandlerProvider.get(), resultsHandlerProvider.get(),
           progressHandlerProvider.get(), messengerProvider.get(), element);
     }

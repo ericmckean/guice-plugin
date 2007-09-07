@@ -19,6 +19,8 @@ package com.google.inject.tools.ideplugin.bindings;
 import java.util.Collections;
 
 import com.google.inject.tools.ideplugin.JavaElement;
+import com.google.inject.tools.ideplugin.JavaProject;
+import com.google.inject.tools.ideplugin.ProjectManager;
 import com.google.inject.tools.ideplugin.results.CodeLocationsResults;
 import com.google.inject.tools.ideplugin.results.ResultsHandler;
 import com.google.inject.tools.suite.Messenger;
@@ -53,28 +55,30 @@ public final class BindingsEngine {
    * @param element the JavaElement to find bindings for (not injected)
    */
   // @AssistedInject replaced by factory in GuicePlugin
-  public BindingsEngine(ModuleManager moduleManager,
+  public BindingsEngine(ProjectManager projectManager, JavaProject project,
       ProblemsHandler problemsHandler, ResultsHandler resultsHandler,
       ProgressHandler progressHandler, Messenger messenger, JavaElement element) {
     ProgressHandler.ProgressStep engineThread =
-      new BindingsEngineThread(moduleManager, problemsHandler,
+      new BindingsEngineThread(projectManager, project, problemsHandler,
           resultsHandler, messenger, element);
     progressHandler.step(engineThread);
     progressHandler.go("Finding Guice Bindings", true);
   }
 
   private class BindingsEngineThread implements ProgressHandler.ProgressStep {
-    private final ModuleManager moduleManager;
+    private final ProjectManager projectManager;
+    private final JavaProject project;
     private final ProblemsHandler problemsHandler;
     private final ResultsHandler resultsHandler;
     private final Messenger messenger;
     private final JavaElement element;
     private volatile boolean done;
 
-    public BindingsEngineThread(ModuleManager moduleManager,
+    public BindingsEngineThread(ProjectManager projectManager, JavaProject project,
         ProblemsHandler problemsHandler, ResultsHandler resultsHandler,
         Messenger messenger, JavaElement element) {
-      this.moduleManager = moduleManager;
+      this.projectManager = projectManager;
+      this.project = project;
       this.problemsHandler = problemsHandler;
       this.resultsHandler = resultsHandler;
       this.messenger = messenger;
@@ -100,6 +104,7 @@ public final class BindingsEngine {
 
     public void run() {
       done = false;
+      ModuleManager moduleManager = projectManager.getModuleManager(project);
       final String theClass = element.getClassName();
       final CodeLocationsResults results =
         new CodeLocationsResults("Bindings for "
