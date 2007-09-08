@@ -111,7 +111,7 @@ class ModuleContextRepresentationImpl implements
       ModuleContextSnippet.ModuleContextResult contextResult =
           (ModuleContextSnippet.ModuleContextResult) result;
       if (getName().equals(contextResult.getName())) {
-        this.bindings = contextResult.getBindings().bindings();
+        this.bindings = contextResult.getInjector().bindings();
         this.problems = contextResult.getProblems();
         dirty = false;
       }

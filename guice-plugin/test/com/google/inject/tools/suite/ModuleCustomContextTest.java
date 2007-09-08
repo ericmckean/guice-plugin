@@ -44,7 +44,7 @@ public class ModuleCustomContextTest extends TestCase {
         (ModuleContextSnippet.ModuleContextResult) obj;
     assertTrue(result.getName().equals("EclipseApplicationContext"));
     assertTrue(result.getProblems().isEmpty());
-    assertNotNull(result.getBindings());
+    assertNotNull(result.getInjector());
   }
   
   private class ThreadWithStream extends Thread {
