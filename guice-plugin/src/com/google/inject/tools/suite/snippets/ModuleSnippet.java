@@ -21,6 +21,9 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import com.google.inject.Module;
+import com.google.inject.tools.suite.snippets.problems.BadClassProblem;
+import com.google.inject.tools.suite.snippets.problems.CodeProblem;
+import com.google.inject.tools.suite.snippets.problems.InvalidModuleProblem;
 
 import java.util.Collections;
 import java.util.Set;
@@ -179,7 +182,7 @@ public class ModuleSnippet<T extends Module> extends CodeSnippet {
           defaultConstructor = null;
         }
       } else {
-        problems.add(new CodeProblem.InvalidModuleProblem(className,exception));
+        problems.add(new InvalidModuleProblem(className,exception));
         defaultConstructor = null;
       }
     }
@@ -190,7 +193,7 @@ public class ModuleSnippet<T extends Module> extends CodeSnippet {
     try {
       return (Class<T>) Class.forName(className);
     } catch (Exception exception) {
-      problems.add(new CodeProblem.BadClassProblem(className, exception));
+      problems.add(new BadClassProblem(className, exception));
       return null;
     }
   }

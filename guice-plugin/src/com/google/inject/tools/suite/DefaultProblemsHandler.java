@@ -19,7 +19,7 @@ package com.google.inject.tools.suite;
 import java.util.Set;
 
 import com.google.inject.Singleton;
-import com.google.inject.tools.suite.snippets.CodeProblem;
+import com.google.inject.tools.suite.snippets.problems.CodeProblem;
 
 /**
  * Default implementation of the {@link ProblemsHandler} that does nothing.

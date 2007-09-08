@@ -18,7 +18,7 @@ package com.google.inject.tools.ideplugin.results;
 
 import com.google.inject.tools.suite.module.ClassNameUtility;
 import com.google.inject.tools.suite.snippets.CodeLocation;
-import com.google.inject.tools.suite.snippets.CodeProblem;
+import com.google.inject.tools.suite.snippets.problems.CodeProblem;
 
 import java.util.HashMap;
 import java.util.Map;

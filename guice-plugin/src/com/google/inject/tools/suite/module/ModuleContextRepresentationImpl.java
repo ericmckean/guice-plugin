@@ -25,11 +25,12 @@ import com.google.inject.tools.suite.module.ClassNameUtility;
 import com.google.inject.tools.suite.module.ModuleContextRepresentation;
 import com.google.inject.tools.suite.snippets.BindingCodeLocation;
 import com.google.inject.tools.suite.snippets.CodeLocation;
-import com.google.inject.tools.suite.snippets.CodeProblem;
 import com.google.inject.tools.suite.snippets.CodeSnippetResult;
 import com.google.inject.tools.suite.snippets.ModuleContextSnippet;
 import com.google.inject.tools.suite.snippets.BindingCodeLocation.NoBindingLocation;
-import com.google.inject.tools.suite.snippets.ModuleContextSnippet.ModuleContextResult.KeyRepresentation;
+import com.google.inject.tools.suite.snippets.bindings.BindingRepresentation;
+import com.google.inject.tools.suite.snippets.bindings.KeyRepresentation;
+import com.google.inject.tools.suite.snippets.problems.CodeProblem;
 
 /**
  * {@inheritDoc ModuleContextRepresentation}
@@ -42,7 +43,7 @@ class ModuleContextRepresentationImpl implements
   protected String longName;
   protected String shortName;
   private final Set<ModuleInstanceRepresentation> modules;
-  private Map<KeyRepresentation, BindingCodeLocation> bindings;
+  private Map<KeyRepresentation, BindingRepresentation> bindings;
   private Set<? extends CodeProblem> problems;
   private boolean dirty;
 
@@ -65,11 +66,11 @@ class ModuleContextRepresentationImpl implements
   public CodeLocation findLocation(String theClass, String annotatedWith) {
     KeyRepresentation key = new KeyRepresentation(theClass, annotatedWith);
     if (bindings.get(key) != null) {
-      return bindings.get(key);
+      return new BindingCodeLocation(getName(), key, bindings.get(key));
     }
     key = new KeyRepresentation(theClass, "@" + annotatedWith);
     if (bindings.get(key) != null) {
-      return bindings.get(key);
+      return new BindingCodeLocation(getName(), key, bindings.get(key));
     }
     return new NoBindingLocation(theClass);
   }
@@ -78,8 +79,8 @@ class ModuleContextRepresentationImpl implements
     Set<CodeLocation> locations = new HashSet<CodeLocation>();
     if (bindings!=null && bindings.keySet()!=null && !bindings.keySet().isEmpty()) {
       for (KeyRepresentation key : bindings.keySet()) {
-        if (key.bindWhat.equals(theClass)) {
-          locations.add(bindings.get(key));
+        if (key.bindWhat().equals(theClass)) {
+          locations.add(new BindingCodeLocation(getName(), key, bindings.get(key)));
         }
       }
     }
@@ -110,7 +111,7 @@ class ModuleContextRepresentationImpl implements
       ModuleContextSnippet.ModuleContextResult contextResult =
           (ModuleContextSnippet.ModuleContextResult) result;
       if (getName().equals(contextResult.getName())) {
-        this.bindings = contextResult.getBindings();
+        this.bindings = contextResult.getBindings().bindings();
         this.problems = contextResult.getProblems();
         dirty = false;
       }

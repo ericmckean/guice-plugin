@@ -61,6 +61,8 @@
  * <p>
  * There is also the snippets package which is packaged a standalone jar file
  * that needs to be on the classpath provided by the JavaManager.
+ * 
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 
 package com.google.inject.tools.suite;

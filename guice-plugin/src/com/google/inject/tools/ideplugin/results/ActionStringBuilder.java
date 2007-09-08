@@ -20,12 +20,17 @@ import com.google.inject.tools.ideplugin.ActionsHandler;
 import com.google.inject.tools.suite.module.ClassNameUtility;
 import com.google.inject.tools.suite.snippets.BindingCodeLocation;
 import com.google.inject.tools.suite.snippets.CodeLocation;
-import com.google.inject.tools.suite.snippets.CodeProblem;
 import com.google.inject.tools.suite.snippets.BindingCodeLocation.ImplicitBindingLocation;
 import com.google.inject.tools.suite.snippets.BindingCodeLocation.NoBindingLocation;
-import com.google.inject.tools.suite.snippets.CodeProblem.BindingProblem;
-import com.google.inject.tools.suite.snippets.CodeProblem.InvalidModuleContextProblem;
-import com.google.inject.tools.suite.snippets.CodeProblem.InvalidModuleProblem;
+import com.google.inject.tools.suite.snippets.problems.BadClassProblem;
+import com.google.inject.tools.suite.snippets.problems.CodeProblem;
+import com.google.inject.tools.suite.snippets.problems.CreationProblem;
+import com.google.inject.tools.suite.snippets.problems.InjectorProblem;
+import com.google.inject.tools.suite.snippets.problems.InvalidModuleProblem;
+import com.google.inject.tools.suite.snippets.problems.KeyProblem;
+import com.google.inject.tools.suite.snippets.problems.LocationProblem;
+import com.google.inject.tools.suite.snippets.problems.OutOfScopeProblem;
+import com.google.inject.tools.suite.snippets.problems.ScopeProblem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -241,12 +246,22 @@ public class ActionStringBuilder {
    * Create an ActionString for a {@link CodeProblem}.
    */
   public static ActionString getDisplayString(CodeProblem problem) {
-    if (problem instanceof BindingProblem) {
-      return new BindingProblemActionString((BindingProblem)problem);
-    } else if (problem instanceof InvalidModuleContextProblem) {
-      return new InvalidModuleContextProblemActionString((InvalidModuleContextProblem)problem);
+    if (problem instanceof BadClassProblem) {
+      return new BadClassProblemActionString((BadClassProblem)problem);
+    } else if (problem instanceof CreationProblem) {
+      return new CreationProblemActionString((CreationProblem)problem);
+    } else if (problem instanceof InjectorProblem) {
+      return new InjectorProblemActionString((InjectorProblem)problem);
     } else if (problem instanceof InvalidModuleProblem) {
       return new InvalidModuleProblemActionString((InvalidModuleProblem)problem);
+    } else if (problem instanceof KeyProblem) {
+      return new KeyProblemActionString((KeyProblem)problem);
+    } else if (problem instanceof LocationProblem) {
+      return new LocationProblemActionString((LocationProblem)problem);
+    } else if (problem instanceof OutOfScopeProblem) {
+      return new OutOfScopeProblemActionString((OutOfScopeProblem)problem);
+    } else if (problem instanceof ScopeProblem) {
+      return new ScopeProblemActionString((ScopeProblem)problem);
     } else {
       return new CodeProblemActionString(problem);
     }
@@ -260,32 +275,68 @@ public class ActionStringBuilder {
     }
   }
   
-  static class BindingProblemActionString extends CodeProblemActionString {
-    public BindingProblemActionString(BindingProblem problem) {
-      super(problem);
-      String theClass = problem.getTheClass();
-      String moduleContext = problem.getModuleContext();
-      addText("Guice Code Problem: ");
+  static class BadClassProblemActionString extends ActionString {
+    public BadClassProblemActionString(BadClassProblem problem) {
+      super();
+      String theClass = problem.className();
+      addText("Bad Class Problem: ");
       addTextWithAction(ClassNameUtility.shorten(theClass), new ActionsHandler.GotoFile(
-          theClass), "Goto source of " + theClass);
-      addText(" has a binding problem in ");
-      addText("Module Context: ");
-      addText(moduleContext);
+          theClass), "Goto source of " + theClass);    }
+  }
+  
+  static class CreationProblemActionString extends ActionString {
+    public CreationProblemActionString(CreationProblem problem) {
+      super();
+      addText("Guice Creation Exception: ");
+      addText(problem.getMessage());
     }
   }
   
-  static class InvalidModuleContextProblemActionString extends CodeProblemActionString {
-    public InvalidModuleContextProblemActionString(InvalidModuleContextProblem problem) {
-      super(problem);
-      addText("Guice Module Context is invalid: " + problem.getModuleContext());
+  static class InjectorProblemActionString extends ActionString {
+    public InjectorProblemActionString(InjectorProblem problem) {
+      super();
+      addText("Guice Injector Problem: ");
+      addText(problem.getMessage());
     }
   }
   
-  static class InvalidModuleProblemActionString extends CodeProblemActionString {
+  static class InvalidModuleProblemActionString extends ActionString {
     public InvalidModuleProblemActionString(InvalidModuleProblem problem) {
-      super(problem);
-      addText("Invalid Module: ");
-      addText(problem.getModuleContext());
+      super();
+      addText("Guice Invalid Module: ");
+      addText(problem.moduleName());
+    }
+  }
+  
+  static class KeyProblemActionString extends ActionString {
+    public KeyProblemActionString(KeyProblem problem) {
+      super();
+      addText("Guice Key Problem: ");
+      addText(problem.bindWhat());
+    }
+  }
+  
+  static class LocationProblemActionString extends ActionString {
+    public LocationProblemActionString(LocationProblem problem) {
+      super();
+      addText("Guice Location Problem: ");
+      addText(problem.getMessage());
+    }
+  }
+  
+  static class OutOfScopeProblemActionString extends ActionString {
+    public OutOfScopeProblemActionString(OutOfScopeProblem problem) {
+      super();
+      addText("Guice Out of Scope Problem: ");
+      addText(problem.getMessage());
+    }
+  }
+  
+  static class ScopeProblemActionString extends ActionString {
+    public ScopeProblemActionString(ScopeProblem problem) {
+      super();
+      addText("Guice Scope Problem: ");
+      addText(problem.getMessage());
     }
   }
 }

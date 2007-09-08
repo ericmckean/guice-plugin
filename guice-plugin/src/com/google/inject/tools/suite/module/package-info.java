@@ -33,6 +33,8 @@
  * ModuleRepresentations are created for each module in the user's code.
  * ModuleContextRepresentations are created for each context the user specifies
  * to use the plugin for.
+ * 
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 
 package com.google.inject.tools.suite.module;

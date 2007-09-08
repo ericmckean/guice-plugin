@@ -22,7 +22,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProblemsHandler;
-import com.google.inject.tools.suite.snippets.CodeProblem;
+import com.google.inject.tools.suite.snippets.problems.CodeProblem;
 
 import java.util.Set;
 

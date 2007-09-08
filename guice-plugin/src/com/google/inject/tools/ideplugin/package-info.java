@@ -63,6 +63,8 @@
  * The plugin is intended to be written simultaneously for all IDEs and use
  * guice to inject the IDE specific implementations at runtime. See
  * {@link com.google.inject.tools.ideplugin.GuicePluginModule} for more details.
+ * 
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 
 package com.google.inject.tools.ideplugin;

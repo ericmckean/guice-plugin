@@ -38,9 +38,10 @@ import com.google.inject.tools.suite.SampleModuleScenario.WorkingModule;
 import com.google.inject.tools.suite.SampleModuleScenario.WorkingModule2;
 import com.google.inject.tools.suite.module.ModuleContextRepresentation;
 import com.google.inject.tools.suite.snippets.BindingCodeLocation;
-import com.google.inject.tools.suite.snippets.CodeProblem;
 import com.google.inject.tools.suite.snippets.ModuleContextSnippet;
-import com.google.inject.tools.suite.snippets.ModuleContextSnippet.ModuleContextResult.KeyRepresentation;
+import com.google.inject.tools.suite.snippets.bindings.KeyRepresentation;
+import com.google.inject.tools.suite.snippets.problems.CreationProblem;
+import com.google.inject.tools.suite.snippets.problems.InvalidModuleProblem;
 
 import java.io.ObjectInputStream;
 import java.io.OutputStream;
@@ -100,9 +101,9 @@ public class ModuleContextSnippetTest extends TestCase {
         (ModuleContextSnippet.ModuleContextResult) obj;
     assertTrue(result.getProblems().isEmpty());
     assertNotNull(result.getBindings());
-    BindingCodeLocation location =
-        result.getBindings().get(new KeyRepresentation(
-            MockInjectedInterface.class.getName(), null));
+    KeyRepresentation key = new KeyRepresentation(MockInjectedInterface.class.getName(), null);
+    BindingCodeLocation location = new BindingCodeLocation(result.getName(), key,
+        result.getBindings().bindings().get(key));
     assertNotNull(location);
     assertTrue(location.bindTo().equals(
         MockInjectedInterfaceImpl.class.getName()));
@@ -119,7 +120,7 @@ public class ModuleContextSnippetTest extends TestCase {
 
   /**
    * Test that constructing a broken module context causes a
-   * {@link com.google.inject.tools.suite.snippets.CodeProblem.CreationProblem}.
+   * {@link com.google.inject.tools.suite.snippets.problems.CodeProblem.CreationProblem}.
    */
   public void testConstructBrokenModuleContext() throws Exception {
     String[] args = new String[4];
@@ -131,8 +132,8 @@ public class ModuleContextSnippetTest extends TestCase {
     ModuleContextSnippet.ModuleContextResult result =
         (ModuleContextSnippet.ModuleContextResult) obj;
     assertFalse(result.getProblems().isEmpty());
-    assertTrue(result.getBindings().size() == 0);
-    assertTrue(result.getProblems().iterator().next() instanceof CodeProblem.CreationProblem);
+    assertTrue(result.getBindings().bindings().size() == 0);
+    assertTrue(result.getProblems().iterator().next() instanceof CreationProblem);
   }
 
   /**
@@ -148,7 +149,7 @@ public class ModuleContextSnippetTest extends TestCase {
     ModuleContextSnippet.ModuleContextResult result =
         (ModuleContextSnippet.ModuleContextResult) obj;
     assertFalse(result.getProblems().isEmpty());
-    assertTrue(result.getProblems().iterator().next() instanceof CodeProblem.InvalidModuleProblem);
+    assertTrue(result.getProblems().iterator().next() instanceof InvalidModuleProblem);
   }
 
   /**
@@ -168,17 +169,17 @@ public class ModuleContextSnippetTest extends TestCase {
         (ModuleContextSnippet.ModuleContextResult) obj;
     assertTrue(result.getProblems().isEmpty());
     assertNotNull(result.getBindings());
-    BindingCodeLocation location =
-        result.getBindings().get(new KeyRepresentation(
-            MockInjectedInterface.class.getName(), null));
+    KeyRepresentation key = new KeyRepresentation(MockInjectedInterface.class.getName(), null);
+    BindingCodeLocation location = new BindingCodeLocation(result.getName(), key,
+        result.getBindings().bindings().get(key));
     assertNotNull(location);
     assertTrue(location.bindTo().equals(
         MockInjectedInterfaceImpl.class.getName()));
     assertTrue(location.file().equals(WorkingModuleBindFile));
     assertTrue(location.location() == WorkingModuleBindLocation);
-    BindingCodeLocation location2 =
-        result.getBindings().get(new KeyRepresentation(
-            MockInjectedInterface2.class.getName(), null));
+    KeyRepresentation key2 = new KeyRepresentation(MockInjectedInterface2.class.getName(), null);
+    BindingCodeLocation location2 = new BindingCodeLocation(result.getName(), key2,
+        result.getBindings().bindings().get(key2));
     assertNotNull(location);
     assertTrue(location2.bindTo().equals(
         MockInjectedInterface2Impl.class.getName()));
@@ -196,11 +197,13 @@ public class ModuleContextSnippetTest extends TestCase {
     assertTrue(obj instanceof ModuleContextSnippet.ModuleContextResult);
     ModuleContextSnippet.ModuleContextResult result =
         (ModuleContextSnippet.ModuleContextResult) obj;
-    assertTrue(result.getProblems().isEmpty());
+    assertTrue(result.getModules().contains(WorkingModule.class.getName()));
+    assertTrue(result.getAllProblems().isEmpty());
     assertNotNull(result.getBindings());
-    BindingCodeLocation location =
-        result.getBindings().get(new KeyRepresentation(
-            MockInjectedInterface.class.getName(), null));
+    KeyRepresentation key = new KeyRepresentation(MockInjectedInterface.class.getName(), null);
+    assertNotNull(result.getBindings().bindings().get(key));
+    BindingCodeLocation location = new BindingCodeLocation(result.getName(), key,
+        result.getBindings().bindings().get(key));
     assertNotNull(location);
     assertTrue(location.bindTo().equals(
         MockInjectedInterfaceImpl.class.getName()));
@@ -220,9 +223,9 @@ public class ModuleContextSnippetTest extends TestCase {
         (ModuleContextSnippet.ModuleContextResult) obj;
     assertTrue(result.getProblems().isEmpty());
     assertNotNull(result.getBindings());
-    BindingCodeLocation location =
-        result.getBindings().get(new KeyRepresentation(
-            MockInjectedInterface.class.getName(), null));
+    KeyRepresentation key = new KeyRepresentation(MockInjectedInterface.class.getName(), null);
+    BindingCodeLocation location = new BindingCodeLocation(result.getName(), key,
+        result.getBindings().bindings().get(key));
     assertNotNull(location);
     assertTrue(location.bindTo().equals(
         MockInjectedInterfaceImpl.class.getName()));
@@ -242,9 +245,10 @@ public class ModuleContextSnippetTest extends TestCase {
       (ModuleContextSnippet.ModuleContextResult) obj;
     assertTrue(result.getProblems().isEmpty());
     assertNotNull(result.getBindings());
-    BindingCodeLocation location =
-        result.getBindings().get(new KeyRepresentation(
-            Service.class.getName(), "@" + Named.class.getName() + "(value=blue)"));
+    KeyRepresentation key = new KeyRepresentation(
+        Service.class.getName(), "@" + Named.class.getName() + "(value=blue)");
+    BindingCodeLocation location = new BindingCodeLocation(result.getName(), key,
+        result.getBindings().bindings().get(key));
     assertNotNull(location);
     assertTrue(location.bindTo().equals(BlueService.class.getName()));
   }
@@ -261,9 +265,10 @@ public class ModuleContextSnippetTest extends TestCase {
       (ModuleContextSnippet.ModuleContextResult) obj;
     assertTrue(result.getProblems().isEmpty());
     assertNotNull(result.getBindings());
-    BindingCodeLocation location =
-        result.getBindings().get(new KeyRepresentation(
-            Service.class.getName(), "@" + Red.class.getName()));
+    KeyRepresentation key = new KeyRepresentation(
+        Service.class.getName(), "@" + Red.class.getName());
+    BindingCodeLocation location = new BindingCodeLocation(result.getName(), key,
+        result.getBindings().bindings().get(key));
     assertNotNull(location);
     assertTrue(location.bindTo().equals(RedService.class.getName()));
   }
@@ -280,9 +285,10 @@ public class ModuleContextSnippetTest extends TestCase {
       (ModuleContextSnippet.ModuleContextResult) obj;
     assertTrue(result.getProblems().isEmpty());
     assertNotNull(result.getBindings());
-    BindingCodeLocation location =
-        result.getBindings().get(new KeyRepresentation(
-            "int", "@" + One.class.getName()));
+    KeyRepresentation key = new KeyRepresentation(
+        "int", "@" + One.class.getName());
+    BindingCodeLocation location = new BindingCodeLocation(result.getName(), key,
+        result.getBindings().bindings().get(key));
     assertNotNull(location);
     assertTrue(location.bindToInstance().equals(String.valueOf(1)));
   }
@@ -301,9 +307,10 @@ public class ModuleContextSnippetTest extends TestCase {
     assertNotNull(result.getBindings());
     TypeLiteral<PaymentService<CreditCard>> creditCardPaymentService =
         new TypeLiteral<PaymentService<CreditCard>>() {};
-    BindingCodeLocation location =
-        result.getBindings().get(new KeyRepresentation(
-            creditCardPaymentService.toString(), null));
+    KeyRepresentation key = new KeyRepresentation(
+            creditCardPaymentService.toString(), null);
+    BindingCodeLocation location = new BindingCodeLocation(result.getName(), key,
+        result.getBindings().bindings().get(key));
     assertNotNull(location);
     assertTrue(location.bindTo().equals(CreditCardPaymentService.class.getName()));
   }
@@ -318,11 +325,12 @@ public class ModuleContextSnippetTest extends TestCase {
     ModuleContextSnippet.ModuleContextResult result =
         (ModuleContextSnippet.ModuleContextResult) obj;
     assertTrue(result.getName().equals("Custom Context"));
-    assertTrue(result.getProblems().isEmpty());
+    assertTrue(result.getAllProblems().isEmpty());
     assertNotNull(result.getBindings());
-    BindingCodeLocation location =
-        result.getBindings().get(new KeyRepresentation(
-            MockInjectedInterface.class.getName(), null));
+    KeyRepresentation key = new KeyRepresentation(
+        MockInjectedInterface.class.getName(), null);
+    BindingCodeLocation location = new BindingCodeLocation(result.getName(), key,
+        result.getBindings().bindings().get(key));
     assertNotNull(location);
     assertTrue(location.bindTo().equals(
         MockInjectedInterfaceImpl.class.getName()));

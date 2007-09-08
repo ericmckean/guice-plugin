@@ -30,6 +30,8 @@
  * {@link com.google.inject.tools.ideplugin.results.CodeLocationsResults} object
  * which is then passed to the
  * {@link com.google.inject.tools.ideplugin.results.ResultsView}.
+ * 
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 
 package com.google.inject.tools.ideplugin.bindings;

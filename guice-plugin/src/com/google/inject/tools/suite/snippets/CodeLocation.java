@@ -18,6 +18,8 @@ package com.google.inject.tools.suite.snippets;
 
 import java.util.Set;
 
+import com.google.inject.tools.suite.snippets.problems.CodeProblem;
+
 /**
  * Represents a location in the user's code space.
  * 

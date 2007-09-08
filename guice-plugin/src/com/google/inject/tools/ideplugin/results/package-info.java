@@ -32,6 +32,8 @@
  * {@link com.google.inject.tools.ideplugin.results.Results} objects which
  * usually consist of {@link com.google.inject.tools.suite.snippets.CodeLocation}
  * objects on a per module context basis.
+ * 
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 
 package com.google.inject.tools.ideplugin.results;

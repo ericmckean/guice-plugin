@@ -14,24 +14,27 @@
  * the License.
  */
 
-package com.google.inject.tools.suite;
+package com.google.inject.tools.suite.snippets.bindings;
 
+import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 import com.google.inject.tools.suite.snippets.problems.CodeProblem;
 
 /**
- * Notify the user in realtime of problems with their guice code by code assist
- * or other (nonblocking) means. These should respond concurrently to the
- * existing flow, i.e. be nonblocking methods.
+ * Abstract class allowing for Serializable representation of Guice classes.
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-public interface ProblemsHandler {
-  /**
-   * Handle a set of problems found with user's code.
-   * 
-   * @param problem
-   */
-  public void foundProblems(Set<? extends CodeProblem> problem);
+public abstract class Representation implements Serializable {
+  protected final Set<CodeProblem> problems;
+  
+  public Representation() {
+    this.problems = new HashSet<CodeProblem>();
+  }
+  
+  public Set<? extends CodeProblem> problems() {
+    return problems;
+  }
 }

@@ -19,6 +19,10 @@ package com.google.inject.tools.suite.snippets;
 import java.util.Collections;
 import java.util.Set;
 
+import com.google.inject.tools.suite.snippets.bindings.BindingRepresentation;
+import com.google.inject.tools.suite.snippets.bindings.KeyRepresentation;
+import com.google.inject.tools.suite.snippets.problems.CodeProblem;
+
 /**
  * Represents the location in code of where a binding occurs.
  * 
@@ -95,6 +99,20 @@ public class BindingCodeLocation extends CodeLocation {
     this.bindTo = bindTo;
     this.bindToInstance = bindToInstance;
     this.bindToProvider = bindToProvider;
+    this.moduleContext = moduleContext;
+  }
+  
+  public BindingCodeLocation(String moduleContext, KeyRepresentation key, BindingRepresentation binding) {
+    super(null, binding.file(), binding.location(), binding.locationDescription(), binding.problems());
+    this.bindWhat = key.bindWhat();
+    this.annotatedWith = key.annotatedWith();
+    this.bindTo = binding.boundTo();
+    if (binding.boundConstant() != null) {
+      this.bindToInstance = binding.boundConstant();
+    } else {
+      this.bindToInstance = binding.boundInstance();
+    }
+    this.bindToProvider = binding.boundProvider();
     this.moduleContext = moduleContext;
   }
 

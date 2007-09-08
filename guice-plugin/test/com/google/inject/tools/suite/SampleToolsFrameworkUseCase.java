@@ -89,7 +89,7 @@ public class SampleToolsFrameworkUseCase extends TestCase {
     @Override
     public String getGuiceClasspath() {
       String base = CODECLASSPATH.substring(0, CODECLASSPATH.lastIndexOf("bin")) + "lib/Guice/";
-      String guice = base + "guice_r350+dcreutz2.jar";
+      String guice = base + "guice-r362.jar";
       String asm = base + "asm-2.2.3.jar";
       String cglib = base + "cglib-2.2_beta1.jar";
       String aop = base + "aopalliance.jar";
@@ -111,6 +111,7 @@ public class SampleToolsFrameworkUseCase extends TestCase {
     assertTrue(moduleManager.getActiveModuleContexts().size() == 1);
     
     ModuleContextRepresentation context = moduleManager.getModuleContext("My Context");
+        
     assertTrue(context.contains(WorkingModule.class.getName()));
     Set<CodeLocation> locations = context.findLocations(Service.class.getName());
     assertTrue(locations.size() == 2);

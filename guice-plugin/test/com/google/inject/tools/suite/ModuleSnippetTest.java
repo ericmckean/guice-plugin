@@ -16,8 +16,8 @@
 
 package com.google.inject.tools.suite;
 
-import com.google.inject.tools.suite.snippets.CodeProblem;
 import com.google.inject.tools.suite.snippets.ModuleSnippet;
+import com.google.inject.tools.suite.snippets.problems.InvalidModuleProblem;
 
 import junit.framework.TestCase;
 
@@ -56,7 +56,7 @@ public class ModuleSnippetTest extends TestCase {
             .getName());
     assertFalse(module.isValid());
     assertTrue(module.getProblems().size() == 1);
-    assertTrue(module.getProblems().iterator().next() instanceof CodeProblem.InvalidModuleProblem);
+    assertTrue(module.getProblems().iterator().next() instanceof InvalidModuleProblem);
   }
 
   /**
