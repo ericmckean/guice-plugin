@@ -34,6 +34,7 @@ public class AllTests {
   public static Test suite() {
     TestSuite suite = new TestSuite();
 
+    suite.addTestSuite(BindingRepresentationTest.class);
     suite.addTestSuite(CodeRunnerTest.class);
     suite.addTestSuite(ModuleContextRepresentationTest.class);
     suite.addTestSuite(ModuleRepresentationTest.class);
