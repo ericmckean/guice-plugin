@@ -23,9 +23,9 @@ import com.google.inject.tools.ideplugin.ProjectSettings;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProgressHandler.ProgressMonitor;
 import com.google.inject.tools.suite.code.CodeRunner;
-import com.google.inject.tools.suite.snippets.CodeProblem;
 import com.google.inject.tools.suite.snippets.CodeSnippet;
 import com.google.inject.tools.suite.snippets.CodeSnippetResult;
+import com.google.inject.tools.suite.snippets.problems.CodeProblem;
 
 import java.util.ArrayList;
 import java.util.Collections;

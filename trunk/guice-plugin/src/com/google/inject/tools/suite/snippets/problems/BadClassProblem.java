@@ -14,24 +14,27 @@
  * the License.
  */
 
-package com.google.inject.tools.suite;
-
-import java.util.Set;
-
-import com.google.inject.tools.suite.snippets.problems.CodeProblem;
+package com.google.inject.tools.suite.snippets.problems;
 
 /**
- * Notify the user in realtime of problems with their guice code by code assist
- * or other (nonblocking) means. These should respond concurrently to the
- * existing flow, i.e. be nonblocking methods.
+ * Represents a ClassNotFoundException.
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-public interface ProblemsHandler {
-  /**
-   * Handle a set of problems found with user's code.
-   * 
-   * @param problem
-   */
-  public void foundProblems(Set<? extends CodeProblem> problem);
+public class BadClassProblem extends CodeProblem {
+  private final String className;
+  
+  public BadClassProblem(String className, Throwable throwable) {
+    super(throwable);
+    this.className = className;
+  }
+  
+  public String className() {
+    return className;
+  }
+  
+  @Override
+  public String toString() {
+    return "Guice Bad Class Problem: " + className + " " + getMessage();
+  }
 }

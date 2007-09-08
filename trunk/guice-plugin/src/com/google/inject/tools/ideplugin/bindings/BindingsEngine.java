@@ -31,9 +31,9 @@ import com.google.inject.tools.suite.module.ClassNameUtility;
 import com.google.inject.tools.suite.module.ModuleContextRepresentation;
 import com.google.inject.tools.suite.module.ModuleManager;
 import com.google.inject.tools.suite.snippets.CodeLocation;
-import com.google.inject.tools.suite.snippets.CodeProblem;
 import com.google.inject.tools.suite.snippets.BindingCodeLocation.ImplicitBindingLocation;
 import com.google.inject.tools.suite.snippets.BindingCodeLocation.NoBindingLocation;
+import com.google.inject.tools.suite.snippets.problems.CodeProblem;
 
 /**
  * The BindingsEngine is the glue between the other objects; it is responsible

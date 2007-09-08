@@ -26,7 +26,8 @@ import com.google.inject.tools.ideplugin.results.Results.Node;
 import com.google.inject.tools.suite.Fakes.FakeCreationException;
 import com.google.inject.tools.suite.snippets.BindingCodeLocation;
 import com.google.inject.tools.suite.snippets.CodeLocation;
-import com.google.inject.tools.suite.snippets.CodeProblem;
+import com.google.inject.tools.suite.snippets.problems.CodeProblem;
+import com.google.inject.tools.suite.snippets.problems.CreationProblem;
 
 /**
  * Unit test the {@link CodeLocationsResults} object.
@@ -94,8 +95,7 @@ public class CodeLocationsResultsTest extends TestCase {
   }
 
   private Set<? extends CodeProblem> makeProblemSet(String module) {
-    return Collections.singleton(new CodeProblem.CreationProblem(module,
-        new FakeCreationException()));
+    return Collections.singleton(new CreationProblem(new FakeCreationException()));
   }
 
   private Results.Node expectedResultForValidLocation() {
@@ -118,8 +118,8 @@ public class CodeLocationsResultsTest extends TestCase {
     module2.addChild(new Node("JavaElement has an unresolvable binding", null));
     Results.Node problems = new Node("Problems", null);
     module2.addChild(problems);
-    problems.addChild(new ProblemNode(new CodeProblem.CreationProblem(
-        "BrokenModule", new FakeCreationException())));
+    problems.addChild(new ProblemNode(new CreationProblem(
+        new FakeCreationException())));
     root.addChild(module);
     root.addChild(module2);
     return root;

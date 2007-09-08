@@ -22,6 +22,8 @@ import java.io.OutputStream;
 import java.io.ObjectOutputStream;
 import java.io.IOException;
 
+import com.google.inject.tools.suite.snippets.problems.CodeProblem;
+
 /**
  * A CodeSnippet is a piece of code to be executed by the
  * {@link com.google.inject.tools.suite.code.CodeRunner} in user space. Any code we

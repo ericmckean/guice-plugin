@@ -29,6 +29,8 @@
  * are concrete
  * implementations of the {@link com.google.inject.tools.ideplugin.GuicePluginModule} 
  * and {@link com.google.inject.tools.suite.GuiceToolsModule} that bind the Eclipse pieces.
+ * 
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 
 package com.google.inject.tools.ideplugin.eclipse;

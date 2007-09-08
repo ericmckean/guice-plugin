@@ -21,6 +21,8 @@
  * The {@link com.google.inject.tools.suite.code.CodeRunner} is the main object, these
  * are injected where needed to run code snippets (see the
  * {@link com.google.inject.tools.suite.snippets} package).
+ * 
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 
 package com.google.inject.tools.suite.code;

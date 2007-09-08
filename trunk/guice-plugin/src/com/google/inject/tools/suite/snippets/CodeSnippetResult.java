@@ -19,6 +19,8 @@ package com.google.inject.tools.suite.snippets;
 import java.util.Set;
 import java.io.Serializable;
 
+import com.google.inject.tools.suite.snippets.problems.CodeProblem;
+
 /**
  * Abstract object holding the result of running a {@link CodeSnippet}. NOTE:
  * This must not involve any user code dependencies nor any outside the snippets
@@ -42,6 +44,13 @@ public abstract class CodeSnippetResult implements Serializable {
    * Return the problems for the snippet.
    */
   public Set<? extends CodeProblem> getProblems() {
+    return problems;
+  }
+  
+  /**
+   * Return all problems for the snippet.
+   */
+  public Set<? extends CodeProblem> getAllProblems() {
     return problems;
   }
 }

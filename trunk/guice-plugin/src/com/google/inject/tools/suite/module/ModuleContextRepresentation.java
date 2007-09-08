@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.google.inject.tools.suite.snippets.CodeLocation;
-import com.google.inject.tools.suite.snippets.CodeProblem;
+import com.google.inject.tools.suite.snippets.problems.CodeProblem;
 
 /**
  * Representation of a module context in the user's code.

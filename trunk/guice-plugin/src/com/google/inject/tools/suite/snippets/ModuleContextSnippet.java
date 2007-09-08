@@ -17,7 +17,6 @@
 package com.google.inject.tools.suite.snippets;
 
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -25,22 +24,17 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import com.google.inject.Binding;
-import com.google.inject.CreationException;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Key;
-import com.google.inject.Metaprovider;
 import com.google.inject.Module;
-import com.google.inject.Provider;
-import com.google.inject.tools.suite.snippets.CodeProblem.BindingProblem;
+import com.google.inject.tools.suite.snippets.bindings.BindingRepresentation;
+import com.google.inject.tools.suite.snippets.bindings.InjectorRepresentation;
+import com.google.inject.tools.suite.snippets.bindings.KeyRepresentation;
+import com.google.inject.tools.suite.snippets.problems.CodeProblem;
+import com.google.inject.tools.suite.snippets.problems.InvalidModuleProblem;
 
 /**
  * This code snippet runs a module context. It creates an injector based on the
@@ -58,128 +52,28 @@ public class ModuleContextSnippet extends CodeSnippet {
     private static final long serialVersionUID = -1832891974235767711L;
     
     private final String name;
-    private final Map<KeyRepresentation, BindingCodeLocation> bindings;
+    private final InjectorRepresentation injector;
     private final Set<String> modules;
-    
-    public static class KeyRepresentation implements Serializable {
-      private static final long serialVersionUID = -1832891974235767811L;
-      
-      public final String bindWhat;
-      public final String annotatedWith;
-      public KeyRepresentation(String bindWhat, String annotatedWith) {
-        this.bindWhat = bindWhat;
-        this.annotatedWith = annotatedWith;
-      }
-      @Override
-      public boolean equals(Object object) {
-        if (!(object instanceof KeyRepresentation)) return false;
-        KeyRepresentation key = (KeyRepresentation)object;
-        if (!bindWhat.equals(key.bindWhat)) return false;
-        return annotatedWith==null ? key.annotatedWith==null :
-          annotatedWith.equals(key.annotatedWith);
-      }
-      @Override
-      public int hashCode() {
-        return bindWhat.hashCode();
-      }
-      @Override
-      public String toString() {
-        if (annotatedWith == null) {
-          return "Key binding " + bindWhat;
-        } else {
-          return "Key binding " + bindWhat + " annotated with " + annotatedWith;
-        }
-      }
-    }
 
     public ModuleContextResult(String name,
         Set<ModuleRepresentation> moduleReps,
-        Map<Key<?>, Binding<?>> moduleBindings,
-        Set<? extends CodeProblem> problems) {
+        Set<CodeProblem> problems) {
       super(problems);
       this.name = name;
       this.modules = new HashSet<String>();
+      Set<Module> moduleInstances = new HashSet<Module>();
       if (moduleReps != null) {
         for (ModuleRepresentation module : moduleReps) {
           this.modules.add(module.getName());
-        }
-      }
-      this.bindings = new HashMap<KeyRepresentation, BindingCodeLocation>();
-      if (moduleBindings != null) {
-        for (Key<?> key : moduleBindings.keySet()) {
-          final String bindWhat = key.getTypeLiteral().toString();
-          String annotatedWith = null;
           try {
-            if (key.getAnnotation() != null) {
-              annotatedWith = key.getAnnotation().toString();
-            } else if (key.getAnnotationType() != null) {
-              annotatedWith = "@" + key.getAnnotationType().getName();
-            }
-            final KeyRepresentation keyRepresentation =
-              new KeyRepresentation(bindWhat, annotatedWith);
-            String bindTo = null;
-            String bindToProvider = null;
-            String bindToInstance = null;
-            String file = null;
-            int location = -1;
-            Binding<?> binding = moduleBindings.get(key);
-            Set<CodeProblem> locationProblems = new HashSet<CodeProblem>();
-            BindingCodeLocation bindingCodeLocation;
-            StackTraceElement source = null;
-            String bindingLocationDescription = null;
-            if (binding == null) {
-              locationProblems.add(new CodeProblem.NoBindingProblem(name, key
-                  .getTypeLiteral().toString()));
-            } else {
-              try {
-                Metaprovider<?> metaprovider = binding.getMetaprovider();
-                if (metaprovider.isBoundToProvider()) {
-                  Class<? extends Provider<?>> provider = metaprovider.resolveProvider();
-                  if (provider.isAnonymousClass()) {
-                    bindToProvider = "anonymous inner class in " + provider.getEnclosingClass().getName();
-                  } else {
-                    bindToProvider = metaprovider.resolveProvider().getName();
-                  }
-                } else if (metaprovider.isBoundToInstance()) {
-                  try {
-                    bindToInstance = metaprovider.resolveInstance().toString();
-                  } catch (Throwable t) {
-                    bindToInstance = metaprovider.resolveInstance().getClass().getName();
-                  }
-                } else {
-                  Class<?> theclass = metaprovider.resolve();
-                  if (theclass.isAnonymousClass()) {
-                    bindTo = "anonymous inner class in " + theclass.getEnclosingClass().getName();
-                  } else {
-                    bindTo = metaprovider.resolve().getName();
-                  }
-                }
-                if (binding.getSource() instanceof StackTraceElement) {
-                  source = (StackTraceElement) binding.getSource();
-                  file = source.getFileName();
-                  location = source.getLineNumber();
-                } else {
-                  bindingLocationDescription = binding.getSource().toString();
-                }
-              } catch (Throwable throwable) {
-                locationProblems.add(new CodeProblem.BindingProblem(name, key
-                    .getTypeLiteral().toString(), throwable));
-              }
-            }
-            StackTraceElement[] stackTrace = new StackTraceElement[1];
-            stackTrace[0] = source;
-            this.bindings.put(keyRepresentation, new BindingCodeLocation(stackTrace,
-                keyRepresentation.bindWhat, keyRepresentation.annotatedWith,
-                bindTo, bindToProvider, bindToInstance, name, file, location, 
-                bindingLocationDescription, locationProblems));
+            moduleInstances.add(module.getInstance());
           } catch (Throwable throwable) {
-            this.bindings.put(new KeyRepresentation(bindWhat, null), 
-                new BindingCodeLocation(null, bindWhat, null, null, null, null, name,
-                    null, -1, null, 
-                    Collections.singleton(new BindingProblem(name, bindWhat, throwable))));
+            problems.add(new InvalidModuleProblem(module, throwable));
           }
         }
       }
+      injector = new InjectorRepresentation(moduleInstances);
+      problems.addAll(injector.problems());
     }
 
     public String getName() {
@@ -190,8 +84,21 @@ public class ModuleContextSnippet extends CodeSnippet {
       return modules;
     }
 
-    public Map<KeyRepresentation, BindingCodeLocation> getBindings() {
-      return bindings;
+    public InjectorRepresentation getBindings() {
+      return injector;
+    }
+    
+    @Override
+    public Set<? extends CodeProblem> getAllProblems() {
+      Set<CodeProblem> problems = new HashSet<CodeProblem>(this.problems);
+      problems.addAll(injector.problems());
+      for (KeyRepresentation key : injector.bindings().keySet()) {
+        problems.addAll(key.problems());
+      }
+      for (BindingRepresentation binding : injector.bindings().values()) {
+        problems.addAll(binding.problems());
+      }
+      return problems;
     }
   }
 
@@ -202,26 +109,37 @@ public class ModuleContextSnippet extends CodeSnippet {
     private final Class<? extends Module> moduleClass;
     private final List<Class<?>> argTypes;
     private final List<String> argValues;
+    private Module instance;
 
     public ModuleRepresentation(Class<? extends Module> moduleClass,
         List<Class<?>> argTypes, List<String> argValues) {
       this.moduleClass = moduleClass;
       this.argTypes = argTypes != null ? argTypes : new ArrayList<Class<?>>();
       this.argValues = argValues != null ? argValues : new ArrayList<String>();
+      this.instance = null;
+    }
+    
+    public ModuleRepresentation(Module module) {
+      this.moduleClass = module.getClass();
+      this.argTypes = null;
+      this.argValues = null;
+      this.instance = module;
     }
 
     public Module getInstance() throws IllegalAccessException,
         InvocationTargetException, NoSuchMethodException,
         InstantiationException {
-      Class<?>[] argumentTypes = new Class<?>[argTypes.size()];
-      Object[] argumentValues = new Object[argTypes.size()];
-      int i = 0;
-      for (Class<?> argType : argTypes) {
-        argumentTypes[i] = argType;
-        i++;
+      if (instance == null) {
+        Class<?>[] argumentTypes = new Class<?>[argTypes.size()];
+        Object[] argumentValues = new Object[argTypes.size()];
+        int i = 0;
+        for (Class<?> argType : argTypes) {
+          argumentTypes[i] = argType;
+          i++;
+        }
+        instance = moduleClass.getConstructor(argumentTypes).newInstance(argumentValues);
       }
-      return moduleClass.getConstructor(argumentTypes).newInstance(
-          argumentValues);
+      return instance;
     }
 
     public String getName() {
@@ -233,64 +151,16 @@ public class ModuleContextSnippet extends CodeSnippet {
     }
   }
 
-  private Injector injector;
-  private String name;
-  private Map<Key<?>, Binding<?>> bindings;
-  private Set<ModuleRepresentation> modules;
-  private boolean isValid;
+  private final String name;
+  private final Set<ModuleRepresentation> modules;
 
   /**
    * Create a ModuleContextSnippet with the given modules.
    */
   public ModuleContextSnippet(Set<ModuleRepresentation> modules, String name) {
     super();
-    isValid = false;
     this.modules = modules;
-    if (!modules.isEmpty()) {
-      Set<Module> instances = new HashSet<Module>();
-      for (ModuleRepresentation module : modules) {
-        try {
-          instances.add(module.getInstance());
-        } catch (Throwable exception) {
-          problems.add(new CodeProblem.InvalidModuleProblem(module.getName()));
-        }
-      }
-      initialize(instances, name);
-    } else {
-      bindings = null;
-    }
-  }
-
-  public ModuleContextSnippet(
-      Iterable<com.google.inject.Module> moduleInstances, String name) {
-    super();
-    isValid = false;
-    initialize(moduleInstances, name);
-  }
-
-  private void initialize(Iterable<com.google.inject.Module> moduleInstances,
-      String name) {
     this.name = name;
-    try {
-      injector = Guice.simulateInjector(moduleInstances);
-      isValid = true;
-    } catch (CreationException exception) {
-      problems.add(new CodeProblem.CreationProblem(getName(), exception));
-    } catch (Throwable throwable) {
-      problems.add(new CodeProblem(getName(), throwable));
-    }
-    if (isValid) {
-      bindings = injector.getBindings();
-    } else {
-      bindings = null;
-    }
-  }
-
-  /**
-   * Return true if the context is valid, i.e. if an injector can be created.
-   */
-  public boolean isValid() {
-    return isValid;
   }
 
   /**
@@ -302,11 +172,7 @@ public class ModuleContextSnippet extends CodeSnippet {
 
   @Override
   public ModuleContextResult getResult() {
-    return new ModuleContextResult(name, modules, bindings, problems);
-  }
-
-  public Injector getInjector() {
-    return injector;
+    return new ModuleContextResult(name, modules, problems);
   }
 
   /**
@@ -369,10 +235,10 @@ public class ModuleContextSnippet extends CodeSnippet {
         snippet = new ModuleContextSnippet(modules, contextName);
       } else {
         Class<?> classToUse = Class.forName(arguments.next());
+        Set<ModuleRepresentation> themodules = new HashSet<ModuleRepresentation>();
+        Iterable<Module> moduleInstances;
         if (isIterableModule(classToUse)) {
-          Iterable<com.google.inject.Module> moduleInstances = 
-            (Iterable<com.google.inject.Module>)classToUse.newInstance();
-          snippet = new ModuleContextSnippet(moduleInstances, contextName);
+          moduleInstances = (Iterable<Module>)classToUse.newInstance();
         } else {
           Method methodToCall =
             classToUse.getMethod(arguments.next(), (Class[]) null);
@@ -380,22 +246,21 @@ public class ModuleContextSnippet extends CodeSnippet {
           if (Modifier.isStatic(methodToCall.getModifiers())) {
             result = methodToCall.invoke(null, (Object[])null);
           } else {
-            result = methodToCall.invoke(classToUse.newInstance(), 
-                (Object[]) null);
+            result = methodToCall.invoke(classToUse.newInstance(), (Object[]) null);
           }
-          Iterable<com.google.inject.Module> moduleInstances =
-            (Iterable<com.google.inject.Module>) result;
-          snippet = new ModuleContextSnippet(moduleInstances, contextName);
+          moduleInstances = (Iterable<Module>)result;
         }
+        for (Module module : moduleInstances) {
+          themodules.add(new ModuleRepresentation(module));
+        }
+        snippet = new ModuleContextSnippet(themodules, contextName);
       }
     } catch (Throwable t) {
       if (snippet == null) {
         snippet =
-          new ModuleContextSnippet(new HashSet<ModuleRepresentation>(),
-              contextName);
-        snippet.addProblems(Collections.singleton(new CodeProblem(contextName,
-            t)));
+          new ModuleContextSnippet(new HashSet<ModuleRepresentation>(), contextName);
       }
+      snippet.addProblems(Collections.singleton(new CodeProblem(t)));
     }
     snippet.printResult(stream);
   }

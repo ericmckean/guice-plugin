@@ -14,24 +14,13 @@
  * the License.
  */
 
-package com.google.inject.tools.suite;
-
-import java.util.Set;
-
-import com.google.inject.tools.suite.snippets.problems.CodeProblem;
-
 /**
- * Notify the user in realtime of problems with their guice code by code assist
- * or other (nonblocking) means. These should respond concurrently to the
- * existing flow, i.e. be nonblocking methods.
+ * A collection of classes to represent Guice objects in a serializable way.
+ * 
+ * This is needed for the tools suite and IDE plugin to analyze user code and also
+ * serves as an example of how to use the Guice introspection API.
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-public interface ProblemsHandler {
-  /**
-   * Handle a set of problems found with user's code.
-   * 
-   * @param problem
-   */
-  public void foundProblems(Set<? extends CodeProblem> problem);
-}
+
+package com.google.inject.tools.suite.snippets.bindings;

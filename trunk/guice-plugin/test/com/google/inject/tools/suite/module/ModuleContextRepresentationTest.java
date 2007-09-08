@@ -17,19 +17,20 @@
 package com.google.inject.tools.suite.module;
 
 import com.google.inject.Binding;
-import com.google.inject.InternalMetaprovider;
 import com.google.inject.Key;
-import com.google.inject.Metaprovider;
 import com.google.inject.Provider;
+import com.google.inject.Scope;
+import com.google.inject.spi.BindingVisitor;
+import com.google.inject.spi.ProviderBinding;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.SampleModuleScenario;
 import com.google.inject.tools.suite.code.CodeRunner;
 import com.google.inject.tools.suite.module.ModuleContextRepresentationImpl;
 import com.google.inject.tools.suite.snippets.BindingCodeLocation;
 import com.google.inject.tools.suite.snippets.CodeLocation;
-import com.google.inject.tools.suite.snippets.CodeProblem;
 import com.google.inject.tools.suite.snippets.CodeSnippetResult;
 import com.google.inject.tools.suite.snippets.ModuleContextSnippet;
+import com.google.inject.tools.suite.snippets.problems.CodeProblem;
 
 import junit.framework.TestCase;
 
@@ -145,10 +146,18 @@ public class ModuleContextRepresentationTest extends TestCase {
           "Working Module Context", Collections
               .singleton(new ModuleContextSnippet.ModuleRepresentation(
                   SampleModuleScenario.WorkingModule.class, null, null)),
-          bindings, Collections.<CodeProblem> emptySet());
+          Collections.<CodeProblem> emptySet());
     }
 
     public class MockBinding<T> implements Binding<T> {
+      public ProviderBinding<T> getProviderBinding() {
+        return null;
+      }
+
+      public Scope getScope() {
+        return null;
+      }
+
       private final Class<T> bindWhat;
       private final Class<? extends T> bindTo;
 
@@ -164,13 +173,13 @@ public class ModuleContextRepresentationTest extends TestCase {
       public Provider<T> getProvider() {
         return new MockProvider<T>(bindTo);
       }
-      
-      public Metaprovider<T> getMetaprovider() {
-        return new Metaprovider<T>(new MockInternalMetaprovider<T>(bindTo));
-      }
 
       public Key<T> getKey() {
         return Key.get(bindWhat);
+      }
+      
+      public void accept(BindingVisitor<? super T> visitor) {
+        
       }
 
       public class MockProvider<T> implements Provider<T> {
@@ -188,26 +197,6 @@ public class ModuleContextRepresentationTest extends TestCase {
             result = null;
           }
           return result;
-        }
-      }
-      
-      public class MockInternalMetaprovider<T> implements InternalMetaprovider<T> {
-        private final Class<? extends T> bindsTo;
-
-        public MockInternalMetaprovider(Class<? extends T> bindsTo) {
-          this.bindsTo = bindsTo;
-        }
-
-        public Class<? extends T> resolve() {
-          return bindsTo;
-        }
-        
-        public Class<? extends Provider<? extends T>> resolveProvider() {
-          return null;
-        }
-        
-        public T resolveInstance() {
-          return null;
         }
       }
     }

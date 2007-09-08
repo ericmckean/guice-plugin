@@ -364,7 +364,7 @@ class ModuleManagerImpl implements ModuleManager,
   }
 
   public void acceptCodeRunResult(CodeSnippetResult result) {
-    problemsHandler.foundProblems(result.getProblems());
+    problemsHandler.foundProblems(result.getAllProblems());
   }
 
   public void acceptUserCancelled() {

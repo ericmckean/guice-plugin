@@ -26,6 +26,8 @@
  * and the snippets.jar file will be placed in the classpath of a newly launched
  * java vm which will then run a snippet to determine how the user's modules
  * behave.
+ * 
+ * @author Darren Creutz (dcreutz@gmail.com)
  */
 
 package com.google.inject.tools.suite.snippets;

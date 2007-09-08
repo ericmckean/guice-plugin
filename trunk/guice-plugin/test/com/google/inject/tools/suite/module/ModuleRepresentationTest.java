@@ -21,10 +21,10 @@ import com.google.inject.tools.suite.SampleModuleScenario.WorkingModule;
 import com.google.inject.tools.suite.code.CodeRunner;
 import com.google.inject.tools.suite.module.ModuleRepresentation;
 import com.google.inject.tools.suite.module.ModuleRepresentationImpl;
-import com.google.inject.tools.suite.snippets.CodeProblem;
 import com.google.inject.tools.suite.snippets.CodeSnippetResult;
 import com.google.inject.tools.suite.snippets.ModuleSnippet;
 import com.google.inject.tools.suite.snippets.ModuleSnippet.DefaultConstructorRepresentation;
+import com.google.inject.tools.suite.snippets.problems.CodeProblem;
 
 import junit.framework.TestCase;
 
