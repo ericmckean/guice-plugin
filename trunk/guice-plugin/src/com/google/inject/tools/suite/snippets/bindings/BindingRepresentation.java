@@ -17,7 +17,6 @@
 package com.google.inject.tools.suite.snippets.bindings;
 
 import com.google.inject.Binding;
-import com.google.inject.Injector;
 import com.google.inject.spi.BindingVisitor;
 import com.google.inject.spi.ClassBinding;
 import com.google.inject.spi.ConstantBinding;
@@ -107,11 +106,7 @@ public class BindingRepresentation extends Representation {
     public void visit(InstanceBinding<? extends T> binding) {
       boundTo = binding.getInstance().getClass().getName();
       boundProvider = null;
-      if (binding.getInstance() instanceof Injector) {
-        boundInstance = "The Injector";
-      } else {
-        boundInstance = binding.getInstance().toString();
-      }
+      boundInstance = binding.getInstance().toString();
       boundConstant = null;
       linkedTo = null;
     }

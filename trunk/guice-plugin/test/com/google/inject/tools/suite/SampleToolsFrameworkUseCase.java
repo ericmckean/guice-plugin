@@ -89,7 +89,7 @@ public class SampleToolsFrameworkUseCase extends TestCase {
     @Override
     public String getGuiceClasspath() {
       String base = CODECLASSPATH.substring(0, CODECLASSPATH.lastIndexOf("bin")) + "lib/Guice/";
-      String guice = base + "guice-r362.jar";
+      String guice = base + "guice-r364.jar";
       String asm = base + "asm-2.2.3.jar";
       String cglib = base + "cglib-2.2_beta1.jar";
       String aop = base + "aopalliance.jar";
