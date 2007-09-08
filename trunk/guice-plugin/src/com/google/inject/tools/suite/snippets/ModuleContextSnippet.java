@@ -84,7 +84,7 @@ public class ModuleContextSnippet extends CodeSnippet {
       return modules;
     }
 
-    public InjectorRepresentation getBindings() {
+    public InjectorRepresentation getInjector() {
       return injector;
     }
     

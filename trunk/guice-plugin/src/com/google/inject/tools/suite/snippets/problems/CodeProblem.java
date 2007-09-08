@@ -37,7 +37,6 @@ public class CodeProblem implements Serializable {
   /**
    * Create a CodeProblem representation.
    * 
-   * @param moduleContext the module context the problem occurred in
    * @param exception the underlying exception
    */
   public CodeProblem(Throwable exception) {
