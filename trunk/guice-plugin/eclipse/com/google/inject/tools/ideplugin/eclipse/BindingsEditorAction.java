@@ -18,18 +18,10 @@ package com.google.inject.tools.ideplugin.eclipse;
 
 import com.google.inject.tools.ideplugin.GuicePlugin;
 
-import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.internal.ui.JavaPlugin;
-import org.eclipse.jdt.internal.ui.javaeditor.ClassFileEditor;
-import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IStatusLineManager;
-import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorActionDelegate;
-import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 
 /**
@@ -38,7 +30,6 @@ import org.eclipse.ui.IEditorPart;
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-@SuppressWarnings("restriction")
 public class BindingsEditorAction implements IEditorActionDelegate {
   private IEditorPart editor;
   private GuicePlugin guicePlugin;
@@ -56,45 +47,19 @@ public class BindingsEditorAction implements IEditorActionDelegate {
    * Eclipse callback to have us run the bindings engine.
    */
   public void run(IAction action) {
-    IEditorInput editorInput = null;
-    if (editor instanceof CompilationUnitEditor) {
-      editorInput = ((CompilationUnitEditor)editor).getEditorInput();
-    } else if (editor instanceof ClassFileEditor) {
-      editorInput = ((ClassFileEditor)editor).getEditorInput();
-    }
-    if (editorInput != null) {
-      ICompilationUnit cu = JavaPlugin.getDefault()
-      .getWorkingCopyManager().getWorkingCopy(editorInput);
-      ITextSelection selection =
-        (ITextSelection) editor.getSite().getSelectionProvider().getSelection();
-      IJavaElement element = null;
-      try {
-        IJavaElement[] elements =
-          cu.codeSelect(selection.getOffset(), selection.getLength());
-        if (elements.length > 0) {
-          element = elements[0];
-        }
-      } catch (JavaModelException exception) {
-        element = null;
-      }
-      EclipseJavaElement javaElement = null;
-      if (element != null) {
-        javaElement = new EclipseJavaElement(element, cu);
-      }
-      if (javaElement != null && javaElement.getType() != null) {
-        guicePlugin.getBindingsEngine(javaElement,
-            new EclipseJavaProject(element.getJavaProject()));
-      } else {
-        IStatusLineManager statusManager = editor.getEditorSite().getActionBars().getStatusLineManager();
-        if (selection != null) {
-          statusManager.setMessage(
-              "Selection is not a Java element: " + selection.getText());
-        } else {
-          statusManager.setMessage("Selection is not a Java element.");
-        }
-      }
+    JavaElementResolver resolver = new JavaElementResolver(editor);
+    EclipseJavaElement javaElement = new EclipseJavaElement(resolver.getJavaElement());
+    if (javaElement != null && javaElement.getType() != null) {
+      guicePlugin.getBindingsEngine(javaElement,
+          new EclipseJavaProject(resolver.getJavaElement().getJavaProject()));
     } else {
-      guicePlugin.getMessenger().display("Find Bindings not available in this context");
+      IStatusLineManager statusManager = editor.getEditorSite().getActionBars().getStatusLineManager();
+      if (resolver.getSelection() != null) {
+        statusManager.setMessage(
+            "Selection is not a Java element: " + resolver.getSelection());
+      } else {
+        statusManager.setMessage("Selection is not a Java element.");
+      }
     }
   }
 

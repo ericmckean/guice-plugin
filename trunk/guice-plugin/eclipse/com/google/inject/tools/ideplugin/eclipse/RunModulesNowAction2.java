@@ -16,32 +16,21 @@
 
 package com.google.inject.tools.ideplugin.eclipse;
 
-import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.internal.ui.JavaPlugin;
-import org.eclipse.jdt.internal.ui.javaeditor.ClassFileEditor;
-import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
-import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+
+import com.google.inject.tools.ideplugin.JavaProject;
 
 /**
  * Runs the find bindings action based on the user pressing a key combination.
  * 
  * @author dcreutz@gmail.com (Darren Creutz)
  */
-@SuppressWarnings("restriction")
 public class RunModulesNowAction2 extends EclipseMenuAction {
   @Override
   protected boolean runMyAction(IEditorPart part) {
-    IEditorInput editorInput = null;
-    if (part instanceof CompilationUnitEditor) {
-      editorInput = ((CompilationUnitEditor)part).getEditorInput();
-    } else if (part instanceof ClassFileEditor) {
-      editorInput = ((ClassFileEditor)part).getEditorInput();
-    }
-    if (editorInput != null) {
-      ICompilationUnit cu = JavaPlugin.getDefault()
-          .getWorkingCopyManager().getWorkingCopy(editorInput);
-      guicePlugin.runModulesNow(new EclipseJavaProject(cu.getJavaProject()), false);
+    JavaProject project = new EclipseJavaProject(new JavaProjectResolver(part).getProject());
+    if (project != null) {
+      Activator.getGuicePlugin().runModulesNow(project, false);
     }
     return true;
   }

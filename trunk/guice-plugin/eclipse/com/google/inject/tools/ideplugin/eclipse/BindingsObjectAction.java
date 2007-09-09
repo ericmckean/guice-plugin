@@ -20,7 +20,6 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
@@ -52,9 +51,7 @@ public class BindingsObjectAction implements IObjectActionDelegate {
     IStructuredSelection selection = (IStructuredSelection) part.getSite()
         .getSelectionProvider().getSelection();
     IJavaElement element = (IJavaElement) selection.getFirstElement();
-    ICompilationUnit cu =
-        (ICompilationUnit) element.getAncestor(IJavaElement.COMPILATION_UNIT);
-    EclipseJavaElement javaElement = new EclipseJavaElement(element, cu);
+    EclipseJavaElement javaElement = new EclipseJavaElement(element);
     if (javaElement != null) {
       guicePlugin.getBindingsEngine(javaElement,
           new EclipseJavaProject(element.getJavaProject()));

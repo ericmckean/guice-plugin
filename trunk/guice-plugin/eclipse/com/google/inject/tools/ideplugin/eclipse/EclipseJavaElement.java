@@ -17,6 +17,7 @@
 package com.google.inject.tools.ideplugin.eclipse;
 
 import org.eclipse.jdt.core.Flags;
+import org.eclipse.jdt.core.IClassFile;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMember;
@@ -44,7 +45,6 @@ class EclipseJavaElement implements JavaElement {
   private final String name;
   private String className;
   private final EclipseJavaProject javaProject;
-  private final ICompilationUnit compilationUnit;
   private boolean isConcrete;
 
   /**
@@ -52,9 +52,7 @@ class EclipseJavaElement implements JavaElement {
    * 
    * @param element the IJavaElement to wrap around
    */
-  public EclipseJavaElement(IJavaElement element,
-      ICompilationUnit compilationUnit) {
-    this.compilationUnit = compilationUnit;
+  public EclipseJavaElement(IJavaElement element) {
     this.element = element;
     this.name = findName();
     this.javaProject = new EclipseJavaProject(element.getJavaProject());
@@ -112,12 +110,22 @@ class EclipseJavaElement implements JavaElement {
 
   private String getType(IJavaElement element, String signature) {
     try {
-      IType type = compilationUnit.getAllTypes()[0];
+      IType type = null;
+      ICompilationUnit compilationUnit = (ICompilationUnit)element.getAncestor(IJavaElement.COMPILATION_UNIT);
+      if (compilationUnit != null) {
+        type = compilationUnit.getAllTypes()[0];
+        
+      } else {
+        IClassFile classFile = (IClassFile)element.getAncestor(IJavaElement.CLASS_FILE);
+        if (classFile != null) {
+          type = classFile.getType();
+        }
+      }
       String resolvedSignature = 
         TypeUtil.resolveTypeSignature(type, signature, false);
       String className = getClassNameFromResolvedSignature(resolvedSignature);
       return className;
-    } catch (Exception e) {
+    } catch (Throwable e) {
       return null;
     }
   }
@@ -207,8 +215,18 @@ class EclipseJavaElement implements JavaElement {
   
   private boolean findIsConcreteClass(String signature) {
     try {
-      IType owningType = compilationUnit.getAllTypes()[0];
-      IType resolvedType = TypeUtil.resolveType(owningType, signature);
+      IType type = null;
+      ICompilationUnit compilationUnit = (ICompilationUnit)element.getAncestor(IJavaElement.COMPILATION_UNIT);
+      if (compilationUnit != null) {
+        type = compilationUnit.getAllTypes()[0];
+        
+      } else {
+        IClassFile classFile = (IClassFile)element.getAncestor(IJavaElement.CLASS_FILE);
+        if (classFile != null) {
+          type = classFile.getType();
+        }
+      }
+      IType resolvedType = TypeUtil.resolveType(type, signature);
       return findIsConcreteClass(resolvedType);
     } catch (Throwable throwable) {
       return false;

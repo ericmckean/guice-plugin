@@ -134,7 +134,7 @@ public class SampleModuleScenario {
   public interface ProvidedService {
   }
   
-  public static class Helper extends HashSet<Module> {
+  public static class Helper extends HashSet<Module> implements Iterable<Module> {
     public Helper() {
       add(new WorkingModule());
       add(new WorkingModule2());
