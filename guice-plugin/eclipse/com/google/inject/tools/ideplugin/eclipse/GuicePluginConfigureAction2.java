@@ -16,11 +16,6 @@
 
 package com.google.inject.tools.ideplugin.eclipse;
 
-import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.internal.ui.JavaPlugin;
-import org.eclipse.jdt.internal.ui.javaeditor.ClassFileEditor;
-import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
-import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 
 import com.google.inject.tools.ideplugin.JavaProject;
@@ -30,21 +25,12 @@ import com.google.inject.tools.ideplugin.JavaProject;
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-@SuppressWarnings("restriction")
 public class GuicePluginConfigureAction2 extends EclipseMenuAction {
   @Override
-  protected boolean runMyAction(IEditorPart part) {
-    IEditorInput editorInput = null;
-    if (part instanceof CompilationUnitEditor) {
-      editorInput = ((CompilationUnitEditor)part).getEditorInput();
-    } else if (part instanceof ClassFileEditor) {
-      editorInput = ((ClassFileEditor)part).getEditorInput();
-    }
-    if (editorInput != null) {
-      ICompilationUnit cu = JavaPlugin.getDefault()
-          .getWorkingCopyManager().getWorkingCopy(editorInput);
-      JavaProject project = new EclipseJavaProject(cu.getJavaProject());
-      guicePlugin.configurePlugin(project, true);
+  protected boolean runMyAction(IEditorPart editor) {
+    JavaProject project = new EclipseJavaProject(new JavaProjectResolver(editor).getProject());
+    if (project != null) {
+      Activator.getGuicePlugin().configurePlugin(project, true);
     }
     return true;
   }

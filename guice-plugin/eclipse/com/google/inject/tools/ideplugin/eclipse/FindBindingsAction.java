@@ -16,15 +16,6 @@
 
 package com.google.inject.tools.ideplugin.eclipse;
 
-import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.internal.ui.JavaPlugin;
-import org.eclipse.jdt.internal.ui.javaeditor.ClassFileEditor;
-import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
-import org.eclipse.jface.text.ITextSelection;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 
 /**
@@ -32,42 +23,15 @@ import org.eclipse.ui.IEditorPart;
  * 
  * @author dcreutz@gmail.com (Darren Creutz)
  */
-@SuppressWarnings("restriction")
 public class FindBindingsAction extends EclipseMenuAction {
   @Override
   public boolean runMyAction(IEditorPart part) {
-    IJavaElement element = null;
-    ISelection sel = window.getSelectionService().getSelection();
-    ITextSelection selection = (ITextSelection)sel;
-    IEditorInput editorInput = null;
-    if (part instanceof CompilationUnitEditor) {
-      editorInput = ((CompilationUnitEditor)part).getEditorInput();
-    } else if (part instanceof ClassFileEditor) {
-      editorInput = ((ClassFileEditor)part).getEditorInput();
-    }
-    if (editorInput != null) {
-      ICompilationUnit cu = JavaPlugin.getDefault()
-      .getWorkingCopyManager().getWorkingCopy(editorInput);
-      try {
-        IJavaElement[] elements =
-          cu.codeSelect(selection.getOffset(), selection.getLength());
-        if (elements.length > 0) {
-          element = elements[0];
-        }
-      } catch (JavaModelException exception) {
-        element = null;
-      }
-      EclipseJavaElement javaElement = null;
-      if (element != null) {
-        ICompilationUnit cu2 = 
-          (ICompilationUnit)element.getAncestor(IJavaElement.COMPILATION_UNIT);
-        javaElement = new EclipseJavaElement(element, cu2);
-      }
-      if (javaElement != null && javaElement.getType() != null) {
-        guicePlugin.getBindingsEngine(javaElement,
-            new EclipseJavaProject(element.getJavaProject()));
-        return true;
-      }
+    JavaElementResolver resolver = new JavaElementResolver(part);
+    EclipseJavaElement javaElement = new EclipseJavaElement(resolver.getJavaElement());
+    if (javaElement != null && javaElement.getType() != null) {
+      guicePlugin.getBindingsEngine(javaElement,
+         new EclipseJavaProject(resolver.getJavaElement().getJavaProject()));
+      return true;
     } else {
       guicePlugin.getMessenger().display("Find Bindings not available in this context");
     }

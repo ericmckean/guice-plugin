@@ -12,6 +12,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/Guice/aopalliance.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/Guice/asm-2.2.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/Guice/cglib-2.2_beta1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/Guice/guice-r364.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/Guice/guice-r364.jar" sourcepath="/Guice/src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
