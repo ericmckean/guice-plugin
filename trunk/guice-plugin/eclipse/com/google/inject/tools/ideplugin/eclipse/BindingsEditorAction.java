@@ -22,6 +22,7 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.internal.ui.JavaPlugin;
+import org.eclipse.jdt.internal.ui.javaeditor.ClassFileEditor;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IStatusLineManager;
@@ -55,36 +56,45 @@ public class BindingsEditorAction implements IEditorActionDelegate {
    * Eclipse callback to have us run the bindings engine.
    */
   public void run(IAction action) {
-    IEditorInput editorInput = ((CompilationUnitEditor)editor).getEditorInput();
-    ICompilationUnit cu = JavaPlugin.getDefault()
-        .getWorkingCopyManager().getWorkingCopy(editorInput);
-    ITextSelection selection =
+    IEditorInput editorInput = null;
+    if (editor instanceof CompilationUnitEditor) {
+      editorInput = ((CompilationUnitEditor)editor).getEditorInput();
+    } else if (editor instanceof ClassFileEditor) {
+      editorInput = ((ClassFileEditor)editor).getEditorInput();
+    }
+    if (editorInput != null) {
+      ICompilationUnit cu = JavaPlugin.getDefault()
+      .getWorkingCopyManager().getWorkingCopy(editorInput);
+      ITextSelection selection =
         (ITextSelection) editor.getSite().getSelectionProvider().getSelection();
-    IJavaElement element = null;
-    try {
-      IJavaElement[] elements =
+      IJavaElement element = null;
+      try {
+        IJavaElement[] elements =
           cu.codeSelect(selection.getOffset(), selection.getLength());
-      if (elements.length > 0) {
-        element = elements[0];
+        if (elements.length > 0) {
+          element = elements[0];
+        }
+      } catch (JavaModelException exception) {
+        element = null;
       }
-    } catch (JavaModelException exception) {
-      element = null;
-    }
-    EclipseJavaElement javaElement = null;
-    if (element != null) {
-      javaElement = new EclipseJavaElement(element, cu);
-    }
-    if (javaElement != null && javaElement.getType() != null) {
-      guicePlugin.getBindingsEngine(javaElement,
-          new EclipseJavaProject(element.getJavaProject()));
-    } else {
-      IStatusLineManager statusManager = editor.getEditorSite().getActionBars().getStatusLineManager();
-      if (selection != null) {
-        statusManager.setMessage(
-            "Selection is not a Java element: " + selection.getText());
+      EclipseJavaElement javaElement = null;
+      if (element != null) {
+        javaElement = new EclipseJavaElement(element, cu);
+      }
+      if (javaElement != null && javaElement.getType() != null) {
+        guicePlugin.getBindingsEngine(javaElement,
+            new EclipseJavaProject(element.getJavaProject()));
       } else {
-        statusManager.setMessage("Selection is not a Java element.");
+        IStatusLineManager statusManager = editor.getEditorSite().getActionBars().getStatusLineManager();
+        if (selection != null) {
+          statusManager.setMessage(
+              "Selection is not a Java element: " + selection.getText());
+        } else {
+          statusManager.setMessage("Selection is not a Java element.");
+        }
       }
+    } else {
+      guicePlugin.getMessenger().display("Find Bindings not available in this context");
     }
   }
 

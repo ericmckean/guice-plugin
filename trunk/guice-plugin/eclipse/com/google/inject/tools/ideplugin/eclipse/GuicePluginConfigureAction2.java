@@ -18,7 +18,9 @@ package com.google.inject.tools.ideplugin.eclipse;
 
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.internal.ui.JavaPlugin;
+import org.eclipse.jdt.internal.ui.javaeditor.ClassFileEditor;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 
 import com.google.inject.tools.ideplugin.JavaProject;
@@ -32,10 +34,18 @@ import com.google.inject.tools.ideplugin.JavaProject;
 public class GuicePluginConfigureAction2 extends EclipseMenuAction {
   @Override
   protected boolean runMyAction(IEditorPart part) {
-    ICompilationUnit cu = JavaPlugin.getDefault()
-        .getWorkingCopyManager().getWorkingCopy(((CompilationUnitEditor)part).getEditorInput());
-    JavaProject project = new EclipseJavaProject(cu.getJavaProject());
-    guicePlugin.configurePlugin(project, true);
+    IEditorInput editorInput = null;
+    if (part instanceof CompilationUnitEditor) {
+      editorInput = ((CompilationUnitEditor)part).getEditorInput();
+    } else if (part instanceof ClassFileEditor) {
+      editorInput = ((ClassFileEditor)part).getEditorInput();
+    }
+    if (editorInput != null) {
+      ICompilationUnit cu = JavaPlugin.getDefault()
+          .getWorkingCopyManager().getWorkingCopy(editorInput);
+      JavaProject project = new EclipseJavaProject(cu.getJavaProject());
+      guicePlugin.configurePlugin(project, true);
+    }
     return true;
   }
   

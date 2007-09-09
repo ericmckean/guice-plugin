@@ -18,7 +18,9 @@ package com.google.inject.tools.ideplugin.eclipse;
 
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.internal.ui.JavaPlugin;
+import org.eclipse.jdt.internal.ui.javaeditor.ClassFileEditor;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 
 /**
@@ -30,9 +32,17 @@ import org.eclipse.ui.IEditorPart;
 public class RunModulesNowAction2 extends EclipseMenuAction {
   @Override
   protected boolean runMyAction(IEditorPart part) {
-    ICompilationUnit cu = JavaPlugin.getDefault()
-        .getWorkingCopyManager().getWorkingCopy(((CompilationUnitEditor)part).getEditorInput());
-    guicePlugin.runModulesNow(new EclipseJavaProject(cu.getJavaProject()), false);
+    IEditorInput editorInput = null;
+    if (part instanceof CompilationUnitEditor) {
+      editorInput = ((CompilationUnitEditor)part).getEditorInput();
+    } else if (part instanceof ClassFileEditor) {
+      editorInput = ((ClassFileEditor)part).getEditorInput();
+    }
+    if (editorInput != null) {
+      ICompilationUnit cu = JavaPlugin.getDefault()
+          .getWorkingCopyManager().getWorkingCopy(editorInput);
+      guicePlugin.runModulesNow(new EclipseJavaProject(cu.getJavaProject()), false);
+    }
     return true;
   }
   
