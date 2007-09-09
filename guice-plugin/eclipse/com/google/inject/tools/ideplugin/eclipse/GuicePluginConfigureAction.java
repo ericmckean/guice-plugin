@@ -18,6 +18,7 @@ package com.google.inject.tools.ideplugin.eclipse;
 
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.internal.ui.JavaPlugin;
+import org.eclipse.jdt.internal.ui.javaeditor.ClassFileEditor;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -51,10 +52,17 @@ public class GuicePluginConfigureAction implements IEditorActionDelegate,
   }
 
   public void run(IAction action) {
-    IEditorInput editorInput = ((CompilationUnitEditor) editor).getEditorInput();
-    ICompilationUnit cu = JavaPlugin.getDefault()
-        .getWorkingCopyManager().getWorkingCopy(editorInput);
-    JavaProject project = new EclipseJavaProject(cu.getJavaProject());
-    Activator.getGuicePlugin().configurePlugin(project, true);
+    IEditorInput editorInput = null;
+    if (editor instanceof CompilationUnitEditor) {
+      editorInput = ((CompilationUnitEditor)editor).getEditorInput();
+    } else if (editor instanceof ClassFileEditor) {
+      editorInput = ((ClassFileEditor)editor).getEditorInput();
+    }
+    if (editorInput != null) {
+      ICompilationUnit cu = JavaPlugin.getDefault()
+          .getWorkingCopyManager().getWorkingCopy(editorInput);
+      JavaProject project = new EclipseJavaProject(cu.getJavaProject());
+      Activator.getGuicePlugin().configurePlugin(project, true);
+    }
   }
 }

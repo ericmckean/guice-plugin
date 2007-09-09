@@ -20,6 +20,7 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.internal.ui.JavaPlugin;
+import org.eclipse.jdt.internal.ui.javaeditor.ClassFileEditor;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
@@ -38,28 +39,37 @@ public class FindBindingsAction extends EclipseMenuAction {
     IJavaElement element = null;
     ISelection sel = window.getSelectionService().getSelection();
     ITextSelection selection = (ITextSelection)sel;
-    IEditorInput editorInput = ((CompilationUnitEditor)part).getEditorInput();
-    ICompilationUnit cu = JavaPlugin.getDefault()
-    .getWorkingCopyManager().getWorkingCopy(editorInput);
-    try {
-      IJavaElement[] elements =
-        cu.codeSelect(selection.getOffset(), selection.getLength());
-      if (elements.length > 0) {
-        element = elements[0];
+    IEditorInput editorInput = null;
+    if (part instanceof CompilationUnitEditor) {
+      editorInput = ((CompilationUnitEditor)part).getEditorInput();
+    } else if (part instanceof ClassFileEditor) {
+      editorInput = ((ClassFileEditor)part).getEditorInput();
+    }
+    if (editorInput != null) {
+      ICompilationUnit cu = JavaPlugin.getDefault()
+      .getWorkingCopyManager().getWorkingCopy(editorInput);
+      try {
+        IJavaElement[] elements =
+          cu.codeSelect(selection.getOffset(), selection.getLength());
+        if (elements.length > 0) {
+          element = elements[0];
+        }
+      } catch (JavaModelException exception) {
+        element = null;
       }
-    } catch (JavaModelException exception) {
-      element = null;
-    }
-    EclipseJavaElement javaElement = null;
-    if (element != null) {
-      ICompilationUnit cu2 = 
-        (ICompilationUnit)element.getAncestor(IJavaElement.COMPILATION_UNIT);
-      javaElement = new EclipseJavaElement(element, cu2);
-    }
-    if (javaElement != null && javaElement.getType() != null) {
-      guicePlugin.getBindingsEngine(javaElement,
-          new EclipseJavaProject(element.getJavaProject()));
-      return true;
+      EclipseJavaElement javaElement = null;
+      if (element != null) {
+        ICompilationUnit cu2 = 
+          (ICompilationUnit)element.getAncestor(IJavaElement.COMPILATION_UNIT);
+        javaElement = new EclipseJavaElement(element, cu2);
+      }
+      if (javaElement != null && javaElement.getType() != null) {
+        guicePlugin.getBindingsEngine(javaElement,
+            new EclipseJavaProject(element.getJavaProject()));
+        return true;
+      }
+    } else {
+      guicePlugin.getMessenger().display("Find Bindings not available in this context");
     }
     return false;
   }
