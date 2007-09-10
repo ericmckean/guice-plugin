@@ -29,6 +29,21 @@ import com.google.inject.tools.suite.snippets.CodeLocation;
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class CodeProblem implements Serializable {
+  
+  public interface CodeProblemVisitor {
+    public void visit(BadClassProblem problem);
+    public void visit(BindingProblem problem);
+    public void visit(CreationProblem problem);
+    public void visit(InjectorProblem problem);
+    public void visit(InvalidModuleProblem problem);
+    public void visit(KeyProblem problem);
+    public void visit(LocationProblem problem);
+    public void visit(OutOfScopeProblem problem);
+    public void visit(ScopeProblem problem);
+    public void visit(CodeProblem problem);
+  }
+  
+  
   private static final long serialVersionUID = 705475501616525997L;
   
   protected String message;
@@ -66,5 +81,9 @@ public class CodeProblem implements Serializable {
    */
   public StackTraceElement[] getStackTrace() {
     return stacktrace;
+  }
+  
+  public void accept(CodeProblemVisitor visitor) {
+    visitor.visit(this);
   }
 }

@@ -18,6 +18,8 @@ package com.google.inject.tools.suite.snippets;
 
 import java.util.Set;
 
+import com.google.inject.tools.suite.snippets.BindingCodeLocation.ImplicitBindingLocation;
+import com.google.inject.tools.suite.snippets.BindingCodeLocation.NoBindingLocation;
 import com.google.inject.tools.suite.snippets.problems.CodeProblem;
 
 /**
@@ -26,6 +28,13 @@ import com.google.inject.tools.suite.snippets.problems.CodeProblem;
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 public abstract class CodeLocation extends CodeSnippetResult {
+  
+  public interface CodeLocationVisitor {
+    public void visit(BindingCodeLocation location);
+    public void visit(ImplicitBindingLocation location);
+    public void visit(NoBindingLocation location);
+  }
+  
   private final String file;
   private final int location;
   private final String description;
@@ -74,6 +83,8 @@ public abstract class CodeLocation extends CodeSnippetResult {
   public StackTraceElement[] getStackTrace() {
     return stackTrace;
   }
+  
+  public abstract void accept(CodeLocationVisitor visitor);
 
   @Override
   public String toString() {

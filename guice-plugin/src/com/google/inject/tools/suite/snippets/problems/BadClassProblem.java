@@ -34,6 +34,11 @@ public class BadClassProblem extends CodeProblem {
   }
   
   @Override
+  public void accept(CodeProblemVisitor visitor) {
+    visitor.visit(this);
+  }
+  
+  @Override
   public String toString() {
     return "Guice Bad Class Problem: " + className + " " + getMessage();
   }

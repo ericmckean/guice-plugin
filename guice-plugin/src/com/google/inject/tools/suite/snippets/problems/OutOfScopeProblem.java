@@ -27,6 +27,11 @@ public class OutOfScopeProblem extends CodeProblem {
   }
   
   @Override
+  public void accept(CodeProblemVisitor visitor) {
+    visitor.visit(this);
+  }
+  
+  @Override
   public String toString() {
     return "Guice Out of Scope Problem: " + getMessage();
   }

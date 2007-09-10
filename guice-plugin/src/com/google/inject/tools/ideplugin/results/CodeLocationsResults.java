@@ -54,7 +54,7 @@ public class CodeLocationsResults extends Results {
      * @param location the {@link CodeLocation}
      */
     public CodeLocationNode(CodeLocation location) {
-      super(ActionStringBuilder.getDisplayString(location));
+      super(new ActionStringBuilder(location).getActionString());
       this.location = location;
       if (!location.getProblems().isEmpty()) {
         Node node = new ProblemsNode();
@@ -96,7 +96,7 @@ public class CodeLocationsResults extends Results {
      * @param problem the problem
      */
     public ProblemNode(CodeProblem problem) {
-      super(ActionStringBuilder.getDisplayString(problem));
+      super(new ActionStringBuilder(problem).getActionString());
       this.problem = problem;
     }
 

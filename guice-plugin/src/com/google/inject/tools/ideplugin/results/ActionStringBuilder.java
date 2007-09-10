@@ -22,7 +22,9 @@ import com.google.inject.tools.suite.snippets.BindingCodeLocation;
 import com.google.inject.tools.suite.snippets.CodeLocation;
 import com.google.inject.tools.suite.snippets.BindingCodeLocation.ImplicitBindingLocation;
 import com.google.inject.tools.suite.snippets.BindingCodeLocation.NoBindingLocation;
+import com.google.inject.tools.suite.snippets.CodeLocation.CodeLocationVisitor;
 import com.google.inject.tools.suite.snippets.problems.BadClassProblem;
+import com.google.inject.tools.suite.snippets.problems.BindingProblem;
 import com.google.inject.tools.suite.snippets.problems.CodeProblem;
 import com.google.inject.tools.suite.snippets.problems.CreationProblem;
 import com.google.inject.tools.suite.snippets.problems.InjectorProblem;
@@ -31,6 +33,7 @@ import com.google.inject.tools.suite.snippets.problems.KeyProblem;
 import com.google.inject.tools.suite.snippets.problems.LocationProblem;
 import com.google.inject.tools.suite.snippets.problems.OutOfScopeProblem;
 import com.google.inject.tools.suite.snippets.problems.ScopeProblem;
+import com.google.inject.tools.suite.snippets.problems.CodeProblem.CodeProblemVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +43,7 @@ import java.util.List;
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-public class ActionStringBuilder {
+public class ActionStringBuilder implements CodeLocationVisitor, CodeProblemVisitor {
   /**
    * An ActionStringElement is a piece of text with an Action associated to
    * it.
@@ -147,22 +150,27 @@ public class ActionStringBuilder {
     }
   }
   
-  /**
-   * Create an ActionString for a {@link CodeLocation}.
-   */
-  public static ActionString getDisplayString(CodeLocation location) {
-    if (location instanceof ImplicitBindingLocation) {
-      return new ImplicitBindingLocationActionString(
-          (ImplicitBindingLocation)location);
-    } else if (location instanceof NoBindingLocation) {
-      return new NoBindingLocationActionString(
-          (NoBindingLocation)location);
-    } else if (location instanceof BindingCodeLocation) {
-      return new BindingCodeLocationActionString(
-          (BindingCodeLocation)location);
-    } else {
-      throw new UnsupportedCodeLocationException(location);
-    }
+  
+  private ActionString string;
+  
+  public ActionStringBuilder(CodeLocation location) {
+    location.accept(this);
+  }
+  
+  public ActionString getActionString() {
+    return string;
+  }
+  
+  public void visit(BindingCodeLocation location) {
+    string = new BindingCodeLocationActionString(location);
+  }
+  
+  public void visit(ImplicitBindingLocation location) {
+    string = new ImplicitBindingLocationActionString(location);
+  }
+  
+  public void visit(NoBindingLocation location) {
+    string = new NoBindingLocationActionString(location);
   }
   
   static class UnsupportedCodeLocationException extends RuntimeException {
@@ -242,29 +250,39 @@ public class ActionStringBuilder {
     }
   }
   
-  /**
-   * Create an ActionString for a {@link CodeProblem}.
-   */
-  public static ActionString getDisplayString(CodeProblem problem) {
-    if (problem instanceof BadClassProblem) {
-      return new BadClassProblemActionString((BadClassProblem)problem);
-    } else if (problem instanceof CreationProblem) {
-      return new CreationProblemActionString((CreationProblem)problem);
-    } else if (problem instanceof InjectorProblem) {
-      return new InjectorProblemActionString((InjectorProblem)problem);
-    } else if (problem instanceof InvalidModuleProblem) {
-      return new InvalidModuleProblemActionString((InvalidModuleProblem)problem);
-    } else if (problem instanceof KeyProblem) {
-      return new KeyProblemActionString((KeyProblem)problem);
-    } else if (problem instanceof LocationProblem) {
-      return new LocationProblemActionString((LocationProblem)problem);
-    } else if (problem instanceof OutOfScopeProblem) {
-      return new OutOfScopeProblemActionString((OutOfScopeProblem)problem);
-    } else if (problem instanceof ScopeProblem) {
-      return new ScopeProblemActionString((ScopeProblem)problem);
-    } else {
-      return new CodeProblemActionString(problem);
-    }
+  public ActionStringBuilder(CodeProblem problem) {
+    problem.accept(this);
+  }
+  
+  public void visit(BadClassProblem problem) {
+    string = new BadClassProblemActionString(problem);
+  }
+  public void visit(BindingProblem problem) {
+    string = new BindingProblemActionString(problem);
+  }
+  public void visit(CreationProblem problem) {
+    string = new CreationProblemActionString(problem);
+  }
+  public void visit(InjectorProblem problem) {
+    string = new InjectorProblemActionString(problem);
+  }
+  public void visit(InvalidModuleProblem problem) {
+    string = new InvalidModuleProblemActionString(problem);
+  }
+  public void visit(KeyProblem problem) {
+    string = new KeyProblemActionString(problem);
+  }
+  public void visit(LocationProblem problem) {
+    string = new LocationProblemActionString(problem);
+  }
+  public void visit(OutOfScopeProblem problem) {
+    string = new OutOfScopeProblemActionString(problem);
+  }
+  public void visit(ScopeProblem problem) {
+    string = new ScopeProblemActionString(problem);
+  }
+  public void visit(CodeProblem problem) {
+    string = new CodeProblemActionString(problem);
   }
   
   static class CodeProblemActionString extends ActionString {
@@ -282,6 +300,14 @@ public class ActionStringBuilder {
       addText("Bad Class Problem: ");
       addTextWithAction(ClassNameUtility.shorten(theClass), new ActionsHandler.GotoFile(
           theClass), "Goto source of " + theClass);    }
+  }
+  
+  static class BindingProblemActionString extends ActionString {
+    public BindingProblemActionString(BindingProblem problem) {
+      super();
+      addText("Binding Proble: ");
+      addText(problem.getMessage());
+    }
   }
   
   static class CreationProblemActionString extends ActionString {
