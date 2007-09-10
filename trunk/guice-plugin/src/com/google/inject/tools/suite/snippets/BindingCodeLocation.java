@@ -48,6 +48,11 @@ public class BindingCodeLocation extends CodeLocation {
     public String getTheClass() {
       return theClass;
     }
+    
+    @Override
+    public void accept(CodeLocationVisitor visitor) {
+      visitor.visit(this);
+    }
   }
   
   /**
@@ -66,6 +71,11 @@ public class BindingCodeLocation extends CodeLocation {
     
     public String getTheClass() {
       return theClass;
+    }
+    
+    @Override
+    public void accept(CodeLocationVisitor visitor) {
+      visitor.visit(this);
     }
   }
 
@@ -156,6 +166,11 @@ public class BindingCodeLocation extends CodeLocation {
    */
   public String bindToInstance() {
     return bindToInstance;
+  }
+  
+  @Override
+  public void accept(CodeLocationVisitor visitor) {
+    visitor.visit(this);
   }
   
   @Override

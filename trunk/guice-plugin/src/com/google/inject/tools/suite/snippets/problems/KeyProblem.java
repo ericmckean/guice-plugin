@@ -38,6 +38,11 @@ public class KeyProblem extends CodeProblem {
   }
   
   @Override
+  public void accept(CodeProblemVisitor visitor) {
+    visitor.visit(this);
+  }
+  
+  @Override
   public String toString() {
     return "Guice Key Problem: " + bindWhat + " " + getMessage();
   }

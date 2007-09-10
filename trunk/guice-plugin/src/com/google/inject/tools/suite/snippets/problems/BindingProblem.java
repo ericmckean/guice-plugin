@@ -27,6 +27,11 @@ public class BindingProblem extends CodeProblem {
   }
   
   @Override
+  public void accept(CodeProblemVisitor visitor) {
+    visitor.visit(this);
+  }
+  
+  @Override
   public String toString() {
     return "Guice Binding Problem: " + getMessage();
   }
