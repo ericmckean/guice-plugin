@@ -22,7 +22,6 @@ Allow users to navigate guice code by jumping through bindings.
 *Status*: 90% complete.  The "Find Bindings" feature is done (except for a few outstanding issues).
 
 *Outstanding Issues*
-  * Handle linked bindings (requires rewriting snippet to use new guice API)
   * IntelliJ version
 
 *Eclipse Version Outstanding Issues*
@@ -32,7 +31,6 @@ Allow users to navigate guice code by jumping through bindings.
   * Determine if element is at an injection point and its annotations
 
 *Tools Suite Outstanding Issues*
-  * Rewrite snippet to use new guice API
   * Implement !CodeRunners with various behaviors
   * Implement the Module taking arguments functionality
   * Write sample code
@@ -78,3 +76,4 @@ Allow users to refactor guice code automatically, for instance "add injected par
   # Implement the refactoring framework
   # Implement the refactorings
   # Implement the user interface
+ 
