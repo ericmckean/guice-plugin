@@ -133,6 +133,13 @@ public class Results {
   public Node getRoot() {
     return root;
   }
+  
+  /**
+   * Is this result set empty?
+   */
+  public boolean isEmpty() {
+    return root.children().isEmpty();
+  }
 
   /**
    * Notify the results object that the user cancelled the operation.

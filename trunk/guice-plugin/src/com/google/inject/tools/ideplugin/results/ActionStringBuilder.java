@@ -21,6 +21,7 @@ import com.google.inject.tools.suite.module.ClassNameUtility;
 import com.google.inject.tools.suite.snippets.BindingCodeLocation;
 import com.google.inject.tools.suite.snippets.CodeLocation;
 import com.google.inject.tools.suite.snippets.BindingCodeLocation.ImplicitBindingLocation;
+import com.google.inject.tools.suite.snippets.BindingCodeLocation.LinkedToBindingCodeLocation;
 import com.google.inject.tools.suite.snippets.BindingCodeLocation.NoBindingLocation;
 import com.google.inject.tools.suite.snippets.CodeLocation.CodeLocationVisitor;
 import com.google.inject.tools.suite.snippets.problems.BadClassProblem;
@@ -165,6 +166,10 @@ public class ActionStringBuilder implements CodeLocationVisitor, CodeProblemVisi
     string = new BindingCodeLocationActionString(location);
   }
   
+  public void visit(LinkedToBindingCodeLocation location) {
+    string = new LinkedToBindingCodeLocationActionString(location);
+  }
+  
   public void visit(ImplicitBindingLocation location) {
     string = new ImplicitBindingLocationActionString(location);
   }
@@ -174,6 +179,8 @@ public class ActionStringBuilder implements CodeLocationVisitor, CodeProblemVisi
   }
   
   static class UnsupportedCodeLocationException extends RuntimeException {
+    private static final long serialVersionUID = 5016506076272339632L;
+    
     private final CodeLocation location;
     public UnsupportedCodeLocationException(CodeLocation location) {
       this.location = location;
@@ -207,6 +214,10 @@ public class ActionStringBuilder implements CodeLocationVisitor, CodeProblemVisi
   static class BindingCodeLocationActionString extends ActionString {
     public BindingCodeLocationActionString(BindingCodeLocation location) {
       super();
+      makeText(location);
+    }
+    
+    protected void makeText(BindingCodeLocation location) {
       String bindWhat = location.bindWhat();
       String annotatedWith = location.annotatedWith();
       String bindTo = location.bindTo();
@@ -221,19 +232,19 @@ public class ActionStringBuilder implements CodeLocationVisitor, CodeProblemVisi
         addText(ClassNameUtility.shorten(annotatedWith), annotatedWith);
       }
       if (bindToProvider != null) {
-        addText(" is bound to the provider ");
+        addText(" bound to the provider ");
         addTextWithAction(ClassNameUtility.shorten(bindToProvider),
             new ActionsHandler.GotoFile(bindToProvider), "Goto source of " + bindToProvider);
       } else if (bindTo != null) {
         if (bindToInstance != null) {
-          addText(" is bound to the instance " + bindToInstance + " of ");
+          addText(" bound to the instance " + bindToInstance + " of ");
         } else {
-          addText(" is bound to ");
+          addText(" bound to ");
         }
         addTextWithAction(ClassNameUtility.shorten(bindTo),
             new ActionsHandler.GotoFile(bindTo), "Goto source of " + bindTo);
       } else if (bindToInstance != null) {
-        addText(" is bound to the instance " + bindToInstance);
+        addText(" bound to the instance " + bindToInstance);
       } else {
         addText(" has an unresolvable binding");
       }
@@ -247,6 +258,18 @@ public class ActionStringBuilder implements CodeLocationVisitor, CodeProblemVisi
       if (location.locationDescription() != null) {
         addText(" " + location.locationDescription());
       }
+    }
+  }
+  
+  static class LinkedToBindingCodeLocationActionString extends BindingCodeLocationActionString {
+    public LinkedToBindingCodeLocationActionString(LinkedToBindingCodeLocation location) {
+      super(location);
+    }
+    
+    @Override
+    protected void makeText(BindingCodeLocation location) {
+      addText("by way of ");
+      super.makeText(location);
     }
   }
   

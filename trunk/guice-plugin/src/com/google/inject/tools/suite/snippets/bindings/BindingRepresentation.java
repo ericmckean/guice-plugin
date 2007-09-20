@@ -27,6 +27,7 @@ import com.google.inject.spi.LinkedProviderBinding;
 import com.google.inject.spi.ProviderBinding;
 import com.google.inject.spi.ProviderInstanceBinding;
 import com.google.inject.tools.suite.snippets.problems.BindingProblem;
+import com.google.inject.tools.suite.snippets.problems.KeyProblem;
 import com.google.inject.tools.suite.snippets.problems.LocationProblem;
 import com.google.inject.tools.suite.snippets.problems.ScopeProblem;
 
@@ -36,11 +37,14 @@ import com.google.inject.tools.suite.snippets.problems.ScopeProblem;
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class BindingRepresentation extends Representation {
+  private static final long serialVersionUID = 3660213668665829591L;
   private String file;
   private int location;
+  private StackTraceElement[] stackTrace;
   private String locationDescription;
   private String scope;
   
+  private KeyRepresentation key;
   private String boundTo;
   private String boundProvider;
   private String boundInstance;
@@ -59,11 +63,19 @@ public class BindingRepresentation extends Representation {
       problems.add(new ScopeProblem(throwable));
     }
     try {
+      key = new KeyRepresentation(binding.getKey());
+    } catch (Throwable throwable) {
+      problems.add(new KeyProblem(throwable));
+    }
+    try {
       if (binding.getSource() instanceof StackTraceElement) {
+        stackTrace = new StackTraceElement[1];
+        stackTrace[0] = (StackTraceElement)binding.getSource();
         file = ((StackTraceElement)binding.getSource()).getFileName();
         location = ((StackTraceElement)binding.getSource()).getLineNumber();
         locationDescription = null;
       } else {
+        stackTrace = null;
         file = null;
         location = -1;
         locationDescription = binding.getSource().toString();
@@ -143,6 +155,10 @@ public class BindingRepresentation extends Representation {
     }
   }
   
+  public KeyRepresentation key() {
+    return key;
+  }
+  
   public String file() {
     return file;
   }
@@ -173,6 +189,14 @@ public class BindingRepresentation extends Representation {
   
   public String boundConstant() {
     return boundConstant;
+  }
+  
+  public BindingRepresentation linkedTo() {
+    return linkedTo;
+  }
+  
+  public StackTraceElement[] stackTrace() {
+    return stackTrace;
   }
   
   @Override

@@ -140,7 +140,7 @@ public final class BindingsEngine {
                   locater.getCodeLocations(), locater.getProblems());
             }
           }
-          if (!results.keySet().isEmpty()) {
+          if (!results.isEmpty()) {
             resultsHandler.displayLocationsResults(results);
           }
         } else {

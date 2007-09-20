@@ -135,6 +135,8 @@ public class SampleModuleScenario {
   }
   
   public static class Helper extends HashSet<Module> implements Iterable<Module> {
+    private static final long serialVersionUID = -5935098537422867205L;
+
     public Helper() {
       add(new WorkingModule());
       add(new WorkingModule2());
@@ -149,7 +151,7 @@ public class SampleModuleScenario {
       @One int one,
       PaymentService<CreditCard> creditCardPaymentService,
       ProvidedService providedService) {
-    Module module = new AbstractModule() {
+    new AbstractModule() {
       @Override
       public void configure() {
         bind(MockInjectedInterface.class).to(MockInjectedInterfaceImpl.class);

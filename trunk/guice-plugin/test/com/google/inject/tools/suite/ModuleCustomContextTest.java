@@ -64,7 +64,6 @@ public class ModuleCustomContextTest extends TestCase {
 
   private Object runASnippet(String[] args) throws Exception {
     PipedInputStream is = new PipedInputStream();
-    Object obj = null;
     PipedOutputStream os = new PipedOutputStream(is);
     new ThreadWithStream(os, args).start();
     ObjectInputStream ois = new ObjectInputStream(is);

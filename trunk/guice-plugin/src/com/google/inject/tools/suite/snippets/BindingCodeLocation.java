@@ -78,6 +78,20 @@ public class BindingCodeLocation extends CodeLocation {
       visitor.visit(this);
     }
   }
+  
+  public static class LinkedToBindingCodeLocation extends BindingCodeLocation {
+    private static final long serialVersionUID = 8235745938820074618L;
+
+    public LinkedToBindingCodeLocation(String moduleContext, KeyRepresentation key,
+      BindingRepresentation binding) {
+      super(moduleContext, key, binding);
+    }
+    
+    @Override
+    public void accept(CodeLocationVisitor visitor) {
+      visitor.visit(this);
+    }
+  }
 
   private final String moduleContext;
   private final String bindWhat;
@@ -85,6 +99,7 @@ public class BindingCodeLocation extends CodeLocation {
   private final String bindTo;
   private final String bindToProvider;
   private final String bindToInstance;
+  private final LinkedToBindingCodeLocation linkedTo;
 
   /**
    * Create a new BindingCodeLocation.
@@ -102,7 +117,8 @@ public class BindingCodeLocation extends CodeLocation {
       String annotatedWith,
       String bindTo, String bindToProvider, String bindToInstance,
       String moduleContext, String file, int location,
-      String locationDescription, Set<? extends CodeProblem> problems) {
+      String locationDescription, LinkedToBindingCodeLocation linkedTo,
+      Set<? extends CodeProblem> problems) {
     super(stackTrace, file, location, locationDescription, problems);
     this.bindWhat = bindWhat;
     this.annotatedWith = annotatedWith;
@@ -110,10 +126,12 @@ public class BindingCodeLocation extends CodeLocation {
     this.bindToInstance = bindToInstance;
     this.bindToProvider = bindToProvider;
     this.moduleContext = moduleContext;
+    this.linkedTo = linkedTo;
   }
   
-  public BindingCodeLocation(String moduleContext, KeyRepresentation key, BindingRepresentation binding) {
-    super(null, binding.file(), binding.location(), binding.locationDescription(), binding.problems());
+  public BindingCodeLocation(String moduleContext, KeyRepresentation key,
+      BindingRepresentation binding) {
+    super(binding.stackTrace(), binding.file(), binding.location(), binding.locationDescription(), binding.problems());
     this.bindWhat = key.bindWhat();
     this.annotatedWith = key.annotatedWith();
     this.bindTo = binding.boundTo();
@@ -124,6 +142,8 @@ public class BindingCodeLocation extends CodeLocation {
     }
     this.bindToProvider = binding.boundProvider();
     this.moduleContext = moduleContext;
+    this.linkedTo = binding.linkedTo()==null ? null : 
+      new LinkedToBindingCodeLocation(moduleContext, binding.linkedTo().key(), binding.linkedTo());
   }
 
   /**
@@ -166,6 +186,13 @@ public class BindingCodeLocation extends CodeLocation {
    */
   public String bindToInstance() {
     return bindToInstance;
+  }
+  
+  /**
+   * Return the code location for the linked binding to this one (if any).
+   */
+  public BindingCodeLocation linkedTo() {
+    return linkedTo;
   }
   
   @Override

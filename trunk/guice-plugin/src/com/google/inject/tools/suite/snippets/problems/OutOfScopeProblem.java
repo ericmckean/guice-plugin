@@ -22,6 +22,8 @@ package com.google.inject.tools.suite.snippets.problems;
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class OutOfScopeProblem extends CodeProblem {
+  private static final long serialVersionUID = -5151219211425605406L;
+
   public OutOfScopeProblem(Throwable throwable) {
     super(throwable);
   }

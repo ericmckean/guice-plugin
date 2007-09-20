@@ -73,15 +73,6 @@
          	   id="com.google.inject.tools.ideplugin.eclipse.objectrunmodulesaction"
          	   label="&amp;Run Modules Now"
          	   menubarPath="com.google.inject.tools.ideplugin.eclipse.objectmenu.guice/modules"/>
-         <action
-         	   class="com.google.inject.tools.ideplugin.eclipse.RunModulesAutoAction"
-         	   definitionId="com.google.inject.tools.ideplugin.eclipse.runautoCommand"
-         	   style="toggle"
-         	   state="false"
-         	   enablesFor="*"
-         	   id="com.google.inject.tools.ideplugin.eclipse.objectrunmodulesautomaticallyaction"
-         	   label="Run Modules Automatically"
-         	   menubarPath="com.google.inject.tools.ideplugin.eclipse.objectmenu.guice/modules"/>
       </objectContribution>
       <viewerContribution
       		id="com.google.inject.tools.ideplugin.eclipse.bindings.viewerContribution"
@@ -112,15 +103,6 @@
          	   id="com.google.inject.tools.ideplugin.eclipse.runmodulesaction"
          	   label="&amp;Run Modules Now"
          	   menubarPath="com.google.inject.tools.ideplugin.eclipse.viewermenu.guice/modules"/>
-         <action
-         	   class="com.google.inject.tools.ideplugin.eclipse.RunModulesAutoAction"
-         	   definitionId="com.google.inject.tools.ideplugin.eclipse.runautoCommand"
-         	   style="toggle"
-         	   state="false"
-         	   enablesFor="*"
-         	   id="com.google.inject.tools.ideplugin.eclipse.runmodulesautomaticallyaction"
-         	   label="Run Modules Automatically"
-         	   menubarPath="com.google.inject.tools.ideplugin.eclipse.viewermenu.guice/modules"/>
       </viewerContribution>
       <viewerContribution
       		id="com.google.inject.tools.ideplugin.eclipse.bindings.viewerContribution"
@@ -150,15 +132,6 @@
          	   enablesFor="*"
          	   id="com.google.inject.tools.ideplugin.eclipse.runmodulesaction"
          	   label="&amp;Run Modules Now"
-         	   menubarPath="com.google.inject.tools.ideplugin.eclipse.viewermenu.guice/modules"/>
-         <action
-         	   class="com.google.inject.tools.ideplugin.eclipse.RunModulesAutoAction"
-         	   definitionId="com.google.inject.tools.ideplugin.eclipse.runautoCommand"
-         	   style="toggle"
-         	   state="false"
-         	   enablesFor="*"
-         	   id="com.google.inject.tools.ideplugin.eclipse.runmodulesautomaticallyaction"
-         	   label="Run Modules Automatically"
          	   menubarPath="com.google.inject.tools.ideplugin.eclipse.viewermenu.guice/modules"/>
       </viewerContribution>
    </extension>

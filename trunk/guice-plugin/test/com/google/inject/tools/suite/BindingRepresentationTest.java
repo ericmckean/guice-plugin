@@ -38,6 +38,6 @@ public class BindingRepresentationTest extends TestCase {
     };
     Injector injector = Guice.createInjector(Stage.TOOL, module);
     Binding<Injector> binding = injector.getBinding(Key.get(Injector.class));
-    String string = binding.toString();
+    binding.toString();
   }
 }

@@ -22,6 +22,8 @@ package com.google.inject.tools.suite.snippets.problems;
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class KeyProblem extends CodeProblem {
+  private static final long serialVersionUID = 3388550122589093190L;
+  
   private final String bindWhat;
   
   public KeyProblem(Throwable throwable) {
