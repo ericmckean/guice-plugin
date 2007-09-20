@@ -36,7 +36,6 @@ Allow users to navigate guice code by jumping through bindings.
   * Write sample code
 
 *Plan*
-  # Make use of the new guice API
   # Document the IntelliJ plugin (what's needed)
   # Take care of the remaining issues
 
@@ -76,4 +75,5 @@ Allow users to refactor guice code automatically, for instance "add injected par
   # Implement the refactoring framework
   # Implement the refactorings
   # Implement the user interface
+ 
  
