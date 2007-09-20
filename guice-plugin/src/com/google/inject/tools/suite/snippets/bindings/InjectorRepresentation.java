@@ -36,6 +36,7 @@ import com.google.inject.tools.suite.snippets.problems.OutOfScopeProblem;
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class InjectorRepresentation extends Representation {
+  private static final long serialVersionUID = -416051433644033707L;
   private Map<KeyRepresentation, BindingRepresentation> bindings;
   
   public InjectorRepresentation(Iterable<Module> modules) {

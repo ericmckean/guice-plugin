@@ -53,7 +53,7 @@ public class StartupTest extends TestCase {
   }
 
   public void testCreatingInjections() {
-    Activator activator = new Activator();
+    new Activator();
     EclipsePluginModule module = new EclipsePluginModule();
     EclipseGuiceToolsModule toolsModule = new EclipseGuiceToolsModule();
     Injector injector = Guice.createInjector(module, toolsModule);
@@ -78,7 +78,6 @@ public class StartupTest extends TestCase {
   }
 
   public void testCreateBindingsEngine() {
-    boolean calledMessenger = false;
     EclipsePluginModule module = new EclipsePluginModule();
     GuiceToolsModule toolsModule = new EclipseGuiceToolsModule();
     new EclipseGuicePlugin(module, toolsModule).getBindingsEngine(

@@ -24,6 +24,7 @@ import com.google.inject.tools.suite.snippets.ModuleContextSnippet.ModuleReprese
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class InvalidModuleProblem extends CodeProblem {
+  private static final long serialVersionUID = -1380775754405155418L;
   private final String moduleName;
   
   public InvalidModuleProblem(ModuleRepresentation module, Throwable throwable) {

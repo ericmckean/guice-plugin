@@ -22,6 +22,8 @@ package com.google.inject.tools.suite.snippets.problems;
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class BindingProblem extends CodeProblem {
+  private static final long serialVersionUID = 786680526332068711L;
+
   public BindingProblem(Throwable throwable) {
     super(throwable);
   }

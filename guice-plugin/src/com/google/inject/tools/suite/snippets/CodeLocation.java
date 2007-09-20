@@ -19,6 +19,7 @@ package com.google.inject.tools.suite.snippets;
 import java.util.Set;
 
 import com.google.inject.tools.suite.snippets.BindingCodeLocation.ImplicitBindingLocation;
+import com.google.inject.tools.suite.snippets.BindingCodeLocation.LinkedToBindingCodeLocation;
 import com.google.inject.tools.suite.snippets.BindingCodeLocation.NoBindingLocation;
 import com.google.inject.tools.suite.snippets.problems.CodeProblem;
 
@@ -31,6 +32,7 @@ public abstract class CodeLocation extends CodeSnippetResult {
   
   public interface CodeLocationVisitor {
     public void visit(BindingCodeLocation location);
+    public void visit(LinkedToBindingCodeLocation location);
     public void visit(ImplicitBindingLocation location);
     public void visit(NoBindingLocation location);
   }

@@ -27,6 +27,8 @@ import com.google.inject.tools.ideplugin.eclipse.EclipsePluginModule.EclipseGuic
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class EclipseApplicationContext extends HashSet<Module> {
+  private static final long serialVersionUID = 5781347211156801876L;
+
   public EclipseApplicationContext() {
     add(new EclipsePluginModule());
     add(new EclipseGuiceToolsModule());

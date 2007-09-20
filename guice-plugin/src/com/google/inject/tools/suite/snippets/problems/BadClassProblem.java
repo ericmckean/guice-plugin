@@ -22,6 +22,7 @@ package com.google.inject.tools.suite.snippets.problems;
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class BadClassProblem extends CodeProblem {
+  private static final long serialVersionUID = -8452933195194031001L;
   private final String className;
   
   public BadClassProblem(String className, Throwable throwable) {

@@ -137,7 +137,7 @@ public abstract class GuicePlugin {
 
     public void run(ProgressMonitor monitor) {
       done = false;
-      ModuleManager moduleManager = getProjectManager().getModuleManager(project);
+      getProjectManager().getModuleManager(project);
     }
   }
   

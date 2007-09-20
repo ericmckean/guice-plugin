@@ -17,11 +17,15 @@
 package com.google.inject.tools.ideplugin.results;
 
 import com.google.inject.tools.suite.module.ClassNameUtility;
+import com.google.inject.tools.suite.snippets.BindingCodeLocation;
 import com.google.inject.tools.suite.snippets.CodeLocation;
+import com.google.inject.tools.suite.snippets.BindingCodeLocation.ImplicitBindingLocation;
+import com.google.inject.tools.suite.snippets.BindingCodeLocation.LinkedToBindingCodeLocation;
+import com.google.inject.tools.suite.snippets.BindingCodeLocation.NoBindingLocation;
+import com.google.inject.tools.suite.snippets.CodeLocation.CodeLocationVisitor;
 import com.google.inject.tools.suite.snippets.problems.CodeProblem;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -35,16 +39,71 @@ public class CodeLocationsResults extends Results {
   /**
    * A node that denotes a new module.
    */
-  public static class ModuleNode extends Node {
+  static class ModuleNode extends Node implements CodeLocationVisitor {
+    private final String name;
+    private final Set<CodeProblem> problems;
+    private final Set<CodeLocation> locations;
+    private ProblemsNode problemsNode;
+    
     public ModuleNode(String name) {
       super("in " + ClassNameUtility.shorten(name), "Results for " + name);
+      this.name = name;
+      problems = new HashSet<CodeProblem>();
+      locations = new HashSet<CodeLocation>();
+      problemsNode = null;
+    }
+    
+    public String module() {
+      return name;
+    }
+    
+    public void addLocations(Set<? extends CodeLocation> locations) {
+      this.locations.addAll(locations);
+      for (CodeLocation location : locations) {
+        location.accept(this);
+      }
+    }
+    
+    public void addProblems(Set<? extends CodeProblem> problems) {
+      if (this.problems.isEmpty() && !problems.isEmpty()) {
+        problemsNode = new ProblemsNode();
+        addChild(problemsNode);
+      }
+      this.problems.addAll(problems);
+      for (CodeProblem problem : problems) {
+        problemsNode.addChild(new ProblemNode(problem));
+      }
+    }
+    
+    public Set<? extends CodeLocation> locations() {
+      return locations;
+    }
+    
+    public Set<? extends CodeProblem> problems() {
+      return problems;
+    }
+    
+    public void visit(BindingCodeLocation location) {
+      addChild(new BindingCodeLocationNode(location));
+    }
+    
+    public void visit(NoBindingLocation location) {
+      addChild(new NoBindingCodeLocationNode(location));
+    }
+    
+    public void visit(ImplicitBindingLocation location) {
+      addChild(new ImplicitBindingCodeLocationNode(location));
+    }
+    
+    public void visit(LinkedToBindingCodeLocation location) {
+      //do nothing
     }
   }
   
   /**
    * A node in the tree that holds a {@link CodeLocation}.
    */
-  public static class CodeLocationNode extends Node {
+  static class CodeLocationNode extends Node {
     private final CodeLocation location;
     
     /**
@@ -56,6 +115,9 @@ public class CodeLocationsResults extends Results {
     public CodeLocationNode(CodeLocation location) {
       super(new ActionStringBuilder(location).getActionString());
       this.location = location;
+    }
+    
+    protected void createProblemsNode() {
       if (!location.getProblems().isEmpty()) {
         Node node = new ProblemsNode();
         for (CodeProblem problem : location.getProblems()) {
@@ -75,10 +137,41 @@ public class CodeLocationsResults extends Results {
     }
   }
   
+  static class BindingCodeLocationNode extends CodeLocationNode {
+    public BindingCodeLocationNode(BindingCodeLocation location) {
+      super(location);
+      if (location.linkedTo() != null && 
+          !(location.linkedTo().file().equals(location.file())
+              && location.linkedTo().location() == location.location())) {
+        addChild(new LinkedToBindingCodeLocationNode(location.linkedTo()));
+      }
+    }
+  }
+  
+  static class LinkedToBindingCodeLocationNode extends Node {
+    public LinkedToBindingCodeLocationNode(BindingCodeLocation location) {
+      super(new ActionStringBuilder(location).getActionString());
+    }
+  }
+  
+  static class NoBindingCodeLocationNode extends CodeLocationNode {
+    public NoBindingCodeLocationNode(NoBindingLocation location) {
+      super(location);
+      createProblemsNode();
+    }
+  }
+  
+  static class ImplicitBindingCodeLocationNode extends CodeLocationNode {
+    public ImplicitBindingCodeLocationNode(ImplicitBindingLocation location) {
+      super(location);
+      createProblemsNode();
+    }
+  }
+  
   /**
    * A node that says Problems.
    */
-  public static class ProblemsNode extends Node {
+  static class ProblemsNode extends Node {
     public ProblemsNode() {
       super("Problems", null);
     }
@@ -87,7 +180,7 @@ public class CodeLocationsResults extends Results {
   /**
    * A Node representing a {@link CodeProblem}.
    */
-  public static class ProblemNode extends Node {
+  static class ProblemNode extends Node {
     private final CodeProblem problem;
 
     /**
@@ -110,8 +203,6 @@ public class CodeLocationsResults extends Results {
     }
   }
 
-  private final Map<String, Set<CodeLocation>> map;
-
   /**
    * Create a new CodeLocationsResults object with the given title.
    * 
@@ -121,7 +212,6 @@ public class CodeLocationsResults extends Results {
    */
   public CodeLocationsResults(String title, String tooltip) {
     super(title, tooltip);
-    map = new HashMap<String, Set<CodeLocation>>();
   }
 
   /**
@@ -133,53 +223,29 @@ public class CodeLocationsResults extends Results {
    */
   public synchronized void put(String module, Set<CodeLocation> locations, 
       Set<? extends CodeProblem> problems) {
-    if (map.get(module) != null) {
-      map.get(module).addAll(locations);
-    } else {
-      map.put(module, locations);
-    }
-    ModuleNode node = new ModuleNode(module);
-    getRoot().addChild(node);
-    for (CodeLocation location : locations) {
-      node.addChild(new CodeLocationNode(location));
-    }
-    if (!problems.isEmpty()) {
-      ProblemsNode problemsNode = new ProblemsNode();
-      node.addChild(problemsNode);
-      for (CodeProblem problem : problems) {
-        problemsNode.addChild(new ProblemNode(problem));
+    ModuleNode node = null;
+    for (Node child : getRoot().children()) {
+      if (child instanceof ModuleNode) {
+        if (((ModuleNode)child).module().equals(module)) {
+          node = (ModuleNode)child;
+        }
       }
     }
-  }
-
-  /**
-   * Return all the
-   * {@link com.google.inject.tools.suite.module.ModuleContextRepresentation}s in the
-   * results.
-   * 
-   * @return the modules
-   */
-  public synchronized Set<String> keySet() {
-    return map.keySet();
-  }
-
-  /**
-   * Return the {@link CodeLocation} in this results for the given
-   * {@link com.google.inject.tools.suite.module.ModuleContextRepresentation}.
-   * 
-   * @param module the module context
-   * @return the code location
-   */
-  public synchronized Set<? extends CodeLocation> get(String module) {
-    return map.get(module);
+    if (node == null) {
+      node = new ModuleNode(module);
+      getRoot().addChild(node);
+    }
+    node.addLocations(locations);
+    node.addProblems(problems);
   }
 
   @Override
   public String toString() {
     StringBuilder result = new StringBuilder();
     result.append("Code Locations: {");
-    for (String module : map.keySet()) {
-      result.append(module + " ==> " + map.get(module).toString());
+    for (Node node : getRoot().children()) {
+      ModuleNode moduleNode = (ModuleNode)node;
+      result.append(moduleNode.module() + " ==> " + moduleNode.locations().toString());
     }
     result.append("}");
     return result.toString();

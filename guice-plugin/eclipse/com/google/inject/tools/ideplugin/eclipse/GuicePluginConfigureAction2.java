@@ -31,8 +31,9 @@ public class GuicePluginConfigureAction2 extends EclipseMenuAction {
     JavaProject project = new EclipseJavaProject(new JavaProjectResolver(editor).getProject());
     if (project != null) {
       Activator.getGuicePlugin().configurePlugin(project, true);
+      return true;
     }
-    return true;
+    return false;
   }
   
   @Override

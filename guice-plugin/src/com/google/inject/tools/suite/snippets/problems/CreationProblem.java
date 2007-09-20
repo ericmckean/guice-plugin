@@ -22,6 +22,8 @@ package com.google.inject.tools.suite.snippets.problems;
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class CreationProblem extends CodeProblem {
+  private static final long serialVersionUID = 3913343464762009666L;
+
   public CreationProblem(Throwable throwable) {
     super(throwable);
   }

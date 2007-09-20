@@ -19,9 +19,10 @@ package com.google.inject.tools.ideplugin;
 import junit.framework.TestCase;
 import java.util.Collections;
 import java.util.Set;
+
+import com.google.inject.tools.ideplugin.results.ActionStringBuilder;
 import com.google.inject.tools.ideplugin.results.CodeLocationsResults;
 import com.google.inject.tools.ideplugin.results.Results;
-import com.google.inject.tools.ideplugin.results.CodeLocationsResults.ProblemNode;
 import com.google.inject.tools.ideplugin.results.Results.Node;
 import com.google.inject.tools.suite.Fakes.FakeCreationException;
 import com.google.inject.tools.suite.snippets.BindingCodeLocation;
@@ -60,7 +61,7 @@ public class CodeLocationsResultsTest extends TestCase {
             "com.google.inject.tools.ideplugin.JavaElement", null,
             "com.google.inject.tools.ideplugin.test.MockJavaElement",
             null, null,
-            "Valid Module Context", "MockGuicePlugin.java", 145, null,
+            "Valid Module Context", "MockGuicePlugin.java", 145, null, null,
             Collections.<CodeProblem> emptySet());
     CodeLocationsResults results =
         new CodeLocationsResults("Test Results", null);
@@ -75,14 +76,14 @@ public class CodeLocationsResultsTest extends TestCase {
             "com.google.inject.tools.ideplugin.JavaElement", (String) null,
             "com.google.inject.tools.ideplugin.test.MockJavaElement",
             null, null,
-            "Valid Module Context", "MockGuicePlugin.java", 145, null,
+            "Valid Module Context", "MockGuicePlugin.java", 145, null, null,
             Collections.<CodeProblem> emptySet());
 
     CodeLocation problemsLocation =
         new BindingCodeLocation(null,
             "com.google.inject.tools.ideplugin.JavaElement", (String) null,
             (String) null, null, null,
-            "Broken Module Context", (String) null, 0, null,
+            "Broken Module Context", (String) null, 0, null, null,
             Collections.<CodeProblem> emptySet());
 
     CodeLocationsResults results =
@@ -118,8 +119,8 @@ public class CodeLocationsResultsTest extends TestCase {
     module2.addChild(new Node("JavaElement has an unresolvable binding", null));
     Results.Node problems = new Node("Problems", null);
     module2.addChild(problems);
-    problems.addChild(new ProblemNode(new CreationProblem(
-        new FakeCreationException())));
+    problems.addChild(new Node(new ActionStringBuilder(new CreationProblem(
+        new FakeCreationException())).getActionString()));
     root.addChild(module);
     root.addChild(module2);
     return root;

@@ -61,7 +61,7 @@ public class ModuleContextRepresentationTest extends TestCase {
         .equals(SampleModuleScenario.MockInjectedInterfaceImpl.class.getName()));
   }
 
-  public class SimulatedCodeRunner implements CodeRunner {
+  public static class SimulatedCodeRunner implements CodeRunner {
     private CodeRunListener listener;
 
     public void addListener(CodeRunListener listener) {
@@ -149,7 +149,7 @@ public class ModuleContextRepresentationTest extends TestCase {
           Collections.<CodeProblem> emptySet());
     }
 
-    public class MockBinding<T> implements Binding<T> {
+    public static class MockBinding<T> implements Binding<T> {
       public ProviderBinding<T> getProviderBinding() {
         return null;
       }
@@ -182,7 +182,7 @@ public class ModuleContextRepresentationTest extends TestCase {
         
       }
 
-      public class MockProvider<T> implements Provider<T> {
+      public static class MockProvider<T> implements Provider<T> {
         private final Class<? extends T> bindsTo;
 
         public MockProvider(Class<? extends T> bindsTo) {

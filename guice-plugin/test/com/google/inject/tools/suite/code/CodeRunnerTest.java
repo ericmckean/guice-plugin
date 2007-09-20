@@ -192,9 +192,8 @@ public class CodeRunnerTest extends TestCase implements
     public void gotErrorOutput(InputStream stream) {
       InputStreamReader ir = new InputStreamReader(stream);
       BufferedReader r = new BufferedReader(ir);
-      String line;
       try {
-        while ((line = r.readLine()) != null) {
+        while (r.readLine() != null) {
           fail();
         }
       } catch (Exception e) {
