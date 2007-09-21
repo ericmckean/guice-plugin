@@ -26,7 +26,6 @@ Allow users to navigate guice code by jumping through bindings.
 
 *Eclipse Version Outstanding Issues*
   * Add toolbar buttons in Results View for guice actions
-  * Correctly determine java command and flags
   * Determine if element is at an injection point and its annotations
 
 *Tools Suite Outstanding Issues*
@@ -73,6 +72,7 @@ Allow users to refactor guice code automatically, for instance "add injected par
   # Implement the refactoring framework
   # Implement the refactorings
   # Implement the user interface
+ 
  
  
  
