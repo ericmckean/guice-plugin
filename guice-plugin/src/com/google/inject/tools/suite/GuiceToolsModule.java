@@ -17,12 +17,9 @@
 package com.google.inject.tools.suite;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Provider;
 import com.google.inject.binder.AnnotatedBindingBuilder;
-import com.google.inject.tools.suite.code.CodeRunner;
-import com.google.inject.tools.suite.code.CodeRunnerFactoryImpl;
-import com.google.inject.tools.suite.module.ModuleManager;
-import com.google.inject.tools.suite.module.ModuleManagerFactoryImpl;
+import com.google.inject.tools.suite.code.CodeRunnerModule;
+import com.google.inject.tools.suite.module.ModuleManagerModule;
 
 /**
  * The guice module controlling the tools suite.
@@ -40,35 +37,22 @@ import com.google.inject.tools.suite.module.ModuleManagerFactoryImpl;
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 public abstract class GuiceToolsModule extends AbstractModule {
-  public interface CodeRunnerFactory extends Provider<CodeRunner> {
-    public CodeRunner create(JavaManager project);
-  }
-
-  public interface ModuleManagerFactory extends Provider<ModuleManager> {
-    public ModuleManager create(JavaManager javaManager);
-  }
-
   @Override
   protected void configure() {
-    bindCodeRunnerFactory(bind(CodeRunnerFactory.class));
-    bindCodeRunner(bind(CodeRunner.class));
-    bindModuleManagerFactory(bind(ModuleManagerFactory.class));
-    bindModuleManager(bind(ModuleManager.class));
+    install(codeRunnerModule());
+    install(moduleManagerModule());
     bindProblemsHandler(bind(ProblemsHandler.class));
     bindMessenger(bind(Messenger.class));
     bindJavaManager(bind(JavaManager.class));
     bindProgressHandler(bind(ProgressHandler.class));
   }
-
-  protected void bindModuleManagerFactory(
-      AnnotatedBindingBuilder<ModuleManagerFactory> bindModuleManagerFactory) {
-    bindModuleManagerFactory.to(ModuleManagerFactoryImpl.class)
-        .asEagerSingleton();
+  
+  protected CodeRunnerModule codeRunnerModule() {
+    return new CodeRunnerModule();
   }
   
-  protected void bindModuleManager(
-      AnnotatedBindingBuilder<ModuleManager> bindModuleManager) {
-    bindModuleManager.toProvider(ModuleManagerFactoryImpl.class);
+  protected ModuleManagerModule moduleManagerModule() {
+    return new ModuleManagerModule();
   }
 
   protected void bindProblemsHandler(
@@ -79,16 +63,6 @@ public abstract class GuiceToolsModule extends AbstractModule {
   protected void bindMessenger(
       AnnotatedBindingBuilder<Messenger> bindMessenger) {
     bindMessenger.to(DefaultMessenger.class);
-  }
-
-  protected void bindCodeRunnerFactory(
-      AnnotatedBindingBuilder<CodeRunnerFactory> bindCodeRunnerFactory) {
-    bindCodeRunnerFactory.to(CodeRunnerFactoryImpl.class);
-  }
-
-  protected void bindCodeRunner(
-      AnnotatedBindingBuilder<CodeRunner> bindCodeRunner) {
-    bindCodeRunner.toProvider(CodeRunnerFactoryImpl.class);
   }
 
   protected void bindJavaManager(

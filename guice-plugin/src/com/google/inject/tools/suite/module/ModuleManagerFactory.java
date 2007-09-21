@@ -14,28 +14,17 @@
  * the License.
  */
 
-package com.google.inject.tools.ideplugin;
+package com.google.inject.tools.suite.module;
 
-import com.google.inject.tools.suite.AllTests;
-
-import junit.framework.TestSuite;
-import junit.framework.Test;
+import com.google.inject.Provider;
+import com.google.inject.tools.suite.JavaManager;
 
 /**
- * Test suite of all the tests for the guice plugin that are not IDE specific.
+ * Factory for creating module managers by passing in java managers.
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-public class AllNonIDESpecificTests {
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-
-    suite.addTest(AllTests.suite());
-
-    suite.addTestSuite(CodeLocationsResultsTest.class);
-    suite.addTestSuite(ResultsHandlerTest.class);
-    suite.addTestSuite(ProjectSettingsTest.class);
-
-    return suite;
-  }
+public interface ModuleManagerFactory extends Provider<ModuleManager> {
+  public ModuleManager create(JavaManager javaManager, boolean activateByDefault,
+      boolean runAutomatically);
 }

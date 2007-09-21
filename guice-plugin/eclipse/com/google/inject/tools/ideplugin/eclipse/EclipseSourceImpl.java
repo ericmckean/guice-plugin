@@ -52,6 +52,7 @@ import com.google.inject.tools.suite.ProgressHandler.ProgressMonitor;
 @Singleton
 abstract class EclipseSourceImpl extends SourceImpl {
   private final Map<EclipseJavaProject, ITypeHierarchy> typeHierarchies;
+  private final Map<EclipseJavaProject, Set<String>> cachedHierarchies;
   private final Map<EclipseJavaProject, IType> types;
   private final Map<EclipseJavaProject, ITypeHierarchyChangedListener> typeListeners;
   private boolean listenForChanges;
@@ -61,6 +62,7 @@ abstract class EclipseSourceImpl extends SourceImpl {
   public EclipseSourceImpl(Messenger messenger) {
     super(messenger);
     typeHierarchies = new HashMap<EclipseJavaProject, ITypeHierarchy>();
+    cachedHierarchies = new HashMap<EclipseJavaProject, Set<String>>();
     types = new HashMap<EclipseJavaProject, IType>();
     typeListeners = new HashMap<EclipseJavaProject, ITypeHierarchyChangedListener>();
   }
@@ -92,6 +94,7 @@ abstract class EclipseSourceImpl extends SourceImpl {
     for (JavaProject project : projects) {
       typeHierarchies.get(project).removeTypeHierarchyChangedListener(
           typeListeners.get(project));
+      cachedHierarchies.remove(project);
       typeListeners.remove(project);
       typeHierarchies.remove(project);
       types.remove(project);
@@ -121,14 +124,29 @@ abstract class EclipseSourceImpl extends SourceImpl {
         typeHierarchies.put(javaManager, types.get(javaManager)
             .newTypeHierarchy(null));
         if (typeHierarchies.get(javaManager) != null) {
+          cachedHierarchies.put(javaManager, readHierarchy(javaManager));
           typeListeners.put(javaManager, new MyTypeHierarchyChangedListener(javaManager));
           typeHierarchies.get(javaManager).addTypeHierarchyChangedListener(
               typeListeners.get(javaManager));
+        } else {
+          cachedHierarchies.put(javaManager, new HashSet<String>());
         }
       }
     } catch (Throwable throwable) {
       hadProblem(throwable);
     }
+  }
+  
+  private Set<String> readHierarchy(EclipseJavaProject project) {
+    Set<String> types = new HashSet<String>();
+    for (IType type : typeHierarchies.get(project).getAllSubtypes(this.types.get(project))) {
+      try {
+        if (isTypeWeCareAbout(type)) {
+          types.add(type.getFullyQualifiedName());
+        }
+      } catch (JavaModelException e) {}
+    }
+    return types;
   }
   
   class MyTypeHierarchyChangedListener implements ITypeHierarchyChangedListener {
@@ -138,6 +156,19 @@ abstract class EclipseSourceImpl extends SourceImpl {
     }
     public void typeHierarchyChanged(ITypeHierarchy hierarchy) {
       typeHierarchies.put(project, hierarchy);
+      Set<String> oldTypes = cachedHierarchies.get(project);
+      Set<String> newTypes = readHierarchy(project);
+      for (String oldType : oldTypes) {
+        if (!newTypes.contains(oldType)) {
+          EclipseSourceImpl.this.removed(project, oldType);
+        }
+      }
+      for (String newType : newTypes) {
+        if (!oldTypes.contains(newType)) {
+          EclipseSourceImpl.this.added(project, newType);
+        }
+      }
+      cachedHierarchies.put(project, newTypes);
     }
   }
   

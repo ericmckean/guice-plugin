@@ -35,6 +35,11 @@ public interface ProjectManager {
    * Notify the ProjectManager that the given project has been closed.
    */
   public void projectClosed(JavaProject javaProject);
+  
+  /**
+   * Notify the ProjectManager that the settings for the given project have changed.
+   */
+  public void settingsChanged(JavaProject javaProject, ProjectSettings settings);
 
   /**
    * Return the {@link ModuleManager} for the given project.

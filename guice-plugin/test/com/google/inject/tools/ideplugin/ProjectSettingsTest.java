@@ -16,26 +16,21 @@
 
 package com.google.inject.tools.ideplugin;
 
-import com.google.inject.tools.suite.AllTests;
-
-import junit.framework.TestSuite;
-import junit.framework.Test;
+import junit.framework.TestCase;
 
 /**
- * Test suite of all the tests for the guice plugin that are not IDE specific.
+ * Test the project settings.
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-public class AllNonIDESpecificTests {
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-
-    suite.addTest(AllTests.suite());
-
-    suite.addTestSuite(CodeLocationsResultsTest.class);
-    suite.addTestSuite(ResultsHandlerTest.class);
-    suite.addTestSuite(ProjectSettingsTest.class);
-
-    return suite;
+public class ProjectSettingsTest extends TestCase {
+  public void testSerializing() {
+    ProjectSettings settings = new ProjectSettings();
+    settings.activateByDefault = true;
+    settings.listenForChanges = false;
+    settings.runAutomatically = true;
+    String serialized = settings.serialize();
+    ProjectSettings settings2 = new ProjectSettings(serialized);
+    assertTrue(settings.equals(settings2));
   }
 }

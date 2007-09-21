@@ -33,12 +33,13 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.osgi.framework.Bundle;
 
 /**
- * Eclipse specific implementation of the {@link com.google.inject.tools.suite.JavaManager}.
+ * Eclipse specific implementation of the {@link com.google.inject.tools.ideplugin.JavaProject}.
  * 
- * {@inheritDoc JavaManager}
+ * {@inheritDoc JavaProject}
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
@@ -188,13 +189,13 @@ class EclipseJavaProject extends JavaProject {
   
   @Override
   public void saveSettings(ProjectSettings settings) {
-    //TODO: save settings
+    //handled in preference page OK button
   }
   
   @Override
   public ProjectSettings loadSettings() {
-    //TODO: load settings
-    ProjectSettings settings = new ProjectSettings();
+    IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+    ProjectSettings settings = new ProjectSettings(store.getString("com.google.inject.tools.ideplugin.eclipse.preferences"));
     return settings;
   }
 

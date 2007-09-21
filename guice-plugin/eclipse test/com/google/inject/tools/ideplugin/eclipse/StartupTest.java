@@ -33,6 +33,7 @@ import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProblemsHandler;
 import com.google.inject.tools.suite.ProgressHandler;
 import com.google.inject.tools.suite.Fakes.FakeJavaManager;
+import com.google.inject.tools.suite.code.CodeRunnerFactory;
 
 /**
  * Test the activator and therefore the plugin object and the module for our
@@ -66,7 +67,7 @@ public class StartupTest extends TestCase {
     assertNotNull(injector.getInstance(ActionsHandler.class));
     assertNotNull(injector.getInstance(Messenger.class));
     assertNotNull(injector
-        .getInstance(GuiceToolsModule.CodeRunnerFactory.class));
+        .getInstance(CodeRunnerFactory.class));
     assertNotNull(injector.getInstance(ProgressHandler.class));
   }
 

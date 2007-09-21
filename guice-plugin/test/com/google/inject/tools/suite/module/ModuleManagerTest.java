@@ -22,7 +22,6 @@ import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.MockingGuiceToolsModule;
 import com.google.inject.tools.suite.Fakes.FakeCodeRunner;
 import com.google.inject.tools.suite.Fakes.FakeJavaManager;
-import com.google.inject.tools.suite.GuiceToolsModule.ModuleManagerFactory;
 import com.google.inject.tools.suite.SampleModuleScenario.WorkingModule;
 import com.google.inject.tools.suite.module.ModuleContextRepresentation;
 import com.google.inject.tools.suite.module.ModuleContextRepresentationImpl;
@@ -68,7 +67,7 @@ public class ModuleManagerTest extends TestCase {
             .useCodeRunner(new FakeCodeRunner()));
 
     ModuleManagerImpl moduleManager = (ModuleManagerImpl)
-        injector.getInstance(ModuleManagerFactory.class).create(project);
+        injector.getInstance(ModuleManagerFactory.class).create(project, false, false);
     moduleManager.update(true, true);
     moduleManager.addModuleContext(workingModuleContext, true);
     assertTrue(moduleManager.getModuleContexts().contains(workingModuleContext));
@@ -106,7 +105,7 @@ public class ModuleManagerTest extends TestCase {
             .useCodeRunner(new FakeCodeRunner()));
 
     ModuleManagerImpl moduleManager = (ModuleManagerImpl)
-        injector.getInstance(ModuleManagerFactory.class).create(project);
+        injector.getInstance(ModuleManagerFactory.class).create(project, false, false);
     moduleManager.update(true, true);
     moduleManager.addModule(workingModule, false);
     assertTrue(moduleManager.getModules().contains(workingModule));
@@ -141,7 +140,7 @@ public class ModuleManagerTest extends TestCase {
             .useCodeRunner(new FakeCodeRunner()));
 
     ModuleManagerImpl moduleManager = (ModuleManagerImpl)
-        injector.getInstance(ModuleManagerFactory.class).create(project);
+        injector.getInstance(ModuleManagerFactory.class).create(project, false, false);
     moduleManager.addModule(WorkingModule.class.getName(), false);
     moduleManager.updateModules(true, true);
     moduleManager.update(true, true);
@@ -170,7 +169,7 @@ public class ModuleManagerTest extends TestCase {
             .useCodeRunner(new FakeCodeRunner()));
 
     ModuleManager moduleManager =
-        injector.getInstance(ModuleManagerFactory.class).create(project);
+        injector.getInstance(ModuleManagerFactory.class).create(project, false, false);
     moduleManager.addModule(WorkingModule.class.getName(), false);
     moduleManager.update(true, true);
     assertTrue(moduleManager.getModules().size() == 1);

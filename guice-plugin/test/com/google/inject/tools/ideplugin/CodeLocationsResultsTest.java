@@ -103,7 +103,7 @@ public class CodeLocationsResultsTest extends TestCase {
     Results.Node root = new Node("Test Results", null);
     Results.Node module = new Node("in Valid Module Context", null);
     module.addChild(new Node(
-        "JavaElement is bound to MockJavaElement at MockGuicePlugin.java:145",
+        "JavaElement bound to MockJavaElement at MockGuicePlugin.java:145",
         null));
     root.addChild(module);
     return root;
@@ -113,7 +113,7 @@ public class CodeLocationsResultsTest extends TestCase {
     Results.Node root = new Node("Test Results", null);
     Results.Node module = new Node("in Valid Module Context", null);
     module.addChild(new Node(
-        "JavaElement is bound to MockJavaElement at MockGuicePlugin.java:145",
+        "JavaElement bound to MockJavaElement at MockGuicePlugin.java:145",
         null));
     Results.Node module2 = new Node("in Broken Module Context", null);
     module2.addChild(new Node("JavaElement has an unresolvable binding", null));
