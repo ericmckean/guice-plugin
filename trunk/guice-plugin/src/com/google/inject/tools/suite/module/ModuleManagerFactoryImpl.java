@@ -21,8 +21,7 @@ import com.google.inject.Provider;
 import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProblemsHandler;
-import com.google.inject.tools.suite.GuiceToolsModule.CodeRunnerFactory;
-import com.google.inject.tools.suite.GuiceToolsModule.ModuleManagerFactory;
+import com.google.inject.tools.suite.code.CodeRunnerFactory;
 import com.google.inject.tools.suite.module.ModuleManager;
 import com.google.inject.tools.suite.module.ModuleManagerImpl;
 
@@ -35,7 +34,7 @@ import java.util.Map;
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-public class ModuleManagerFactoryImpl implements ModuleManagerFactory {
+class ModuleManagerFactoryImpl implements ModuleManagerFactory {
   private final Provider<ProblemsHandler> problemsHandlerProvider;
   private final Provider<Messenger> messengerProvider;
   private final Provider<CodeRunnerFactory> codeRunnerFactoryProvider;
@@ -58,12 +57,13 @@ public class ModuleManagerFactoryImpl implements ModuleManagerFactory {
   /**
    * Create a ModuleManager with the given JavaManager.
    */
-  public ModuleManager create(JavaManager javaManager) {
+  public ModuleManager create(JavaManager javaManager,
+      boolean activateByDefault, boolean runAutomatically) {
     if (moduleManagerInstances.get(javaManager) == null) {
       moduleManagerInstances.put(javaManager, new ModuleManagerImpl(
           problemsHandlerProvider.get(),
           messengerProvider.get(), javaManager, codeRunnerFactoryProvider
-          .get(), false, false, false));
+          .get(), false, runAutomatically, activateByDefault));
     }
     return moduleManagerInstances.get(javaManager);
   }

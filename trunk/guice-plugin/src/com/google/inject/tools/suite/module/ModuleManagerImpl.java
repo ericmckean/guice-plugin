@@ -20,7 +20,7 @@ import com.google.inject.Inject;
 import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProblemsHandler;
-import com.google.inject.tools.suite.GuiceToolsModule.CodeRunnerFactory;
+import com.google.inject.tools.suite.code.CodeRunnerFactory;
 import com.google.inject.tools.suite.code.CodeRunner;
 import com.google.inject.tools.suite.module.ModuleContextRepresentation;
 import com.google.inject.tools.suite.module.ModuleContextRepresentationImpl;
@@ -70,7 +70,6 @@ class ModuleManagerImpl implements ModuleManager,
     moduleContexts = new HashSet<ModuleContextRepresentationImpl>();
     activeModuleContexts = new HashSet<ModuleContextRepresentationImpl>();
     this.javaManager = javaManager;
-
     this.runAutomatically = runAutomatically;
     this.activateByDefault = activateByDefault;
   }
@@ -147,6 +146,9 @@ class ModuleManagerImpl implements ModuleManager,
       moduleContexts.add((ModuleContextRepresentationImpl)moduleContext);
       if (active) {
         activeModuleContexts.add((ModuleContextRepresentationImpl)moduleContext);
+        if (runAutomatically) {
+          cleanModuleContexts(false, true);
+        }
       }
     }
   }

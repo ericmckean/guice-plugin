@@ -21,7 +21,7 @@ import com.google.inject.Provider;
 import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProgressHandler;
-import com.google.inject.tools.suite.GuiceToolsModule.CodeRunnerFactory;
+import com.google.inject.tools.suite.code.CodeRunnerFactory;
 
 /**
  * Standard implementation of a {@link CodeRunner} factory allowing creation
@@ -29,7 +29,7 @@ import com.google.inject.tools.suite.GuiceToolsModule.CodeRunnerFactory;
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-public class CodeRunnerFactoryImpl implements CodeRunnerFactory {
+class CodeRunnerFactoryImpl implements CodeRunnerFactory {
   private final Provider<ProgressHandler> progressHandlerProvider;
   private final Provider<Messenger> messengerProvider;
   private final Provider<JavaManager> javaManagerProvider;

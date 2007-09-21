@@ -23,7 +23,7 @@ import com.google.inject.tools.ideplugin.ProjectSource.ProjectSourceListener;
 import com.google.inject.tools.ideplugin.Source.SourceListener;
 import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.suite.ProgressHandler;
-import com.google.inject.tools.suite.GuiceToolsModule.ModuleManagerFactory;
+import com.google.inject.tools.suite.module.ModuleManagerFactory;
 import com.google.inject.tools.suite.ProgressHandler.ProgressMonitor;
 import com.google.inject.tools.suite.module.ModuleContextRepresentation;
 import com.google.inject.tools.suite.module.ModuleManager;
@@ -51,7 +51,6 @@ class ProjectManagerImpl implements ProjectManager, SourceListener, ProjectSourc
   private final Set<ProgressHandler> progressHandlers;
   private JavaProject currentProject;
 
-  //TODO: make this a preference
   private static final boolean shouldListenForChanges = false;
   
   @Inject
@@ -70,10 +69,14 @@ class ProjectManagerImpl implements ProjectManager, SourceListener, ProjectSourc
     this.moduleManagers = new HashMap<JavaProject, ModuleManager>();
     currentProject = null;
     modulesSource.addListener(this);
-    modulesSource.listenForChanges(shouldListenForChanges);
-    customContextDefinitionSource.listenForChanges(shouldListenForChanges);
+    listenForChanges(shouldListenForChanges);
     projectSource.listenForChanges(true);
     initializeProjects(false);
+  }
+  
+  private void listenForChanges(boolean listen) {
+    modulesSource.listenForChanges(listen);
+    customContextDefinitionSource.listenForChanges(listen);
   }
   
   private void initializeProjects(boolean waitFor) {
@@ -255,14 +258,13 @@ class ProjectManagerImpl implements ProjectManager, SourceListener, ProjectSourc
     initializeProject(javaProject, true);
     moduleManagers.get(javaProject).setActivateModulesByDefault(settings.activateByDefault);
     moduleManagers.get(javaProject).setRunAutomatically(settings.runAutomatically);
-    //TODO: load contexts
+    listenForChanges(settings.listenForChanges);
   }
   
   public void projectClosed(JavaProject javaManager) {
     ProjectSettings settings = new ProjectSettings();
     settings.activateByDefault = moduleManagers.get(javaManager).activateModulesByDefault();
     settings.runAutomatically = moduleManagers.get(javaManager).runAutomatically();
-    //TODO: save contexts
     javaManager.saveSettings(settings);
     moduleManagers.remove(javaManager);
   }
@@ -284,7 +286,9 @@ class ProjectManagerImpl implements ProjectManager, SourceListener, ProjectSourc
   private ModuleManager createModuleManager(JavaProject javaManager) {
     currentProject = javaManager;
     if (moduleManagers.get(javaManager) == null) {
-      ModuleManager moduleManager = moduleManagerFactory.create(javaManager);
+      listenForChanges(javaManager.loadSettings().listenForChanges);
+      ModuleManager moduleManager = moduleManagerFactory.create(javaManager,
+          javaManager.loadSettings().activateByDefault, javaManager.loadSettings().runAutomatically);
       moduleManagers.put(javaManager, moduleManager);
     }
     return moduleManagers.get(javaManager);
@@ -310,9 +314,7 @@ class ProjectManagerImpl implements ProjectManager, SourceListener, ProjectSourc
   
   public boolean findNewContexts(JavaProject javaManager, boolean waitFor,
       boolean backgroundAutomatically) {
-    if (!modulesSource.isListeningForChanges()) {
-      initializeProject(javaManager, waitFor);
-    }
+    initializeProject(javaManager, waitFor);
     boolean result = cleanAllModules(moduleManagers.get(javaManager), waitFor, backgroundAutomatically);
     initContexts(moduleManagers.get(javaManager));
     return result;
@@ -418,5 +420,15 @@ class ProjectManagerImpl implements ProjectManager, SourceListener, ProjectSourc
     for (ProgressHandler progressHandler : toRemove) {
       progressHandlers.remove(progressHandler);
     }
+  }
+  
+  public void settingsChanged(JavaProject project, ProjectSettings settings) {
+    if (project == null) {
+      for (ModuleManager moduleManager : moduleManagers.values()) {
+        moduleManager.setActivateModulesByDefault(settings.activateByDefault);
+        moduleManager.setRunAutomatically(settings.runAutomatically);
+      }
+    }
+    listenForChanges(settings.listenForChanges);
   }
 }

@@ -26,7 +26,7 @@ import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProblemsHandler;
 import com.google.inject.tools.suite.ProgressHandler;
-import com.google.inject.tools.suite.GuiceToolsModule.ModuleManagerFactory;
+import com.google.inject.tools.suite.module.ModuleManagerFactory;
 import com.google.inject.tools.suite.ProgressHandler.ProgressMonitor;
 import com.google.inject.tools.suite.module.ModuleManager;
 
@@ -192,7 +192,8 @@ public abstract class GuicePlugin {
    * Return the {@link ModuleManager}.
    */
   public ModuleManager getModuleManager(JavaProject javaProject) {
-    return getInstance(ModuleManagerFactory.class).create(javaProject);
+    return getInstance(ModuleManagerFactory.class).create(javaProject,
+        javaProject.loadSettings().activateByDefault, javaProject.loadSettings().runAutomatically);
   }
 
   /**

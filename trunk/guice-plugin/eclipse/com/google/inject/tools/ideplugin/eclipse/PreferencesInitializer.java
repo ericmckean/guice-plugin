@@ -14,28 +14,22 @@
  * the License.
  */
 
-package com.google.inject.tools.ideplugin;
+package com.google.inject.tools.ideplugin.eclipse;
 
-import com.google.inject.tools.suite.AllTests;
+import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
+import org.eclipse.jface.preference.IPreferenceStore;
 
-import junit.framework.TestSuite;
-import junit.framework.Test;
+import com.google.inject.tools.ideplugin.ProjectSettings;
 
 /**
- * Test suite of all the tests for the guice plugin that are not IDE specific.
+ * Initialize the default preference settings in eclipse.
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-public class AllNonIDESpecificTests {
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-
-    suite.addTest(AllTests.suite());
-
-    suite.addTestSuite(CodeLocationsResultsTest.class);
-    suite.addTestSuite(ResultsHandlerTest.class);
-    suite.addTestSuite(ProjectSettingsTest.class);
-
-    return suite;
+public class PreferencesInitializer extends AbstractPreferenceInitializer {
+  public void initializeDefaultPreferences() {
+      IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+      store.setDefault("com.google.inject.tools.ideplugin.eclipse.preferences",
+          new ProjectSettings().serialize());
   }
 }

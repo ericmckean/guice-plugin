@@ -27,7 +27,11 @@ import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProblemsHandler;
 import com.google.inject.tools.suite.code.CodeRunner;
+import com.google.inject.tools.suite.code.CodeRunnerFactory;
+import com.google.inject.tools.suite.code.CodeRunnerModule;
 import com.google.inject.tools.suite.module.ModuleManager;
+import com.google.inject.tools.suite.module.ModuleManagerFactory;
+import com.google.inject.tools.suite.module.ModuleManagerModule;
 
 /**
  * Implementation of the {@link GuiceToolsModule} that injects mock objects.
@@ -70,28 +74,35 @@ public class MockingGuiceToolsModule extends GuiceToolsModule {
     return this;
   }
 
-  @Override
-  protected void bindModuleManagerFactory(
-      AnnotatedBindingBuilder<ModuleManagerFactory> builder) {
-    if (useRealModuleManager) {
-      super.bindModuleManagerFactory(builder);
-    } else if (moduleManager != null) {
-      builder.toInstance(new ModuleManagerInstanceFactory(moduleManager));
-    } else {
-      builder.to(ModuleManagerMockFactory.class);
+  class MockingModuleManagerModule extends ModuleManagerModule {
+    @Override
+    protected void bindModuleManagerFactory(
+        AnnotatedBindingBuilder<ModuleManagerFactory> builder) {
+      if (useRealModuleManager) {
+        super.bindModuleManagerFactory(builder);
+      } else if (moduleManager != null) {
+        builder.toInstance(new ModuleManagerInstanceFactory(moduleManager));
+      } else {
+        builder.to(ModuleManagerMockFactory.class);
+      }
+    }
+
+    @Override
+    protected void bindModuleManager(
+        AnnotatedBindingBuilder<ModuleManager> builder) {
+      if (moduleManager != null) {
+        bindToInstance(builder, moduleManager);
+      } else if (useRealModuleManager) {
+        super.bindModuleManager(builder);
+      } else {
+        bindToMockInstance(builder, ModuleManager.class);
+      }
     }
   }
-
+  
   @Override
-  protected void bindModuleManager(
-      AnnotatedBindingBuilder<ModuleManager> builder) {
-    if (moduleManager != null) {
-      bindToInstance(builder, moduleManager);
-    } else if (useRealModuleManager) {
-      super.bindModuleManager(builder);
-    } else {
-      bindToMockInstance(builder, ModuleManager.class);
-    }
+  protected ModuleManagerModule moduleManagerModule() {
+    return new MockingModuleManagerModule();
   }
 
   @Override
@@ -112,25 +123,32 @@ public class MockingGuiceToolsModule extends GuiceToolsModule {
       bindToMockInstance(builder, Messenger.class);
     }
   }
+  
+  class MockingCodeRunnerModule extends CodeRunnerModule {
+    @Override
+    protected void bindCodeRunnerFactory(
+        AnnotatedBindingBuilder<CodeRunnerFactory> builder) {
+      if (codeRunner != null) {
+        builder.toInstance(new CodeRunnerInstanceFactory(codeRunner));
+      } else {
+        builder.to(CodeRunnerMockFactory.class);
+      }
+    }
 
-  @Override
-  protected void bindCodeRunnerFactory(
-      AnnotatedBindingBuilder<CodeRunnerFactory> builder) {
-    if (codeRunner != null) {
-      builder.toInstance(new CodeRunnerInstanceFactory(codeRunner));
-    } else {
-      builder.to(CodeRunnerMockFactory.class);
+    @Override
+    protected void bindCodeRunner(
+        AnnotatedBindingBuilder<CodeRunner> bindCodeRunner) {
+      if (codeRunner != null) {
+        bindToInstance(bindCodeRunner, codeRunner);
+      } else {
+        bindToMockInstance(bindCodeRunner, CodeRunner.class);
+      }
     }
   }
-
+  
   @Override
-  protected void bindCodeRunner(
-      AnnotatedBindingBuilder<CodeRunner> bindCodeRunner) {
-    if (codeRunner != null) {
-      bindToInstance(bindCodeRunner, codeRunner);
-    } else {
-      bindToMockInstance(bindCodeRunner, CodeRunner.class);
-    }
+  protected CodeRunnerModule codeRunnerModule() {
+    return new MockingCodeRunnerModule();
   }
 
   @SuppressWarnings( {"unchecked"})
@@ -225,7 +243,7 @@ public class MockingGuiceToolsModule extends GuiceToolsModule {
       this.instance = instance;
     }
 
-    public ModuleManager create(JavaManager project) {
+    public ModuleManager create(JavaManager project, boolean activateByDefault, boolean runAutomatically) {
       return instance;
     }
     

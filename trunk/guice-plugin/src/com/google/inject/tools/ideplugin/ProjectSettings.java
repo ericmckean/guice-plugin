@@ -16,12 +16,27 @@
 
 package com.google.inject.tools.ideplugin;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Represent the project wide settings for the plugin.
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class ProjectSettings {
+  public static final String activateByDefaultName = "Activate Contexts By Default";
+  public static final String listenForChangesName = "Listen for Changes";
+  public static final String runAutomaticallyName = "Run Contexts Automatically";
+  
+  public interface ProjectSettingsVisitor {
+    public void visit(String name, boolean value);
+  }
+  
+  public interface ProjectSettingsSaver {
+    public boolean getBoolean(String name);
+  }
+  
   /**
    * Should modules be treated as contexts by default.
    */
@@ -35,13 +50,76 @@ public class ProjectSettings {
    */
   public boolean listenForChanges;
   
-  //TODO: rest of settings
-  
   /**
    * Create settings with default values.
    */
   public ProjectSettings() {
     activateByDefault = false;
     runAutomatically = false;
+    listenForChanges = false;
+  }
+  
+  /**
+   * Create settings based on saved values.
+   */
+  public ProjectSettings(String serialized) {
+    List<Boolean> values = new ArrayList<Boolean>();
+    parse(serialized, values);
+    activateByDefault = values.get(0);
+    runAutomatically = values.get(1);
+    listenForChanges = values.get(2);
+  }
+  
+  private void parse(String string, List<Boolean> values) {
+    int index = string.indexOf(';');
+    if (index == -1) {
+      values.add(Boolean.valueOf(string));
+    } else {
+      values.add(Boolean.valueOf(string.substring(0, index)));
+      parse(string.substring(index+1), values);
+    }
+  }
+  
+  /**
+   * Create settings from a visitor.
+   */
+  public ProjectSettings(ProjectSettingsSaver saver) {
+    activateByDefault = saver.getBoolean(activateByDefaultName);
+    listenForChanges = saver.getBoolean(listenForChangesName);
+    runAutomatically = saver.getBoolean(runAutomaticallyName);
+  }
+  
+  /**
+   * Export values as string for saving.
+   */
+  public String serialize() {
+    return String.valueOf(activateByDefault) + ";" + String.valueOf(runAutomatically)
+      + ";" + String.valueOf(listenForChanges);
+  }
+  
+  public void accept(ProjectSettingsVisitor visitor) {
+    visitor.visit(activateByDefaultName, activateByDefault);
+    visitor.visit(listenForChangesName, listenForChanges);
+    visitor.visit(runAutomaticallyName, runAutomatically);
+  }
+  
+  @Override
+  public int hashCode() {
+    return (activateByDefault ? 4 : 0) + (listenForChanges ? 2 : 0) + (runAutomatically ? 1 : 0);
+  }
+  
+  @Override
+  public boolean equals(Object object) {
+    if (!(object instanceof ProjectSettings)) return false;
+    ProjectSettings settings = (ProjectSettings)object;
+    return (settings.activateByDefault == activateByDefault)
+    && (settings.listenForChanges == listenForChanges)
+    && (settings.runAutomatically == runAutomatically);
+  }
+  
+  @Override
+  public String toString() {
+    return "ProjectSettings: activateByDefault="+activateByDefault+" listenForChanges="
+      +listenForChanges+" runAutomatically="+runAutomatically;
   }
 }

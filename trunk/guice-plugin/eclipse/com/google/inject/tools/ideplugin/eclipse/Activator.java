@@ -19,6 +19,7 @@ package com.google.inject.tools.ideplugin.eclipse;
 import com.google.inject.tools.ideplugin.eclipse.EclipsePluginModule.EclipseGuiceToolsModule;
 import com.google.inject.tools.suite.GuiceToolsModule;
 
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -76,5 +77,9 @@ public class Activator extends AbstractUIPlugin {
    */
   public static EclipseGuicePlugin getGuicePlugin() {
     return guicePlugin;
+  }
+  
+  protected void initializeDefaultPreferencesStore(IPreferenceStore store) {
+    
   }
 }
