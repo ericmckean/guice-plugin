@@ -1,0 +1,9 @@
+com.google.inject.tools.ideplugin
+com.google.inject.tools.ideplugin.bindings
+com.google.inject.tools.ideplugin.results
+com.google.inject.tools.suite
+com.google.inject.tools.suite.code
+com.google.inject.tools.suite.module
+com.google.inject.tools.suite.snippets
+com.google.inject.tools.suite.snippets.bindings
+com.google.inject.tools.suite.snippets.problems
