@@ -19,6 +19,11 @@ package com.google.inject.tools.ideplugin.results;
 import com.google.inject.AbstractModule;
 import com.google.inject.binder.AnnotatedBindingBuilder;
 
+/**
+ * Module for bindings results classes.
+ * 
+ * @author Darren Creutz (dcreutz@gmail.com)
+ */
 public class ResultsModule extends AbstractModule {
   @Override
   protected void configure() {
