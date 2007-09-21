@@ -35,16 +35,16 @@ public class Activator extends AbstractUIPlugin {
   private static EclipseGuicePlugin guicePlugin;
   public static final String PLUGIN_ID = "Guice_Plugin";
   private static Activator plugin;
+  private static EclipsePluginModule module;
+  private static GuiceToolsModule toolsModule;
+  private static Thread initThread = null;
 
   /**
    * Create an activator and a GuicePlugin using the 
    * {@link com.google.inject.tools.ideplugin.eclipse.EclipsePluginModule}.
    */
   public Activator() {
-    plugin = this;
-    EclipsePluginModule module = new EclipsePluginModule();
-    GuiceToolsModule toolsModule = new EclipseGuiceToolsModule();
-    guicePlugin = new EclipseGuicePlugin(module, toolsModule);
+    this(new EclipsePluginModule());
   }
 
   /**
@@ -52,14 +52,27 @@ public class Activator extends AbstractUIPlugin {
    * necessary since Eclipse forces a static Activator object on us.
    */
   public Activator(EclipsePluginModule module) {
-    plugin = this;
-    GuiceToolsModule toolsModule = new EclipseGuiceToolsModule();
-    guicePlugin = new EclipseGuicePlugin(module, toolsModule);
+    super();
+    if (plugin == null) {
+      plugin = this;
+      Activator.module = module;
+      Activator.toolsModule = new EclipseGuiceToolsModule();
+    }
   }
 
   @Override
   public void start(BundleContext context) throws Exception {
     super.start(context);
+    initThread = new Thread() {
+      @Override
+      public void run() {
+        if (guicePlugin == null) {
+          guicePlugin = new EclipseGuicePlugin(module, toolsModule);
+        }
+        initThread = null;
+      }
+    };
+    initThread.start();
   }
 
   @Override
@@ -76,6 +89,14 @@ public class Activator extends AbstractUIPlugin {
    * Returns the GuicePlugin.
    */
   public static EclipseGuicePlugin getGuicePlugin() {
+    if (initThread != null) {
+      try {
+        initThread.join();
+      } catch (InterruptedException e) {}
+    }
+    if (guicePlugin == null) {
+      guicePlugin = new EclipseGuicePlugin(module, toolsModule);
+    }
     return guicePlugin;
   }
   

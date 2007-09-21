@@ -16,9 +16,9 @@
 
 package com.google.inject.tools.ideplugin.eclipse;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import com.google.inject.tools.ideplugin.JavaProject;
@@ -33,6 +33,8 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.launching.IVMInstall;
+import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.osgi.framework.Bundle;
 
@@ -58,23 +60,46 @@ class EclipseJavaProject extends JavaProject {
   }
 
   public String getJavaCommand() throws Exception {
-    // TODO: get java command from project
-    return "java";
+    IVMInstall vm = JavaRuntime.getVMInstall(project);
+    File jreHome = vm.getInstallLocation();
+    String javacommand = getJavaCommand(jreHome);
+    if (javacommand == null) {
+      javacommand = "java";
+    }
+    return javacommand;
+  }
+  
+  private String getJavaCommand(File jreHome) {
+    for (File file : jreHome.getAbsoluteFile().listFiles()) {
+      if (file.isDirectory()) {
+        for (File file2 : file.listFiles()) {
+          if (file2.getName().equals("java") || file2.getName().equals("java.exe")) {
+            return file2.getAbsolutePath();
+          }
+        }
+      }
+    }
+    return null;
   }
   
   public List<String> getJavaFlags() throws Exception {
-    return Collections.<String>emptyList();
+    IVMInstall vm = JavaRuntime.getVMInstall(project);
+    String[] args = vm.getVMArguments();
+    List<String> flags = new ArrayList<String>();
+    if (args != null && args.length > 0) {
+      for (String arg : args) {
+        flags.add(arg);
+      }
+    }
+    return flags;
   }
 
   public String getProjectClasspath() throws Exception {
     final List<String> args = new ArrayList<String>();
     IClasspathEntry[] cp = new IClasspathEntry[0];
-
     try {
       cp = project.getResolvedClasspath(false);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+    } catch (Throwable e) {}
     args.add(getProjectOutputLocation(project));
     args.addAll(expandClasspath(cp, getProjectName(project),
         getProjectLocation(project)));
