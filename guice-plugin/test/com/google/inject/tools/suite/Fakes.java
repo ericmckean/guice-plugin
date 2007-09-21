@@ -179,7 +179,7 @@ public class Fakes {
     
     @Override
     public ProjectSettings loadSettings() {
-      return null;
+      return new ProjectSettings();
     }
   }
   
