@@ -22,7 +22,7 @@ import com.google.inject.Provider;
 import com.google.inject.binder.AnnotatedBindingBuilder;
 import com.google.inject.tools.ideplugin.bindings.BindingsEngine;
 import com.google.inject.tools.ideplugin.results.ResultsHandler;
-import com.google.inject.tools.ideplugin.results.ResultsHandlerImpl;
+import com.google.inject.tools.ideplugin.results.ResultsModule;
 import com.google.inject.tools.ideplugin.results.ResultsView;
 import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.suite.Messenger;
@@ -84,7 +84,7 @@ public abstract class GuicePluginModule extends AbstractModule {
     bindActionsHandler(bind(ActionsHandler.class));
     bindGotoCodeLocationHandler(bind(GotoCodeLocationHandler.class));
     bindGotoFileHandler(bind(GotoFileHandler.class));
-    bindResultsHandler(bind(ResultsHandler.class));
+    install(resultsModule());
     bindResultsView(bind(ResultsView.class));
     bindModuleSelectionView(bind(ModuleSelectionView.class));
     bindCustomContextDefinitionSource(bind(CustomContextDefinitionSource.class));
@@ -107,12 +107,8 @@ public abstract class GuicePluginModule extends AbstractModule {
     bindBindingsEngine.to(BindingsEngineFactoryImpl.class).asEagerSingleton();
   }
 
-  /**
-   * Bind the {@link ResultsHandler} implementation.
-   */
-  protected void bindResultsHandler(
-      AnnotatedBindingBuilder<ResultsHandler> bindResultsHandler) {
-    bindResultsHandler.to(ResultsHandlerImpl.class).asEagerSingleton();
+  protected ResultsModule resultsModule() {
+    return new ResultsModule();
   }
 
   /**

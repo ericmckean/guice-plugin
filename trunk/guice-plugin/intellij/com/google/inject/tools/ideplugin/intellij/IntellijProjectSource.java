@@ -21,11 +21,11 @@ import java.util.Set;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.tools.ideplugin.JavaProject;
-import com.google.inject.tools.ideplugin.ProjectSourceImpl;
+import com.google.inject.tools.ideplugin.AbstractProjectSourceImpl;
 import com.google.inject.tools.suite.Messenger;
 
 @Singleton
-class IntellijProjectSource extends ProjectSourceImpl {
+class IntellijProjectSource extends AbstractProjectSourceImpl {
   @Inject
   public IntellijProjectSource(Messenger messenger) {
     super(messenger);

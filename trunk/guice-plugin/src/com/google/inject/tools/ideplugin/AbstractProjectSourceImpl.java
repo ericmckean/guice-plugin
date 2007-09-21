@@ -28,12 +28,12 @@ import com.google.inject.tools.suite.Messenger;
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-public abstract class ProjectSourceImpl implements ProjectSource {
+public abstract class AbstractProjectSourceImpl implements ProjectSource {
   protected final Messenger messenger;
   protected final Set<ProjectSourceListener> listeners;
 
   @Inject
-  public ProjectSourceImpl(Messenger messenger) {
+  public AbstractProjectSourceImpl(Messenger messenger) {
     this.messenger = messenger;
     this.listeners = new HashSet<ProjectSourceListener>();
   }

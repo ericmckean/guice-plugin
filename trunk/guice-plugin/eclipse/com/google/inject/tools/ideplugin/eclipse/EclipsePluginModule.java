@@ -21,7 +21,7 @@ import com.google.inject.tools.ideplugin.CustomContextDefinitionSource;
 import com.google.inject.tools.ideplugin.GotoCodeLocationHandler;
 import com.google.inject.tools.ideplugin.GotoFileHandler;
 import com.google.inject.tools.ideplugin.GuicePluginModule;
-import com.google.inject.tools.ideplugin.GuiceToolsModuleImpl;
+import com.google.inject.tools.ideplugin.AbstractGuiceToolsModuleImpl;
 import com.google.inject.tools.ideplugin.ModuleSelectionView;
 import com.google.inject.tools.ideplugin.ModulesSource;
 import com.google.inject.tools.ideplugin.ProjectSource;
@@ -37,7 +37,7 @@ import com.google.inject.tools.suite.ProgressHandler;
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 class EclipsePluginModule extends GuicePluginModule {
-  static class EclipseGuiceToolsModule extends GuiceToolsModuleImpl {
+  static class EclipseGuiceToolsModule extends AbstractGuiceToolsModuleImpl {
     @Override
     protected void bindMessenger(
         AnnotatedBindingBuilder<Messenger> bindMessenger) {

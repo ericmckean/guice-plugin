@@ -30,7 +30,7 @@ import org.eclipse.jdt.core.JavaCore;
 import com.google.inject.Singleton;
 import com.google.inject.Inject;
 import com.google.inject.tools.ideplugin.JavaProject;
-import com.google.inject.tools.ideplugin.ProjectSourceImpl;
+import com.google.inject.tools.ideplugin.AbstractProjectSourceImpl;
 import com.google.inject.tools.suite.Messenger;
 
 /**
@@ -41,7 +41,7 @@ import com.google.inject.tools.suite.Messenger;
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 @Singleton
-class EclipseProjectSource extends ProjectSourceImpl {
+class EclipseProjectSource extends AbstractProjectSourceImpl {
   private boolean listenForChanges;
   private ElementChangedListener changeListener;
 

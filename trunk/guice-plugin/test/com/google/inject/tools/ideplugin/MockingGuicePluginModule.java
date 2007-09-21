@@ -18,6 +18,7 @@ package com.google.inject.tools.ideplugin;
 
 import com.google.inject.binder.AnnotatedBindingBuilder;
 import com.google.inject.tools.ideplugin.results.ResultsHandler;
+import com.google.inject.tools.ideplugin.results.ResultsModule;
 import com.google.inject.tools.ideplugin.results.ResultsView;
 import com.google.inject.tools.suite.MockingGuiceToolsModule.ProxyMock;
 
@@ -92,14 +93,21 @@ public class MockingGuicePluginModule extends GuicePluginModule {
   }
 
   @Override
-  protected void bindResultsHandler(
-      AnnotatedBindingBuilder<ResultsHandler> builder) {
-    if (resultsHandler != null) {
-      bindToInstance(builder, resultsHandler);
-    } else if (useRealResultsHandler) {
-      super.bindResultsHandler(builder);
-    } else {
-      bindToMockInstance(builder, ResultsHandler.class);
+  protected ResultsModule resultsModule() {
+    return new MockingResultsModule();
+  }
+  
+  class MockingResultsModule extends ResultsModule {
+    @Override
+    protected void bindResultsHandler(
+        AnnotatedBindingBuilder<ResultsHandler> builder) {
+      if (resultsHandler != null) {
+        bindToInstance(builder, resultsHandler);
+      } else if (useRealResultsHandler) {
+        super.bindResultsHandler(builder);
+      } else {
+        bindToMockInstance(builder, ResultsHandler.class);
+      }
     }
   }
 

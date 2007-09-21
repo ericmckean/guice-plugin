@@ -111,15 +111,18 @@ public class PreferencesPage extends PreferencePage implements IWorkbenchPrefere
     }
   }
   
+  @Override
   protected IPreferenceStore doGetPreferenceStore() {
     return Activator.getDefault().getPreferenceStore();
   }
   
+  @Override
   protected void performDefaults() {
     super.performDefaults();
     initializeDefaults();
   }
 
+  @Override
   public boolean performOk() {
     storeValues();
     Activator.getDefault().savePluginPreferences();

@@ -23,7 +23,7 @@ import com.google.inject.Inject;
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 @Singleton
-public class ResultsHandlerImpl implements ResultsHandler {
+class ResultsHandlerImpl implements ResultsHandler {
   private final ResultsView resultsView;
 
   /**

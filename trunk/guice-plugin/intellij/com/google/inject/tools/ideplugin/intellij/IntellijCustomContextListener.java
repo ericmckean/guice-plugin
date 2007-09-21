@@ -21,12 +21,12 @@ import java.util.Set;
 import com.google.inject.Inject;
 import com.google.inject.tools.ideplugin.CustomContextDefinitionSource;
 import com.google.inject.tools.ideplugin.JavaProject;
-import com.google.inject.tools.ideplugin.SourceImpl;
+import com.google.inject.tools.ideplugin.AbstractSourceImpl;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProgressHandler.ProgressMonitor;
 
 class IntellijCustomContextListener extends
-    SourceImpl implements CustomContextDefinitionSource {
+    AbstractSourceImpl implements CustomContextDefinitionSource {
   public boolean isListeningForChanges() {
     return false;
   }
