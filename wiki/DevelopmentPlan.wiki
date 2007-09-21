@@ -25,13 +25,11 @@ Allow users to navigate guice code by jumping through bindings.
   * IntelliJ version
 
 *Eclipse Version Outstanding Issues*
-  * Save and load preferences for plugin
   * Add toolbar buttons in Results View for guice actions
   * Correctly determine java command and flags
   * Determine if element is at an injection point and its annotations
 
 *Tools Suite Outstanding Issues*
-  * Implement !CodeRunners with various behaviors
   * Implement the Module taking arguments functionality
   * Write sample code
 
@@ -75,5 +73,6 @@ Allow users to refactor guice code automatically, for instance "add injected par
   # Implement the refactoring framework
   # Implement the refactorings
   # Implement the user interface
+ 
  
  
