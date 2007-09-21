@@ -27,6 +27,7 @@ import com.google.inject.tools.ideplugin.ProjectSettings;
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class PreferencesInitializer extends AbstractPreferenceInitializer {
+  @Override
   public void initializeDefaultPreferences() {
       IPreferenceStore store = Activator.getDefault().getPreferenceStore();
       store.setDefault("com.google.inject.tools.ideplugin.eclipse.preferences",

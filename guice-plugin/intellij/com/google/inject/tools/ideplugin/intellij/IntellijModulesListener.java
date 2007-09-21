@@ -21,11 +21,11 @@ import java.util.Set;
 import com.google.inject.Inject;
 import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.ideplugin.ModulesSource;
-import com.google.inject.tools.ideplugin.SourceImpl;
+import com.google.inject.tools.ideplugin.AbstractSourceImpl;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProgressHandler.ProgressMonitor;
 
-class IntellijModulesListener extends SourceImpl implements ModulesSource {
+class IntellijModulesListener extends AbstractSourceImpl implements ModulesSource {
   @Inject
   public IntellijModulesListener(Messenger messenger) {
     super(messenger);

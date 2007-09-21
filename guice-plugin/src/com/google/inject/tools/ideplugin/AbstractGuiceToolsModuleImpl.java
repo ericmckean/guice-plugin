@@ -25,7 +25,7 @@ import com.google.inject.tools.suite.ProblemsHandler;
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-public abstract class GuiceToolsModuleImpl extends GuiceToolsModule {
+public abstract class AbstractGuiceToolsModuleImpl extends GuiceToolsModule {
   @Override
   protected void bindProblemsHandler(
       AnnotatedBindingBuilder<ProblemsHandler> bindProblemsHandler) {

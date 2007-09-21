@@ -31,14 +31,14 @@ import com.google.inject.tools.suite.ProgressHandler.ProgressMonitor;
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-public abstract class SourceImpl implements Source {
+public abstract class AbstractSourceImpl implements Source {
   protected final Messenger messenger;
   protected final Set<SourceListener> listeners;
   protected final Set<JavaProject> projects;
   private final Map<JavaProject, Set<String>> things;
 
   @Inject
-  public SourceImpl(Messenger messenger) {
+  public AbstractSourceImpl(Messenger messenger) {
     this.messenger = messenger;
     this.listeners = new HashSet<SourceListener>();
     this.projects = new HashSet<JavaProject>();
