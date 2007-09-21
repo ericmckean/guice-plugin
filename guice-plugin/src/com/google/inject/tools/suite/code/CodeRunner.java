@@ -160,7 +160,6 @@ public interface CodeRunner {
      * @param exception the exception that occurred during runtime
      */
     public void caughtException(Throwable exception) {
-      exception.printStackTrace();
       codeRunner.getMessenger().logException("Runnable exception", exception);
     }
 

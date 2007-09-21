@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Guice Plugin
 Bundle-SymbolicName: GuicePlugin;singleton:=true
-Bundle-Version: 0.3.1
+Bundle-Version: 0.3.2
 Bundle-Activator: com.google.inject.tools.ideplugin.eclipse.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -14,7 +14,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.forms,
  org.eclipse.ui.editors,
  org.eclipse.ui.console,
- org.eclipse.search
+ org.eclipse.search,
+ org.eclipse.jdt.launching
 Eclipse-LazyStart: true
 Export-Package: com.google.inject;
   uses:="com.google.inject.spi,
