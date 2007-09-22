@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>Guice Plugin</name>
+	<name>eclipse-guice-plugin</name>
 	<comment></comment>
 	<projects>
+		<project>guice-plugin</project>
+		<project>guice-tools-framework</project>
+		<project>lib</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
