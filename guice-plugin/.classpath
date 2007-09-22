@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/guice-tools-framework"/>
+	<classpathentry kind="lib" path="/eclipse-guice-plugin/lib/EasyMock/easymock.jar"/>
+	<classpathentry kind="lib" path="/eclipse-guice-plugin/lib/Guice/aopalliance.jar"/>
+	<classpathentry kind="lib" path="/eclipse-guice-plugin/lib/Guice/asm-2.2.3.jar"/>
+	<classpathentry kind="lib" path="/eclipse-guice-plugin/lib/Guice/cglib-2.2_beta1.jar"/>
+	<classpathentry kind="lib" path="/eclipse-guice-plugin/lib/Guice/guice-r364.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
