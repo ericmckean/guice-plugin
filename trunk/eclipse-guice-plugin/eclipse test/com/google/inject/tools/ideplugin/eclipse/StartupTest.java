@@ -16,6 +16,8 @@
 
 package com.google.inject.tools.ideplugin.eclipse;
 
+import java.util.List;
+
 import junit.framework.TestCase;
 import com.google.inject.Injector;
 import com.google.inject.Guice;
@@ -25,14 +27,15 @@ import com.google.inject.tools.ideplugin.results.ResultsView;
 import com.google.inject.tools.ideplugin.results.ResultsHandler;
 import com.google.inject.tools.ideplugin.ActionsHandler;
 import com.google.inject.tools.ideplugin.JavaElement;
+import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.ideplugin.ModuleSelectionView;
 import com.google.inject.tools.ideplugin.ModulesSource;
 import com.google.inject.tools.ideplugin.ProjectManager;
+import com.google.inject.tools.ideplugin.ProjectSettings;
 import com.google.inject.tools.suite.GuiceToolsModule;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProblemsHandler;
 import com.google.inject.tools.suite.ProgressHandler;
-import com.google.inject.tools.suite.Fakes.FakeJavaManager;
 import com.google.inject.tools.suite.code.CodeRunnerFactory;
 
 /**
@@ -75,13 +78,49 @@ public class StartupTest extends TestCase {
     EclipsePluginModule module = new EclipsePluginModule();
     GuiceToolsModule toolsModule = new EclipseGuiceToolsModule();
     new EclipseGuicePlugin(module, toolsModule)
-        .getModuleManager(new FakeJavaManager());
+        .getModuleManager(new FakeJavaProject());
   }
 
   public void testCreateBindingsEngine() {
     EclipsePluginModule module = new EclipsePluginModule();
     GuiceToolsModule toolsModule = new EclipseGuiceToolsModule();
     new EclipseGuicePlugin(module, toolsModule).getBindingsEngine(
-        new FakeJavaElement(JavaElement.Type.FIELD), new FakeJavaManager());
+        new FakeJavaElement(JavaElement.Type.FIELD), new FakeJavaProject());
+  }
+  
+  static class FakeJavaProject extends JavaProject {
+    @Override
+    public String getName() {
+      return null;
+    }
+
+    @Override
+    public ProjectSettings loadSettings() {
+      return new ProjectSettings();
+    }
+
+    @Override
+    public void saveSettings(ProjectSettings settings) {      
+    }
+
+    public String getGuiceClasspath() throws Exception {
+      return null;
+    }
+
+    public String getJavaCommand() throws Exception {
+      return null;
+    }
+
+    public List<String> getJavaFlags() throws Exception {
+      return null;
+    }
+
+    public String getProjectClasspath() throws Exception {
+      return null;
+    }
+
+    public String getSnippetsClasspath() throws Exception {
+      return null;
+    }
   }
 }

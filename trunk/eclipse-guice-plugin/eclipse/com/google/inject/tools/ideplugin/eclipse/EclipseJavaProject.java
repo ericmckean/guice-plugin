@@ -185,10 +185,7 @@ class EclipseJavaProject extends JavaProject {
   }
 
   public String getSnippetsClasspath() throws Exception {
-    Bundle bundle = Platform.getBundle("GuicePlugin");
-    URL url = bundle.getResource("/");
-    url = FileLocator.toFileURL(url);
-    return url.getFile();
+    return getJarClasspath("lib/GuiceToolsFramework_0.3.2.jar");
   }
   
   public String getGuiceClasspath() throws Exception {

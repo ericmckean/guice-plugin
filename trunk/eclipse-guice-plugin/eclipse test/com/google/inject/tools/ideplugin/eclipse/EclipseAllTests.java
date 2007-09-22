@@ -34,6 +34,7 @@ public class EclipseAllTests extends TestCase {
     suite.addTest(AllNonIDESpecificTests.suite());
 
     suite.addTestSuite(StartupTest.class);
+    suite.addTestSuite(ModuleCustomContextTest.class);
 
     return suite;
   }
