@@ -16,14 +16,13 @@
 
 package com.google.inject.tools.ideplugin.eclipse;
 
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -42,6 +41,8 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
 import com.google.inject.tools.ideplugin.ProjectManager;
+import com.google.inject.tools.ideplugin.eclipse.PreferencesPage.PreferenceDialogArea;
+import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.module.ApplicationModuleContextRepresentation;
 import com.google.inject.tools.suite.module.ClassNameUtility;
 import com.google.inject.tools.suite.module.CustomModuleContextRepresentation;
@@ -55,34 +56,36 @@ import com.google.inject.tools.suite.module.ModuleContextRepresentation.ModuleIn
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 class EclipseModuleDialog extends FormDialog {
+  private final Messenger messenger;
   private final ModuleManager moduleManager;
   private final ProjectManager projectManager;
   private Set<ModuleContextRepresentation> moduleContexts;
   private Set<ModuleContextRepresentation> activeModuleContexts;
-  private boolean activateByDefault;
   private FormToolkit toolkit;
   private final Shell shell;
+  private final PreferenceDialogArea preferencesPage;
+  private final Map<String, Button> checkboxes;
 
-  public EclipseModuleDialog(Shell parent, ProjectManager projectManager, ModuleManager moduleManager) {
+  public EclipseModuleDialog(Shell parent, Messenger messenger, ProjectManager projectManager, ModuleManager moduleManager) {
     super(parent);
     this.shell = parent;
+    this.messenger = messenger;
     this.moduleManager = moduleManager;
     this.projectManager = projectManager;
     moduleContexts = moduleManager.getModuleContexts();
     activeModuleContexts = moduleManager.getActiveModuleContexts();
-    activateByDefault = moduleManager.activateModulesByDefault();
+    preferencesPage = new PreferenceDialogArea();
+    checkboxes = new HashMap<String, Button>();
   }
 
-  public static void display(Shell parent, ProjectManager projectManager, ModuleManager moduleManager) {
-    EclipseModuleDialog dialog = new EclipseModuleDialog(parent, projectManager, moduleManager);
+  public static boolean display(Shell parent, Messenger messenger, ProjectManager projectManager, ModuleManager moduleManager) {
+    EclipseModuleDialog dialog = new EclipseModuleDialog(parent, messenger, projectManager, moduleManager);
     dialog.create();
     dialog.getShell().setBounds(200, 200, 500, 400);
     dialog.getShell().setText("Guice Context Configuration");
     dialog.setBlockOnOpen(true);
     dialog.open();
-    if (dialog.getReturnCode() == Window.OK) {
-      dialog.updateSettings();
-    }
+    return dialog.getReturnCode() == Window.OK;
   }
 
   @Override
@@ -94,18 +97,19 @@ class EclipseModuleDialog extends FormDialog {
     if (moduleContexts == null) {
       toolkit.createLabel(parent, "No project selected.");
     } else {
-      createOptionsContent(scrolledForm.getBody());
+      createScanContent(scrolledForm.getBody());
       createUserContexts(scrolledForm.getBody());
       createPremadeContexts(scrolledForm.getBody());
+      createOptionsContent(scrolledForm.getBody());
     }
     scrolledForm.pack();
     scrolledForm.reflow(true);
   }
   
-  private void createOptionsContent(Composite parent) {
+  private void createScanContent(Composite parent) {
     Section section =
       toolkit.createSection(parent, Section.EXPANDED | Section.TITLE_BAR);
-    section.setText("General Options");
+    section.setText("Find New Contexts");
     
     ScrolledForm insideScrolledForm = toolkit.createScrolledForm(section);
     insideScrolledForm.setExpandHorizontal(true);
@@ -124,7 +128,7 @@ class EclipseModuleDialog extends FormDialog {
           public void execute(boolean success) {
             Display.getDefault().asyncExec(new Runnable() {
               public void run() {
-                EclipseModuleDialog.display(shell, projectManager, moduleManager);
+                EclipseModuleDialog.display(shell, messenger, projectManager, moduleManager);
               }
             });
           }
@@ -138,9 +142,28 @@ class EclipseModuleDialog extends FormDialog {
       }
     });
     
-    makeCheckbox(body, activateByDefault,
-        "Find and activate new modules automatically", "")
-        .addSelectionListener(activateByDefaultListener);
+    body.pack();
+    insideScrolledForm.pack();
+    insideScrolledForm.reflow(true);
+    section.setClient(insideScrolledForm);
+    section.pack();
+  }
+  
+  private void createOptionsContent(Composite parent) {
+    Section section =
+      toolkit.createSection(parent, Section.EXPANDED | Section.TITLE_BAR);
+    section.setText("Global Options");
+    
+    ScrolledForm insideScrolledForm = toolkit.createScrolledForm(section);
+    insideScrolledForm.setExpandHorizontal(true);
+    insideScrolledForm.setExpandVertical(true);
+    Composite body = insideScrolledForm.getBody();
+    
+    GridLayout layout = new GridLayout();
+    layout.numColumns = 1;
+    body.setLayout(layout);
+    
+    preferencesPage.buildComposite(body);
     
     body.pack();
     insideScrolledForm.pack();
@@ -207,7 +230,7 @@ class EclipseModuleDialog extends FormDialog {
       moduleManager.addCustomContext(title, classToUse, methodToUse);
     }
 
-    public static void display(Shell parent, ProjectManager projectManager, ModuleManager moduleManager) {
+    public static void display(Shell parent, Messenger messenger, ProjectManager projectManager, ModuleManager moduleManager) {
       NewContextDialog dialog = new NewContextDialog(parent, moduleManager);
       dialog.create();
       dialog.getShell().setBounds(200, 200, 500, 200);
@@ -217,14 +240,11 @@ class EclipseModuleDialog extends FormDialog {
       if (dialog.getReturnCode() == Window.OK) {
         dialog.saveSettings();
       }
-      EclipseModuleDialog.display(parent, projectManager, moduleManager);
+      EclipseModuleDialog.display(parent, messenger, projectManager, moduleManager);
     }
   }
 
-  private Set<Button> userCheckboxes;
-
   private void createUserContexts(Composite parent) {
-    customCheckboxListeners = new HashSet<CheckboxListener>();
     Section section =
         toolkit.createSection(parent, Section.EXPANDED | Section.TITLE_BAR);
     section.setText("Your Module Contexts");
@@ -241,7 +261,7 @@ class EclipseModuleDialog extends FormDialog {
     makeHyperlink(body, "Create new context", new IHyperlinkListener() {
       public void linkActivated(HyperlinkEvent e) {
         EclipseModuleDialog.this.close();
-        NewContextDialog.display(shell, projectManager, moduleManager);
+        NewContextDialog.display(shell, messenger, projectManager, moduleManager);
       }
 
       public void linkEntered(HyperlinkEvent e) {
@@ -251,20 +271,14 @@ class EclipseModuleDialog extends FormDialog {
       }
     });
 
-    userCheckboxes = new HashSet<Button>();
     for (ModuleContextRepresentation moduleContext : moduleContexts) {
       if (moduleContext instanceof CustomModuleContextRepresentation 
           || moduleContext instanceof ApplicationModuleContextRepresentation) {
-        CheckboxListener listener =
-            new CheckboxListener(moduleContext, activeModuleContexts
-                .contains(moduleContext));
         String tooltip = moduleContext.getLongName();
         Button checkbox =
             makeCheckbox(body, activeModuleContexts.contains(moduleContext),
                 moduleContext.getShortName(), tooltip);
-        checkbox.addSelectionListener(listener);
-        userCheckboxes.add(checkbox);
-        customCheckboxListeners.add(listener);
+        checkboxes.put(moduleContext.getName(), checkbox);
       }
     }
     body.pack();
@@ -274,10 +288,7 @@ class EclipseModuleDialog extends FormDialog {
     section.pack();
   }
 
-  private Set<Button> checkboxes;
-
   private void createPremadeContexts(Composite parent) {
-    checkboxListeners = new HashSet<CheckboxListener>();
     Section section =
         toolkit.createSection(parent, Section.EXPANDED | Section.TITLE_BAR);
     section.setText("Autogenerated Module Contexts");
@@ -304,11 +315,8 @@ class EclipseModuleDialog extends FormDialog {
     } else {
       makeHyperlink(body, "Activate all", new IHyperlinkListener() {
         public void linkActivated(HyperlinkEvent e) {
-          for (Button checkbox : checkboxes) {
+          for (Button checkbox : checkboxes.values()) {
             checkbox.setSelection(true);
-          }
-          for (CheckboxListener listener : checkboxListeners) {
-            listener.setState(true);
           }
         }
 
@@ -320,11 +328,8 @@ class EclipseModuleDialog extends FormDialog {
       });
       makeHyperlink(body, "Deactivate all", new IHyperlinkListener() {
         public void linkActivated(HyperlinkEvent e) {
-          for (Button checkbox : checkboxes) {
+          for (Button checkbox : checkboxes.values()) {
             checkbox.setSelection(false);
-          }
-          for (CheckboxListener listener : checkboxListeners) {
-            listener.setState(false);
           }
         }
 
@@ -335,7 +340,6 @@ class EclipseModuleDialog extends FormDialog {
         }
       });
 
-      checkboxes = new HashSet<Button>();
       for (ModuleContextRepresentation moduleContext : moduleContexts) {
         if (!(moduleContext instanceof CustomModuleContextRepresentation)) {
           StringBuilder text = new StringBuilder();
@@ -349,15 +353,10 @@ class EclipseModuleDialog extends FormDialog {
             }
           }
           text.append(");");
-          CheckboxListener listener =
-              new CheckboxListener(moduleContext, activeModuleContexts
-                  .contains(moduleContext));
           Button checkbox =
               makeCheckbox(body, activeModuleContexts.contains(moduleContext),
                   ClassNameUtility.shorten(moduleContext.getName()), text.toString());
-          checkbox.addSelectionListener(listener);
-          checkboxes.add(checkbox);
-          checkboxListeners.add(listener);
+          checkboxes.put(moduleContext.getName(), checkbox);
         }
       }
     }
@@ -384,59 +383,22 @@ class EclipseModuleDialog extends FormDialog {
     return link;
   }
 
-  private SelectionAdapter activateByDefaultListener = new SelectionAdapter() {
-    @Override
-    public void widgetSelected(SelectionEvent event) {
-      activateByDefault = !activateByDefault;
-    }
-  };
-
-  private class CheckboxListener extends SelectionAdapter {
-    private final ModuleContextRepresentation moduleContext;
-    private boolean state;
-
-    public CheckboxListener(ModuleContextRepresentation moduleContext,
-        boolean state) {
-      this.moduleContext = moduleContext;
-      this.state = state;
-    }
-
-    @Override
-    public void widgetSelected(SelectionEvent event) {
-      state = !state;
-    }
-
-    public ModuleContextRepresentation getModuleContext() {
-      return moduleContext;
-    }
-
-    public void setState(boolean state) {
-      this.state = state;
-    }
-
-    public boolean getState() {
-      return state;
-    }
-  }
-
-  private Set<CheckboxListener> checkboxListeners;
-  private Set<CheckboxListener> customCheckboxListeners;
-
-  protected void updateSettings() {
-    moduleManager.setActivateModulesByDefault(activateByDefault);
-    for (CheckboxListener checkbox : checkboxListeners) {
-      if (checkbox.getState()) {
-        moduleManager.activateModuleContext(checkbox.getModuleContext().getName());
-      } else {
-        moduleManager.deactivateModuleContext(checkbox.getModuleContext().getName());
+  @Override
+  protected void okPressed() {
+    try {
+      preferencesPage.saveSettings();
+      if (checkboxes.size() > 0) {
+        for (String context : checkboxes.keySet()) {
+          if (checkboxes.get(context).getSelection()) {
+            moduleManager.activateModuleContext(context);
+          } else {
+            moduleManager.deactivateModuleContext(context);
+          }
+        }
       }
+    } catch (Throwable t) {
+      messenger.logException("Module Dialog Exception", t);
     }
-    for (CheckboxListener checkbox : customCheckboxListeners) {
-      if (checkbox.getState()) {
-        moduleManager.activateModuleContext(checkbox.getModuleContext().getName());
-      } else {
-        moduleManager.deactivateModuleContext(checkbox.getModuleContext().getName());
-      }
-    }
+    super.okPressed();
   }
 }

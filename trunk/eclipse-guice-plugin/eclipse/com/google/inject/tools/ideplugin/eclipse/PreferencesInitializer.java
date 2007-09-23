@@ -19,7 +19,7 @@ package com.google.inject.tools.ideplugin.eclipse;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-import com.google.inject.tools.ideplugin.ProjectSettings;
+import com.google.inject.tools.ideplugin.IDEPluginSettings;
 
 /**
  * Initialize the default preference settings in eclipse.
@@ -31,6 +31,6 @@ public class PreferencesInitializer extends AbstractPreferenceInitializer {
   public void initializeDefaultPreferences() {
       IPreferenceStore store = Activator.getDefault().getPreferenceStore();
       store.setDefault("com.google.inject.tools.ideplugin.eclipse.preferences",
-          new ProjectSettings().serialize());
+          new IDEPluginSettings().serialize());
   }
 }
