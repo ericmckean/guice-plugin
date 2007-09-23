@@ -30,7 +30,7 @@
                class="com.google.inject.tools.ideplugin.eclipse.RunModulesNowAction2"
                definitionId="com.google.inject.tools.ideplugin.eclipse.runnowCommand2"
                id="com.google.inject.tools.ideplugin.eclipse.bindings.runnowActionSetAction"
-               label="Run Modules &amp;Now"
+               label="&amp;Run Contexts Now"
                menubarPath="org.eclipse.search.menu/com.google.inject.tools.ideplugin.eclipse.menu/modules"/>
             <action
                class="com.google.inject.tools.ideplugin.eclipse.GuicePluginConfigureAction2"
@@ -71,7 +71,7 @@
          	   definitionId="com.google.inject.tools.ideplugin.eclipse.runnowCommand"
          	   enablesFor="*"
          	   id="com.google.inject.tools.ideplugin.eclipse.objectrunmodulesaction"
-         	   label="&amp;Run Modules Now"
+         	   label="&amp;Run Contexts Now"
          	   menubarPath="com.google.inject.tools.ideplugin.eclipse.objectmenu.guice/modules"/>
       </objectContribution>
       <viewerContribution
@@ -101,7 +101,7 @@
          	   definitionId="com.google.inject.tools.ideplugin.eclipse.runnowCommand"
          	   enablesFor="*"
          	   id="com.google.inject.tools.ideplugin.eclipse.runmodulesaction"
-         	   label="&amp;Run Modules Now"
+         	   label="&amp;Run Contexts Now"
          	   menubarPath="com.google.inject.tools.ideplugin.eclipse.viewermenu.guice/modules"/>
       </viewerContribution>
       <viewerContribution
@@ -131,7 +131,7 @@
          	   definitionId="com.google.inject.tools.ideplugin.eclipse.runnowCommand"
          	   enablesFor="*"
          	   id="com.google.inject.tools.ideplugin.eclipse.runmodulesaction"
-         	   label="&amp;Run Modules Now"
+         	   label="&amp;Run Contexts Now"
          	   menubarPath="com.google.inject.tools.ideplugin.eclipse.viewermenu.guice/modules"/>
       </viewerContribution>
    </extension>
@@ -145,14 +145,14 @@
             allowMultiple="false"
             category="Guice_Plugin"
             class="com.google.inject.tools.ideplugin.eclipse.EclipseResultsView"
-            icon="icons/sample.gif"
+            icon="icons/guice.gif"
             id="com.google.inject.tools.ideplugin.eclipse.EclipseResultsView"
             name="Guice Bindings"/>
       <view
       		allowMultiple="false"
       		category="Guice_Plugin"
       		class="com.google.inject.tools.ideplugin.eclipse.EclipseErrorView"
-      		icon="icons/sample.gif"
+      		icon="icons/guiceerrors.gif"
       		id="com.google.inject.tools.ideplugin.eclipse.EclipseErrorView"
       		name="Guice Error Log"/>
    </extension>

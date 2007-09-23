@@ -26,6 +26,10 @@ import com.google.inject.tools.ideplugin.JavaProject;
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class GuicePluginConfigureAction2 extends EclipseMenuAction {
+  public GuicePluginConfigureAction2() {
+    super("Configure Guice Plugin", "configure.gif");
+  }
+  
   @Override
   protected boolean runMyAction(IEditorPart editor) {
     JavaProject project = new EclipseJavaProject(new JavaProjectResolver(editor).getProject());
@@ -34,6 +38,11 @@ public class GuicePluginConfigureAction2 extends EclipseMenuAction {
       return true;
     }
     return false;
+  }
+  
+  @Override
+  protected String myTooltip() {
+    return "Configure Guice Plugin...";
   }
   
   @Override

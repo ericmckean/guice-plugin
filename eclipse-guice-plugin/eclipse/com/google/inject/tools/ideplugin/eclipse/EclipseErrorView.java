@@ -131,6 +131,7 @@ public class EclipseErrorView extends ViewPart {
   private void initializeToolBar() {
     IToolBarManager tbm = getViewSite().getActionBars().getToolBarManager();
     tbm.add(fClearDisplayAction);
+    createToolbarActions();
     getViewSite().getActionBars().updateActionBars();
   }
 
@@ -180,5 +181,13 @@ public class EclipseErrorView extends ViewPart {
       new SimpleDateFormat("dd/MM HH:mm:ss").format(new Date());
     String msg = "[" + dateString + "]   " + message;
     document.set(document.get() + msg);
+  }
+  
+  protected void createToolbarActions() {
+    IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
+    toolbar.add(new ShowBindingsViewAction());
+    toolbar.add(new FindBindingsAction());
+    toolbar.add(new RunModulesNowAction2());
+    toolbar.add(new GuicePluginConfigureAction2());
   }
 }

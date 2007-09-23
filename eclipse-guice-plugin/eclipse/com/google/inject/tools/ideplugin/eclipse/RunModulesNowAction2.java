@@ -26,6 +26,10 @@ import com.google.inject.tools.ideplugin.JavaProject;
  * @author dcreutz@gmail.com (Darren Creutz)
  */
 public class RunModulesNowAction2 extends EclipseMenuAction {
+  public RunModulesNowAction2() {
+    super("Run Contexts Now", "runnow.gif");
+  }
+  
   @Override
   protected boolean runMyAction(IEditorPart part) {
     JavaProject project = new EclipseJavaProject(new JavaProjectResolver(part).getProject());
@@ -33,6 +37,11 @@ public class RunModulesNowAction2 extends EclipseMenuAction {
       Activator.getGuicePlugin().runModulesNow(project, false);
     }
     return true;
+  }
+  
+  @Override
+  protected String myTooltip() {
+    return "Run Contexts Now";
   }
   
   @Override
