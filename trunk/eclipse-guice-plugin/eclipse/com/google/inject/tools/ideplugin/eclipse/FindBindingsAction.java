@@ -24,6 +24,10 @@ import org.eclipse.ui.IEditorPart;
  * @author dcreutz@gmail.com (Darren Creutz)
  */
 public class FindBindingsAction extends EclipseMenuAction {
+  public FindBindingsAction() {
+    super("Find Bindings", "findbindings.gif");
+  }
+  
   @Override
   public boolean runMyAction(IEditorPart part) {
     JavaElementResolver resolver = new JavaElementResolver(part);
@@ -36,6 +40,11 @@ public class FindBindingsAction extends EclipseMenuAction {
       guicePlugin.getMessenger().display("Find Bindings not available in this context");
     }
     return false;
+  }
+  
+  @Override
+  protected String myTooltip() {
+    return "Find Bindings";
   }
 
   @Override

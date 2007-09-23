@@ -16,6 +16,7 @@
 
 package com.google.inject.tools.ideplugin.eclipse;
 
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.part.ViewPart;
@@ -68,6 +69,7 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
   @Override
   public void createPartControl(Composite parent) {
     createManagedForm(parent);
+    createToolbarActions();
   }
   
   private void createManagedForm(Composite parent) {
@@ -182,5 +184,13 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
     } catch (Exception e) {
       messenger.logException("Error with results view", e);
     }
+  }
+  
+  protected void createToolbarActions() {
+    IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
+    toolbar.add(new FindBindingsAction());
+    toolbar.add(new RunModulesNowAction2());
+    toolbar.add(new GuicePluginConfigureAction2());
+    toolbar.add(new ShowErrorsViewAction());
   }
 }
