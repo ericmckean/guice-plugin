@@ -92,8 +92,10 @@ abstract class EclipseSourceImpl extends AbstractSourceImpl {
   private void stopListeningForChanges() {
     JavaCore.removeElementChangedListener(changeListener);
     for (JavaProject project : projects) {
-      typeHierarchies.get(project).removeTypeHierarchyChangedListener(
-          typeListeners.get(project));
+      if (typeHierarchies.get(project) != null) {
+        typeHierarchies.get(project).removeTypeHierarchyChangedListener(
+            typeListeners.get(project));
+      }
       cachedHierarchies.remove(project);
       typeListeners.remove(project);
       typeHierarchies.remove(project);

@@ -46,10 +46,10 @@ public class ShowBindingsViewAction extends EclipseMenuAction {
       IWorkbenchPage activePage = PlatformUI.getWorkbench()
           .getWorkbenchWindows()[0].getActivePage();
       activePage.showView(
-            "com.google.inject.tools.ideplugin.eclipse.EclipseResultsView",
-            null, IWorkbenchPage.VIEW_CREATE);
+            "com.google.inject.tools.ideplugin.eclipse.EclipseResultsView");
       return true;
     } catch (Exception e) {
+      e.printStackTrace();
       return false;
     }
   }

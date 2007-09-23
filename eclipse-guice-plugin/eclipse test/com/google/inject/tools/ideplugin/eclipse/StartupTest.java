@@ -31,7 +31,7 @@ import com.google.inject.tools.ideplugin.JavaProject;
 import com.google.inject.tools.ideplugin.ModuleSelectionView;
 import com.google.inject.tools.ideplugin.ModulesSource;
 import com.google.inject.tools.ideplugin.ProjectManager;
-import com.google.inject.tools.ideplugin.ProjectSettings;
+import com.google.inject.tools.ideplugin.IDEPluginSettings;
 import com.google.inject.tools.suite.GuiceToolsModule;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProblemsHandler;
@@ -95,12 +95,12 @@ public class StartupTest extends TestCase {
     }
 
     @Override
-    public ProjectSettings loadSettings() {
-      return new ProjectSettings();
+    public IDEPluginSettings loadSettings() {
+      return new IDEPluginSettings();
     }
 
     @Override
-    public void saveSettings(ProjectSettings settings) {      
+    public void saveSettings(IDEPluginSettings settings) {      
     }
 
     public String getGuiceClasspath() throws Exception {

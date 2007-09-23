@@ -31,9 +31,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-import com.google.inject.tools.ideplugin.ProjectSettings;
-import com.google.inject.tools.ideplugin.ProjectSettings.ProjectSettingsSaver;
-import com.google.inject.tools.ideplugin.ProjectSettings.ProjectSettingsVisitor;
+import com.google.inject.tools.ideplugin.IDEPluginSettings;
+import com.google.inject.tools.ideplugin.IDEPluginSettings.ProjectSettingsSaver;
+import com.google.inject.tools.ideplugin.IDEPluginSettings.ProjectSettingsVisitor;
 
 /**
  * The eclipse preference page dialog.
@@ -41,24 +41,105 @@ import com.google.inject.tools.ideplugin.ProjectSettings.ProjectSettingsVisitor;
  * @author Darren Creutz (dcreutz@gmail.com)
  */
 public class PreferencesPage extends PreferencePage implements IWorkbenchPreferencePage {
-  private final Map<String, Button> buttons;
+  public static class PreferenceDialogArea {
+    private final Map<String, Button> buttons;
+    private final PreferencesPage preferencesPage;
+    
+    public PreferenceDialogArea(PreferencesPage preferencesPage) {
+      buttons = new HashMap<String, Button>();
+      this.preferencesPage = preferencesPage;
+    }
+    
+    public PreferenceDialogArea() {
+      this(null);
+    }
+    
+    public void buildComposite(Composite composite) {
+      CompositeBuilder builder = new CompositeBuilder(composite);
+      new IDEPluginSettings().accept(builder);
+      initializeValues();
+    }
+    
+    class CompositeBuilder implements ProjectSettingsVisitor {
+      private final Composite composite;
+      
+      public CompositeBuilder(Composite composite) {
+        this.composite = composite;
+      }
+      
+      public void visit(String name, boolean value) {
+        buttons.put(name, createCheckBox(composite, name));
+      }
+      
+      private Button createCheckBox(Composite group, String label) {
+        Button button = new Button(group, SWT.CHECK | SWT.LEFT);
+        button.setText(label);
+        GridData data = new GridData();
+        button.setLayoutData(data);
+        return button;
+      }
+      
+      public Composite composite() {
+        return composite;
+      }
+    }
+    
+    class ValuesSetter implements ProjectSettingsVisitor {
+      public void visit(String name, boolean value) {
+        buttons.get(name).setSelection(value);
+      }
+    }
+    
+    public void saveSettings() {
+      storeValues();
+      Activator.getDefault().savePluginPreferences();
+    }
+    
+    class ValuesSaver implements ProjectSettingsSaver {
+      public boolean getBoolean(String name) {
+        return buttons.get(name).getSelection();
+      }
+    }
+    
+    private void setValues(String serialized) {
+      IDEPluginSettings settings = new IDEPluginSettings(serialized);
+      settings.accept(new ValuesSetter());
+    }
+    
+    private void storeValues() {
+      IPreferenceStore store = getPreferenceStore();
+      IDEPluginSettings settings = new IDEPluginSettings(new ValuesSaver());
+      store.setValue("com.google.inject.tools.ideplugin.eclipse.preferences", settings.serialize());
+      Activator.getGuicePlugin().getProjectManager().settingsChanged(null, settings);
+    }
+    
+    private void initializeDefaults() {
+      IPreferenceStore store = getPreferenceStore();
+      setValues(store.getDefaultString("com.google.inject.tools.ideplugin.eclipse.preferences"));
+    }
+    
+    private void initializeValues() {
+      IPreferenceStore store = getPreferenceStore();
+      setValues(store.getString("com.google.inject.tools.ideplugin.eclipse.preferences"));
+    }
+    
+    private IPreferenceStore getPreferenceStore() {
+      if (preferencesPage != null) {
+        return preferencesPage.getPreferenceStore();
+      } else {
+        return Activator.getDefault().getPreferenceStore();
+      }
+    }
+  }
+  
+  private final PreferenceDialogArea dialogArea;
   
   public PreferencesPage() {
-    buttons = new HashMap<String, Button>();
+    dialogArea = new PreferenceDialogArea(this);
   }
-  
+
   public void init(IWorkbench workbench) {
     // do nothing
-  }
-  
-  @Override
-  protected Control createContents(Composite parent) {
-    Composite composite = createComposite(parent, 1);
-    createLabel(composite, "Guice Plugin Options");
-    CompositeBuilder builder = new CompositeBuilder(composite);
-    new ProjectSettings().accept(builder);
-    initializeValues();
-    return new Composite(parent, SWT.NULL);
   }
   
   private Label createLabel(Composite parent, String text) {
@@ -73,12 +154,12 @@ public class PreferencesPage extends PreferencePage implements IWorkbenchPrefere
   
   private Composite createComposite(Composite parent, int numColumns) {
     Composite composite = new Composite(parent, SWT.NULL);
-
+    
     //GridLayout
     GridLayout layout = new GridLayout();
     layout.numColumns = numColumns;
     composite.setLayout(layout);
-
+    
     //GridData
     GridData data = new GridData();
     data.verticalAlignment = GridData.FILL;
@@ -87,30 +168,14 @@ public class PreferencesPage extends PreferencePage implements IWorkbenchPrefere
     return composite;
   }
   
-  class CompositeBuilder implements ProjectSettingsVisitor {
-    private final Composite composite;
-    
-    public CompositeBuilder(Composite composite) {
-      this.composite = composite;
-    }
-    
-    public void visit(String name, boolean value) {
-      buttons.put(name, createCheckBox(composite, name));
-    }
-    
-    private Button createCheckBox(Composite group, String label) {
-      Button button = new Button(group, SWT.CHECK | SWT.LEFT);
-      button.setText(label);
-      GridData data = new GridData();
-      button.setLayoutData(data);
-      return button;
-    }
-    
-    public Composite composite() {
-      return composite;
-    }
+  @Override
+  protected Control createContents(Composite parent) {
+    Composite composite = createComposite(parent, 1);
+    createLabel(composite, "Guice Plugin Global Options");
+    dialogArea.buildComposite(composite);
+    return new Composite(parent, SWT.NULL);
   }
-  
+
   @Override
   protected IPreferenceStore doGetPreferenceStore() {
     return Activator.getDefault().getPreferenceStore();
@@ -119,47 +184,12 @@ public class PreferencesPage extends PreferencePage implements IWorkbenchPrefere
   @Override
   protected void performDefaults() {
     super.performDefaults();
-    initializeDefaults();
+    dialogArea.initializeDefaults();
   }
-
+  
   @Override
   public boolean performOk() {
-    storeValues();
-    Activator.getDefault().savePluginPreferences();
+    dialogArea.saveSettings();
     return true;
-  }
-
-  private void initializeDefaults() {
-    IPreferenceStore store = getPreferenceStore();
-    setValues(store.getDefaultString("com.google.inject.tools.ideplugin.eclipse.preferences"));
-  }
-
-  private void initializeValues() {
-    IPreferenceStore store = getPreferenceStore();
-    setValues(store.getString("com.google.inject.tools.ideplugin.eclipse.preferences"));
-  }
-
-  private void setValues(String serialized) {
-    ProjectSettings settings = new ProjectSettings(serialized);
-    settings.accept(new ValuesSetter());
-  }
-  
-  class ValuesSetter implements ProjectSettingsVisitor {
-    public void visit(String name, boolean value) {
-      buttons.get(name).setSelection(value);
-    }
-  }
-
-  private void storeValues() {
-    ProjectSettings settings = new ProjectSettings(new ValuesSaver());
-    IPreferenceStore store = getPreferenceStore();
-    store.setValue("com.google.inject.tools.ideplugin.eclipse.preferences", settings.serialize());
-    Activator.getGuicePlugin().getProjectManager().settingsChanged(null, settings);
-  }
-  
-  class ValuesSaver implements ProjectSettingsSaver {
-    public boolean getBoolean(String name) {
-      return buttons.get(name).getSelection();
-    }
   }
 }

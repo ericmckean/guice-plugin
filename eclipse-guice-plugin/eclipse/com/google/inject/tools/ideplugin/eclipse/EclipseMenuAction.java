@@ -99,18 +99,26 @@ public abstract class EclipseMenuAction extends Action
     if (editor == null) {
       IWorkbenchPart part =
         PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart();
-      displayFailed(part);
+      displayEditorFailed(part);
     } else if (!runMyAction(editor)) {
       displayFailed(editor);
     }
   }
   
   protected void displayFailed(IWorkbenchPart part) {
+    displayError(part, myStatusFailedMessage());
+  }
+  
+  protected void displayEditorFailed(IWorkbenchPart part) {
+    displayError(part, "Guice: cannot resolve editor.");
+  }
+  
+  protected void displayError(IWorkbenchPart part, String message) {
     if (part instanceof IViewPart) {
       IStatusLineManager statusManager = ((IViewPart)part).getViewSite().getActionBars().getStatusLineManager();
-      statusManager.setMessage(myStatusFailedMessage());
+      statusManager.setMessage(message);
     } else {
-      guicePlugin.getMessenger().display(myStatusFailedMessage());
+      guicePlugin.getMessenger().display(message);
     }
   }
   

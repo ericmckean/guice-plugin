@@ -46,8 +46,7 @@ public class ShowErrorsViewAction extends EclipseMenuAction {
       IWorkbenchPage activePage = PlatformUI.getWorkbench()
           .getWorkbenchWindows()[0].getActivePage();
       activePage.showView(
-          "com.google.inject.tools.ideplugin.eclipse.EclipseErrorView",
-          null, IWorkbenchPage.VIEW_CREATE);
+          "com.google.inject.tools.ideplugin.eclipse.EclipseErrorView");
       return true;
     } catch (Exception e) {
       return false;

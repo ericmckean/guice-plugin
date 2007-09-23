@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.inject.tools.ideplugin.JavaProject;
-import com.google.inject.tools.ideplugin.ProjectSettings;
+import com.google.inject.tools.ideplugin.IDEPluginSettings;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -185,7 +185,7 @@ class EclipseJavaProject extends JavaProject {
   }
 
   public String getSnippetsClasspath() throws Exception {
-    return getJarClasspath("lib/GuiceToolsFramework_0.3.2.jar");
+    return getJarClasspath("lib/GuiceToolsFramework_0.3.3.jar");
   }
   
   public String getGuiceClasspath() throws Exception {
@@ -210,14 +210,14 @@ class EclipseJavaProject extends JavaProject {
   }
   
   @Override
-  public void saveSettings(ProjectSettings settings) {
+  public void saveSettings(IDEPluginSettings settings) {
     //handled in preference page OK button
   }
   
   @Override
-  public ProjectSettings loadSettings() {
+  public IDEPluginSettings loadSettings() {
     IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-    ProjectSettings settings = new ProjectSettings(store.getString("com.google.inject.tools.ideplugin.eclipse.preferences"));
+    IDEPluginSettings settings = new IDEPluginSettings(store.getString("com.google.inject.tools.ideplugin.eclipse.preferences"));
     return settings;
   }
 
