@@ -39,7 +39,7 @@ public interface ProjectManager {
   /**
    * Notify the ProjectManager that the settings for the given project have changed.
    */
-  public void settingsChanged(JavaProject javaProject, ProjectSettings settings);
+  public void settingsChanged(JavaProject javaProject, IDEPluginSettings settings);
 
   /**
    * Return the {@link ModuleManager} for the given project.

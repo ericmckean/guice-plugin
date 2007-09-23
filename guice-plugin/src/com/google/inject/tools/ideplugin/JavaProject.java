@@ -27,12 +27,12 @@ public abstract class JavaProject implements JavaManager {
   /**
    * Save the settings.
    */
-  public abstract void saveSettings(ProjectSettings settings);
+  public abstract void saveSettings(IDEPluginSettings settings);
   
   /**
    * Load the settings.
    */
-  public abstract ProjectSettings loadSettings();
+  public abstract IDEPluginSettings loadSettings();
   
   public String getClasspathDelimiter() {
     return System.getProperty("path.separator");
