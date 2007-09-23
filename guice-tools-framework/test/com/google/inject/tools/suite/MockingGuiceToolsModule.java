@@ -243,7 +243,11 @@ public class MockingGuiceToolsModule extends GuiceToolsModule {
       this.instance = instance;
     }
 
-    public ModuleManager create(JavaManager project, boolean activateByDefault, boolean runAutomatically) {
+    public ModuleManager create(JavaManager project, Settings setting) {
+      return instance;
+    }
+    
+    public ModuleManager create(JavaManager project) {
       return instance;
     }
     

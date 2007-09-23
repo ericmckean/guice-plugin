@@ -67,7 +67,7 @@ public class ModuleManagerTest extends TestCase {
             .useCodeRunner(new FakeCodeRunner()));
 
     ModuleManagerImpl moduleManager = (ModuleManagerImpl)
-        injector.getInstance(ModuleManagerFactory.class).create(project, false, false);
+        injector.getInstance(ModuleManagerFactory.class).create(project);
     moduleManager.update(true, true);
     moduleManager.addModuleContext(workingModuleContext, true);
     assertTrue(moduleManager.getModuleContexts().contains(workingModuleContext));
@@ -105,7 +105,7 @@ public class ModuleManagerTest extends TestCase {
             .useCodeRunner(new FakeCodeRunner()));
 
     ModuleManagerImpl moduleManager = (ModuleManagerImpl)
-        injector.getInstance(ModuleManagerFactory.class).create(project, false, false);
+        injector.getInstance(ModuleManagerFactory.class).create(project);
     moduleManager.update(true, true);
     moduleManager.addModule(workingModule, false);
     assertTrue(moduleManager.getModules().contains(workingModule));
@@ -140,7 +140,7 @@ public class ModuleManagerTest extends TestCase {
             .useCodeRunner(new FakeCodeRunner()));
 
     ModuleManagerImpl moduleManager = (ModuleManagerImpl)
-        injector.getInstance(ModuleManagerFactory.class).create(project, false, false);
+        injector.getInstance(ModuleManagerFactory.class).create(project);
     moduleManager.addModule(WorkingModule.class.getName(), false);
     moduleManager.updateModules(true, true);
     moduleManager.update(true, true);
@@ -169,7 +169,7 @@ public class ModuleManagerTest extends TestCase {
             .useCodeRunner(new FakeCodeRunner()));
 
     ModuleManager moduleManager =
-        injector.getInstance(ModuleManagerFactory.class).create(project, false, false);
+        injector.getInstance(ModuleManagerFactory.class).create(project);
     moduleManager.addModule(WorkingModule.class.getName(), false);
     moduleManager.update(true, true);
     assertTrue(moduleManager.getModules().size() == 1);
