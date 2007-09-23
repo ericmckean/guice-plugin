@@ -40,6 +40,10 @@ public class IntellijGuicePlugin extends GuicePlugin {
       GuiceToolsModule toolsModule) {
     super(module, toolsModule);
   }
+
+  public IntellijGuicePlugin() {
+    this(new IntellijPluginModule(), new IntellijPluginModule.IntellijGuiceToolsModule());
+  }
   
   public static class ResultsViewImpl implements ResultsView {
     public void displayResults(Results results) {
