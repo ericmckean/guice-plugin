@@ -20,6 +20,7 @@ import com.google.inject.Inject;
 import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProblemsHandler;
+import com.google.inject.tools.suite.Settings;
 import com.google.inject.tools.suite.code.CodeRunnerFactory;
 import com.google.inject.tools.suite.code.CodeRunner;
 import com.google.inject.tools.suite.module.ModuleContextRepresentation;
@@ -55,14 +56,14 @@ class ModuleManagerImpl implements ModuleManager,
    */
   @Inject
   public ModuleManagerImpl(ProblemsHandler problemsHandler, Messenger messenger,
-      JavaManager javaManager, CodeRunnerFactory codeRunnerFactory) {
+      JavaManager javaManager, CodeRunnerFactory codeRunnerFactory, Settings settings) {
     this(problemsHandler, messenger, javaManager,
-        codeRunnerFactory, true, true, true);
+        codeRunnerFactory, true, settings);
   }
   
   public ModuleManagerImpl(ProblemsHandler problemsHandler, Messenger messenger,
       JavaManager javaManager, CodeRunnerFactory codeRunnerFactory,
-      boolean waitOnInit, boolean runAutomatically, boolean activateByDefault) {
+      boolean waitOnInit, Settings settings) {
     this.problemsHandler = problemsHandler;
     this.codeRunnerFactory = codeRunnerFactory;
     this.messenger = messenger;
@@ -70,8 +71,8 @@ class ModuleManagerImpl implements ModuleManager,
     moduleContexts = new HashSet<ModuleContextRepresentationImpl>();
     activeModuleContexts = new HashSet<ModuleContextRepresentationImpl>();
     this.javaManager = javaManager;
-    this.runAutomatically = runAutomatically;
-    this.activateByDefault = activateByDefault;
+    this.runAutomatically = settings.runAutomatically();
+    this.activateByDefault = settings.activateByDefault();
   }
 
   public synchronized void addModule(ModuleRepresentation module,

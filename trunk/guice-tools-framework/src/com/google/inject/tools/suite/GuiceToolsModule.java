@@ -45,6 +45,7 @@ public abstract class GuiceToolsModule extends AbstractModule {
     bindMessenger(bind(Messenger.class));
     bindJavaManager(bind(JavaManager.class));
     bindProgressHandler(bind(ProgressHandler.class));
+    bindSettings(bind(Settings.class));
   }
   
   protected CodeRunnerModule codeRunnerModule() {
@@ -73,5 +74,10 @@ public abstract class GuiceToolsModule extends AbstractModule {
   protected void bindProgressHandler(
       AnnotatedBindingBuilder<ProgressHandler> bindProgressHandler) {
     bindProgressHandler.to(BlockingProgressHandler.class);
+  }
+  
+  protected void bindSettings(
+      AnnotatedBindingBuilder<Settings> bindSettings) {
+    bindSettings.to(DefaultSettings.class);
   }
 }

@@ -14,18 +14,19 @@
  * the License.
  */
 
-package com.google.inject.tools.suite.module;
-
-import com.google.inject.Provider;
-import com.google.inject.tools.suite.JavaManager;
-import com.google.inject.tools.suite.Settings;
+package com.google.inject.tools.suite;
 
 /**
- * Factory for creating module managers by passing in java managers.
+ * The default settings.
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-public interface ModuleManagerFactory extends Provider<ModuleManager> {
-  public ModuleManager create(JavaManager javaManager, Settings settings);
-  public ModuleManager create(JavaManager javaManager);
+class DefaultSettings implements Settings {
+  public boolean activateByDefault() {
+    return true;
+  }
+  
+  public boolean runAutomatically() {
+    return true;
+  }
 }

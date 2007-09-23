@@ -21,6 +21,7 @@ import com.google.inject.Provider;
 import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.ProblemsHandler;
+import com.google.inject.tools.suite.Settings;
 import com.google.inject.tools.suite.code.CodeRunnerFactory;
 import com.google.inject.tools.suite.module.ModuleManager;
 import com.google.inject.tools.suite.module.ModuleManagerImpl;
@@ -39,6 +40,7 @@ class ModuleManagerFactoryImpl implements ModuleManagerFactory {
   private final Provider<Messenger> messengerProvider;
   private final Provider<CodeRunnerFactory> codeRunnerFactoryProvider;
   private final Provider<JavaManager> javaManagerProvider;
+  private final Provider<Settings> settingsProvider;
   private final Map<JavaManager, ModuleManager> moduleManagerInstances;
 
   @Inject
@@ -46,24 +48,38 @@ class ModuleManagerFactoryImpl implements ModuleManagerFactory {
       Provider<ProblemsHandler> problemsHandlerProvider,
       Provider<Messenger> messengerProvider,
       Provider<CodeRunnerFactory> codeRunnerFactoryProvider,
-      Provider<JavaManager> javaManagerProvider) {
+      Provider<JavaManager> javaManagerProvider,
+      Provider<Settings> settingsProvider) {
     this.problemsHandlerProvider = problemsHandlerProvider;
     this.messengerProvider = messengerProvider;
     this.codeRunnerFactoryProvider = codeRunnerFactoryProvider;
     this.javaManagerProvider = javaManagerProvider;
+    this.settingsProvider = settingsProvider;
     this.moduleManagerInstances = new HashMap<JavaManager, ModuleManager>();
   }
 
   /**
-   * Create a ModuleManager with the given JavaManager.
+   * Create a ModuleManager with the given JavaManager and Settings.
    */
-  public ModuleManager create(JavaManager javaManager,
-      boolean activateByDefault, boolean runAutomatically) {
+  public ModuleManager create(JavaManager javaManager, Settings settings) {
     if (moduleManagerInstances.get(javaManager) == null) {
       moduleManagerInstances.put(javaManager, new ModuleManagerImpl(
           problemsHandlerProvider.get(),
           messengerProvider.get(), javaManager, codeRunnerFactoryProvider
-          .get(), false, runAutomatically, activateByDefault));
+          .get(), false, settings));
+    }
+    return moduleManagerInstances.get(javaManager);
+  }
+  
+  /**
+   * Create a ModuleManager with the given JavaManager.
+   */
+  public ModuleManager create(JavaManager javaManager) {
+    if (moduleManagerInstances.get(javaManager) == null) {
+      moduleManagerInstances.put(javaManager, new ModuleManagerImpl(
+          problemsHandlerProvider.get(),
+          messengerProvider.get(), javaManager, codeRunnerFactoryProvider
+          .get(), false, settingsProvider.get()));
     }
     return moduleManagerInstances.get(javaManager);
   }
@@ -74,6 +90,6 @@ class ModuleManagerFactoryImpl implements ModuleManagerFactory {
   public ModuleManager get() {
     return new ModuleManagerImpl(problemsHandlerProvider.get(),
         messengerProvider.get(), javaManagerProvider.get(), codeRunnerFactoryProvider.get(),
-        true, false, true);
+        true, settingsProvider.get());
   }
 }
