@@ -1,0 +1,37 @@
+<!DOCTYPE idea-plugin PUBLIC "Plugin/DTD" "http://plugins.intellij.net/plugin.dtd">
+<idea-plugin>
+  <name>Guice Plugin</name>
+  <description>Guice navigation and tools</description>
+  <version>0.1.0</version>
+  <vendor>Google</vendor>
+  <idea-version since-build="3000"/>
+
+  <application-components>
+    <component>
+      <implementation-class>com.google.inject.tools.ideplugin.intellij.Plugin</implementation-class>
+      <interface-class>com.google.inject.tools.ideplugin.intellij.Plugin</interface-class>
+    </component>
+  </application-components>
+
+  <actions>
+    <action id="com.google.inject.tools.ideplugin.intellij.FindBindings" class="com.google.inject.tools.ideplugin.intellij.FindBindings" text="Find B_indings" description=""/>
+    <action id="com.google.inject.tools.ideplugin.intellij.RunContextsNow" class="com.google.inject.tools.ideplugin.intellij.RunContextsNow" text="R_un Contexts Now" description=""/>
+    <action id="com.google.inject.tools.ideplugin.intellij.Configure" class="com.google.inject.tools.ideplugin.intellij.Configure" text="C_onfigure..." description=""/>
+
+    <group id="com.google.inject.tools.ideplugin.intellij.Plugin.GuiceGroup" text="G_uice" description="Guice Actions">
+      <reference id="com.google.inject.tools.ideplugin.intellij.FindBindings"/>
+      <reference id="com.google.inject.tools.ideplugin.intellij.RunContextNow"/>
+      <reference id="com.google.inject.tools.ideplugin.intellij.Configure"/>
+      <add-to-group group-id="Search" anchor="last"/>
+      <add-to-group group-id="MainToolBar" anchor="before" relative-to-action="HelpTopics"/>
+    </group>
+
+    <group>
+      <reference id="com.google.inject.tools.ideplugin.intellij.FindBindings"/>
+      <reference id="com.google.inject.tools.ideplugin.intellij.RunContextNow"/>
+      <reference id="com.google.inject.tools.ideplugin.intellij.Configure"/>
+      <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="CutCopyPasteGroup"/>
+    </group>
+
+  </actions>
+</idea-plugin>
