@@ -193,7 +193,7 @@ public abstract class GuicePlugin {
    */
   public ModuleManager getModuleManager(JavaProject javaProject) {
     return getInstance(ModuleManagerFactory.class).create(javaProject,
-        javaProject.loadSettings().activateByDefault, javaProject.loadSettings().runAutomatically);
+        javaProject.loadSettings());
   }
 
   /**

@@ -19,12 +19,14 @@ package com.google.inject.tools.ideplugin;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.inject.tools.suite.Settings;
+
 /**
  * Represent the project wide settings for the plugin.
  * 
  * @author Darren Creutz (dcreutz@gmail.com)
  */
-public class ProjectSettings {
+public class IDEPluginSettings implements Settings {
   public static final String activateByDefaultName = "Activate Contexts By Default";
   public static final String listenForChangesName = "Listen for Changes";
   public static final String runAutomaticallyName = "Run Contexts Automatically";
@@ -40,20 +42,20 @@ public class ProjectSettings {
   /**
    * Should modules be treated as contexts by default.
    */
-  public boolean activateByDefault;
+  private boolean activateByDefault;
   /**
    * Should module contexts be (re)run automatically in response to changes.
    */
-  public boolean runAutomatically;
+  private boolean runAutomatically;
   /**
    * Should the plugin listen for changes to contexts.
    */
-  public boolean listenForChanges;
+  private boolean listenForChanges;
   
   /**
    * Create settings with default values.
    */
-  public ProjectSettings() {
+  public IDEPluginSettings() {
     activateByDefault = false;
     runAutomatically = false;
     listenForChanges = false;
@@ -62,7 +64,7 @@ public class ProjectSettings {
   /**
    * Create settings based on saved values.
    */
-  public ProjectSettings(String serialized) {
+  public IDEPluginSettings(String serialized) {
     List<Boolean> values = new ArrayList<Boolean>();
     parse(serialized, values);
     activateByDefault = values.get(0);
@@ -83,7 +85,7 @@ public class ProjectSettings {
   /**
    * Create settings from a visitor.
    */
-  public ProjectSettings(ProjectSettingsSaver saver) {
+  public IDEPluginSettings(ProjectSettingsSaver saver) {
     activateByDefault = saver.getBoolean(activateByDefaultName);
     listenForChanges = saver.getBoolean(listenForChangesName);
     runAutomatically = saver.getBoolean(runAutomaticallyName);
@@ -110,8 +112,8 @@ public class ProjectSettings {
   
   @Override
   public boolean equals(Object object) {
-    if (!(object instanceof ProjectSettings)) return false;
-    ProjectSettings settings = (ProjectSettings)object;
+    if (!(object instanceof IDEPluginSettings)) return false;
+    IDEPluginSettings settings = (IDEPluginSettings)object;
     return (settings.activateByDefault == activateByDefault)
     && (settings.listenForChanges == listenForChanges)
     && (settings.runAutomatically == runAutomatically);
@@ -121,5 +123,29 @@ public class ProjectSettings {
   public String toString() {
     return "ProjectSettings: activateByDefault="+activateByDefault+" listenForChanges="
       +listenForChanges+" runAutomatically="+runAutomatically;
+  }
+  
+  public boolean activateByDefault() {
+    return activateByDefault;
+  }
+  
+  public boolean runAutomatically() {
+    return runAutomatically;
+  }
+  
+  public boolean listenForChanges() {
+    return listenForChanges;
+  }
+  
+  public void setActivateByDefault(boolean activateByDefault) {
+    this.activateByDefault = activateByDefault;
+  }
+  
+  public void setRunAutomatically(boolean runAutomatically) {
+    this.runAutomatically = runAutomatically;
+  }
+  
+  public void setListenForChanges(boolean listenForChanges) {
+    this.listenForChanges = listenForChanges;
   }
 }

@@ -25,12 +25,12 @@ import junit.framework.TestCase;
  */
 public class ProjectSettingsTest extends TestCase {
   public void testSerializing() {
-    ProjectSettings settings = new ProjectSettings();
-    settings.activateByDefault = true;
-    settings.listenForChanges = false;
-    settings.runAutomatically = true;
+    IDEPluginSettings settings = new IDEPluginSettings();
+    settings.setActivateByDefault(true);
+    settings.setListenForChanges(false);
+    settings.setRunAutomatically(true);
     String serialized = settings.serialize();
-    ProjectSettings settings2 = new ProjectSettings(serialized);
+    IDEPluginSettings settings2 = new IDEPluginSettings(serialized);
     assertTrue(settings.equals(settings2));
   }
 }

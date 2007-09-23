@@ -254,17 +254,17 @@ class ProjectManagerImpl implements ProjectManager, SourceListener, ProjectSourc
   }
   
   public void projectOpened(JavaProject javaProject) {
-    ProjectSettings settings = javaProject.loadSettings();
+    IDEPluginSettings settings = javaProject.loadSettings();
     initializeProject(javaProject, true);
-    moduleManagers.get(javaProject).setActivateModulesByDefault(settings.activateByDefault);
-    moduleManagers.get(javaProject).setRunAutomatically(settings.runAutomatically);
-    listenForChanges(settings.listenForChanges);
+    moduleManagers.get(javaProject).setActivateModulesByDefault(settings.activateByDefault());
+    moduleManagers.get(javaProject).setRunAutomatically(settings.runAutomatically());
+    listenForChanges(settings.listenForChanges());
   }
   
   public void projectClosed(JavaProject javaManager) {
-    ProjectSettings settings = new ProjectSettings();
-    settings.activateByDefault = moduleManagers.get(javaManager).activateModulesByDefault();
-    settings.runAutomatically = moduleManagers.get(javaManager).runAutomatically();
+    IDEPluginSettings settings = new IDEPluginSettings();
+    settings.setActivateByDefault(moduleManagers.get(javaManager).activateModulesByDefault());
+    settings.setRunAutomatically(moduleManagers.get(javaManager).runAutomatically());
     javaManager.saveSettings(settings);
     moduleManagers.remove(javaManager);
   }
@@ -286,9 +286,9 @@ class ProjectManagerImpl implements ProjectManager, SourceListener, ProjectSourc
   private ModuleManager createModuleManager(JavaProject javaManager) {
     currentProject = javaManager;
     if (moduleManagers.get(javaManager) == null) {
-      listenForChanges(javaManager.loadSettings().listenForChanges);
+      listenForChanges(javaManager.loadSettings().listenForChanges());
       ModuleManager moduleManager = moduleManagerFactory.create(javaManager,
-          javaManager.loadSettings().activateByDefault, javaManager.loadSettings().runAutomatically);
+          javaManager.loadSettings());
       moduleManagers.put(javaManager, moduleManager);
     }
     return moduleManagers.get(javaManager);
@@ -422,13 +422,13 @@ class ProjectManagerImpl implements ProjectManager, SourceListener, ProjectSourc
     }
   }
   
-  public void settingsChanged(JavaProject project, ProjectSettings settings) {
+  public void settingsChanged(JavaProject project, IDEPluginSettings settings) {
     if (project == null) {
       for (ModuleManager moduleManager : moduleManagers.values()) {
-        moduleManager.setActivateModulesByDefault(settings.activateByDefault);
-        moduleManager.setRunAutomatically(settings.runAutomatically);
+        moduleManager.setActivateModulesByDefault(settings.activateByDefault());
+        moduleManager.setRunAutomatically(settings.runAutomatically());
       }
     }
-    listenForChanges(settings.listenForChanges);
+    listenForChanges(settings.listenForChanges());
   }
 }
