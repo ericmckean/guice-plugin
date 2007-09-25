@@ -41,20 +41,12 @@ import org.eclipse.ui.PlatformUI;
  */
 public abstract class EclipseMenuAction extends Action 
     implements IWorkbenchWindowActionDelegate {
-  private static ImageDescriptor image;
-  static {
-    try {
-      image = makeImage("sample.gif");
-    } catch (MalformedURLException e) {
-      image = null;
-    }
-  }
   
   protected GuicePlugin guicePlugin;
   protected IWorkbenchWindow window;
   
   public EclipseMenuAction(String name) {
-    this(name, image);
+    this(name, (ImageDescriptor)null);
   }
   
   public EclipseMenuAction(String name, String imagefile) {
@@ -75,14 +67,14 @@ public abstract class EclipseMenuAction extends Action
     try {
       return makeImage(imagefile);
     } catch (MalformedURLException e) {
-      return image;
+      return null;
     }
   }
   
   private static ImageDescriptor makeImage(String imagefile) 
       throws MalformedURLException {
-    return ImageDescriptor.createFromURL(
-        new URL(Activator.getDefault().getBundle().getEntry("."), "icons/" + imagefile));
+    URL url = new URL(Activator.getDefault().getBundle().getEntry("."), "icons/" + imagefile);
+    return ImageDescriptor.createFromURL(url);
   }
   
   public void dispose() {
