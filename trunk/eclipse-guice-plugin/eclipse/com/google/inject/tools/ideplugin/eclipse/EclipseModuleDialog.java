@@ -64,7 +64,8 @@ class EclipseModuleDialog extends FormDialog {
   private FormToolkit toolkit;
   private final Shell shell;
   private final PreferenceDialogArea preferencesPage;
-  private final Map<String, Button> checkboxes;
+  private final Map<String, Button> usercheckboxes;
+  private final Map<String, Button> autocheckboxes;
 
   public EclipseModuleDialog(Shell parent, Messenger messenger, ProjectManager projectManager, ModuleManager moduleManager) {
     super(parent);
@@ -75,7 +76,8 @@ class EclipseModuleDialog extends FormDialog {
     moduleContexts = moduleManager.getModuleContexts();
     activeModuleContexts = moduleManager.getActiveModuleContexts();
     preferencesPage = new PreferenceDialogArea();
-    checkboxes = new HashMap<String, Button>();
+    usercheckboxes = new HashMap<String, Button>();
+    autocheckboxes = new HashMap<String, Button>();
   }
 
   public static boolean display(Shell parent, Messenger messenger, ProjectManager projectManager, ModuleManager moduleManager) {
@@ -106,6 +108,44 @@ class EclipseModuleDialog extends FormDialog {
     scrolledForm.reflow(true);
   }
   
+  static class ScanForNewContexts implements IHyperlinkListener {
+    private final ProjectManager projectManager;
+    private final ModuleManager moduleManager;
+    private final Shell shell;
+    private final Messenger messenger;
+    private final EclipseModuleDialog dialog;
+    
+    public ScanForNewContexts(ProjectManager projectManager,
+        ModuleManager moduleManager, Shell shell,
+        Messenger messenger, EclipseModuleDialog dialog) {
+      this.projectManager = projectManager;
+      this.moduleManager = moduleManager;
+      this.shell = shell;
+      this.messenger = messenger;
+      this.dialog = dialog;
+    }
+    
+    public void linkActivated(HyperlinkEvent e) {
+      dialog.cancelPressed();
+      projectManager.findNewContexts(projectManager.getJavaManager(moduleManager),
+          new ModuleManager.PostUpdater() {
+        public void execute(boolean success) {
+          Display.getDefault().asyncExec(new Runnable() {
+            public void run() {
+              EclipseModuleDialog.display(shell, messenger, projectManager, moduleManager);
+            }
+          });
+        }
+      }, false);
+    }
+    
+    public void linkEntered(HyperlinkEvent e) {
+    }
+    
+    public void linkExited(HyperlinkEvent e) {
+    }
+  }
+  
   private void createScanContent(Composite parent) {
     Section section =
       toolkit.createSection(parent, Section.EXPANDED | Section.TITLE_BAR);
@@ -120,27 +160,8 @@ class EclipseModuleDialog extends FormDialog {
     layout.numColumns = 1;
     body.setLayout(layout);
     
-    makeHyperlink(body, "Scan for new contexts", new IHyperlinkListener() {
-      public void linkActivated(HyperlinkEvent e) {
-        EclipseModuleDialog.this.close();
-        projectManager.findNewContexts(projectManager.getJavaManager(moduleManager),
-            new ModuleManager.PostUpdater() {
-          public void execute(boolean success) {
-            Display.getDefault().asyncExec(new Runnable() {
-              public void run() {
-                EclipseModuleDialog.display(shell, messenger, projectManager, moduleManager);
-              }
-            });
-          }
-        }, false);
-      }
-      
-      public void linkEntered(HyperlinkEvent e) {
-      }
-      
-      public void linkExited(HyperlinkEvent e) {
-      }
-    });
+    makeHyperlink(body, "Scan for new contexts",
+        new ScanForNewContexts(projectManager, moduleManager, shell, messenger, this));
     
     body.pack();
     insideScrolledForm.pack();
@@ -278,7 +299,7 @@ class EclipseModuleDialog extends FormDialog {
         Button checkbox =
             makeCheckbox(body, activeModuleContexts.contains(moduleContext),
                 moduleContext.getShortName(), tooltip);
-        checkboxes.put(moduleContext.getName(), checkbox);
+        usercheckboxes.put(moduleContext.getName(), checkbox);
       }
     }
     body.pack();
@@ -301,7 +322,7 @@ class EclipseModuleDialog extends FormDialog {
     GridLayout layout = new GridLayout();
     layout.numColumns = 1;
     body.setLayout(layout);
-
+    
     boolean hasAutoModuleContexts = false;
     for (ModuleContextRepresentation moduleContext : moduleContexts) {
       if (!(moduleContext instanceof CustomModuleContextRepresentation ||
@@ -315,7 +336,7 @@ class EclipseModuleDialog extends FormDialog {
     } else {
       makeHyperlink(body, "Activate all", new IHyperlinkListener() {
         public void linkActivated(HyperlinkEvent e) {
-          for (Button checkbox : checkboxes.values()) {
+          for (Button checkbox : autocheckboxes.values()) {
             checkbox.setSelection(true);
           }
         }
@@ -328,7 +349,7 @@ class EclipseModuleDialog extends FormDialog {
       });
       makeHyperlink(body, "Deactivate all", new IHyperlinkListener() {
         public void linkActivated(HyperlinkEvent e) {
-          for (Button checkbox : checkboxes.values()) {
+          for (Button checkbox : autocheckboxes.values()) {
             checkbox.setSelection(false);
           }
         }
@@ -341,7 +362,8 @@ class EclipseModuleDialog extends FormDialog {
       });
 
       for (ModuleContextRepresentation moduleContext : moduleContexts) {
-        if (!(moduleContext instanceof CustomModuleContextRepresentation)) {
+        if (!(moduleContext instanceof CustomModuleContextRepresentation ||
+            moduleContext instanceof ApplicationModuleContextRepresentation)) {
           StringBuilder text = new StringBuilder();
           text.append("Guice.createInjector(");
           int count = 0;
@@ -356,7 +378,7 @@ class EclipseModuleDialog extends FormDialog {
           Button checkbox =
               makeCheckbox(body, activeModuleContexts.contains(moduleContext),
                   ClassNameUtility.shorten(moduleContext.getName()), text.toString());
-          checkboxes.put(moduleContext.getName(), checkbox);
+          autocheckboxes.put(moduleContext.getName(), checkbox);
         }
       }
     }
@@ -387,6 +409,9 @@ class EclipseModuleDialog extends FormDialog {
   protected void okPressed() {
     try {
       preferencesPage.saveSettings();
+      Map<String, Button> checkboxes = new HashMap<String, Button>();
+      checkboxes.putAll(autocheckboxes);
+      checkboxes.putAll(usercheckboxes);
       if (checkboxes.size() > 0) {
         for (String context : checkboxes.keySet()) {
           if (checkboxes.get(context).getSelection()) {
