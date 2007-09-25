@@ -399,16 +399,12 @@ class ModuleManagerImpl implements ModuleManager,
 
   public synchronized void activateModuleContext(
       ModuleContextRepresentationImpl moduleContext) {
-    if (javaManager != null) {
-      activeModuleContexts.add(moduleContext);
-    }
+    activeModuleContexts.add(moduleContext);
   }
 
   public synchronized void deactivateModuleContext(
       ModuleContextRepresentation moduleContext) {
-    if (javaManager != null) {
-      activeModuleContexts.remove(moduleContext);
-    }
+    activeModuleContexts.remove(moduleContext);
   }
 
   public void addCustomContext(String contextName) {
