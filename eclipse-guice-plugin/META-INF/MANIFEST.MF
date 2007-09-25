@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Guice Plugin
 Bundle-SymbolicName: GuicePlugin;singleton:=true
-Bundle-Version: 0.3.3
+Bundle-Version: 0.3.4
 Bundle-Activator: com.google.inject.tools.ideplugin.eclipse.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -24,5 +24,5 @@ Bundle-ClassPath: bin/,
  lib/Guice/cglib-2.2_beta1.jar,
  lib/Guice/guice-r364.jar,
  lib/GuicePlugin_0.3.3.jar,
- lib/GuiceToolsFramework_0.3.3.jar,
- .
+ .,
+ lib/GuiceToolsFramework_0.3.4.jar

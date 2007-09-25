@@ -185,14 +185,14 @@ class EclipseJavaProject extends JavaProject {
   }
 
   public String getSnippetsClasspath() throws Exception {
-    return getJarClasspath("lib/GuiceToolsFramework_0.3.3.jar");
+    return getJarClasspath(Libraries.GUICETOOLSFRAMEWORK);
   }
   
   public String getGuiceClasspath() throws Exception {
-    String guiceJar = getJarClasspath("lib/Guice/guice-r364.jar");
-    String aoPath = getJarClasspath("lib/Guice/aopalliance.jar");
-    String asmPath = getJarClasspath("lib/Guice/asm-2.2.3.jar");
-    String cglibPath = getJarClasspath("lib/Guice/cglib-2.2_beta1.jar");
+    String guiceJar = getJarClasspath(Libraries.GUICE);
+    String aoPath = getJarClasspath(Libraries.AOPAlliance);
+    String asmPath = getJarClasspath(Libraries.ASM);
+    String cglibPath = getJarClasspath(Libraries.CGLIB);
     return guiceJar + getClasspathDelimiter() + aoPath + getClasspathDelimiter()
         + asmPath + getClasspathDelimiter() + cglibPath;
   }
