@@ -16,11 +16,11 @@
 
 package com.google.inject.tools.ideplugin.eclipse;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import com.google.inject.tools.ideplugin.GuicePlugin;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IStatusLineManager;
@@ -33,6 +33,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
+import org.osgi.framework.Bundle;
 
 /**
  * General implementation of an action for the Eclipse menu bar.
@@ -64,17 +65,17 @@ public abstract class EclipseMenuAction extends Action
   }
   
   protected static ImageDescriptor getImage(String imagefile) {
-    try {
-      return makeImage(imagefile);
-    } catch (MalformedURLException e) {
-      return null;
-    }
+    return makeImage(imagefile);
   }
   
-  private static ImageDescriptor makeImage(String imagefile) 
-      throws MalformedURLException {
-    URL url = new URL(Activator.getDefault().getBundle().getEntry("."), "icons/" + imagefile);
-    return ImageDescriptor.createFromURL(url);
+  private static URL getIconURL(String imagefile) {
+    Bundle bundle = Platform.getBundle("GuicePlugin");
+    URL url = bundle.getEntry("icons/" + imagefile);
+    return url;
+  }
+  
+  private static ImageDescriptor makeImage(String imagefile) {
+    return ImageDescriptor.createFromURL(getIconURL(imagefile));
   }
   
   public void dispose() {
