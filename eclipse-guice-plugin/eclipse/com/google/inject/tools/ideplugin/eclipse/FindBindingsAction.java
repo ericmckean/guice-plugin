@@ -25,7 +25,7 @@ import org.eclipse.ui.IEditorPart;
  */
 public class FindBindingsAction extends EclipseMenuAction {
   public FindBindingsAction() {
-    super("Find Bindings", "findbindings.gif");
+    super(PluginTextValues.FIND_BINDINGS, PluginDefinitionValues.FIND_BINDINGS_ICON);
   }
   
   @Override
@@ -37,18 +37,18 @@ public class FindBindingsAction extends EclipseMenuAction {
          new EclipseJavaProject(resolver.getJavaElement().getJavaProject()));
       return true;
     } else {
-      guicePlugin.getMessenger().display("Find Bindings not available in this context");
+      guicePlugin.getMessenger().display(PluginTextValues.FIND_BINDINGS_NOT_AVAILABLE);
     }
     return false;
   }
   
   @Override
   protected String myTooltip() {
-    return "Find Bindings";
+    return PluginTextValues.FIND_BINDINGS;
   }
 
   @Override
   protected String myStatusFailedMessage() {
-    return "Guice: Cannot resolve Java Element.";
+    return PluginTextValues.CANNOT_RESOLVE_JAVA_ELEMENT;
   }
 }

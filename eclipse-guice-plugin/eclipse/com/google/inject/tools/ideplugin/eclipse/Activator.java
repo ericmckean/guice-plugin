@@ -33,7 +33,7 @@ import org.osgi.framework.BundleContext;
  */
 public class Activator extends AbstractUIPlugin {
   private static EclipseGuicePlugin guicePlugin;
-  public static final String PLUGIN_ID = "Guice_Plugin";
+  public static final String PLUGIN_ID = PluginDefinitionValues.BUNDLE_ID;
   private static Activator plugin;
   private static EclipsePluginModule module;
   private static GuiceToolsModule toolsModule;

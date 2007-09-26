@@ -84,7 +84,7 @@ class EclipseModuleDialog extends FormDialog {
     EclipseModuleDialog dialog = new EclipseModuleDialog(parent, messenger, projectManager, moduleManager);
     dialog.create();
     dialog.getShell().setBounds(200, 200, 500, 400);
-    dialog.getShell().setText("Guice Context Configuration");
+    dialog.getShell().setText(PluginTextValues.GUICE_CONTEXT_CONFIGURATION);
     dialog.setBlockOnOpen(true);
     dialog.open();
     return dialog.getReturnCode() == Window.OK;
@@ -97,7 +97,7 @@ class EclipseModuleDialog extends FormDialog {
     Composite parent = scrolledForm.getBody();
     parent.setLayout(new GridLayout());
     if (moduleContexts == null) {
-      toolkit.createLabel(parent, "No project selected.");
+      toolkit.createLabel(parent, PluginTextValues.NO_PROJECT);
     } else {
       createScanContent(scrolledForm.getBody());
       createUserContexts(scrolledForm.getBody());
@@ -149,7 +149,7 @@ class EclipseModuleDialog extends FormDialog {
   private void createScanContent(Composite parent) {
     Section section =
       toolkit.createSection(parent, Section.EXPANDED | Section.TITLE_BAR);
-    section.setText("Find New Contexts");
+    section.setText(PluginTextValues.FIND_NEW_CONTEXTS);
     
     ScrolledForm insideScrolledForm = toolkit.createScrolledForm(section);
     insideScrolledForm.setExpandHorizontal(true);
@@ -160,7 +160,7 @@ class EclipseModuleDialog extends FormDialog {
     layout.numColumns = 1;
     body.setLayout(layout);
     
-    makeHyperlink(body, "Scan for new contexts",
+    makeHyperlink(body, PluginTextValues.SCAN_FOR_CONTEXTS,
         new ScanForNewContexts(projectManager, moduleManager, shell, messenger, this));
     
     body.pack();
@@ -173,7 +173,7 @@ class EclipseModuleDialog extends FormDialog {
   private void createOptionsContent(Composite parent) {
     Section section =
       toolkit.createSection(parent, Section.EXPANDED | Section.TITLE_BAR);
-    section.setText("Global Options");
+    section.setText(PluginTextValues.GLOBAL_OPTIONS);
     
     ScrolledForm insideScrolledForm = toolkit.createScrolledForm(section);
     insideScrolledForm.setExpandHorizontal(true);
@@ -215,7 +215,7 @@ class EclipseModuleDialog extends FormDialog {
       GridLayout layout = new GridLayout();
       layout.numColumns = 2;
       body.setLayout(layout);
-      toolkit.createLabel(body, "Context Name");
+      toolkit.createLabel(body, PluginTextValues.CONTEXT_NAME);
       titleText = toolkit.createText(body, "", SWT.BORDER);
       titleText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true, 1,
           1));
@@ -224,7 +224,7 @@ class EclipseModuleDialog extends FormDialog {
           titleTextValue = titleText.getText();
         }
       });
-      toolkit.createLabel(body, "Fully Qualified Class Name");
+      toolkit.createLabel(body, PluginTextValues.FULLY_QUALIFIED_CLASS_NAME);
       classNameText = toolkit.createText(body, "", SWT.BORDER);
       classNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
           true, 1, 1));
@@ -233,7 +233,7 @@ class EclipseModuleDialog extends FormDialog {
           classNameTextValue = classNameText.getText();
         }
       });
-      toolkit.createLabel(body, "Method Name");
+      toolkit.createLabel(body, PluginTextValues.METHOD_NAME);
       methodNameText = toolkit.createText(body, "", SWT.BORDER);
       methodNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
           true, 1, 1));
@@ -255,7 +255,7 @@ class EclipseModuleDialog extends FormDialog {
       NewContextDialog dialog = new NewContextDialog(parent, moduleManager);
       dialog.create();
       dialog.getShell().setBounds(200, 200, 500, 200);
-      dialog.getShell().setText("Create a Guice Context");
+      dialog.getShell().setText(PluginTextValues.CREATE_CONTEXT);
       dialog.setBlockOnOpen(true);
       dialog.open();
       if (dialog.getReturnCode() == Window.OK) {
@@ -268,7 +268,7 @@ class EclipseModuleDialog extends FormDialog {
   private void createUserContexts(Composite parent) {
     Section section =
         toolkit.createSection(parent, Section.EXPANDED | Section.TITLE_BAR);
-    section.setText("Your Module Contexts");
+    section.setText(PluginTextValues.YOUR_CONTEXTS);
 
     ScrolledForm insideScrolledForm = toolkit.createScrolledForm(section);
     insideScrolledForm.setExpandHorizontal(true);
@@ -279,7 +279,7 @@ class EclipseModuleDialog extends FormDialog {
     layout.numColumns = 1;
     body.setLayout(layout);
 
-    makeHyperlink(body, "Create new context", new IHyperlinkListener() {
+    makeHyperlink(body, PluginTextValues.CREATE_NEW_CONTEXT, new IHyperlinkListener() {
       public void linkActivated(HyperlinkEvent e) {
         EclipseModuleDialog.this.close();
         NewContextDialog.display(shell, messenger, projectManager, moduleManager);
@@ -312,7 +312,7 @@ class EclipseModuleDialog extends FormDialog {
   private void createPremadeContexts(Composite parent) {
     Section section =
         toolkit.createSection(parent, Section.EXPANDED | Section.TITLE_BAR);
-    section.setText("Autogenerated Module Contexts");
+    section.setText(PluginTextValues.AUTOGENERATED_CONTEXTS);
 
     ScrolledForm insideScrolledForm = toolkit.createScrolledForm(section);
     insideScrolledForm.setExpandHorizontal(true);
@@ -332,9 +332,9 @@ class EclipseModuleDialog extends FormDialog {
       }
     }
     if (!hasAutoModuleContexts) {
-      makeText(body, SWT.NONE, "No Module Contexts Available");
+      makeText(body, SWT.NONE, PluginTextValues.NO_CONTEXTS_AVAILABLE);
     } else {
-      makeHyperlink(body, "Activate all", new IHyperlinkListener() {
+      makeHyperlink(body, PluginTextValues.ACTIVATE_ALL, new IHyperlinkListener() {
         public void linkActivated(HyperlinkEvent e) {
           for (Button checkbox : autocheckboxes.values()) {
             checkbox.setSelection(true);
@@ -347,7 +347,7 @@ class EclipseModuleDialog extends FormDialog {
         public void linkExited(HyperlinkEvent e) {
         }
       });
-      makeHyperlink(body, "Deactivate all", new IHyperlinkListener() {
+      makeHyperlink(body, PluginTextValues.DEACTIVATE_ALL, new IHyperlinkListener() {
         public void linkActivated(HyperlinkEvent e) {
           for (Button checkbox : autocheckboxes.values()) {
             checkbox.setSelection(false);

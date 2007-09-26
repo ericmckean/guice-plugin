@@ -109,18 +109,18 @@ public class PreferencesPage extends PreferencePage implements IWorkbenchPrefere
     private void storeValues() {
       IPreferenceStore store = getPreferenceStore();
       IDEPluginSettings settings = new IDEPluginSettings(new ValuesSaver());
-      store.setValue("com.google.inject.tools.ideplugin.eclipse.preferences", settings.serialize());
+      store.setValue(PluginDefinitionValues.PREFERENCES_ID, settings.serialize());
       Activator.getGuicePlugin().getProjectManager().settingsChanged(null, settings);
     }
     
     private void initializeDefaults() {
       IPreferenceStore store = getPreferenceStore();
-      setValues(store.getDefaultString("com.google.inject.tools.ideplugin.eclipse.preferences"));
+      setValues(store.getDefaultString(PluginDefinitionValues.PREFERENCES_ID));
     }
     
     private void initializeValues() {
       IPreferenceStore store = getPreferenceStore();
-      setValues(store.getString("com.google.inject.tools.ideplugin.eclipse.preferences"));
+      setValues(store.getString(PluginDefinitionValues.PREFERENCES_ID));
     }
     
     private IPreferenceStore getPreferenceStore() {
@@ -171,7 +171,7 @@ public class PreferencesPage extends PreferencePage implements IWorkbenchPrefere
   @Override
   protected Control createContents(Composite parent) {
     Composite composite = createComposite(parent, 1);
-    createLabel(composite, "Guice Plugin Global Options");
+    createLabel(composite, PluginTextValues.GUICE_PLUGIN_NAME + " " + PluginTextValues.GLOBAL_OPTIONS);
     dialogArea.buildComposite(composite);
     return new Composite(parent, SWT.NULL);
   }

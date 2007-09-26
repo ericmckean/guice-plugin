@@ -30,7 +30,7 @@ public class PreferencesInitializer extends AbstractPreferenceInitializer {
   @Override
   public void initializeDefaultPreferences() {
       IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-      store.setDefault("com.google.inject.tools.ideplugin.eclipse.preferences",
+      store.setDefault(PluginDefinitionValues.PREFERENCES_ID,
           new IDEPluginSettings().serialize());
   }
 }

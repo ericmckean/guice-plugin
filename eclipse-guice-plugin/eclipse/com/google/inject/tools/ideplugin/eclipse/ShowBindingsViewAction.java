@@ -27,17 +27,17 @@ import org.eclipse.ui.PlatformUI;
  */
 public class ShowBindingsViewAction extends EclipseMenuAction {
   public ShowBindingsViewAction() {
-    super("Show Guice Bindings View", "guice.gif");
+    super(PluginTextValues.SHOW_GUICE_RESULTS, PluginDefinitionValues.GUICE_ICON);
   }
   
   @Override
   protected String myTooltip() {
-    return "Show Guice Bindings View";
+    return PluginTextValues.SHOW_GUICE_RESULTS;
   }
   
   @Override
   protected String myStatusFailedMessage() {
-    return "Could not open Guice Bindings View";
+    return PluginTextValues.CANT_OPEN_RESULTS;
   }
   
   @Override
@@ -45,8 +45,7 @@ public class ShowBindingsViewAction extends EclipseMenuAction {
     try {
       IWorkbenchPage activePage = PlatformUI.getWorkbench()
           .getWorkbenchWindows()[0].getActivePage();
-      activePage.showView(
-            "com.google.inject.tools.ideplugin.eclipse.EclipseResultsView");
+      activePage.showView(PluginDefinitionValues.RESULTS_VIEW_ID);
       return true;
     } catch (Exception e) {
       e.printStackTrace();

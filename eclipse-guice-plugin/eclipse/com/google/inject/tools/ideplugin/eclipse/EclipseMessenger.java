@@ -64,14 +64,13 @@ class EclipseMessenger implements Messenger {
         IWorkbenchPage activePage = PlatformUI.getWorkbench()
             .getWorkbenchWindows()[0].getActivePage();
         IViewPart viewPart = activePage.showView(
-            "com.google.inject.tools.ideplugin.eclipse.EclipseErrorView",
+            PluginDefinitionValues.ERRORS_VIEW_ID,
             null, IWorkbenchPage.VIEW_CREATE);
         ((EclipseErrorView) viewPart).displayError(message);
       } catch (java.lang.IllegalStateException e) {
         // means we are running in testing mode
       } catch (Exception e) {
-        System.out.println("Problem displaying error messages..... "
-            + e.toString());
+        // means something very bad happened
       }
     }
   }
@@ -82,9 +81,7 @@ class EclipseMessenger implements Messenger {
     } catch (java.lang.UnsatisfiedLinkError error) {
       // means we are running in testing mode
     } catch (Throwable t) {
-      System.out.println("Problem displaying dialog messages..... "
-          + t.toString());
-      System.out.println("  meant to diplay: " + message);
+      // means something very bad happened
     }
   }
 
@@ -94,9 +91,7 @@ class EclipseMessenger implements Messenger {
     } catch (java.lang.UnsatisfiedLinkError error) {
       // means we are running in testing mode
     } catch (Throwable t) {
-      System.out.println("Problem displaying error messages..... "
-          + t.toString());
-      System.out.println("  meant to diplay: " + message);
+      // means something very bad happened
     }
   }
 

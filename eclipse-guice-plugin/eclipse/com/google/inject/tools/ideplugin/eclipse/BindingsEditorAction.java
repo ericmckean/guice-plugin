@@ -55,10 +55,10 @@ public class BindingsEditorAction implements IEditorActionDelegate {
     } else {
       IStatusLineManager statusManager = editor.getEditorSite().getActionBars().getStatusLineManager();
       if (resolver.getSelection() != null) {
-        statusManager.setMessage(
-            "Selection is not a Java element: " + resolver.getSelection());
+        statusManager.setMessage(PluginTextValues.GUICE_PLUGIN_NAME + ": " +
+            PluginTextValues.SELECTION_NOT_JAVA_ELEMENT + " (" + resolver.getSelection() + ")");
       } else {
-        statusManager.setMessage("Selection is not a Java element.");
+        statusManager.setMessage(PluginTextValues.GUICE_PLUGIN_NAME + ": " + PluginTextValues.SELECTION_NOT_JAVA_ELEMENT);
       }
     }
   }
