@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="GuicePlugin"
+      id="com.google.inject.tools.ideplugin.eclipse.guiceplugin"
       label="Guice Plugin"
-      version="0.3.7"
+      version="0.3.8"
       provider-name="Google">
 
    <description>
@@ -225,7 +225,7 @@
          id="com.google.inject.tools.ideplugin.eclipse.guiceplugin"
          download-size="0"
          install-size="0"
-         version="0.3.7"
+         version="0.3.8"
          unpack="false"/>
 
 </feature>
