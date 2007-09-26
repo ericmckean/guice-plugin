@@ -49,8 +49,7 @@ public class EclipseGuicePlugin extends GuicePlugin {
       try {
         IWorkbenchPage activePage = PlatformUI.getWorkbench()
             .getWorkbenchWindows()[0].getActivePage();
-        IViewPart viewPart = activePage.showView(
-            "com.google.inject.tools.ideplugin.eclipse.EclipseResultsView");
+        IViewPart viewPart = activePage.showView(PluginDefinitionValues.RESULTS_VIEW_ID);
         ((EclipseResultsView) viewPart).displayResults(results);
       } catch (Throwable e) {
         messenger.logException("Error loading ResultsView", e);

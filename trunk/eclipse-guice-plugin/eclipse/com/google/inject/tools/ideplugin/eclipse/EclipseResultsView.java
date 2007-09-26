@@ -77,7 +77,7 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
     managedForm.getForm().setExpandHorizontal(true);
     managedForm.getForm().setExpandVertical(true);
     managedForm.getForm().getBody().setLayout(new FillLayout());
-    managedForm.getForm().setText("Guice Results");
+    managedForm.getForm().setText(PluginTextValues.GUICE_RESULTS);
     managedForm.getForm().pack();
     managedForm.getForm().reflow(true);
   }
@@ -180,7 +180,7 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
     this.useResults(results);
     try {
       this.getViewSite().getWorkbenchWindow().getActivePage().showView(
-          "com.google.inject.tools.ideplugin.eclipse.EclipseResultsView");
+          PluginDefinitionValues.RESULTS_VIEW_ID);
     } catch (Exception e) {
       messenger.logException("Error with results view", e);
     }

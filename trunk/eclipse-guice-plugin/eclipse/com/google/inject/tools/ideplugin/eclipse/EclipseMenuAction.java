@@ -69,8 +69,8 @@ public abstract class EclipseMenuAction extends Action
   }
   
   private static URL getIconURL(String imagefile) {
-    Bundle bundle = Platform.getBundle("GuicePlugin");
-    URL url = bundle.getEntry("icons/" + imagefile);
+    Bundle bundle = Platform.getBundle(PluginDefinitionValues.BUNDLE_ID);
+    URL url = bundle.getEntry(imagefile);
     return url;
   }
   
@@ -103,13 +103,13 @@ public abstract class EclipseMenuAction extends Action
   }
   
   protected void displayEditorFailed(IWorkbenchPart part) {
-    displayError(part, "Guice: cannot resolve editor.");
+    displayError(part, PluginTextValues.CANNOT_RESOLVE_EDITOR);
   }
   
   protected void displayError(IWorkbenchPart part, String message) {
     if (part instanceof IViewPart) {
       IStatusLineManager statusManager = ((IViewPart)part).getViewSite().getActionBars().getStatusLineManager();
-      statusManager.setMessage(message);
+      statusManager.setMessage(PluginTextValues.GUICE_PLUGIN_NAME + ": " + message);
     } else {
       guicePlugin.getMessenger().display(message);
     }

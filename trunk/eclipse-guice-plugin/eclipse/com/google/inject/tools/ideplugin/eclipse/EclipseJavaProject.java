@@ -185,20 +185,20 @@ class EclipseJavaProject extends JavaProject {
   }
 
   public String getSnippetsClasspath() throws Exception {
-    return getJarClasspath(Libraries.GUICETOOLSFRAMEWORK);
+    return getJarClasspath(PluginDefinitionValues.GUICE_TOOLS_FRAMEWORK_JAR);
   }
   
   public String getGuiceClasspath() throws Exception {
-    String guiceJar = getJarClasspath(Libraries.GUICE);
-    String aoPath = getJarClasspath(Libraries.AOPAlliance);
-    String asmPath = getJarClasspath(Libraries.ASM);
-    String cglibPath = getJarClasspath(Libraries.CGLIB);
+    String guiceJar = getJarClasspath(PluginDefinitionValues.GUICE_JAR);
+    String aoPath = getJarClasspath(PluginDefinitionValues.AOPALLIANCE_JAR);
+    String asmPath = getJarClasspath(PluginDefinitionValues.ASM_JAR);
+    String cglibPath = getJarClasspath(PluginDefinitionValues.CGLIB_JAR);
     return guiceJar + getClasspathDelimiter() + aoPath + getClasspathDelimiter()
         + asmPath + getClasspathDelimiter() + cglibPath;
   }
   
   private String getJarClasspath(String jarFile) throws Exception {
-    Bundle bundle = Platform.getBundle("GuicePlugin");
+    Bundle bundle = Platform.getBundle(PluginDefinitionValues.BUNDLE_ID);
     URL url = bundle.getEntry(jarFile);
     url = FileLocator.toFileURL(url);
     return url.getFile();
@@ -217,7 +217,7 @@ class EclipseJavaProject extends JavaProject {
   @Override
   public IDEPluginSettings loadSettings() {
     IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-    IDEPluginSettings settings = new IDEPluginSettings(store.getString("com.google.inject.tools.ideplugin.eclipse.preferences"));
+    IDEPluginSettings settings = new IDEPluginSettings(store.getString(PluginDefinitionValues.PREFERENCES_ID));
     return settings;
   }
 

@@ -200,7 +200,7 @@ abstract class EclipseSourceImpl extends AbstractSourceImpl {
   
   protected Set<String> locate(EclipseJavaProject javaManager, ProgressMonitor monitor)
       throws Throwable {
-    monitor.begin("Building Guice Type Hierarchy", 2);
+    monitor.begin(PluginTextValues.BUILDING_TYPE_HIERARCHY, 2);
     IType type = javaManager.getIJavaProject().findType(getTypeName());
     IProgressMonitor eclipsemonitor = 
         ((EclipseProgressHandler.EclipseProgressMonitor)monitor).getSubIProgressMonitor(1);
@@ -208,7 +208,7 @@ abstract class EclipseSourceImpl extends AbstractSourceImpl {
     final Set<String> names = new HashSet<String>();
     IType[] subclasses = hierarchy.getAllSubtypes(type);
     ProgressMonitor secondmonitor = monitor.getSubMonitor(1);
-    secondmonitor.begin("Analyzing Guice Type Hierarchy", subclasses.length);
+    secondmonitor.begin(PluginTextValues.ANALYZING_TYPE_HIERARCHY, subclasses.length);
     for (IType subclass : subclasses) {
       try {
         if (subclass.isClass()) {

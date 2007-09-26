@@ -27,7 +27,7 @@ import com.google.inject.tools.ideplugin.JavaProject;
  */
 public class RunModulesNowAction2 extends EclipseMenuAction {
   public RunModulesNowAction2() {
-    super("Run Contexts Now", "runnow.gif");
+    super(PluginTextValues.RUN_NOW, PluginDefinitionValues.RUN_NOW_ICON);
   }
   
   @Override
@@ -42,11 +42,11 @@ public class RunModulesNowAction2 extends EclipseMenuAction {
   
   @Override
   protected String myTooltip() {
-    return "Run Contexts Now";
+    return PluginTextValues.RUN_NOW;
   }
   
   @Override
   protected String myStatusFailedMessage() {
-    return "Guice: Cannot resolve project.";
+    return PluginTextValues.CANNOT_RESOLVE_JAVA_PROJECT;
   }
 }

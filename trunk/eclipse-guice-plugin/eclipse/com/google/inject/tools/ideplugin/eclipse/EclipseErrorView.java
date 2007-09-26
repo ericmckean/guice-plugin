@@ -109,16 +109,16 @@ public class EclipseErrorView extends ViewPart {
     IActionBars actionBars = getViewSite().getActionBars();
 
     IAction action= new DisplayViewAction(this, ITextOperationTarget.CUT);
-    action.setText("Cut"); //$NON-NLS-1$
+    action.setText(PluginTextValues.CUT);
     setGlobalAction(actionBars, ActionFactory.CUT.getId(), action);
 
     action= new DisplayViewAction(this, ITextOperationTarget.COPY);
-    action.setText("Copy"); //$NON-NLS-1$
+    action.setText(PluginTextValues.COPY);
     setGlobalAction(actionBars, ActionFactory.COPY.getId(), action);
 
 
     action= new DisplayViewAction(this, ITextOperationTarget.SELECT_ALL);
-    action.setText("Select All"); //$NON-NLS-1$
+    action.setText(PluginTextValues.SELECT_ALL);
     setGlobalAction(actionBars, ActionFactory.SELECT_ALL.getId(), action);
 
   }

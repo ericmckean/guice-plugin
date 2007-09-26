@@ -27,17 +27,17 @@ import org.eclipse.ui.PlatformUI;
  */
 public class ShowErrorsViewAction extends EclipseMenuAction {
   public ShowErrorsViewAction() {
-    super("Show Guice Errors View", "guiceerrors.gif");
+    super(PluginTextValues.SHOW_GUICE_ERRORS, PluginDefinitionValues.GUICE_ERRORS_ICON);
   }
   
   @Override
   protected String myTooltip() {
-    return "Show Guice Errors View";
+    return PluginTextValues.SHOW_GUICE_ERRORS;
   }
   
   @Override
   protected String myStatusFailedMessage() {
-    return "Could not open Guice Errors View";
+    return PluginTextValues.CANT_OPEN_ERRORS;
   }
   
   @Override
@@ -45,8 +45,7 @@ public class ShowErrorsViewAction extends EclipseMenuAction {
     try {
       IWorkbenchPage activePage = PlatformUI.getWorkbench()
           .getWorkbenchWindows()[0].getActivePage();
-      activePage.showView(
-          "com.google.inject.tools.ideplugin.eclipse.EclipseErrorView");
+      activePage.showView(PluginDefinitionValues.ERRORS_VIEW_ID);
       return true;
     } catch (Exception e) {
       return false;

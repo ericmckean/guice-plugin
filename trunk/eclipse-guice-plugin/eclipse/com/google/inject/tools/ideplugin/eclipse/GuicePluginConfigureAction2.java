@@ -27,7 +27,7 @@ import com.google.inject.tools.ideplugin.JavaProject;
  */
 public class GuicePluginConfigureAction2 extends EclipseMenuAction {
   public GuicePluginConfigureAction2() {
-    super("Configure Guice Plugin", "configure.gif");
+    super(PluginTextValues.CONFIGURE, PluginDefinitionValues.CONFIGURE_ICON);
   }
   
   @Override
@@ -42,11 +42,11 @@ public class GuicePluginConfigureAction2 extends EclipseMenuAction {
   
   @Override
   protected String myTooltip() {
-    return "Configure Guice Plugin...";
+    return PluginTextValues.CONFIGURE;
   }
   
   @Override
   protected String myStatusFailedMessage() {
-    return "Guice: Cannot resolve project.";
+    return PluginTextValues.CANNOT_RESOLVE_JAVA_PROJECT;
   }
 }
