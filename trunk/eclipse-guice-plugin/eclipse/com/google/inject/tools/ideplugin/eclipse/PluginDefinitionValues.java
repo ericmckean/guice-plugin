@@ -24,7 +24,7 @@ package com.google.inject.tools.ideplugin.eclipse;
 final class PluginDefinitionValues {
   public static final String BASE_ID = "com.google.inject.tools.ideplugin.eclipse";
   
-  public static final String BUNDLE_ID = BASE_ID;
+  public static final String BUNDLE_ID = BASE_ID + ".guiceplugin";
   
   //ViewPart IDs
   public static final String RESULTS_VIEW_ID = BASE_ID + ".EclipseResultsView";
