@@ -2,7 +2,7 @@
 <feature
       id="com.google.inject.tools.ideplugin.eclipse.guiceplugin"
       label="Guice Plugin"
-      version="0.3.8"
+      version="0.3.9"
       provider-name="Google">
 
    <description>
@@ -225,7 +225,7 @@
          id="com.google.inject.tools.ideplugin.eclipse.guiceplugin"
          download-size="0"
          install-size="0"
-         version="0.3.8"
+         version="0.3.9"
          unpack="false"/>
 
 </feature>
