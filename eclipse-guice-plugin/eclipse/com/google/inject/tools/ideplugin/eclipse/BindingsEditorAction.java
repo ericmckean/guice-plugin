@@ -48,7 +48,8 @@ public class BindingsEditorAction implements IEditorActionDelegate {
    */
   public void run(IAction action) {
     JavaElementResolver resolver = new JavaElementResolver(editor);
-    EclipseJavaElement javaElement = new EclipseJavaElement(resolver.getJavaElement());
+    EclipseJavaElement javaElement = resolver.getJavaElement()==null ? null :
+        new EclipseJavaElement(resolver.getJavaElement());
     if (javaElement != null && javaElement.getType() != null) {
       guicePlugin.getBindingsEngine(javaElement,
           new EclipseJavaProject(resolver.getJavaElement().getJavaProject()));

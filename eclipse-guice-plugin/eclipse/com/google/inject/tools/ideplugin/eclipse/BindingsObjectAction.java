@@ -51,7 +51,8 @@ public class BindingsObjectAction implements IObjectActionDelegate {
     IStructuredSelection selection = (IStructuredSelection) part.getSite()
         .getSelectionProvider().getSelection();
     IJavaElement element = (IJavaElement) selection.getFirstElement();
-    EclipseJavaElement javaElement = new EclipseJavaElement(element);
+    EclipseJavaElement javaElement = element==null ? null :
+        new EclipseJavaElement(element);
     if (javaElement != null) {
       guicePlugin.getBindingsEngine(javaElement,
           new EclipseJavaProject(element.getJavaProject()));
