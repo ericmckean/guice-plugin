@@ -211,12 +211,10 @@ abstract class EclipseSourceImpl extends AbstractSourceImpl {
     secondmonitor.begin(PluginTextValues.ANALYZING_TYPE_HIERARCHY, subclasses.length);
     for (IType subclass : subclasses) {
       try {
-        if (subclass.isClass()) {
-          if (!Flags.isAbstract(subclass.getFlags())) {
-            if (isTypeWeCareAbout(subclass)) {
-              names.add(subclass.getFullyQualifiedName());
-            }
-          }
+        if (subclass.getJavaProject().equals(javaManager.getIJavaProject()) &&
+            subclass.isClass() && !Flags.isAbstract(subclass.getFlags()) &&
+            isTypeWeCareAbout(subclass)) {
+          names.add(subclass.getFullyQualifiedName());
         }
       } catch (Throwable t) {
         hadProblem(t);

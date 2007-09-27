@@ -150,12 +150,12 @@ class EclipseJavaElement implements JavaElement {
   }
 
   private String findName() {
-    return element.getElementName();
+    return element!=null ? element.getElementName() : null;
   }
 
   @Override
   public String toString() {
-    return element.toString();
+    return element!=null ? element.toString() : null;
   }
 
   private String getClassNameFromSignature(String signature) {
@@ -245,6 +245,6 @@ class EclipseJavaElement implements JavaElement {
 
   @Override
   public int hashCode() {
-    return element.hashCode();
+    return element!=null ? element.hashCode() : 1;
   }
 }
