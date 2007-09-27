@@ -3,7 +3,7 @@
    <description url="http://guice-plugin.googlecode.com/svn/trunk/eclipse-update-site/">
       Guice Plugin Site
    </description>
-   <feature url="features/com.google.inject.tools.ideplugin.eclipse.guiceplugin_0.3.8.jar" id="com.google.inject.tools.ideplugin.eclipse.guiceplugin" version="0.3.8">
+   <feature url="features/com.google.inject.tools.ideplugin.eclipse.guiceplugin_0.3.9.jar" id="com.google.inject.tools.ideplugin.eclipse.guiceplugin" version="0.3.9">
       <category name="Guice"/>
    </feature>
    <category-def name="Guice" label="Guice"/>
