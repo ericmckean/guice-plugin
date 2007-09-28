@@ -17,6 +17,7 @@
 package com.google.inject.tools.ideplugin.intellij;
 
 import java.util.Set;
+import java.util.Collections;
 
 import com.google.inject.Inject;
 import com.google.inject.tools.ideplugin.CustomContextDefinitionSource;
@@ -42,10 +43,6 @@ class IntellijCustomContextListener extends
   @Override
   protected Set<String> locate(JavaProject javaProject, ProgressMonitor monitor)
       throws Throwable {
-    return null;
-  }
-  
-  public void refresh(JavaProject javaProject) {
-    
+    return Collections.<String>emptySet();
   }
 }
