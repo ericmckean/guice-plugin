@@ -16,14 +16,11 @@
 
 package com.google.inject.tools.suite.code;
 
-import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.Fakes.FakeMessenger;
 import com.google.inject.tools.suite.Fakes.FakeProgressHandler;
 import com.google.inject.tools.suite.Fakes.TestSnippet;
-import com.google.inject.tools.suite.code.CodeRunner;
-import com.google.inject.tools.suite.code.CodeRunnerImpl;
+import com.google.inject.tools.suite.JavaManager;
 import com.google.inject.tools.suite.snippets.CodeSnippetResult;
-
 import junit.framework.TestCase;
 
 import java.io.BufferedReader;
@@ -126,7 +123,8 @@ public class CodeRunnerTest extends TestCase implements
   }
 
   public static class FakeJavaProject implements JavaManager {
-    public String getJavaCommand() throws Exception {
+	private static final String PATH_SEPARATOR = System.getProperty("path.separator");
+	public String getJavaCommand() throws Exception {
       return "java";
     }
     
@@ -147,7 +145,7 @@ public class CodeRunnerTest extends TestCase implements
     }
     
     public String getClasspathDelimiter() {
-      return ":";
+      return PATH_SEPARATOR;
     }
   }
 
