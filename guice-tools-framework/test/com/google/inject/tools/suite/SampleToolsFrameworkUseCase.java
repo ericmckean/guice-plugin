@@ -16,11 +16,6 @@
 
 package com.google.inject.tools.suite;
 
-import java.net.URL;
-import java.util.Set;
-
-import junit.framework.TestCase;
-
 import com.google.inject.Guice;
 import com.google.inject.binder.AnnotatedBindingBuilder;
 import com.google.inject.tools.suite.SampleModuleScenario.MockInjectedInterface2;
@@ -34,6 +29,10 @@ import com.google.inject.tools.suite.module.ModuleManager;
 import com.google.inject.tools.suite.snippets.BindingCodeLocation;
 import com.google.inject.tools.suite.snippets.CodeLocation;
 import com.google.inject.tools.suite.snippets.ModuleContextSnippet;
+import junit.framework.TestCase;
+
+import java.net.URL;
+import java.util.Set;
 
 /**
  * Test that the tools suite works as advertised.
@@ -64,10 +63,12 @@ public class SampleToolsFrameworkUseCase extends TestCase {
     private static final URL CODEURL =
       SampleModuleScenario.class.getProtectionDomain().getCodeSource().getLocation();
 
-    private static String SNIPPETCLASSPATH = createClasspath(SNIPPETURL);
-    private static String CODECLASSPATH = createClasspath(CODEURL);
-    
-    private static String createClasspath(URL url) {
+    private static final String SNIPPETCLASSPATH = createClasspath(SNIPPETURL);
+    private static final String CODECLASSPATH = createClasspath(CODEURL);
+
+	private static final String PATH_SEPARATOR = System.getProperty("path.separator");
+
+	private static String createClasspath(URL url) {
       try {
         String location = url.toURI().getPath();
         return location.substring(location.indexOf('/'));
@@ -88,20 +89,25 @@ public class SampleToolsFrameworkUseCase extends TestCase {
     
     @Override
     public String getGuiceClasspath() {
-      String base = CODECLASSPATH.substring(0, CODECLASSPATH.lastIndexOf("bin")) + "lib/Guice/";
-      String guice = base + "guice-r364.jar";
-      String asm = base + "asm-2.2.3.jar";
-      String cglib = base + "cglib-2.2_beta1.jar";
-      String aop = base + "aopalliance.jar";
-      return guice + ":" + asm + ":" + cglib + ":" + aop;
+        final String base       = CODECLASSPATH.substring(0, CODECLASSPATH.lastIndexOf("bin")) + "lib/Guice/";
+        final String guice      = base + "guice-r364.jar";
+        final String asm        = base + "asm-2.2.3.jar";
+        final String cglib      = base + "cglib-2.2_beta1.jar";
+        final String aop        = base + "aopalliance.jar";
+
+        return new StringBuilder()
+                    .append(guice).append(PATH_SEPARATOR)
+                    .append(asm).append(PATH_SEPARATOR)
+                    .append(cglib).append(PATH_SEPARATOR)
+                    .append(aop)
+                .toString();
     }
   }
   
   public void testToolsFramework() {
     ModuleManager moduleManager = 
       Guice.createInjector(new MyToolsModule()).getInstance(ModuleManager.class);
-    
-    ModuleContextRepresentation mcontext = moduleManager.createModuleContext("My Context");
+	  ModuleContextRepresentation mcontext = moduleManager.createModuleContext("My Context");
     mcontext.addModule(WorkingModule.class.getName());
     mcontext.addModule(WorkingModule2.class.getName());
     
