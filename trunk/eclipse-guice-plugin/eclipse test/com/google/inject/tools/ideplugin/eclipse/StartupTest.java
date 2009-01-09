@@ -53,7 +53,7 @@ public class StartupTest extends TestCase {
   public void testActivatorConstructor() {
     @SuppressWarnings( {"unused"})
     Activator activator = new Activator();
-    assertNotNull(Activator.getGuicePlugin());
+    assertNotNull(Activator.getDefault().getGuicePlugin());
   }
 
   public void testCreatingInjections() {

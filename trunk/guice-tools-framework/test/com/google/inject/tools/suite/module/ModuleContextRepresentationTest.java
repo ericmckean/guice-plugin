@@ -20,8 +20,9 @@ import com.google.inject.Binding;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.Scope;
-import com.google.inject.spi.BindingVisitor;
-import com.google.inject.spi.ProviderBinding;
+import com.google.inject.spi.BindingScopingVisitor;
+import com.google.inject.spi.BindingTargetVisitor;
+import com.google.inject.spi.ElementVisitor;
 import com.google.inject.tools.suite.Messenger;
 import com.google.inject.tools.suite.SampleModuleScenario;
 import com.google.inject.tools.suite.code.CodeRunner;
@@ -53,12 +54,12 @@ public class ModuleContextRepresentationTest extends TestCase {
     codeRunner.waitFor();
     assertFalse(moduleContext.isDirty());
     assertTrue(moduleContext.getName().equals("Working Module Context"));
-    CodeLocation codeLocation = moduleContext.findLocation(
+    CodeLocation codeLocation = moduleContext.findLocation("interface " + 
         SampleModuleScenario.MockInjectedInterface.class.getName(), null);
     assertTrue(codeLocation instanceof BindingCodeLocation);
     BindingCodeLocation bindingLocation = (BindingCodeLocation)codeLocation;
     assertTrue(bindingLocation.bindTo()
-        .equals(SampleModuleScenario.MockInjectedInterfaceImpl.class.getName()));
+        .equals("class " + SampleModuleScenario.MockInjectedInterfaceImpl.class.getName()));
   }
 
   public static class SimulatedCodeRunner implements CodeRunner {
@@ -150,10 +151,6 @@ public class ModuleContextRepresentationTest extends TestCase {
     }
 
     public static class MockBinding<T> implements Binding<T> {
-      public ProviderBinding<T> getProviderBinding() {
-        return null;
-      }
-
       public Scope getScope() {
         return null;
       }
@@ -178,7 +175,7 @@ public class ModuleContextRepresentationTest extends TestCase {
         return Key.get(bindWhat);
       }
       
-      public void accept(BindingVisitor<? super T> visitor) {
+      public void acceptTargetVisitor(BindingTargetVisitor<? super T, Void> visitor) {
         
       }
 
@@ -198,6 +195,17 @@ public class ModuleContextRepresentationTest extends TestCase {
           }
           return result;
         }
+      }
+      public <V> V acceptScopingVisitor(BindingScopingVisitor<V> arg0) {
+        return null;
+      }
+      public <V> V acceptTargetVisitor(BindingTargetVisitor<? super T, V> arg0) {
+        return null;
+      }
+      @SuppressWarnings("hiding")
+      public <T> T acceptVisitor(ElementVisitor<T> arg0) {
+        // TODO Auto-generated method stub
+        return null;
       }
     }
   }

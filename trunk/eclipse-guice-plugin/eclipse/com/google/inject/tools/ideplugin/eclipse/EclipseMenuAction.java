@@ -57,7 +57,7 @@ public abstract class EclipseMenuAction extends Action
   public EclipseMenuAction(String name, ImageDescriptor image) {
     super(name, image);
     this.setToolTipText(myTooltip());
-    guicePlugin = Activator.getGuicePlugin();
+    guicePlugin = Activator.getDefault().getGuicePlugin();
   }
   
   protected String myTooltip() {

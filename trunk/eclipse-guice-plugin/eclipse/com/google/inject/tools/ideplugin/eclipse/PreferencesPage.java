@@ -110,7 +110,7 @@ public class PreferencesPage extends PreferencePage implements IWorkbenchPrefere
       IPreferenceStore store = getPreferenceStore();
       IDEPluginSettings settings = new IDEPluginSettings(new ValuesSaver());
       store.setValue(PluginDefinitionValues.PREFERENCES_ID, settings.serialize());
-      Activator.getGuicePlugin().getProjectManager().settingsChanged(null, settings);
+      Activator.getDefault().getGuicePlugin().getProjectManager().settingsChanged(null, settings);
     }
     
     private void initializeDefaults() {

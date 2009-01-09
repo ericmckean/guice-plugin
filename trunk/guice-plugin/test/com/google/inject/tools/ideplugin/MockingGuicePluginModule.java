@@ -176,13 +176,11 @@ public class MockingGuicePluginModule extends GuicePluginModule {
     }
   }
 
-  @SuppressWarnings( {"unchecked"})
   protected <T> void bindToMockInstance(AnnotatedBindingBuilder<T> builder,
       Class<T> theClass) {
     builder.toInstance(new ProxyMock<T>(theClass).getInstance());
   }
 
-  @SuppressWarnings( {"unchecked"})
   protected <T> void bindToInstance(AnnotatedBindingBuilder<T> builder,
       T instance) {
     builder.toInstance(instance);

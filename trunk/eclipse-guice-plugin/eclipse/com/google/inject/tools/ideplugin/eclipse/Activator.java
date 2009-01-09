@@ -88,7 +88,7 @@ public class Activator extends AbstractUIPlugin {
   /**
    * Returns the GuicePlugin.
    */
-  public static EclipseGuicePlugin getGuicePlugin() {
+  public EclipseGuicePlugin getGuicePlugin() {
     if (initThread != null) {
       try {
         initThread.join();

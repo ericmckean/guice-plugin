@@ -16,6 +16,7 @@
 
 package com.google.inject.tools.suite.code;
 
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -139,7 +140,8 @@ class CodeRunnerImpl implements CodeRunner {
         done = false;
         try {
           process = new ProcessBuilder(cmd).start();
-          ObjectInputStream input = new ObjectInputStream(process.getInputStream());
+          InputStream is = process.getInputStream();
+          ObjectInputStream input = new ObjectInputStream(is);
           Object result = input.readObject();
           if (!killed) {
             runnable.gotErrorOutput(process.getErrorStream());

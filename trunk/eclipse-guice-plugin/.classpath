@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="eclipse"/>
 	<classpathentry kind="src" path="eclipse test"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3.8.1"/>
-	<classpathentry kind="lib" path="lib/EasyMock/easymock.jar"/>
-	<classpathentry kind="lib" path="lib/Guice/aopalliance.jar"/>
-	<classpathentry kind="lib" path="lib/Guice/asm-2.2.3.jar"/>
-	<classpathentry kind="lib" path="lib/Guice/cglib-2.2_beta1.jar"/>
-	<classpathentry kind="lib" path="lib/Guice/guice-r364.jar"/>
-	<classpathentry kind="lib" path="lib/GuiceToolsFramework_0.3.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="bin" sourcepath="bin"/>
+	<classpathentry exported="true" kind="lib" path="lib/Guice/aopalliance.jar" sourcepath="eclipse-guice-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/Guice/asm-2.2.3.jar" sourcepath="eclipse-guice-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/Guice/cglib-2.2_beta1.jar" sourcepath="eclipse-guice-pluginsrc.zip"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/guice-plugin"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/guice-tools-framework"/>
+	<classpathentry exported="true" kind="lib" path="lib/GuicePlugin_0.3.5.jar" sourcepath="/guice-plugin/src"/>
+	<classpathentry exported="true" kind="lib" path="lib/GuiceToolsFramework_0.3.5.jar" sourcepath="/guice-tools-framework/src/"/>
+	<classpathentry exported="true" kind="lib" path="lib/Guice/guice-snapshot20080909.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -64,22 +64,45 @@ class ModuleContextRepresentationImpl implements
   }
 
   public CodeLocation findLocation(String theClass, String annotatedWith) {
-    KeyRepresentation key = new KeyRepresentation(theClass, annotatedWith);
-    if (bindings.get(key) != null) {
-      return new BindingCodeLocation(getName(), key, bindings.get(key));
-    }
-    key = new KeyRepresentation(theClass, "@" + annotatedWith);
-    if (bindings.get(key) != null) {
-      return new BindingCodeLocation(getName(), key, bindings.get(key));
+    for (KeyRepresentation key : identifiers(theClass, annotatedWith)) {
+      if (bindings.get(key) != null) {
+        return new BindingCodeLocation(getName(), key, bindings.get(key));
+      }
     }
     return new NoBindingLocation(theClass);
   }
   
+  // returns a set of all the identifiers that guice might produce
+  private Set<String> classIdentifiers(String theClass) {
+    Set<String> identifiers = new HashSet<String>();
+    identifiers.add("interface " + theClass);
+    identifiers.add("class " + theClass);
+    return identifiers;
+  }
+  
+  private Set<String> annotationIdentifiers(String annotation) {
+    Set<String> identifiers = new HashSet<String>();
+    identifiers.add(annotation);
+    identifiers.add("@" + annotation);
+    return identifiers;
+  }
+  
+  private Set<KeyRepresentation> identifiers(String theClass, String annotatedWith) {
+    Set<KeyRepresentation> identifiers = new HashSet<KeyRepresentation>();
+    for (String classIdentifier : classIdentifiers(theClass)) {
+      for (String annotationIdentifier : annotationIdentifiers(annotatedWith)) {
+        identifiers.add(new KeyRepresentation(classIdentifier, annotationIdentifier));
+      }
+    }
+    return identifiers;
+  }
+  
   public Set<CodeLocation> findLocations(String theClass) {
+    Set<String> theClassIdentifiers = classIdentifiers(theClass);
     Set<CodeLocation> locations = new HashSet<CodeLocation>();
     if (bindings!=null && bindings.keySet()!=null && !bindings.keySet().isEmpty()) {
       for (KeyRepresentation key : bindings.keySet()) {
-        if (key.bindWhat().equals(theClass)) {
+        if (theClassIdentifiers.contains(key.bindWhat())) {
           locations.add(new BindingCodeLocation(getName(), key, bindings.get(key)));
         }
       }

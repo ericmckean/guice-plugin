@@ -34,7 +34,7 @@ public class RunModulesNowAction2 extends EclipseMenuAction {
   protected boolean runMyAction(IEditorPart part) {
     JavaProject project = new EclipseJavaProject(new JavaProjectResolver(part).getProject());
     if (project != null) {
-      Activator.getGuicePlugin().runModulesNow(project, false);
+      Activator.getDefault().getGuicePlugin().runModulesNow(project, false);
       return true;
     }
     return false;

@@ -33,8 +33,8 @@ final class PluginDefinitionValues {
   public static final String PREFERENCES_ID = BASE_ID + ".preferences";
   
   //Library locations
-  public static final String GUICE_TOOLS_FRAMEWORK_JAR = "lib/GuiceToolsFramework_0.3.4.jar";
-  public static final String GUICE_JAR = "lib/Guice/guice-r364.jar";
+  public static final String GUICE_TOOLS_FRAMEWORK_JAR = "lib/GuiceToolsFramework_0.3.5.jar";
+  public static final String GUICE_JAR = "lib/Guice/guice-snapshot20080909.jar";
   public static final String AOPALLIANCE_JAR= "lib/Guice/aopalliance.jar";
   public static final String ASM_JAR = "lib/Guice/asm-2.2.3.jar";
   public static final String CGLIB_JAR = "lib/Guice/cglib-2.2_beta1.jar";
