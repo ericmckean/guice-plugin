@@ -16,16 +16,18 @@
 
 package com.google.inject.tools.suite.snippets.bindings;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.util.Set;
+
 import com.google.inject.Binding;
-import com.google.inject.spi.BindingVisitor;
-import com.google.inject.spi.ClassBinding;
-import com.google.inject.spi.ConstantBinding;
-import com.google.inject.spi.ConvertedConstantBinding;
-import com.google.inject.spi.InstanceBinding;
-import com.google.inject.spi.LinkedBinding;
-import com.google.inject.spi.LinkedProviderBinding;
-import com.google.inject.spi.ProviderBinding;
-import com.google.inject.spi.ProviderInstanceBinding;
+import com.google.inject.Injector;
+import com.google.inject.Key;
+import com.google.inject.Provider;
+import com.google.inject.Scope;
+import com.google.inject.spi.BindingScopingVisitor;
+import com.google.inject.spi.BindingTargetVisitor;
+import com.google.inject.spi.InjectionPoint;
 import com.google.inject.tools.suite.snippets.problems.BindingProblem;
 import com.google.inject.tools.suite.snippets.problems.KeyProblem;
 import com.google.inject.tools.suite.snippets.problems.LocationProblem;
@@ -43,22 +45,35 @@ public class BindingRepresentation extends Representation {
   private StackTraceElement[] stackTrace;
   private String locationDescription;
   private String scope;
-  
+
   private KeyRepresentation key;
   private String boundTo;
   private String boundProvider;
   private String boundInstance;
   private String boundConstant;
-  
+
   private BindingRepresentation linkedTo;
-  
-  public BindingRepresentation(Binding<?> binding) {
+
+  public BindingRepresentation(Binding<?> binding, Injector injector) {
     try {
-      if (binding.getScope() != null) {
-        scope = binding.getScope().toString();
-      } else {
-        scope = null;
-      }
+      binding.acceptScopingVisitor(new BindingScopingVisitor<Void>() {
+        public Void visitEagerSingleton() {
+          scope = "Eager Singleton";
+          return null;
+        }
+        public Void visitNoScoping() {
+          scope = "No Scope";
+          return null;
+        }
+        public Void visitScope(Scope scope) {
+          BindingRepresentation.this.scope = scope.toString();
+          return null;
+        }
+        public Void visitScopeAnnotation(Class<? extends Annotation> annotation) {
+          scope = annotation.getName();
+          return null;
+        }
+      });
     } catch (Throwable throwable) {
       problems.add(new ScopeProblem(throwable));
     }
@@ -84,126 +99,134 @@ public class BindingRepresentation extends Representation {
       problems.add(new LocationProblem(throwable));
     }
     try {
-      visit(binding);
+      visit(binding, injector);
     } catch (Throwable throwable) {
       problems.add(new BindingProblem(throwable));
     }
   }
-  
-  <T> void visit(Binding<T> binding) {
-    binding.accept(new RepresentationBuildingVisitor<T>());
+
+  <T> void visit(Binding<T> binding, Injector injector) {
+    binding.acceptTargetVisitor(new RepresentationBuildingVisitor<T>());
   }
-  
-  class RepresentationBuildingVisitor<T> implements BindingVisitor<T> {
-    public void visit(ClassBinding<? extends T> binding) {
-      boundTo = binding.getBoundClass().getName();
+
+  class RepresentationBuildingVisitor<T> implements BindingTargetVisitor<T, Void> {
+    public Void visitConstructor(Constructor<? extends T> arg0, Set<InjectionPoint> arg1) {
+      return null;
+    }
+
+    public Void visitConvertedConstant(T arg0) {
+      boundTo = arg0.getClass().getName();
+      boundProvider = null;
+      boundInstance = null;
+      boundConstant = arg0.toString();
+      linkedTo = null;
+      return null;
+    }
+
+    public Void visitInstance(T arg0, Set<InjectionPoint> arg1) {
+      boundTo = arg0.getClass().getName();
+      boundProvider = null;
+      boundInstance = arg0.toString();
+      boundConstant = null;
+      linkedTo = null;
+      return null;
+    }
+
+    public Void visitKey(Key<? extends T> arg0) {
+      boundTo = arg0.getTypeLiteral().getType().toString();
       boundProvider = null;
       boundInstance = null;
       boundConstant = null;
       linkedTo = null;
+      return null;
     }
 
-    public void visit(ConstantBinding<? extends T> binding) {
-      boundTo = binding.getValue().getClass().getName();
+    public Void visitProvider(Provider<? extends T> arg0, Set<InjectionPoint> arg1) {
+      boundTo = null;
+      boundProvider = arg0.getClass().getName();
+      boundConstant = null;
+      boundInstance = arg0.toString();
+      linkedTo = null;
+      return null;
+    }
+
+    public Void visitProviderBinding(Key<?> arg0) {
+      boundTo = null;
+      boundProvider = arg0.getTypeLiteral().getType().toString();
+      boundInstance = null;
+      boundConstant = null;
+      linkedTo = null;
+      return null;
+    }
+
+    public Void visitProviderKey(Key<? extends Provider<? extends T>> arg0) {
+      boundTo = null;
+      boundProvider = arg0.getTypeLiteral().getType().toString();
+      boundInstance = null;
+      boundConstant = null;
+      linkedTo = null;
+      return null;
+    }
+
+    public Void visitUntargetted() {
+      boundTo = null;
       boundProvider = null;
       boundInstance = null;
-      boundConstant = binding.getValue().toString();
-      linkedTo = null;
-    }
-
-    public void visit(ConvertedConstantBinding<? extends T> binding) {
-      linkedTo(binding.getOriginal());
-    }
-
-    public void visit(InstanceBinding<? extends T> binding) {
-      boundTo = binding.getInstance().getClass().getName();
-      boundProvider = null;
-      boundInstance = binding.getInstance().toString();
       boundConstant = null;
       linkedTo = null;
-    }
-
-    public void visit(LinkedBinding<? extends T> binding) {
-      linkedTo(binding.getTarget());
-    }
-
-    public void visit(LinkedProviderBinding<? extends T> binding) {
-      linkedTo(binding.getTargetProvider());
-    }
-
-    public void visit(ProviderBinding<?> binding) {
-      linkedTo(binding.getTarget());
-      boundProvider = boundTo;
-      boundTo = null;
-      linkedTo = null;
-    }
-
-    public void visit(ProviderInstanceBinding<? extends T> binding) {
-      boundTo = null;
-      boundProvider = binding.getProviderInstance().getClass().getName();
-      boundConstant = null;
-      boundInstance = binding.getProviderInstance().toString();
-      linkedTo = null;
-    }
-    
-    private void linkedTo(Binding<?> binding) {
-      linkedTo = new BindingRepresentation(binding);
-      boundTo = linkedTo.boundTo();
-      boundProvider = linkedTo.boundProvider();
-      boundInstance = linkedTo.boundInstance();
-      boundConstant = linkedTo.boundConstant();
+      return null;
     }
   }
-  
+
   public KeyRepresentation key() {
     return key;
   }
-  
+
   public String file() {
     return file;
   }
-  
+
   public int location() {
     return location;
   }
-  
+
   public String locationDescription() {
     return locationDescription;
   }
-  
+
   public String scope() {
     return scope;
   }
-  
+
   public String boundTo() {
     return boundTo;
   }
-  
+
   public String boundProvider() {
     return boundProvider;
   }
-  
+
   public String boundInstance() {
     return boundInstance;
   }
-  
+
   public String boundConstant() {
     return boundConstant;
   }
-  
+
   public BindingRepresentation linkedTo() {
     return linkedTo;
   }
-  
+
   public StackTraceElement[] stackTrace() {
     return stackTrace;
   }
-  
+
   @Override
   public int hashCode() {
     return file.hashCode() + location;
   }
-  
+
   @Override
   public boolean equals(Object object) {
     if (!(object instanceof BindingRepresentation)) return false;
@@ -217,7 +240,7 @@ public class BindingRepresentation extends Representation {
     if (scope != null && !scope.equals(bindingRepresentation.scope())) return false;
     return true;
   }
-  
+
   @Override
   public String toString() {
     StringBuilder result = new StringBuilder();
@@ -233,7 +256,7 @@ public class BindingRepresentation extends Representation {
     if (boundConstant != null) {
       result.append(" constant " + boundConstant);
     }
-    
+
     if (file != null) {
       result.append(" at " + file + ":" + location);
     } else {

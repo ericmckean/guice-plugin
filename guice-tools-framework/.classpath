@@ -8,6 +8,6 @@
 	<classpathentry kind="lib" path="lib/Guice/aopalliance.jar"/>
 	<classpathentry kind="lib" path="lib/Guice/asm-2.2.3.jar"/>
 	<classpathentry kind="lib" path="lib/Guice/cglib-2.2_beta1.jar"/>
-	<classpathentry kind="lib" path="lib/Guice/guice-r364.jar"/>
+	<classpathentry kind="lib" path="/Users/d/Documents/workspace/guice-tools-framework/lib/Guice/guice-snapshot20080909.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -90,7 +90,7 @@ public class SampleToolsFrameworkUseCase extends TestCase {
     @Override
     public String getGuiceClasspath() {
         final String base       = CODECLASSPATH.substring(0, CODECLASSPATH.lastIndexOf("bin")) + "lib/Guice/";
-        final String guice      = base + "guice-r364.jar";
+        final String guice      = base + "guice-snapshot20080909.jar";
         final String asm        = base + "asm-2.2.3.jar";
         final String cglib      = base + "cglib-2.2_beta1.jar";
         final String aop        = base + "aopalliance.jar";
@@ -125,7 +125,7 @@ public class SampleToolsFrameworkUseCase extends TestCase {
     assertNotNull(location);
     assertTrue(location instanceof BindingCodeLocation);
     BindingCodeLocation bindingLocation = (BindingCodeLocation)location;
-    assertTrue(bindingLocation.bindTo().equals(RedService.class.getName()));
+    assertTrue(bindingLocation.bindTo().equals("class " + RedService.class.getName()));
     assertTrue(context.contains(WorkingModule2.class.getName()));
     Set<CodeLocation> locations2 = context.findLocations(MockInjectedInterface2.class.getName());
     assertTrue(locations2.size() == 1);

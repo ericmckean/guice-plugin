@@ -37,7 +37,7 @@ public class BindingsObjectAction implements IObjectActionDelegate {
 
   public BindingsObjectAction() {
     super();
-    guicePlugin = Activator.getGuicePlugin();
+    guicePlugin = Activator.getDefault().getGuicePlugin();
   }
 
   public void setActivePart(IAction action, IWorkbenchPart targetPart) {

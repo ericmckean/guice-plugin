@@ -48,7 +48,7 @@ public class GuicePluginConfigureAction implements IEditorActionDelegate,
   public void run(IAction action) {
     JavaProject project = new EclipseJavaProject(new JavaProjectResolver(editor).getProject());
     if (project != null) {
-      Activator.getGuicePlugin().configurePlugin(project, true);
+      Activator.getDefault().getGuicePlugin().configurePlugin(project, true);
     }
   }
 }

@@ -47,7 +47,7 @@ public class RunModulesNowAction implements IEditorActionDelegate,
   public void run(IAction action) {
     JavaProject project = new EclipseJavaProject(new JavaProjectResolver(editor).getProject());
     if (project != null) {
-      Activator.getGuicePlugin().runModulesNow(project, false);
+      Activator.getDefault().getGuicePlugin().runModulesNow(project, false);
     }
   }
 }

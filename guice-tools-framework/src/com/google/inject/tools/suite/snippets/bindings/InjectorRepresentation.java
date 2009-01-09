@@ -22,6 +22,7 @@ import java.util.Map;
 import com.google.inject.Binding;
 import com.google.inject.CreationException;
 import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.OutOfScopeException;
@@ -42,8 +43,10 @@ public class InjectorRepresentation extends Representation {
   public InjectorRepresentation(Iterable<Module> modules) {
     bindings = new HashMap<KeyRepresentation, BindingRepresentation>();
     Map<Key<?>, Binding<?>> guicebindings = null;
+    Injector injector = null;
     try {
-      guicebindings = Guice.createInjector(Stage.TOOL, modules).getBindings();
+      injector = Guice.createInjector(Stage.TOOL, modules);
+      guicebindings = injector.getBindings();
     } catch (CreationException creationException) {
       problems.add(new CreationProblem(creationException));
       return;
@@ -59,7 +62,7 @@ public class InjectorRepresentation extends Representation {
       if (guicebindings.get(key) == null) {
         this.bindings.put(keyRepresentation, null);
       } else {
-        this.bindings.put(keyRepresentation, new BindingRepresentation(guicebindings.get(key)));
+        this.bindings.put(keyRepresentation, new BindingRepresentation(guicebindings.get(key), injector));
       }
     }
   }

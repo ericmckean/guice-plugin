@@ -16,13 +16,14 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.console,
  org.eclipse.search,
  org.eclipse.jdt.launching
-Eclipse-LazyStart: true
 Bundle-Vendor: com.google.inject.tools.ideplugin
 Bundle-ClassPath: bin/,
  lib/Guice/aopalliance.jar,
  lib/Guice/asm-2.2.3.jar,
  lib/Guice/cglib-2.2_beta1.jar,
- lib/Guice/guice-r364.jar,
- lib/GuicePlugin_0.3.3.jar,
  .,
- lib/GuiceToolsFramework_0.3.4.jar
+ lib/GuicePlugin_0.3.5.jar,
+ lib/GuiceToolsFramework_0.3.5.jar,
+ lib/Guice/guice-snapshot20080909.jar
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ActivationPolicy: lazy

@@ -54,11 +54,11 @@ public class EclipseResultsView extends ViewPart implements ResultsView {
    * The constructor. This will be called by Eclipse internally.
    */
   public EclipseResultsView() {
-    messenger = Activator.getGuicePlugin().getMessenger();
+    messenger = Activator.getDefault().getGuicePlugin().getMessenger();
   }
 
   private ActionsHandler getActionsHandler() {
-    return Activator.getGuicePlugin() != null ? Activator.getGuicePlugin()
+    return Activator.getDefault().getGuicePlugin() != null ? Activator.getDefault().getGuicePlugin()
         .getActionsHandler() : null;
   }
 

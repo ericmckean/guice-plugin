@@ -32,7 +32,7 @@ public class KeyRepresentation extends Representation {
   
   public KeyRepresentation(Key<?> key) {
     try {
-      this.bindWhat = key.getTypeLiteral().toString();
+      this.bindWhat = key.getTypeLiteral().getType().toString();
     } catch (Throwable throwable) {
       problems.add(new KeyProblem(throwable));
       return;
@@ -53,6 +53,10 @@ public class KeyRepresentation extends Representation {
   public KeyRepresentation(String bindWhat, String annotatedWith) {
     this.bindWhat = bindWhat;
     this.annotatedWith = annotatedWith;
+  }
+  
+  public boolean binds(String theClass) {
+    return bindWhat.equals("interface " + theClass) || bindWhat.equals("class " + theClass);
   }
   
   public String bindWhat() {

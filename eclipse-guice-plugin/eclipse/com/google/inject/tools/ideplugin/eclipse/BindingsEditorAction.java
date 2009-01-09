@@ -36,7 +36,7 @@ public class BindingsEditorAction implements IEditorActionDelegate {
 
   public BindingsEditorAction() {
     super();
-    guicePlugin = Activator.getGuicePlugin();
+    guicePlugin = Activator.getDefault().getGuicePlugin();
   }
 
   public void setActiveEditor(IAction action, IEditorPart targetEditor) {
