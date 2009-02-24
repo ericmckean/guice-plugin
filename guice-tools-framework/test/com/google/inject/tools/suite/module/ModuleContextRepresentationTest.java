@@ -54,7 +54,7 @@ public class ModuleContextRepresentationTest extends TestCase {
     codeRunner.waitFor();
     assertFalse(moduleContext.isDirty());
     assertTrue(moduleContext.getName().equals("Working Module Context"));
-    CodeLocation codeLocation = moduleContext.findLocation("interface " + 
+    CodeLocation codeLocation = moduleContext.findLocation(
         SampleModuleScenario.MockInjectedInterface.class.getName(), null);
     assertTrue(codeLocation instanceof BindingCodeLocation);
     BindingCodeLocation bindingLocation = (BindingCodeLocation)codeLocation;
