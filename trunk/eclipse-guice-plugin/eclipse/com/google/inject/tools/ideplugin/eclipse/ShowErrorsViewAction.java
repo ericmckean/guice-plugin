@@ -45,7 +45,7 @@ public class ShowErrorsViewAction extends EclipseMenuAction {
     try {
       IWorkbenchPage activePage = PlatformUI.getWorkbench()
           .getWorkbenchWindows()[0].getActivePage();
-      activePage.showView(PluginDefinitionValues.ERRORS_VIEW_ID);
+      activePage.showView(PluginDefinitionValues.ERROR_VIEW_ID);
       return true;
     } catch (Exception e) {
       return false;

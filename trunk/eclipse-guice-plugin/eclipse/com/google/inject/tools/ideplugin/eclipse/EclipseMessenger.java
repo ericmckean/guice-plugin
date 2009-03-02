@@ -64,7 +64,7 @@ class EclipseMessenger implements Messenger {
         IWorkbenchPage activePage = PlatformUI.getWorkbench()
             .getWorkbenchWindows()[0].getActivePage();
         IViewPart viewPart = activePage.showView(
-            PluginDefinitionValues.ERRORS_VIEW_ID,
+            PluginDefinitionValues.ERROR_VIEW_ID,
             null, IWorkbenchPage.VIEW_CREATE);
         ((EclipseErrorView) viewPart).displayError(message);
       } catch (java.lang.IllegalStateException e) {
