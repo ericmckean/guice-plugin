@@ -28,7 +28,7 @@ final class PluginDefinitionValues {
   
   //ViewPart IDs
   public static final String RESULTS_VIEW_ID = BASE_ID + ".EclipseResultsView";
-  public static final String ERRORS_VIEW_ID = BASE_ID + ".EclipseErrorsView";
+  public static final String ERROR_VIEW_ID = BASE_ID + ".EclipseErrorView";
   
   public static final String PREFERENCES_ID = BASE_ID + ".preferences";
   
