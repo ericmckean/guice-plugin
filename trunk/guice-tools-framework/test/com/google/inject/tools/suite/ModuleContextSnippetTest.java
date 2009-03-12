@@ -119,7 +119,7 @@ public class ModuleContextSnippetTest extends TestCase {
 
   /**
    * Test that constructing a broken module context causes a
-   * {@link com.google.inject.tools.suite.snippets.problems.CodeProblem.CreationProblem}.
+   * {@link com.google.inject.tools.suite.snippets.problems.CreationProblem}.
    */
   public void testConstructBrokenModuleContext() throws Exception {
     String[] args = new String[4];
