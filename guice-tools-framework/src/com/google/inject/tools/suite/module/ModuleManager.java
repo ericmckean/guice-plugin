@@ -196,6 +196,8 @@ public interface ModuleManager {
 
   /**
    * Notify the manager that the user has added a custom context.
+   * 
+   * @param contextName the context name
    */
   public void addCustomContext(String contextName);
   
@@ -214,11 +216,6 @@ public interface ModuleManager {
   public void removeCustomContext(String contextName);
 
   /**
-   * Notify the manager that a custom context has changed.
-   */
-  public void customContextChanged(String contextName);
-  
-  /**
    * Add an application context to the module manager.
    */
   public void addApplicationContext(String contextName, String className);
@@ -236,7 +233,7 @@ public interface ModuleManager {
   /**
    * Notify the manager that an application context has changed.
    */
-  public void applicationContextChanged(String contextName);
+  public void moduleContextChanged(String contextName);
   
   /**
    * Create a new (empty) module context.
