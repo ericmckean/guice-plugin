@@ -244,11 +244,16 @@ class EclipseModuleDialog extends FormDialog {
       });
     }
 
-    public void saveSettings() {
+    public void saveSettings(Messenger messenger) {
       String title = titleTextValue;
       String classToUse = classNameTextValue;
       String methodToUse = methodNameTextValue;
-      moduleManager.addCustomContext(title, classToUse, methodToUse);
+      // Todo: moduleManager could do a better sanity check
+      if (title == null || classToUse == null || methodToUse == null) {
+        messenger.display("Please fill in all fields of a custom context.");
+      } else {  
+        moduleManager.addCustomContext(title, classToUse, methodToUse);
+      }
     }
 
     public static void display(Shell parent, Messenger messenger, ProjectManager projectManager, ModuleManager moduleManager) {
@@ -259,7 +264,7 @@ class EclipseModuleDialog extends FormDialog {
       dialog.setBlockOnOpen(true);
       dialog.open();
       if (dialog.getReturnCode() == Window.OK) {
-        dialog.saveSettings();
+        dialog.saveSettings(messenger);
       }
       EclipseModuleDialog.display(parent, messenger, projectManager, moduleManager);
     }
