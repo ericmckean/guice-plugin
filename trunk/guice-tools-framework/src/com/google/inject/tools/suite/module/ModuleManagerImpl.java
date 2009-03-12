@@ -409,32 +409,18 @@ class ModuleManagerImpl implements ModuleManager,
 
   public void addCustomContext(String contextName) {
     addModuleContext(new CustomModuleContextRepresentationImpl(contextName,
-        contextName, "getModuleContextDefinition"), true);
+      contextName, "getModuleContextDefinition"), true);
   }
   
   public void addCustomContext(String name, String classToUse, String methodToCall) {
-    addModuleContext(new CustomModuleContextRepresentationImpl(name,
-        classToUse, methodToCall), true);
+    addModuleContext(new CustomModuleContextRepresentationImpl(name,    
+      classToUse, methodToCall), true);
   }
 
   public void removeCustomContext(String contextName) {
     removeModuleContext(contextName);
   }
 
-  public void customContextChanged(String contextName) {
-    ModuleContextRepresentationImpl context = null;
-    synchronized (this) {
-      for (ModuleContextRepresentationImpl moduleContext : moduleContexts) {
-        if (moduleContext.getName().equals(contextName)) {
-          context = moduleContext;
-        }
-      }
-    }
-    if (context != null) {
-      context.markDirty();
-    }
-  }
-  
   public void addApplicationContext(String className) {
     addApplicationContext(className, className);
   }
@@ -448,7 +434,7 @@ class ModuleManagerImpl implements ModuleManager,
     removeModuleContext(contextName);
   }
 
-  public void applicationContextChanged(String contextName) {
+  public void moduleContextChanged(String contextName) {
     ModuleContextRepresentationImpl context = null;
     synchronized (this) {
       for (ModuleContextRepresentationImpl moduleContext : moduleContexts) {
